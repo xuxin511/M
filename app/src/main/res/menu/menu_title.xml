@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Qc.QCBillChoice">
+
+
+    <item
+        android:id="@+id/action_QR"
+        android:icon="@drawable/qr"
+        android:orderInCategory="80"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_New"
+        android:icon="@drawable/addpo"
+        android:orderInCategory="80"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+
+</menu>

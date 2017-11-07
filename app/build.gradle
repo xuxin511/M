@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.fabiomsr.drawableoptimizer'
+apply plugin: 'org.greenrobot.greendao' // 添加插件
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '26.0.2'
+    defaultConfig {
+        applicationId "com.xx.chinetek.mitsubshi"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    greendao {
+        schemaVersion 1 //版本号
+        /**
+         * 输出dao的数据库操作实体类文件夹（相对路径 包名+自定义路径名称，包将创建于包名的直接路径下）
+         */
+        daoPackage 'com.xx.chinetek.greendao'
+        /**
+         * greenDao实体类包文件夹
+         */
+        targetGenDir 'src/main/java'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile project(':chineteklib')
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+    compile 'org.greenrobot:greendao:3.2.2' // 添加库
+    testCompile 'junit:junit:4.12'
+    compile files('libs/activation.jar')
+    compile files('libs/additionnal.jar')
+    compile files('libs/mail.jar')
+}

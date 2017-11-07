@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">MITSUBSHI</string>
+    <string name="activity_login_company">chinetek 上海辰达 @2017</string>
+
+    <string name="login_login">登陆</string>
+    <string name="login_setting">设置</string>
+    <string name="login_operator">操作人</string>
+    <string name="main">主界面</string>
+    <string name="outputscan">出库</string>
+    <string name="qrscan">QRs扫描</string>
+    <string name="exceptionList">异常处理</string>
+    <string name="sync">基础数据同步</string>
+    <string name="deliveryScan">出库扫描</string>
+    <string name="startOutput">开始出库扫描</string>
+    <string name="outputlist">出库单据列表</string>
+    <string name="barcodeDetail">条码明细</string>
+    <string name="sumbit">提交</string>
+
+    <string name="Setting_IPAdress">服务器：</string>
+    <string name="Setting_Partnerr">代理商：</string>
+    <string name="Setting_Port">端口：</string>
+    <string name="Setting_TimeOut">超时时间：</string>
+    <string name="Setting_Second">秒</string>
+    <string name="Setting_LogUpload">日志上报</string>
+    <string name="Setting_Save">保存</string>
+
+
+    <string name="sendType">发货方式：</string>
+    <string name="sendCompany">发货方：</string>
+    <string name="choiceSendType">请选择收货方式：</string>
+    <string name="choiceSendCusttom">请选择收货方：</string>
+    <string name="supplier">代理商：</string>
+    <string name="custom">客户：</string>
+    <string name="createtime">创建时间：</string>
+    <string name="submittime">提交时间：</string>
+    <string name="submituser">最后提交人：</string>
+    <string name="barcode">条码：</string>
+    <string name="scanQty">扫描数量：</string>
+    <string name="dnQty">出库数量：</string>
+    <string name="lineNo">行号：</string>
+    <string name="RowNo">序号：</string>
+    <string-array name="sendTypeList">
+        <item>MAPS</item>
+        <item>邮件</item>
+        <item>FTP</item>
+        <item>自建</item>
+        <item>USB</item>
+        <item>二维码</item>
+    </string-array>
+    <string-array name="sendCustomList">
+        <item>代理商</item>
+        <item>客户</item>
+    </string-array>
+
+    <string name="hint_inputDeliveryNo">输入/扫描出库单</string>
+
+
+    <string name="Msg_SaveSuccess">保存成功！</string>
+    <string name="Msg_No_Partner">请先设置代理商编号！</string>
+    <string name="Msg_NoSelect_CusCode">请选择客户或代理商</string>
+    <string name="Msg_No_CusCode">请输入代理商或客户编号！</string>
+
+    <string name="Dia_UploadLogFile">日志文件上传中...</string>
+    <string name="Dia_SyncMaterial">正在同步物料数据...</string>
+    <string name="Dia_SyncCus">正在同步客户和代理商...</string>
+    <string name="Dia_SyncPara">正在同步参数设置...</string>
+    <string name="Dia_SyncDn">正在获取出库单...</string>
+    <string name="Dia_SyncSuccess">基础数据同步完成</string>
+</resources>

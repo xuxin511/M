@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ChinetekLib</string>
+    <string name="version_msg">当前版本：1.0</string>
+
+    <string name="Error_SubmitMore">操作过于频繁！</string>
+    <string name="Error_no_internet">无网络连接！</string>
+    <string name="Error_generic_server_down">服务器连接超时！</string>
+    <string name="Error_generic_error">通讯错误！</string>
+
+</resources>
