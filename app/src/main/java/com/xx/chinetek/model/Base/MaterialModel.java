@@ -37,10 +37,11 @@ public class MaterialModel implements Parcelable {
      */
     private String SPART;
 
+
+    private String MAKTX;
     /**
      * 型号
      */
-    private String MAKTX;
     private String ZMAKTX;
     private String ZEINR;
     @Generated(hash = 967889585)

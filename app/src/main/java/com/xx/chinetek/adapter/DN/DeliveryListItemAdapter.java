@@ -76,7 +76,7 @@ public class DeliveryListItemAdapter extends BaseAdapter {
         }
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
-        listItemView.txtStatus.setText(DNModel.getDN_STATUS());
+        listItemView.txtStatus.setText(DNModel.getDN_STATUS()==1?"已下载":"未下载");
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME());
         listItemView.txtCreateTime.setText(convertView.getResources().getString(R.string.createtime)+ CommonUtil.DateToString(DNModel.getUPDATE_DATE(),null));
         listItemView.txtSource.setText(DNModel.getDN_SOURCE());

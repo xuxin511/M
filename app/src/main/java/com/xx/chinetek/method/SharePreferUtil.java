@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.model.Paramater;
+import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
@@ -29,6 +30,13 @@ public class SharePreferUtil {
             Paramater.Port=sharedPreferences.getInt("Port", 9000);
             Paramater.SOCKET_TIMEOUT=sharedPreferences.getInt("TimeOut", 20000);
             ParamaterModel.PartenerID=sharedPreferences.getString("PartenerNo","");
+            if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
+            ParamaterModel.mailModel.setAccount(sharedPreferences.getString("Account",""));
+            ParamaterModel.mailModel.setPassword(sharedPreferences.getString("Password",""));
+            ParamaterModel.mailModel.setMailServerPort(sharedPreferences.getString("StmpPort","25"));
+            ParamaterModel.mailModel.setMailServerHost(sharedPreferences.getString("Stmp",""));
+            ParamaterModel.mailModel.setMailClientHost(sharedPreferences.getString("IMAP",""));
+
         }
     }
 
@@ -39,6 +47,13 @@ public class SharePreferUtil {
         edit.putInt("Port",Paramater.Port);
         edit.putInt("TimeOut",Paramater.SOCKET_TIMEOUT);
         edit.putString("PartenerNo", ParamaterModel.PartenerID);
+        if(ParamaterModel.mailModel!=null){
+            edit.putString("Account", ParamaterModel.mailModel.getAccount());
+            edit.putString("Password", ParamaterModel.mailModel.getPassword());
+            edit.putString("StmpPort", ParamaterModel.mailModel.getMailServerPort());
+            edit.putString("Stmp", ParamaterModel.mailModel.getMailServerHost());
+            edit.putString("IMAP", ParamaterModel.mailModel.getMailClientHost());
+        }
         edit.apply();
 
     }

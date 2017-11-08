@@ -25,6 +25,7 @@ public class DaoMaster extends AbstractDaoMaster {
         CustomModelDao.createTable(db, ifNotExists);
         SyncParaModelDao.createTable(db, ifNotExists);
         DNModelDao.createTable(db, ifNotExists);
+        DNDetailModelDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -33,6 +34,7 @@ public class DaoMaster extends AbstractDaoMaster {
         CustomModelDao.dropTable(db, ifExists);
         SyncParaModelDao.dropTable(db, ifExists);
         DNModelDao.dropTable(db, ifExists);
+        DNDetailModelDao.dropTable(db, ifExists);
     }
 
     /**
@@ -55,6 +57,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(CustomModelDao.class);
         registerDaoClass(SyncParaModelDao.class);
         registerDaoClass(DNModelDao.class);
+        registerDaoClass(DNDetailModelDao.class);
     }
 
     public DaoSession newSession() {

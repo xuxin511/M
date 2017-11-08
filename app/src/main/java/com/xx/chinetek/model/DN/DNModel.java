@@ -3,11 +3,20 @@ package com.xx.chinetek.model.DN;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.xx.chinetek.greendao.DNDetailModelDao;
+import com.xx.chinetek.greendao.DNModelDao;
+import com.xx.chinetek.greendao.DaoSession;
+
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by GHOST on 2017/10/25.
@@ -28,7 +37,7 @@ public class DNModel implements Parcelable {
     /*
       出库状态
     */
-    private String DN_STATUS;
+    private int DN_STATUS;
     /*
     一级代理商编码
     */
@@ -56,7 +65,7 @@ public class DNModel implements Parcelable {
     /*
     出库数量
      */
-    private Float DN_QTY;
+    private Integer DN_QTY;
     /*
     修改人
      */
@@ -71,6 +80,11 @@ public class DNModel implements Parcelable {
     private String DN_SOURCE;
 
 
+    @ToMany(joinProperties = {
+            @JoinProperty(name = "AGENT_DN_NO", referencedName = "AGENT_DN_NO")})
+    List<DNDetailModel> detailModels;
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -80,7 +94,7 @@ public class DNModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.AGENT_DN_NO);
         dest.writeLong(this.DN_DATE != null ? this.DN_DATE.getTime() : -1);
-        dest.writeString(this.DN_STATUS);
+        dest.writeInt(this.DN_STATUS);
         dest.writeString(this.LEVEL_1_AGENT_NO);
         dest.writeString(this.LEVEL_1_AGENT_NAME);
         dest.writeString(this.LEVEL_2_AGENT_NO);
@@ -91,6 +105,11 @@ public class DNModel implements Parcelable {
         dest.writeString(this.UPDATE_USER);
         dest.writeLong(this.UPDATE_DATE != null ? this.UPDATE_DATE.getTime() : -1);
         dest.writeString(this.DN_SOURCE);
+        dest.writeList(this.detailModels);
+    }
+
+    public void setDetailModels(List<DNDetailModel> detailModels) {
+        this.detailModels = detailModels;
     }
 
     public String getAGENT_DN_NO() {
@@ -109,11 +128,11 @@ public class DNModel implements Parcelable {
         this.DN_DATE = DN_DATE;
     }
 
-    public String getDN_STATUS() {
+    public int getDN_STATUS() {
         return this.DN_STATUS;
     }
 
-    public void setDN_STATUS(String DN_STATUS) {
+    public void setDN_STATUS(int DN_STATUS) {
         this.DN_STATUS = DN_STATUS;
     }
 
@@ -165,11 +184,11 @@ public class DNModel implements Parcelable {
         this.CUSTOM_NAME = CUSTOM_NAME;
     }
 
-    public Float getDN_QTY() {
+    public Integer getDN_QTY() {
         return this.DN_QTY;
     }
 
-    public void setDN_QTY(Float DN_QTY) {
+    public void setDN_QTY(Integer DN_QTY) {
         this.DN_QTY = DN_QTY;
     }
 
@@ -197,6 +216,78 @@ public class DNModel implements Parcelable {
         this.DN_SOURCE = DN_SOURCE;
     }
 
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1155724824)
+    public List<DNDetailModel> getDetailModels() {
+        if (detailModels == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            DNDetailModelDao targetDao = daoSession.getDNDetailModelDao();
+            List<DNDetailModel> detailModelsNew = targetDao
+                    ._queryDNModel_DetailModels(AGENT_DN_NO);
+            synchronized (this) {
+                if (detailModels == null) {
+                    detailModels = detailModelsNew;
+                }
+            }
+        }
+        return detailModels;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1750110442)
+    public synchronized void resetDetailModels() {
+        detailModels = null;
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 744563246)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDNModelDao() : null;
+    }
+
     public DNModel() {
     }
 
@@ -204,26 +295,28 @@ public class DNModel implements Parcelable {
         this.AGENT_DN_NO = in.readString();
         long tmpDN_DATE = in.readLong();
         this.DN_DATE = tmpDN_DATE == -1 ? null : new Date(tmpDN_DATE);
-        this.DN_STATUS = in.readString();
+        this.DN_STATUS = in.readInt();
         this.LEVEL_1_AGENT_NO = in.readString();
         this.LEVEL_1_AGENT_NAME = in.readString();
         this.LEVEL_2_AGENT_NO = in.readString();
         this.LEVEL_2_AGENT_NAME = in.readString();
         this.CUSTOM_NO = in.readString();
         this.CUSTOM_NAME = in.readString();
-        this.DN_QTY = (Float) in.readValue(Float.class.getClassLoader());
+        this.DN_QTY = (Integer) in.readValue(Integer.class.getClassLoader());
         this.UPDATE_USER = in.readString();
         long tmpUPDATE_DATE = in.readLong();
         this.UPDATE_DATE = tmpUPDATE_DATE == -1 ? null : new Date(tmpUPDATE_DATE);
         this.DN_SOURCE = in.readString();
+        this.detailModels = new ArrayList<DNDetailModel>();
+        in.readList(this.detailModels, DNDetailModel.class.getClassLoader());
     }
 
-    @Generated(hash = 1397919254)
-    public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS,
+    @Generated(hash = 1502020661)
+    public DNModel(String AGENT_DN_NO, Date DN_DATE, int DN_STATUS,
             String LEVEL_1_AGENT_NO, String LEVEL_1_AGENT_NAME,
             String LEVEL_2_AGENT_NO, String LEVEL_2_AGENT_NAME, String CUSTOM_NO,
-            String CUSTOM_NAME, Float DN_QTY, String UPDATE_USER, Date UPDATE_DATE,
-            String DN_SOURCE) {
+            String CUSTOM_NAME, Integer DN_QTY, String UPDATE_USER,
+            Date UPDATE_DATE, String DN_SOURCE) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.DN_DATE = DN_DATE;
         this.DN_STATUS = DN_STATUS;
@@ -250,4 +343,10 @@ public class DNModel implements Parcelable {
             return new DNModel[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 718579950)
+    private transient DNModelDao myDao;
 }

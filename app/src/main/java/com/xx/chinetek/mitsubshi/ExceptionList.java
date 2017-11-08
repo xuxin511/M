@@ -73,7 +73,7 @@ public class ExceptionList extends BaseActivity {
         for(int i=0;i<10;i++) {
             DNModel DNModel = new DNModel();
             DNModel.setAGENT_DN_NO("ck12345678"+i);
-            DNModel.setDN_STATUS("异常");
+            DNModel.setDN_STATUS(3);
             DNModel.setCUSTOM_NAME("收货方xxxxxxx");
             DNModel.setUPDATE_DATE(CommonUtil.dateStrConvertDate("2017-10-30",null));
             DNModel.setDN_SOURCE("MAPS");

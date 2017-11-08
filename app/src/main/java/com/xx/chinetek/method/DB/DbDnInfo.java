@@ -1,7 +1,9 @@
 package com.xx.chinetek.method.DB;
 
+import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNModelDao;
 import com.xx.chinetek.greendao.DaoSession;
+import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.DN.DNModel;
 
 import java.util.ArrayList;
@@ -15,11 +17,14 @@ public class DbDnInfo {
     private static DbDnInfo mSyncDn;
     private DaoSession daoSession=null;
     private DNModelDao dnModelDao;
+    private DNDetailModelDao dnDetailModelDao;
+
 
     private DbDnInfo() {
         if(daoSession==null) {
             daoSession = DbManager.getDaoSession(new GreenDaoContext());
             dnModelDao=daoSession.getDNModelDao();
+            dnDetailModelDao=daoSession.getDNDetailModelDao();
         }
     }
 
@@ -43,6 +48,10 @@ public class DbDnInfo {
         if(dnModels!=null && dnModels.size()!=0) {
             dnModelDao.insertOrReplaceInTx(dnModels);
             dnModelDao.detachAll();
+            for(DNModel  dnModel :dnModels){
+                dnDetailModelDao.insertOrReplaceInTx(dnModel.getDetailModels());
+                dnDetailModelDao.detachAll();
+            }
         }
     }
 
@@ -52,6 +61,9 @@ public class DbDnInfo {
      */
     public  ArrayList<DNModel> GetLoaclDN(){
         ArrayList<DNModel> dnModels=new ArrayList<>();
+        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
+                .whereOr(DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.ready),
+                        DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.download)).list();
         return dnModels;
     }
 }

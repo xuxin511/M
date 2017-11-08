@@ -21,4 +21,9 @@ public class TAG_RESULT {
     public static  String  TAG_SyncDn="SyncDn";
 
     public static final int RESULT_SyncDn=104;
+
+    public static  String  TAG_SyncMail="SyncMail";
+
+    public static final int RESULT_SyncMail=105;
+    public static final int RESULT_SyncUSB=106;
 }

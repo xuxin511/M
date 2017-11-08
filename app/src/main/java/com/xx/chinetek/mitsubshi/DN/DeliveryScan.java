@@ -111,9 +111,9 @@ public class DeliveryScan extends BaseActivity {
             DNDetailModel dnDetailModels1 = new DNDetailModel();
             dnDetailModels1.setITEM_NO("1234556666"+i);
             dnDetailModels1.setITEM_NAME("物料名称：xxxxxxx");
-            dnDetailModels1.setLINE_NO(Float.parseFloat(i+""));
-            dnDetailModels1.setDN_QTY(Float.parseFloat(i+"123"));
-            dnDetailModels1.setSCAN_QTY(Float.parseFloat(i+"123"));
+            dnDetailModels1.setLINE_NO(Integer.parseInt(i+""));
+            dnDetailModels1.setDN_QTY(Integer.parseInt(i+"123"));
+            dnDetailModels1.setSCAN_QTY(Integer.parseInt(i+"123"));
             dnDetailModels.add(dnDetailModels1);
         }
         return dnDetailModels;

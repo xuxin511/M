@@ -2,7 +2,6 @@ package com.xx.chinetek.mitsubshi;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -14,14 +13,7 @@ import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
-import com.xx.chinetek.greendao.DaoSession;
-import com.xx.chinetek.greendao.MaterialModelDao;
-import com.xx.chinetek.method.DB.DbManager;
-import com.xx.chinetek.method.DB.GreenDaoContext;
-import com.xx.chinetek.method.Mail.MailModel;
-import com.xx.chinetek.method.Mail.MailUtil;
 import com.xx.chinetek.method.SharePreferUtil;
-import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -29,9 +21,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @ContentView(R.layout.activity_login)
@@ -110,58 +100,58 @@ public class Login extends BaseActivity {
 
     }
 
-    private class MyTask extends AsyncTask<String, Integer, ArrayList<HashMap<String, String>>> {
-
-
-        @Override
-        protected ArrayList<HashMap<String, String>> doInBackground(String... params) {
-            ArrayList<HashMap<String, String>> list=new ArrayList<HashMap<String, String>>();
-            try {
-
-                File storefile = new File(File.separator + "mnt" + File.separator
-                        + "sdcard" + File.separator + "DDN980015089_QR.txt");
-                ArrayList<String> list123  =new ArrayList<>();
-                list123.add(storefile.getAbsolutePath());
-                MailModel mailModel=new MailModel();
-
-                mailModel.setAccount("ghost_511@sina.com");
-                mailModel.setPassword("x5613x5305");
-                mailModel.setMailServerHost("smtp.sina.com");
-                mailModel.setMailClientHost("imap.sina.com");
-                mailModel.setMailServerPort("25");
-                mailModel.setValidate(true);
-                mailModel.setFromAddress("ghost_511@sina.com");
-                mailModel.setToAddress("ghost_511@sina.com");
-                mailModel.setSubject("测试");
-                mailModel.setContent("测试DDN980015089_QR.txt");
-
-               //
-
-//                SendOneMail sendOneMail=new SendOneMail("");
-//                sendOneMail.sendAttachment(mailModel,list123);
-
-                MailUtil.GetMail(mailModel);
-            } catch (Exception ex){
-                String str=ex.getMessage();
-            }
-            return list;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<HashMap<String, String>> list) {
-
-            try {
-                DaoSession daoSession = DbManager.getDaoSession(new GreenDaoContext());
-                MaterialModelDao materialModelDao = daoSession.getMaterialModelDao();
-                MaterialModel materialModel = new MaterialModel();
-                materialModel.setMATNR("12333");
-                materialModel.setNORMT("Y");
-                materialModelDao.insert(materialModel);
-            } catch (Exception ex) {
-                MessageBox.Show(context, ex.getMessage());
-            }
-        }
-
-    }
+//    private class MyTask extends AsyncTask<String, Integer, ArrayList<HashMap<String, String>>> {
+//
+//
+//        @Override
+//        protected ArrayList<HashMap<String, String>> doInBackground(String... params) {
+//            ArrayList<HashMap<String, String>> list=new ArrayList<HashMap<String, String>>();
+//            try {
+//
+//                File storefile = new File(File.separator + "mnt" + File.separator
+//                        + "sdcard" + File.separator + "DDN980015089_QR.txt");
+//                ArrayList<String> list123  =new ArrayList<>();
+//                list123.add(storefile.getAbsolutePath());
+//                MailModel mailModel=new MailModel();
+//
+//                mailModel.setAccount("ghost_511@sina.com");
+//                mailModel.setPassword("x5613x5305");
+//                mailModel.setMailServerHost("smtp.sina.com");
+//                mailModel.setMailClientHost("imap.sina.com");
+//                mailModel.setMailServerPort("25");
+//                mailModel.setValidate(true);
+//                mailModel.setFromAddress("ghost_511@sina.com");
+//                mailModel.setToAddress("ghost_511@sina.com");
+//                mailModel.setSubject("测试");
+//                mailModel.setContent("测试DDN980015089_QR.txt");
+//
+//               //
+//
+////                SendOneMail sendOneMail=new SendOneMail("");
+////                sendOneMail.sendAttachment(mailModel,list123);
+//
+//                MailUtil.GetMail(mailModel);
+//            } catch (Exception ex){
+//                String str=ex.getMessage();
+//            }
+//            return list;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<HashMap<String, String>> list) {
+//
+//            try {
+//                DaoSession daoSession = DbManager.getDaoSession(new GreenDaoContext());
+//                MaterialModelDao materialModelDao = daoSession.getMaterialModelDao();
+//                MaterialModel materialModel = new MaterialModel();
+//                materialModel.setMATNR("12333");
+//                materialModel.setNORMT("Y");
+//                materialModelDao.insert(materialModel);
+//            } catch (Exception ex) {
+//                MessageBox.Show(context, ex.getMessage());
+//            }
+//        }
+//
+//    }
 
 }

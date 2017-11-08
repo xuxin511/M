@@ -17,6 +17,7 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
@@ -48,6 +49,16 @@ public class Setting extends BaseActivity {
     EditText edtTimeOut;
     @ViewInject(R.id.edt_PartenerNo)
     EditText edtPartenerNo;
+    @ViewInject(R.id.edt_MailAccount)
+    EditText edtMailAccount;
+    @ViewInject(R.id.edt_MailPassword)
+    EditText edtMailPassword;
+    @ViewInject(R.id.edt_MailSMTPort)
+    EditText edtMailSMTPort;
+    @ViewInject(R.id.edt_MailSMTP)
+    EditText edtMailSMTP;
+    @ViewInject(R.id.edt_MailIMAP)
+    EditText edtMailIMAP;
 
     final  int LogUploadIndex=1;
 
@@ -74,6 +85,13 @@ public class Setting extends BaseActivity {
         edtPort.setText(Paramater.Port+"");
         edtTimeOut.setText(Paramater.SOCKET_TIMEOUT/1000+"");
         edtPartenerNo.setText(ParamaterModel.PartenerID);
+        if(ParamaterModel.mailModel!=null){
+            edtMailAccount.setText(ParamaterModel.mailModel.getAccount());
+            edtMailPassword.setText(ParamaterModel.mailModel.getPassword());
+            edtMailSMTPort.setText(ParamaterModel.mailModel.getMailServerPort());
+            edtMailSMTP.setText(ParamaterModel.mailModel.getMailServerHost());
+            edtMailIMAP.setText(ParamaterModel.mailModel.getMailClientHost());
+        }
     }
 
     @Override
@@ -103,6 +121,13 @@ public class Setting extends BaseActivity {
         Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
         Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
         ParamaterModel.PartenerID =edtPartenerNo.getText().toString().trim();
+        if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
+        ParamaterModel.mailModel.setAccount(edtMailAccount.getText().toString().trim());
+        ParamaterModel.mailModel.setPassword(edtMailPassword.getText().toString().trim());
+        ParamaterModel.mailModel.setMailServerPort(edtMailSMTPort.getText().toString().trim());
+        ParamaterModel.mailModel.setMailServerHost(edtMailSMTP.getText().toString().trim());
+        ParamaterModel.mailModel.setMailClientHost(edtMailIMAP.getText().toString().trim());
+
         SharePreferUtil.SetShare(context);
         new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(getResources().getString(R.string.Msg_SaveSuccess)).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override

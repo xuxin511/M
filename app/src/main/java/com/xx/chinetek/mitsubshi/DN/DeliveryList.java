@@ -17,8 +17,9 @@ import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
+import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
-import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
@@ -32,6 +33,9 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMail;
 
 @ContentView(R.layout.activity_delivery_list)
 public class DeliveryList extends BaseActivity {
@@ -43,19 +47,38 @@ public class DeliveryList extends BaseActivity {
     ListView LsvDeliveryList;
 
     DeliveryListItemAdapter deliveryListItemAdapter;
-    ArrayList<DNModel> DNModels;
+    ArrayList<DNModel> DNModels; //所有未完成出库单
     DNTypeModel dnTypeModel;
+
+    LoadingDialog dialog;
 
     @Override
     public void onHandleMessage(Message msg) {
-        switch (msg.what) {
-            case RESULT_SyncDn:
-                DNModels= SyncDN.AnalysisSyncMAPSDNJson((String) msg.obj);
-                BindListView();
-                break;
-            case NetworkError.NET_ERROR_CUSTOM:
-                ToastUtil.show("获取请求失败_____"+ msg.obj);
-                break;
+        try {
+            switch (msg.what) {
+                case RESULT_SyncDn:
+                    DNModels = SyncDN.AnalysisSyncMAPSDNJson((String) msg.obj);
+                    break;
+                case RESULT_SyncUSB:
+                    DNModels = SyncDN.DNFromFiles();
+                    dialog.dismiss();
+                    break;
+                case RESULT_SyncMail:
+                    if ((int) msg.obj > 0) {
+                        DNModels = SyncDN.DNFromFiles();
+                    }
+                    dialog.dismiss();
+                    //导入文件至数据库
+                    BindListView();
+                    break;
+                case NetworkError.NET_ERROR_CUSTOM:
+                    ToastUtil.show("获取请求失败_____" + msg.obj);
+                    break;
+            }
+
+            BindListView();
+        } catch (Exception ex) {
+            LogUtil.WriteLog(DeliveryList.class, TAG_SyncMail, ex.getMessage());
         }
     }
 
@@ -123,27 +146,23 @@ public class DeliveryList extends BaseActivity {
                 SyncDN.SyncMAPS(mHandler);
                 break;
             case 1://邮件
-                isSyncCompleted= SyncDN.SyncMail(dnTypeModel);
+                BaseApplication.DialogShowText = getString(R.string.Dia_SyncMail);
+                dialog =new LoadingDialog(context);
+                dialog.show();
+                SyncDN.SyncMail(mHandler);
                 break;
             case 2://FTP
                 isSyncCompleted= SyncDN.SyncFtp(dnTypeModel);
                 break;
             case 4://USB
-                isSyncCompleted= SyncDN.SyncUsb(dnTypeModel);
+                BaseApplication.DialogShowText = getString(R.string.Dia_SyncUSB);
+                dialog =new LoadingDialog(context);
+                dialog.show();
+                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB,null);
+                mHandler.sendMessage(msg);
                 break;
         }
 
-        //测试
-        for(int i=0;i<10;i++) {
-            DNModel DNModel = new DNModel();
-            DNModel.setAGENT_DN_NO("ck12345678"+i);
-            DNModel.setDN_STATUS(i%2==0?"未下载":"已下载");
-            DNModel.setCUSTOM_NAME("收货方xxxxxxx");
-            DNModel.setUPDATE_DATE(CommonUtil.dateStrConvertDate("2017-10-30",null));
-            DNModel.setDN_SOURCE("MAPS");
-            DNModels.add(DNModel);
-        }
-        BindListView();
     }
 
 

@@ -1,5 +1,7 @@
 package com.xx.chinetek.model.Base;
 
+import com.xx.chinetek.method.Mail.MailModel;
+
 import java.io.File;
 
 /**
@@ -17,6 +19,16 @@ public class ParamaterModel {
      * 代理商编号
      */
     public static  String  PartenerID="";
+
+    /**
+     * 邮件服务器
+     */
+    public static MailModel mailModel=new MailModel();
+
+    /**
+     * 邮件过滤内容
+     */
+    public static String FilterContent="QR";
 
     /**
      * 物料同步时间
