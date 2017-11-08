@@ -294,12 +294,9 @@ public class ReciveOneMail {
      */
     @SuppressLint("DefaultLocale")
     private void saveFile(String fileName, InputStream in) throws Exception {
-        File storefile = new File(File.separator + "mnt" + File.separator
-                + "sdcard" + File.separator + fileName);
+        File storefile = new File(saveAttachPath + fileName);
 
         storefile.createNewFile();
-        System.out.println("storefile's path: " + storefile.toString());
-
         BufferedOutputStream bos = null;
         BufferedInputStream bis = null;
         try {
@@ -308,7 +305,7 @@ public class ReciveOneMail {
             BufferedReader reader = new BufferedReader (new InputStreamReader(bis,"GB2312"));
             String str=null;
             while ((str = reader.readLine())!=null) {
-                bos.write((str+"\r\n").getBytes());
+                bos.write((str+"\r\n").getBytes("GBK"));
                 bos.flush();
             }
         } catch (Exception exception) {
