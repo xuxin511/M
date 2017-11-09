@@ -106,7 +106,7 @@ public class DeliveryScan extends BaseActivity {
 
     ArrayList<DNDetailModel> ImportDnDetail(){
         ArrayList<DNDetailModel> dnDetailModels=null;
-        dnDetailModels= SyncDNDatail.GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
+        dnDetailModels= SyncDNDatail.GetDNDetailByDNNo(txtDnNo.getText().toString());
         for(int i=0;i<10;i++) {
             DNDetailModel dnDetailModels1 = new DNDetailModel();
             dnDetailModels1.setITEM_NO("1234556666"+i);

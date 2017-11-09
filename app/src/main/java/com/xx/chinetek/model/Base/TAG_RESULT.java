@@ -26,4 +26,5 @@ public class TAG_RESULT {
 
     public static final int RESULT_SyncMail=105;
     public static final int RESULT_SyncUSB=106;
+    public static final int RESULT_SyncFTP=107;
 }

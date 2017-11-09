@@ -142,7 +142,6 @@ public class ReciveOneMail {
         boolean conname = false;
         if (nameindex != -1)
             conname = true;
-        System.out.println("CONTENTTYPE: " + contenttype);
         if (part.isMimeType("text/plain") && !conname) {
             bodytext.append((String) part.getContent());
         } else if (part.isMimeType("text/html") && !conname) {
@@ -185,16 +184,10 @@ public class ReciveOneMail {
     public boolean isNew() throws MessagingException {
         boolean isnew = false;//由于isnew设为false所以每次显示的都为未读
         Flags flags = ((Message) mimeMessage).getFlags();
-        System.out.println("--------flags-------" + flags);
         Flags.Flag[] flag = flags.getSystemFlags();
-        System.out.println("----flag----" + flag);
-        System.out.println("flags's length: " + flag.length);
         for (int i = 0; i < flag.length; i++) {
-            System.out.println("flag=======" + flag[i]);
-            System.out.println("-=-=-=Flags.Flag.SEEN=-=-=-="+Flags.Flag.SEEN);
             if (flag[i] == Flags.Flag.SEEN) {
                 isnew = true;
-                System.out.println("seen Message.......");
                 break;
             }
         }
@@ -207,7 +200,6 @@ public class ReciveOneMail {
     @SuppressLint("DefaultLocale")
     public boolean isContainAttach(Part part) throws Exception {
         boolean attachflag = false;
-        // String contentType = part.getContentType();
         if (part.isMimeType("multipart/*")) {
             Multipart mp = (Multipart) part.getContent();
             for (int i = 0; i < mp.getCount(); i++) {

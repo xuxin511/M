@@ -7,7 +7,7 @@
     <string name="login_operator">操作人</string>
     <string name="main">主界面</string>
     <string name="outputscan">出库</string>
-    <string name="qrscan">QRs扫描</string>
+    <string name="qrscan">QR扫描</string>
     <string name="exceptionList">异常处理</string>
     <string name="sync">基础数据同步</string>
     <string name="deliveryScan">出库扫描</string>
@@ -24,6 +24,9 @@
     <string name="Setting_MAilSMTP">SMTP地址：</string>
     <string name="Setting_MAilIMAP">IMAP地址：</string>
     <string name="Setting_IPAdress">服务器：</string>
+    <string name="Setting_FtpUser">用户名：</string>
+    <string name="Setting_FtpDown">下载目录：</string>
+    <string name="Setting_FtpUp">上传目录：</string>
     <string name="Setting_Partnerr">代理商：</string>
     <string name="Setting_Port">端口：</string>
     <string name="Setting_TimeOut">超时时间：</string>
@@ -41,7 +44,7 @@
     <string name="createtime">创建时间：</string>
     <string name="submittime">提交时间：</string>
     <string name="submituser">最后提交人：</string>
-    <string name="barcode">条码：</string>
+    <string name="barcode">条码:</string>
     <string name="scanQty">扫描数量：</string>
     <string name="dnQty">出库数量：</string>
     <string name="lineNo">行号：</string>
@@ -74,5 +77,6 @@
     <string name="Dia_SyncDn">通过MAPS形式获取出库单...</string>
     <string name="Dia_SyncMail">通过邮件形式获取出库单...</string>
     <string name="Dia_SyncUSB">通过USB形式导入出库单...</string>
+    <string name="Dia_SyncFTP">通过FTP形式导入出库单...</string>
     <string name="Dia_SyncSuccess">基础数据同步完成</string>
 </resources>

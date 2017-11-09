@@ -42,6 +42,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
     compile 'org.greenrobot:greendao:3.2.2' // 添加库
+    compile 'commons-net:commons-net:3.6'
     testCompile 'junit:junit:4.12'
     compile files('libs/activation.jar')
     compile files('libs/additionnal.jar')

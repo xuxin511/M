@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.view.KeyEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +19,10 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
+import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
@@ -33,6 +36,7 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMail;
@@ -57,27 +61,28 @@ public class DeliveryList extends BaseActivity {
         try {
             switch (msg.what) {
                 case RESULT_SyncDn:
-                    DNModels = SyncDN.AnalysisSyncMAPSDNJson((String) msg.obj);
+                    SyncDN.AnalysisSyncMAPSDNJson((String) msg.obj);
                     break;
                 case RESULT_SyncUSB:
-                    DNModels = SyncDN.DNFromFiles();
+                    SyncDN.DNFromFiles();
                     dialog.dismiss();
                     break;
                 case RESULT_SyncMail:
+                case RESULT_SyncFTP:
                     if ((int) msg.obj > 0) {
-                        DNModels = SyncDN.DNFromFiles();
+                        SyncDN.DNFromFiles();
                     }
                     dialog.dismiss();
                     //导入文件至数据库
-                    BindListView();
                     break;
                 case NetworkError.NET_ERROR_CUSTOM:
                     ToastUtil.show("获取请求失败_____" + msg.obj);
                     break;
             }
-
+            DNModels= DbDnInfo.getInstance().GetLoaclDN();
             BindListView();
         } catch (Exception ex) {
+            MessageBox.Show(context,ex.getMessage());
             LogUtil.WriteLog(DeliveryList.class, TAG_SyncMail, ex.getMessage());
         }
     }
@@ -93,6 +98,7 @@ public class DeliveryList extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
+        edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         dnTypeModel=getIntent().getParcelableExtra("DNType");
         ImportDelivery();
     }
@@ -105,16 +111,24 @@ public class DeliveryList extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.action_QR){
+            Intent intent=new Intent(context,QRScan.class);
+            Bundle bundle=new Bundle();
+            bundle.putParcelable("DNType",dnTypeModel);
+            intent.putExtras(bundle);
+            startActivityLeft(intent);
+        }
+        if(item.getItemId()==R.id.action_New){
+            Intent intent=new Intent(context,DeliveryScan.class);
+            intent.putExtra("DNNo","CS1233333");
+            Bundle bundle=new Bundle();
+            bundle.putParcelable("DNType",dnTypeModel);
+            intent.putExtras(bundle);
+            startActivityLeft(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
-    @Event(value = R.id.edt_DeleveryNoFuilter, type = View.OnKeyListener.class)
-    private boolean edtDeleveryNoFuilterOnkeyUp(View v, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-
-        }
-        return false;
-    }
 
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemClickListener.class)
     private void LsvDeliveryListonItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -127,6 +141,30 @@ public class DeliveryList extends BaseActivity {
         intent.putExtra("DNNo",dnModel.getAGENT_DN_NO());
         startActivityLeft(intent);
     }
+
+
+    /**
+     * 文本变化事件
+     */
+    TextWatcher DeleveryNoTextWatcher=new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(!edtDeleveryNoFuilter.getText().toString().equals(""))
+                deliveryListItemAdapter.getFilter().filter(edtDeleveryNoFuilter.getText().toString());
+            else{
+                BindListView();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     void BindListView(){
         if(DNModels!=null) {
@@ -152,7 +190,10 @@ public class DeliveryList extends BaseActivity {
                 SyncDN.SyncMail(mHandler);
                 break;
             case 2://FTP
-                isSyncCompleted= SyncDN.SyncFtp(dnTypeModel);
+                BaseApplication.DialogShowText = getString(R.string.Dia_SyncFTP);
+                dialog =new LoadingDialog(context);
+                dialog.show();
+                SyncDN.SyncFtp(mHandler);
                 break;
             case 4://USB
                 BaseApplication.DialogShowText = getString(R.string.Dia_SyncUSB);

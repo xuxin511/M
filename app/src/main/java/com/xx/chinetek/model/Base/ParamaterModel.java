@@ -1,5 +1,6 @@
 package com.xx.chinetek.model.Base;
 
+import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 
 import java.io.File;
@@ -29,6 +30,11 @@ public class ParamaterModel {
      * 邮件过滤内容
      */
     public static String FilterContent="QR";
+
+    /**
+     * FTP服务器
+     */
+    public static FtpModel ftpModel;
 
     /**
      * 物料同步时间

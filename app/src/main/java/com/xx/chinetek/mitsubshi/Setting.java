@@ -17,6 +17,7 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -59,6 +60,18 @@ public class Setting extends BaseActivity {
     EditText edtMailSMTP;
     @ViewInject(R.id.edt_MailIMAP)
     EditText edtMailIMAP;
+    @ViewInject(R.id.edt_FtpHost)
+    EditText edtFtpHost;
+    @ViewInject(R.id.edt_FtpUserName)
+    EditText edtFtpUserName;
+    @ViewInject(R.id.edt_FtpPassword)
+    EditText edtFtpPassword;
+    @ViewInject(R.id.edt_FtpPort)
+    EditText edtFtpPort;
+    @ViewInject(R.id.edt_FtpDown)
+    EditText edtFtpDown;
+    @ViewInject(R.id.edt_FtpUp)
+    EditText edtFtpUp;
 
     final  int LogUploadIndex=1;
 
@@ -91,6 +104,15 @@ public class Setting extends BaseActivity {
             edtMailSMTPort.setText(ParamaterModel.mailModel.getMailServerPort());
             edtMailSMTP.setText(ParamaterModel.mailModel.getMailServerHost());
             edtMailIMAP.setText(ParamaterModel.mailModel.getMailClientHost());
+        }
+        if(ParamaterModel.ftpModel!=null){
+            edtFtpHost.setText(ParamaterModel.ftpModel.getFtpHost());
+            edtFtpUserName.setText(ParamaterModel.ftpModel.getFtpUserName());
+            edtFtpPassword.setText(ParamaterModel.ftpModel.getFtpPassword());
+            edtFtpPort.setText(ParamaterModel.ftpModel.getFtpPort()+"");
+            edtFtpDown.setText(ParamaterModel.ftpModel.getFtpDownLoad());
+            edtFtpUp.setText(ParamaterModel.ftpModel.getFtpUpLoad());
+
         }
     }
 
@@ -127,6 +149,13 @@ public class Setting extends BaseActivity {
         ParamaterModel.mailModel.setMailServerPort(edtMailSMTPort.getText().toString().trim());
         ParamaterModel.mailModel.setMailServerHost(edtMailSMTP.getText().toString().trim());
         ParamaterModel.mailModel.setMailClientHost(edtMailIMAP.getText().toString().trim());
+        if(ParamaterModel.ftpModel==null) ParamaterModel.ftpModel=new FtpModel();
+        ParamaterModel.ftpModel.setFtpHost(edtFtpHost.getText().toString().trim());
+        ParamaterModel.ftpModel.setFtpUserName(edtFtpUserName.getText().toString().trim());
+        ParamaterModel.ftpModel.setFtpPassword(edtFtpPassword.getText().toString().trim());
+        ParamaterModel.ftpModel.setFtpPort(Integer.parseInt(edtFtpPort.getText().toString().trim()));
+        ParamaterModel.ftpModel.setFtpDownLoad(edtFtpDown.getText().toString().trim());
+        ParamaterModel.ftpModel.setFtpUpLoad(edtFtpUp.getText().toString().trim());
 
         SharePreferUtil.SetShare(context);
         new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(getResources().getString(R.string.Msg_SaveSuccess)).setPositiveButton("确定", new DialogInterface.OnClickListener() {

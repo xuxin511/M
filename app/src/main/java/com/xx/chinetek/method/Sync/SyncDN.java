@@ -14,6 +14,7 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailUtil;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.mitsubshi.R;
@@ -21,7 +22,6 @@ import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
-import com.xx.chinetek.model.DN.DNTypeModel;
 
 import org.json.JSONObject;
 
@@ -38,7 +38,6 @@ import java.util.Map;
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
-import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMaterial;
 
 /**
  * Created by GHOST on 2017/11/2.
@@ -82,11 +81,21 @@ public class SyncDN {
 
     /**
      * 获取FTP
-     * @param dnTypeModel
+     * @param mHandler
      * @return
      */
-    public static Boolean SyncFtp(DNTypeModel  dnTypeModel){
-        return false;
+    public static void SyncFtp(final MyHandler<BaseActivity> mHandler){
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    FtpUtil.FtpDownDN(ParamaterModel.ftpModel,mHandler);
+                }catch (Exception ex){
+                    Message msg = mHandler.obtainMessage(NetworkError.NET_ERROR_CUSTOM, ex.getMessage());
+                    mHandler.sendMessage(msg);
+                }
+            }
+        }.start();
     }
 
 
@@ -96,9 +105,8 @@ public class SyncDN {
      * MAPS同步出库单
      * @param result
      */
-   public static ArrayList<DNModel> AnalysisSyncMAPSDNJson(String result){
+   public static void AnalysisSyncMAPSDNJson(String result) throws Exception{
         LogUtil.WriteLog(SyncDN.class,TAG_SyncDn,result);
-        try {
             ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
@@ -108,16 +116,10 @@ public class SyncDN {
                 ParamaterModel.DNSyncTime="";
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare(context);
-                //获取DN表头
-                return DbDnInfo.getInstance().GetLoaclDN();
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
-        }catch (Exception ex) {
-            MessageBox.Show(context,ex.getMessage());
-            LogUtil.WriteLog(SyncDN.class,TAG_SyncMaterial,result);
-        }
-       return  new ArrayList<>();
+
    }
 
 
@@ -126,7 +128,7 @@ public class SyncDN {
      * @return
      * @throws Exception
      */
-   public static ArrayList<DNModel> DNFromFiles() throws Exception{
+   public static void DNFromFiles() throws Exception{
        File[] DNfiles=new File(ParamaterModel.DownDirectory).listFiles();
        ArrayList<DNModel> dnModels=new ArrayList<>();
        for(int i=0;i<DNfiles.length;i++) {
@@ -168,7 +170,6 @@ public class SyncDN {
            dnModels.add(dnModel);
        }
        DbDnInfo.getInstance().InsertDNDB(dnModels);
-       return DbDnInfo.getInstance().GetLoaclDN();
    }
 
 }
