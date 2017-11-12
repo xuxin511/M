@@ -24,11 +24,11 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.BarcodeDetail;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
-import com.xx.chinetek.model.DN.DNTypeModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -36,6 +36,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ContentView(R.layout.activity_delivery_scan)
@@ -59,7 +60,6 @@ public class DeliveryScan extends BaseActivity {
 
     DeliveryScanItemAdapter deliveryScanItemAdapter;
     ArrayList<DNDetailModel> dnDetailModels;
-    DNTypeModel dnTypeModel;
     DNModel dnModel;
     DbDnInfo dnInfo;
 
@@ -75,7 +75,6 @@ public class DeliveryScan extends BaseActivity {
         super.initData();
         dnInfo=DbDnInfo.getInstance();
         txtDnNo.setText(getIntent().getStringExtra("DNNo"));
-        dnTypeModel=getIntent().getParcelableExtra("DNType");
         dnModel=getIntent().getParcelableExtra("DNModel");
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         GetDeliveryOrderScanList();
@@ -113,7 +112,7 @@ public class DeliveryScan extends BaseActivity {
                             AnalyticsBarCode.AnalyticsSmall(Barcode)
                             : AnalyticsBarCode.AnalyticsLarge(Barcode);
                     if (barCodeModels != null && barCodeModels.size() != 0) {
-                        if (dnTypeModel.getDNType() == 3) { //自建
+                        if (ParamaterModel.DnTypeModel.getDNType() == 3) { //自建
                             return CreateNewDN(barCodeModels);
                         } else {
                             return ScanBarccode(barCodeModels);
@@ -171,6 +170,16 @@ public class DeliveryScan extends BaseActivity {
         }
         if (ShowErrMag(isErrorStatus)) return true;
         dnModel.setDN_STATUS(1);
+        if(ParamaterModel.DnTypeModel.getCustomModel().getType().equals("Z2")){
+            dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getPartnerID());
+            dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getPartnerName());
+        }else if(ParamaterModel.DnTypeModel.getCustomModel().getType().equals("Z3")){
+            dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getPartnerID());
+            dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getPartnerName());
+        }
+        dnModel.setUPDATE_USER(ParamaterModel.Operater);
+        dnModel.setUPDATE_DATE(new Date());
+        dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType().toString());
         dnModel.getDetailModels().addAll(dnDetailModels);
         return SaveScanInfo(isErrorStatus);
     }
@@ -215,40 +224,57 @@ public class DeliveryScan extends BaseActivity {
             if (dbReturnModel.getDNQTY() < dbReturnModel.getSCANQTY() + barCodeModels.size()) {
                 isErrorStatus = 1;
             }else {
-                for (BarCodeModel barCodeModel : barCodeModels) {
-                    //判断条码是否存在
-                    dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
-                    List<DNScanModel> dnScanModels = dnDetailModels.get(index).getDnScanModels();
-                    DNScanModel dnScanModel = new DNScanModel();
-                    dnScanModel.setITEM_SERIAL_NO(barCodeModel.getSerial_Number());
-                    int barcodeIndex = dnScanModels.indexOf(dnScanModel);
-                    if (barcodeIndex != -1) {
-                        isErrorStatus = 0;
-                        break;
-                    }
-
-                    index=findIndexByGolfaCode(dnDetailModels,barCodeModel.getGolfa_Code());
-                    if(index==-1){
-                        isErrorStatus = 1;
-                        break;
-                    }
-                    //更新物料扫描数量
-                    dnDetailModels.get(index).setSCAN_QTY(dnDetailModels.get(index).getSCAN_QTY() + 1);
-                    //保存序列号
-                    dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-                    dnScanModel.setLINE_NO(dnScanModels.size() + 1);
-                    dnScanModel.setPACKING_DATE(barCodeModel.getPacking_Date());
-                    dnScanModel.setREGION(barCodeModel.getPlace_Code());
-                    dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());
-                    dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
-                    dnScanModel.setITEM_STATUS("AC");
-
-                    dnDetailModels.get(index).getDnScanModels().add(dnScanModel);
-                }
+                isErrorStatus = Checkbarcode(barCodeModels, dnDetailModels, index);
             }
         }
         if (ShowErrMag(isErrorStatus)) return true;
         return SaveScanInfo(isErrorStatus);
+    }
+
+    /**
+     * 扫描数量和重复检查
+     * @param barCodeModels
+     * @param dnDetailModels
+     * @param index
+     * @return
+     */
+    private int Checkbarcode(ArrayList<BarCodeModel> barCodeModels, List<DNDetailModel> dnDetailModels, int index) {
+        int isErrorStatus=-1;
+        for (BarCodeModel barCodeModel : barCodeModels) {
+            //判断条码是否存在
+            dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
+            List<DNScanModel> dnScanModels = dnDetailModels.get(index).getDnScanModels();
+            DNScanModel dnScanModel = new DNScanModel();
+            dnScanModel.setITEM_SERIAL_NO(barCodeModel.getSerial_Number());
+            int barcodeIndex = dnScanModels.indexOf(dnScanModel);
+            if (barcodeIndex != -1) {
+                isErrorStatus = 0;
+                break;
+            }
+
+            index=findIndexByGolfaCode(dnDetailModels,barCodeModel.getGolfa_Code());
+            if(index==-1){
+                isErrorStatus = 1;
+                break;
+            }
+            //更新物料扫描数量
+            dnDetailModels.get(index).setSCAN_QTY(dnDetailModels.get(index).getSCAN_QTY() + 1);
+            //保存序列号
+            dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
+            dnScanModel.setLINE_NO(dnDetailModels.get(index).getLINE_NO());
+            dnScanModel.setPACKING_DATE(barCodeModel.getPacking_Date());
+            dnScanModel.setREGION(barCodeModel.getPlace_Code());
+            dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());
+            dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
+            dnScanModel.setITEM_STATUS("AC");
+            dnScanModel.setITEM_NO(dnDetailModels.get(index).getITEM_NO());
+            dnScanModel.setITEM_NAME(dnDetailModels.get(index).getITEM_NAME());
+            dnScanModel.setUPDATE_DATE(new Date());
+            dnScanModel.setUPDATE_USER(ParamaterModel.Operater);
+            dnScanModel.setMAT_TYPE(0);
+            dnDetailModels.get(index).getDnScanModels().add(dnScanModel);
+        }
+        return isErrorStatus;
     }
 
     /**
@@ -325,7 +351,7 @@ public class DeliveryScan extends BaseActivity {
         //保存序列号
         DNScanModel dnScanModel=new DNScanModel();
         dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-        dnScanModel.setLINE_NO(1);
+        dnScanModel.setLINE_NO(dnDetailModel.getLINE_NO());
         dnScanModel.setITEM_SERIAL_NO(barCodeModel.getSerial_Number());
         dnScanModel.setPACKING_DATE(barCodeModel.getPacking_Date());
         dnScanModel.setREGION(barCodeModel.getPlace_Code());
@@ -360,7 +386,7 @@ public class DeliveryScan extends BaseActivity {
 
         //保存序列号
         dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-        dnScanModel.setLINE_NO(dnScanModels.size()+1);
+        dnScanModel.setLINE_NO( dnDetailModels.get(index).getLINE_NO());
         dnScanModel.setPACKING_DATE(barCodeModel.getPacking_Date());
         dnScanModel.setREGION(barCodeModel.getPlace_Code());
         dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());

@@ -31,6 +31,7 @@ public class DNScanModel implements Parcelable{
     private String GOLFA_CODE;
     private String ITEM_STATUS;
     private Date UPDATE_DATE;
+    private String UPDATE_USER;
     private String ITEM_NAME;
     private Integer MAT_TYPE;
 
@@ -173,6 +174,14 @@ public class DNScanModel implements Parcelable{
         dest.writeValue(this.MAT_TYPE);
     }
 
+    public String getUPDATE_USER() {
+        return this.UPDATE_USER;
+    }
+
+    public void setUPDATE_USER(String UPDATE_USER) {
+        this.UPDATE_USER = UPDATE_USER;
+    }
+
     public DNScanModel() {
     }
 
@@ -193,12 +202,12 @@ public class DNScanModel implements Parcelable{
         this.MAT_TYPE = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
-    @Generated(hash = 133136757)
+    @Generated(hash = 860313847)
     public DNScanModel(String AGENT_DN_NO, Integer LINE_NO, String ITEM_SERIAL_NO,
             String PACKING_DATE, String REGION, String COUNTRY,
             String DEAL_SALE_DATE, String ITEM_NO, String GOLFA_CODE,
-            String ITEM_STATUS, Date UPDATE_DATE, String ITEM_NAME,
-            Integer MAT_TYPE) {
+            String ITEM_STATUS, Date UPDATE_DATE, String UPDATE_USER,
+            String ITEM_NAME, Integer MAT_TYPE) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.LINE_NO = LINE_NO;
         this.ITEM_SERIAL_NO = ITEM_SERIAL_NO;
@@ -210,6 +219,7 @@ public class DNScanModel implements Parcelable{
         this.GOLFA_CODE = GOLFA_CODE;
         this.ITEM_STATUS = ITEM_STATUS;
         this.UPDATE_DATE = UPDATE_DATE;
+        this.UPDATE_USER = UPDATE_USER;
         this.ITEM_NAME = ITEM_NAME;
         this.MAT_TYPE = MAT_TYPE;
     }

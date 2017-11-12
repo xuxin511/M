@@ -1,6 +1,7 @@
 package com.xx.chinetek.method.Sync;
 
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.google.gson.reflect.TypeToken;
@@ -13,11 +14,13 @@ import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailUtil;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
@@ -31,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,21 +109,20 @@ public class SyncDN {
      * MAPS同步出库单
      * @param result
      */
-   public static void AnalysisSyncMAPSDNJson(String result) throws Exception{
-        LogUtil.WriteLog(SyncDN.class,TAG_SyncDn,result);
-            ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
-            }.getType());
-            if (returnMsgModel.getHeaderStatus().equals("S")) {
-                ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
-                //插入数据
-                DbDnInfo.getInstance().InsertDNDB(dnModels);
-                ParamaterModel.DNSyncTime="";
-                //保存同步时间
-                SharePreferUtil.SetSyncTimeShare(context);
-            } else {
-                MessageBox.Show(context,returnMsgModel.getMessage());
-            }
-
+   public static void AnalysisSyncMAPSDNJson(String result) throws Exception {
+       LogUtil.WriteLog(SyncDN.class, TAG_SyncDn, result);
+       ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
+       }.getType());
+       if (returnMsgModel.getHeaderStatus().equals("S")) {
+           ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
+           //插入数据
+           DbDnInfo.getInstance().InsertDNDB(dnModels);
+           ParamaterModel.DNSyncTime = "";
+           //保存同步时间
+           SharePreferUtil.SetSyncTimeShare(context);
+       } else {
+           MessageBox.Show(context, returnMsgModel.getMessage());
+       }
    }
 
 
@@ -145,22 +148,42 @@ public class SyncDN {
                while ((line = reader.readLine()) != null) {
                    String[] lines = line.split(",");
                    String DNNo = lines[0].trim();
-                   dnModel.setAGENT_DN_NO(DNNo);
-                   dnModel.setLEVEL_2_AGENT_NO(lines[2].trim());
-                   dnModel.setCUSTOM_NO(lines[3].trim());
+                   if(dnModel.getAGENT_DN_NO()==null && TextUtils.isEmpty(dnModel.getAGENT_DN_NO())) {
+                       dnModel.setAGENT_DN_NO(DNNo);
+                       dnModel.setLEVEL_2_AGENT_NO(lines[2].trim());
+                       String cusName = DbBaseInfo.getInstance().GetCustomName(lines[2].trim());
+                       dnModel.setLEVEL_2_AGENT_NAME(cusName);
+                       dnModel.setCUSTOM_NO(lines[3].trim());
+                       cusName = DbBaseInfo.getInstance().GetCustomName(lines[3].trim());
+                       dnModel.setCUSTOM_NAME(cusName);
+
+                   }
                    DNDetailModel dnDetailModel = new DNDetailModel();
                    dnDetailModel.setAGENT_DN_NO(DNNo);
                    dnDetailModel.setLINE_NO(Integer.parseInt(lines[1].trim()));
                    dnDetailModel.setITEM_NO(lines[4].trim());
                    dnDetailModel.setGOLFA_CODE(lines[6].trim());
-                   dnDetailModel.setITEM_ZMAKTX(lines[5].trim());
+                   if(TextUtils.isEmpty(lines[5].trim())) {
+                       String condition = dnDetailModel.getGOLFA_CODE() == null || TextUtils.isEmpty(dnDetailModel.getGOLFA_CODE()) ?
+                               dnDetailModel.getITEM_NO() : dnDetailModel.getGOLFA_CODE();
+                       MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(condition);
+                       dnDetailModel.setITEM_NAME(materialModel==null?"":materialModel.getMAKTX());
+                   }else {
+                       dnDetailModel.setITEM_NAME(lines[5].trim());
+                   }
                    int dnQty = Integer.parseInt(lines[7].trim());
                    Qty += dnQty;
                    dnDetailModel.setDN_QTY(dnQty);
                    dnDetailModel.setDETAIL_STATUS("1");
-                   dnDetailModel.setSCAN_QTY(0);
+                   dnDetailModel.setUPDATE_DATE(new Date());
+                   dnDetailModel.setUPDATE_USER(ParamaterModel.Operater);
+                   int scanQTY=DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo,lines[6].trim());
+                   dnDetailModel.setSCAN_QTY(scanQTY);
                    dnDetailModels.add(dnDetailModel);
                }
+               dnModel.setUPDATE_USER(ParamaterModel.Operater);
+               dnModel.setUPDATE_DATE(new Date());
+               dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType().toString());
                dnModel.setDN_STATUS(1);
                dnModel.setDetailModels(dnDetailModels);
                dnModel.setDN_QTY(Qty);
@@ -173,5 +196,6 @@ public class SyncDN {
        }
        DbDnInfo.getInstance().InsertDNDB(dnModels);
    }
+
 
 }

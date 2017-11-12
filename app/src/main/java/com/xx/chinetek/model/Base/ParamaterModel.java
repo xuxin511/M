@@ -2,6 +2,7 @@ package com.xx.chinetek.model.Base;
 
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
+import com.xx.chinetek.model.DN.DNTypeModel;
 
 import java.io.File;
 
@@ -17,9 +18,19 @@ public class ParamaterModel {
     public static String Operater;
 
     /**
+     * 序列号
+     */
+    public static String SerialNo;
+
+    /**
      * 代理商编号
      */
     public static  String  PartenerID="";
+
+    /**
+     * 发货方式，发货方
+     */
+    public static DNTypeModel DnTypeModel;
 
     /**
      * 邮件服务器

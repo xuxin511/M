@@ -2,6 +2,7 @@ package com.xx.chinetek.model.DN;
 
 import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
+import com.xx.chinetek.greendao.DaoSession;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -13,7 +14,6 @@ import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.Date;
 import java.util.List;
-import com.xx.chinetek.greendao.DaoSession;
 
 /**
  * Created by GHOST on 2017/10/25.
@@ -30,14 +30,11 @@ public class DNDetailModel {
     private Integer  LINE_NO;
     private String  ITEM_NO;
     private String  ITEM_NAME;
-    private String  ITEM_ZMAKTX;
     private String  GOLFA_CODE;
     private Integer  DN_QTY;
     private String  DETAIL_STATUS;
     private Date UPDATE_DATE;
-
-
-    private String  NORMT;
+    private String UPDATE_USER;
     private Integer  SCAN_QTY;
     @ToMany(joinProperties = {
             @JoinProperty(name = "AGENT_DN_NO", referencedName = "AGENT_DN_NO"),
@@ -52,21 +49,19 @@ public class DNDetailModel {
 
 
 
-    @Generated(hash = 502627958)
-    public DNDetailModel(String AGENT_DN_NO, Integer LINE_NO, String ITEM_NO,
-            String ITEM_NAME, String ITEM_ZMAKTX, String GOLFA_CODE, Integer DN_QTY,
-            String DETAIL_STATUS, Date UPDATE_DATE, String NORMT,
-            Integer SCAN_QTY) {
+    @Generated(hash = 823850877)
+    public DNDetailModel(String AGENT_DN_NO, Integer LINE_NO, String ITEM_NO, String ITEM_NAME,
+            String GOLFA_CODE, Integer DN_QTY, String DETAIL_STATUS, Date UPDATE_DATE,
+            String UPDATE_USER, Integer SCAN_QTY) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.LINE_NO = LINE_NO;
         this.ITEM_NO = ITEM_NO;
         this.ITEM_NAME = ITEM_NAME;
-        this.ITEM_ZMAKTX = ITEM_ZMAKTX;
         this.GOLFA_CODE = GOLFA_CODE;
         this.DN_QTY = DN_QTY;
         this.DETAIL_STATUS = DETAIL_STATUS;
         this.UPDATE_DATE = UPDATE_DATE;
-        this.NORMT = NORMT;
+        this.UPDATE_USER = UPDATE_USER;
         this.SCAN_QTY = SCAN_QTY;
     }
 
@@ -146,17 +141,6 @@ public class DNDetailModel {
 
 
 
-    public String getITEM_ZMAKTX() {
-        return this.ITEM_ZMAKTX;
-    }
-
-
-
-    public void setITEM_ZMAKTX(String ITEM_ZMAKTX) {
-        this.ITEM_ZMAKTX = ITEM_ZMAKTX;
-    }
-
-
 
     public String getGOLFA_CODE() {
         return this.GOLFA_CODE;
@@ -205,16 +189,6 @@ public class DNDetailModel {
     }
 
 
-
-    public String getNORMT() {
-        return this.NORMT;
-    }
-
-
-
-    public void setNORMT(String NORMT) {
-        this.NORMT = NORMT;
-    }
 
 
 
@@ -310,5 +284,17 @@ public class DNDetailModel {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDNDetailModelDao() : null;
+    }
+
+
+
+    public String getUPDATE_USER() {
+        return this.UPDATE_USER;
+    }
+
+
+
+    public void setUPDATE_USER(String UPDATE_USER) {
+        this.UPDATE_USER = UPDATE_USER;
     }
 }

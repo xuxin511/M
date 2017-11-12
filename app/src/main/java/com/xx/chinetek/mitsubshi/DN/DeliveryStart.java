@@ -26,6 +26,7 @@ import com.xx.chinetek.method.GetPartner;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.CustomModel;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
@@ -95,6 +96,7 @@ public class DeliveryStart extends BaseActivity {
         dnTypeModel.setCustomModel(customModel);
         CommonUtil.setEditFocus(edtContentText);
         SharePreferUtil.SetDNTypeShare(context,dnTypeModel);
+        ParamaterModel.DnTypeModel=dnTypeModel;
         Intent intent=new Intent();
         Class jumpClass=null;
         DNModel dnModel=new DNModel();
@@ -116,7 +118,6 @@ public class DeliveryStart extends BaseActivity {
         intent.setClass(context,jumpClass);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
-        bundle.putParcelable("DNType",dnTypeModel);
         intent.putExtras(bundle);
         startActivityLeft(intent);
 

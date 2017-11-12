@@ -195,6 +195,38 @@ public class FtpHelper {
     }
 
     /**
+     * 删除FTP目录文件
+     * @param remotePath
+     * @return
+     * @throws IOException
+     */
+    public int deleteFolder(String remotePath) throws IOException{
+        //删除的数量
+        int fileCount = 0;
+        // 初始化FTP当前目录
+        currentPath = remotePath;
+        // 更改FTP目录
+        ftpClient.changeWorkingDirectory(remotePath);
+        // 得到FTP当前目录下所有文件
+        FTPFile[] ftpFiles = ftpClient.listFiles();
+        for (FTPFile ftpFile : ftpFiles) {
+            if (!ftpFile.getName().equals("..")
+                    && !ftpFile.getName().equals(".")) {
+                if (ftpFile.isDirectory()) {
+                    //下载文件夹
+                    int count = deleteFolder(currentPath + "/" + ftpFile.getName());
+                    fileCount += count;
+                } else if (ftpFile.isFile()) {
+                    // 下载单个文件
+                   int count = deleteFolder(ftpFile.getName());
+                    fileCount += count;
+                }
+            }
+        }
+        return fileCount;
+    }
+
+    /**
      * 下载整个目录
      *
      * @param remotePath FTP目录

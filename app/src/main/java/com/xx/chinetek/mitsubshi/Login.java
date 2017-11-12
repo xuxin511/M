@@ -31,6 +31,8 @@ public class Login extends BaseActivity {
     Context context = Login.this;
     @ViewInject(R.id.txt_Partner)
     TextView txtPartner;
+    @ViewInject(R.id.txt_SerialNo)
+    TextView txtSerialNo;
     @ViewInject(R.id.edt_Operater)
     EditText  edtOperater;
 
@@ -48,6 +50,11 @@ public class Login extends BaseActivity {
         SharePreferUtil.ReadShare(context);
         SharePreferUtil.ReadUserShare(context);
         edtOperater.setText(ParamaterModel.Operater);
+        String serialNo=android.os.Build.SERIAL;
+        if(serialNo!=null) {
+            txtSerialNo.setText(serialNo);
+            ParamaterModel.SerialNo=serialNo;
+        }
     }
 
     @Override
@@ -59,10 +66,10 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         String model = android.os.Build.MODEL;
-//        if (!(model.toUpperCase().equals("TC75") || model.toUpperCase().equals("IDATA1500"))) {
-//            MessageBox.Show(context, "设备型号不支持！");
-//            return;
-//        }
+        if (!(model.toUpperCase().equals("TC75") || model.toUpperCase().equals("IDATA1500"))) {
+            MessageBox.Show(context, "设备型号不支持！");
+            return;
+        }
 
         if (TextUtils.isEmpty(ParamaterModel.PartenerID)) {
             MessageBox.Show(context, getString(R.string.Msg_No_Partner));
@@ -100,58 +107,5 @@ public class Login extends BaseActivity {
 
     }
 
-//    private class MyTask extends AsyncTask<String, Integer, ArrayList<HashMap<String, String>>> {
-//
-//
-//        @Override
-//        protected ArrayList<HashMap<String, String>> doInBackground(String... params) {
-//            ArrayList<HashMap<String, String>> list=new ArrayList<HashMap<String, String>>();
-//            try {
-//
-//                File storefile = new File(File.separator + "mnt" + File.separator
-//                        + "sdcard" + File.separator + "DDN980015089_QR.txt");
-//                ArrayList<String> list123  =new ArrayList<>();
-//                list123.add(storefile.getAbsolutePath());
-//                MailModel mailModel=new MailModel();
-//
-//                mailModel.setAccount("ghost_511@sina.com");
-//                mailModel.setPassword("x5613x5305");
-//                mailModel.setMailServerHost("smtp.sina.com");
-//                mailModel.setMailClientHost("imap.sina.com");
-//                mailModel.setMailServerPort("25");
-//                mailModel.setValidate(true);
-//                mailModel.setFromAddress("ghost_511@sina.com");
-//                mailModel.setToAddress("ghost_511@sina.com");
-//                mailModel.setSubject("测试");
-//                mailModel.setContent("测试DDN980015089_QR.txt");
-//
-//               //
-//
-////                SendOneMail sendOneMail=new SendOneMail("");
-////                sendOneMail.sendAttachment(mailModel,list123);
-//
-//                MailUtil.GetMail(mailModel);
-//            } catch (Exception ex){
-//                String str=ex.getMessage();
-//            }
-//            return list;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(ArrayList<HashMap<String, String>> list) {
-//
-//            try {
-//                DaoSession daoSession = DbManager.getDaoSession(new GreenDaoContext());
-//                MaterialModelDao materialModelDao = daoSession.getMaterialModelDao();
-//                MaterialModel materialModel = new MaterialModel();
-//                materialModel.setMATNR("12333");
-//                materialModel.setNORMT("Y");
-//                materialModelDao.insert(materialModel);
-//            } catch (Exception ex) {
-//                MessageBox.Show(context, ex.getMessage());
-//            }
-//        }
-//
-//    }
 
 }

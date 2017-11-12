@@ -91,4 +91,25 @@ public class DbBaseInfo {
             syncParaModelDao.detachAll();
         }
     }
+
+    /**
+     * 根据编号查询名称
+     * @param CusCode
+     * @return
+     */
+    public String GetCustomName(String CusCode){
+      CustomModel customModel=customModelDao.queryBuilder().where(CustomModelDao.Properties.PartnerID.eq(CusCode)).unique();
+      return customModel==null?null:customModel.getPartnerName();
+    }
+
+    /**
+     * 根据SAP编号或GolfaCode查名称
+     * @param condition
+     * @return
+     */
+    public MaterialModel GetItemName(String condition){
+        MaterialModel  materialModel = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.MATNR.eq(condition),
+                MaterialModelDao.Properties.BISMT.eq(condition)).unique();
+        return materialModel;
+    }
 }

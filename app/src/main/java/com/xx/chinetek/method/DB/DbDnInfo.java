@@ -114,4 +114,28 @@ public class DbDnInfo {
         cursor.close();
         return dbReturnModel;
     }
+
+    /**
+     * 查询扫描明细表
+     * @param DNNo
+     * @param condition
+     * @return
+     */
+    public Integer GetScanQtyInDNScanModel(String DNNo,String condition){
+        Integer qty=0;
+        String sql="select  COUNT(ITEM__SERIAL__NO) as  SCANQTY from DNSCAN_MODEL " +
+                "where AGENT__DN__NO='"+DNNo+"' and   GOLFA__CODE='"+condition+"'";
+        Cursor cursor= dnDetailModelDao.getDatabase().rawQuery(sql,null);
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                int index=cursor.getColumnIndex("SCANQTY");
+                qty=cursor.getInt(index);
+            }
+        }
+        cursor.close();
+        return qty;
+    }
+
+
+
 }

@@ -19,6 +19,9 @@ public class FtpUtil {
         }
         ftp.openConnect();
         total = ftp.downloadFolder(ParamaterModel.ftpModel.getFtpDownLoad(), ParamaterModel.DownDirectory);
+//        if (total != 0) {
+//            total=ftp.deleteFolder(ParamaterModel.ftpModel.getFtpDownLoad());
+//        }
         if (ftp.isConnect()) {
             ftp.closeConnect();
         }

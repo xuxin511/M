@@ -83,9 +83,11 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
         listItemView.txtStatus.setText(DNModel.getDN_STATUS()==1?"已下载":"未下载");
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME());
         listItemView.txtCreateTime.setText(convertView.getResources().getString(R.string.createtime)+ CommonUtil.DateToString(DNModel.getUPDATE_DATE(),null));
-        listItemView.txtSource.setText(DNModel.getDN_SOURCE());
+        if(DNModel.getDN_SOURCE()!=null)
+            listItemView.txtSource.setText(context.getResources().getStringArray(R.array.sendTypeList)[Integer.parseInt(DNModel.getDN_SOURCE())]);
         return convertView;
     }
+
 
 
     public Filter getFilter() {

@@ -21,12 +21,11 @@ import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
-import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
-import com.xx.chinetek.model.DN.DNTypeModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -39,7 +38,6 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
-import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMail;
 
 @ContentView(R.layout.activity_delivery_list)
 public class DeliveryList extends BaseActivity {
@@ -52,7 +50,6 @@ public class DeliveryList extends BaseActivity {
 
     DeliveryListItemAdapter deliveryListItemAdapter;
     ArrayList<DNModel> DNModels; //所有未完成出库单
-    DNTypeModel dnTypeModel;
 
     LoadingDialog dialog;
 
@@ -83,7 +80,7 @@ public class DeliveryList extends BaseActivity {
             BindListView();
         } catch (Exception ex) {
             MessageBox.Show(context,ex.getMessage());
-            LogUtil.WriteLog(DeliveryList.class, TAG_SyncMail, ex.getMessage());
+            dialog.dismiss();
         }
     }
 
@@ -99,7 +96,6 @@ public class DeliveryList extends BaseActivity {
     protected void initData() {
         super.initData();
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
-        dnTypeModel=getIntent().getParcelableExtra("DNType");
         ImportDelivery();
     }
 
@@ -113,19 +109,15 @@ public class DeliveryList extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_QR){
             Intent intent=new Intent(context,QRScan.class);
-            Bundle bundle=new Bundle();
-            dnTypeModel.setDNType(5);
-            bundle.putParcelable("DNType",dnTypeModel);
-            intent.putExtras(bundle);
+            ParamaterModel.DnTypeModel.setDNType(5);
             startActivityLeft(intent);
         }
         if(item.getItemId()==R.id.action_New){
             Intent intent=new Intent(context,DeliveryScan.class);
             String Dnno="CS1233333";
             intent.putExtra("DNNo",Dnno);
+            ParamaterModel.DnTypeModel.setDNType(3);
             Bundle bundle=new Bundle();
-            dnTypeModel.setDNType(3);
-            bundle.putParcelable("DNType",dnTypeModel);
             DNModel dnModel=new DNModel();
             dnModel.setAGENT_DN_NO(Dnno);
             dnModel.setDN_QTY(0);
@@ -143,7 +135,6 @@ public class DeliveryList extends BaseActivity {
         Intent intent=new Intent(context,DeliveryScan.class);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
-        bundle.putParcelable("DNType",dnTypeModel);
         intent.putExtras(bundle);
         intent.putExtra("DNNo",dnModel.getAGENT_DN_NO());
         startActivityLeft(intent);
@@ -185,8 +176,7 @@ public class DeliveryList extends BaseActivity {
      * @return
      */
    private void ImportDelivery(){
-        Boolean isSyncCompleted=false;
-        switch (dnTypeModel.getDNType()){
+        switch (ParamaterModel.DnTypeModel.getDNType()){
             case 0://MAPS
                 SyncDN.SyncMAPS(mHandler);
                 break;

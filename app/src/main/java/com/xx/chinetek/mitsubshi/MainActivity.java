@@ -107,7 +107,17 @@ public class MainActivity extends BaseActivity {
             ArrayList<MaterialModel> materialModels = new ArrayList<>();
             for(int i=0;i<20;i++) {
                 MaterialModel materialModel = new MaterialModel();
-                materialModel.setMATNR("1233"+i);
+                materialModel.setMATNR("1120000001");
+                materialModel.setBISMT("1W4A31");
+                materialModel.setMAKTX("物料名称1");
+                materialModel.setZMAKTX("物料名称1-长");
+                materialModel.setNORMT("Y");
+                materialModels.add(materialModel);
+                materialModel = new MaterialModel();
+                materialModel.setMATNR("1120000002");
+                materialModel.setBISMT("09M473");
+                materialModel.setMAKTX("物料名称2");
+                materialModel.setZMAKTX("物料名称2-长");
                 materialModel.setNORMT("Y");
                 materialModels.add(materialModel);
             }
