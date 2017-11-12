@@ -21,21 +21,21 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        MaterialModelDao.createTable(db, ifNotExists);
         CustomModelDao.createTable(db, ifNotExists);
+        MaterialModelDao.createTable(db, ifNotExists);
         SyncParaModelDao.createTable(db, ifNotExists);
-        DNModelDao.createTable(db, ifNotExists);
         DNDetailModelDao.createTable(db, ifNotExists);
+        DNModelDao.createTable(db, ifNotExists);
         DNScanModelDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        MaterialModelDao.dropTable(db, ifExists);
         CustomModelDao.dropTable(db, ifExists);
+        MaterialModelDao.dropTable(db, ifExists);
         SyncParaModelDao.dropTable(db, ifExists);
-        DNModelDao.dropTable(db, ifExists);
         DNDetailModelDao.dropTable(db, ifExists);
+        DNModelDao.dropTable(db, ifExists);
         DNScanModelDao.dropTable(db, ifExists);
     }
 
@@ -55,11 +55,11 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(MaterialModelDao.class);
         registerDaoClass(CustomModelDao.class);
+        registerDaoClass(MaterialModelDao.class);
         registerDaoClass(SyncParaModelDao.class);
-        registerDaoClass(DNModelDao.class);
         registerDaoClass(DNDetailModelDao.class);
+        registerDaoClass(DNModelDao.class);
         registerDaoClass(DNScanModelDao.class);
     }
 

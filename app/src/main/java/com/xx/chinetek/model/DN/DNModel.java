@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNModelDao;
-import com.xx.chinetek.greendao.DaoSession;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -17,6 +16,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.xx.chinetek.greendao.DaoSession;
 
 /**
  * Created by GHOST on 2017/10/25.

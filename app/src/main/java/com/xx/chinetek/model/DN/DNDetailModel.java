@@ -2,7 +2,6 @@ package com.xx.chinetek.model.DN;
 
 import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
-import com.xx.chinetek.greendao.DaoSession;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -14,6 +13,7 @@ import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.Date;
 import java.util.List;
+import com.xx.chinetek.greendao.DaoSession;
 
 /**
  * Created by GHOST on 2017/10/25.
