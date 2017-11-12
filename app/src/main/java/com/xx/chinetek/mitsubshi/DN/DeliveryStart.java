@@ -26,6 +26,7 @@ import com.xx.chinetek.method.GetPartner;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.CustomModel;
+import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -96,9 +97,13 @@ public class DeliveryStart extends BaseActivity {
         SharePreferUtil.SetDNTypeShare(context,dnTypeModel);
         Intent intent=new Intent();
         Class jumpClass=null;
+        DNModel dnModel=new DNModel();
         switch (dnTypeModel.getDNType()){
             case 3:
-                intent.putExtra("DNNo","CS1233333");
+                String Dnno="CS1233335";
+                dnModel.setAGENT_DN_NO(Dnno);
+                dnModel.setDN_QTY(0);
+                intent.putExtra("DNNo",Dnno);
                 jumpClass=DeliveryScan.class;
                 break;
             case 5:
@@ -110,6 +115,7 @@ public class DeliveryStart extends BaseActivity {
         }
         intent.setClass(context,jumpClass);
         Bundle bundle=new Bundle();
+        bundle.putParcelable("DNModel",dnModel);
         bundle.putParcelable("DNType",dnTypeModel);
         intent.putExtras(bundle);
         startActivityLeft(intent);

@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IHandleM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //屏幕保持竖屏
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //隐藏输入法
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN| WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN); //隐藏输入法
         AppManager.getAppManager().addActivity(this); //添加当前Activity到avtivity管理类
         mHandler = new MyHandler<>(this);
         BaseApplication.context=this;

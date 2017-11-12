@@ -23,6 +23,7 @@ public class TAG_RESULT {
     public static final int RESULT_SyncDn=104;
 
     public static  String  TAG_SyncMail="SyncMail";
+    public static  String  TAG_ScanBarcode="ScanBarcode";
 
     public static final int RESULT_SyncMail=105;
     public static final int RESULT_SyncUSB=106;

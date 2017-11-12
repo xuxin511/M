@@ -108,10 +108,6 @@ public class DNModel implements Parcelable {
         dest.writeList(this.detailModels);
     }
 
-    public void setDetailModels(List<DNDetailModel> detailModels) {
-        this.detailModels = detailModels;
-    }
-
     public String getAGENT_DN_NO() {
         return this.AGENT_DN_NO;
     }
@@ -120,7 +116,12 @@ public class DNModel implements Parcelable {
         this.AGENT_DN_NO = AGENT_DN_NO;
     }
 
+    public void setDetailModels(List<DNDetailModel> detailModels) {
+        this.detailModels = detailModels;
+    }
+
     public Date getDN_DATE() {
+
         return this.DN_DATE;
     }
 

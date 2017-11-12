@@ -67,8 +67,12 @@
 
     <string name="Msg_SaveSuccess">保存成功！</string>
     <string name="Msg_No_Partner">请先设置代理商编号！</string>
+    <string name="Msg_Serial_Scaned">该条码已扫描！</string>
+    <string name="Msg_SerialNum_Finished">该物料已扫描完毕！</string>
+    <string name="Msg_Material_NotMatch">该物料不存在于出库单中！</string>
     <string name="Msg_NoSelect_CusCode">请选择客户或代理商</string>
     <string name="Msg_No_CusCode">请输入代理商或客户编号！</string>
+    <string name="Msg_No_Barcode">请扫描条码！</string>
 
     <string name="Dia_UploadLogFile">日志文件上传中...</string>
     <string name="Dia_SyncMaterial">正在同步物料数据...</string>

@@ -1,9 +1,14 @@
 package com.xx.chinetek.method.DB;
 
+import android.database.Cursor;
+
 import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNModelDao;
+import com.xx.chinetek.greendao.DNScanModelDao;
 import com.xx.chinetek.greendao.DaoSession;
 import com.xx.chinetek.model.Base.DNStatusEnum;
+import com.xx.chinetek.model.DBReturnModel;
+import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 
 import java.util.ArrayList;
@@ -18,6 +23,7 @@ public class DbDnInfo {
     private DaoSession daoSession=null;
     private DNModelDao dnModelDao;
     private DNDetailModelDao dnDetailModelDao;
+    private DNScanModelDao dnScanModelDao;
 
 
     private DbDnInfo() {
@@ -25,7 +31,12 @@ public class DbDnInfo {
             daoSession = DbManager.getDaoSession(new GreenDaoContext());
             dnModelDao=daoSession.getDNModelDao();
             dnDetailModelDao=daoSession.getDNDetailModelDao();
+            dnScanModelDao=daoSession.getDNScanModelDao();
         }
+    }
+
+    public DaoSession getDaoSession(){
+        return daoSession;
     }
 
     public static DbDnInfo getInstance() {
@@ -51,6 +62,10 @@ public class DbDnInfo {
             for(DNModel  dnModel :dnModels){
                 dnDetailModelDao.insertOrReplaceInTx(dnModel.getDetailModels());
                 dnDetailModelDao.detachAll();
+                for(DNDetailModel  dnDetailModel:dnModel.getDetailModels()){
+                    dnScanModelDao.insertOrReplaceInTx(dnDetailModel.getDnScanModels());
+                    dnScanModelDao.detachAll();
+                }
             }
         }
     }
@@ -65,5 +80,38 @@ public class DbDnInfo {
                 .whereOr(DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.ready),
                         DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.download)).list();
         return dnModels;
+    }
+
+    /**
+     * 根据DN单号获取DN明细
+     * @param DNNo
+     * @return
+     */
+    public ArrayList<DNDetailModel> GetDNDetailByDNNo(String DNNo){
+        ArrayList<DNDetailModel> dnDetailModels=new ArrayList<>();
+        dnDetailModels =( ArrayList<DNDetailModel>)dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo)).list();
+        return dnDetailModels;
+    }
+
+    /**
+     * 查询DN单中扫描数量和出库数量
+     * @param DNNo
+     * @param condition
+     */
+    public DBReturnModel  GetDNQty(String DNNo,String condition){
+        String sql="select sum(DN__QTY) as DNQTY,sum(SCAN__QTY) as SCANQTY from DNDETAIL_MODEL " +
+                "where AGENT__DN__NO='"+DNNo+"' and  (ITEM__NO='"+condition+"' or GOLFA__CODE='"+condition+"')";
+        DBReturnModel dbReturnModel=new DBReturnModel();
+        Cursor cursor= dnDetailModelDao.getDatabase().rawQuery(sql,null);
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                int index=cursor.getColumnIndex("DNQTY");
+                dbReturnModel.setDNQTY(cursor.getInt(index));
+                index=cursor.getColumnIndex("SCANQTY");
+                dbReturnModel.setSCANQTY(cursor.getInt(index));
+            }
+        }
+        cursor.close();
+        return dbReturnModel;
     }
 }

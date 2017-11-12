@@ -114,15 +114,22 @@ public class DeliveryList extends BaseActivity {
         if(item.getItemId()==R.id.action_QR){
             Intent intent=new Intent(context,QRScan.class);
             Bundle bundle=new Bundle();
+            dnTypeModel.setDNType(5);
             bundle.putParcelable("DNType",dnTypeModel);
             intent.putExtras(bundle);
             startActivityLeft(intent);
         }
         if(item.getItemId()==R.id.action_New){
             Intent intent=new Intent(context,DeliveryScan.class);
-            intent.putExtra("DNNo","CS1233333");
+            String Dnno="CS1233333";
+            intent.putExtra("DNNo",Dnno);
             Bundle bundle=new Bundle();
+            dnTypeModel.setDNType(3);
             bundle.putParcelable("DNType",dnTypeModel);
+            DNModel dnModel=new DNModel();
+            dnModel.setAGENT_DN_NO(Dnno);
+            dnModel.setDN_QTY(0);
+            bundle.putParcelable("DNModel",dnModel);
             intent.putExtras(bundle);
             startActivityLeft(intent);
         }

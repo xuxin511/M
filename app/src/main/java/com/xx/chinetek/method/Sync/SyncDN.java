@@ -166,8 +166,10 @@ public class SyncDN {
                dnModel.setDN_QTY(Qty);
            }
            reader.close();
-           file.delete();
            dnModels.add(dnModel);
+       }
+       for(int i=0;i<DNfiles.length;i++) {
+           DNfiles[i].delete();
        }
        DbDnInfo.getInstance().InsertDNDB(dnModels);
    }
