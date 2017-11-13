@@ -10,44 +10,36 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class SyncParaModel {
     @Unique
-    private String ParaID;
+    private String Key;
 
-    private String ParaName;
+    private String Value;
 
-    private String ParaContext;
-
-    @Generated(hash = 1825285884)
-    public SyncParaModel(String ParaID, String ParaName, String ParaContext) {
-        this.ParaID = ParaID;
-        this.ParaName = ParaName;
-        this.ParaContext = ParaContext;
+    @Generated(hash = 860805823)
+    public SyncParaModel(String Key, String Value) {
+        this.Key = Key;
+        this.Value = Value;
     }
 
     @Generated(hash = 1808823217)
     public SyncParaModel() {
     }
 
-    public String getParaID() {
-        return this.ParaID;
+    public String getKey() {
+        return this.Key;
     }
 
-    public void setParaID(String ParaID) {
-        this.ParaID = ParaID;
+    public void setKey(String Key) {
+        this.Key = Key;
     }
 
-    public String getParaName() {
-        return this.ParaName;
+    public String getValue() {
+        return this.Value;
     }
 
-    public void setParaName(String ParaName) {
-        this.ParaName = ParaName;
+    public void setValue(String Value) {
+        this.Value = Value;
     }
 
-    public String getParaContext() {
-        return this.ParaContext;
-    }
+    
 
-    public void setParaContext(String ParaContext) {
-        this.ParaContext = ParaContext;
-    }
 }

@@ -76,7 +76,7 @@ public class DbBaseInfo {
      * @throws Exception
      */
     public List<CustomModel> QueryCustomDBByType(int DNCusType) throws Exception{
-        List<CustomModel> customModels=  customModelDao.queryBuilder().where(CustomModelDao.Properties.Type.eq(DNCusType==0?"Z2":"Z3")).distinct().list();
+        List<CustomModel> customModels=  customModelDao.queryBuilder().where(CustomModelDao.Properties.PARTNER_FUNCTION.eq(DNCusType==0?"Z2":"Z3")).distinct().list();
         return customModels;
     }
 
@@ -93,13 +93,21 @@ public class DbBaseInfo {
     }
 
     /**
-     * 根据编号查询名称
-     * @param CusCode
+     * 判断是否存在物料数据
      * @return
      */
-    public String GetCustomName(String CusCode){
-      CustomModel customModel=customModelDao.queryBuilder().where(CustomModelDao.Properties.PartnerID.eq(CusCode)).unique();
-      return customModel==null?null:customModel.getPartnerName();
+    public Boolean HasMaterialInfo(){
+        return materialModelDao.queryBuilder().buildCount().count()>0;
+    }
+
+    /**
+     * 根据名称查询编号
+     * @param CusName
+     * @return
+     */
+    public String GetCustomName(String CusName){
+      CustomModel customModel=customModelDao.queryBuilder().where(CustomModelDao.Properties.NAME.eq(CusName)).unique();
+      return customModel==null?null:customModel.getCUSTOMER();
     }
 
     /**

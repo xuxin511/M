@@ -78,10 +78,10 @@ public class DeliveryScan extends BaseActivity {
         dnModel=getIntent().getParcelableExtra("DNModel");
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         GetDeliveryOrderScanList();
-        if (dnModel.getDetailModels() == null)
-            dnModel.setDetailModels(new ArrayList<DNDetailModel>());
+        if (dnModel.getDETAILS() == null)
+            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
 
-        dnModel.getDetailModels().addAll(dnDetailModels);
+        dnModel.getDETAILS().addAll(dnDetailModels);
     }
 
     @Override
@@ -154,8 +154,8 @@ public class DeliveryScan extends BaseActivity {
         //保存扫描数据
 
         int isErrorStatus=-1;//0:物料已扫描  1：数量已超出
-        dnModel.resetDetailModels();
-        List<DNDetailModel> dnDetailModels = dnModel.getDetailModels();
+        dnModel.resetDETAILS();
+        List<DNDetailModel> dnDetailModels = dnModel.getDETAILS();
         for (BarCodeModel barCodeModel : barCodeModels) {
             DNDetailModel dnDetailModel = new DNDetailModel();
             //判断是否存在物料
@@ -170,17 +170,16 @@ public class DeliveryScan extends BaseActivity {
         }
         if (ShowErrMag(isErrorStatus)) return true;
         dnModel.setDN_STATUS(1);
-        if(ParamaterModel.DnTypeModel.getCustomModel().getType().equals("Z2")){
-            dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getPartnerID());
-            dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getPartnerName());
-        }else if(ParamaterModel.DnTypeModel.getCustomModel().getType().equals("Z3")){
-            dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getPartnerID());
-            dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getPartnerName());
+        if(ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z2")){
+            dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
+            dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
+        }else if(ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z3")){
+            dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
+            dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
         }
-        dnModel.setUPDATE_USER(ParamaterModel.Operater);
-        dnModel.setUPDATE_DATE(new Date());
+        dnModel.setOPER_DATE(new Date());
         dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType().toString());
-        dnModel.getDetailModels().addAll(dnDetailModels);
+        dnModel.getDETAILS().addAll(dnDetailModels);
         return SaveScanInfo(isErrorStatus);
     }
 
@@ -209,8 +208,8 @@ public class DeliveryScan extends BaseActivity {
      * @throws Exception
      */
     private boolean ScanBarccode(ArrayList<BarCodeModel> barCodeModels) throws Exception {
-        dnModel.resetDetailModels();
-        List<DNDetailModel> dnDetailModels = dnModel.getDetailModels();
+        dnModel.resetDETAILS();
+        List<DNDetailModel> dnDetailModels = dnModel.getDETAILS();
         int isErrorStatus=-1;//0:物料已扫描  1：数量已超出 2：物料不存在
         DNDetailModel dnDetailModel = new DNDetailModel();
         //判断物料是否存在
@@ -243,9 +242,9 @@ public class DeliveryScan extends BaseActivity {
         for (BarCodeModel barCodeModel : barCodeModels) {
             //判断条码是否存在
             dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
-            List<DNScanModel> dnScanModels = dnDetailModels.get(index).getDnScanModels();
+            List<DNScanModel> dnScanModels = dnDetailModels.get(index).getSERIALS();
             DNScanModel dnScanModel = new DNScanModel();
-            dnScanModel.setITEM_SERIAL_NO(barCodeModel.getSerial_Number());
+            dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
             int barcodeIndex = dnScanModels.indexOf(dnScanModel);
             if (barcodeIndex != -1) {
                 isErrorStatus = 0;
@@ -269,10 +268,11 @@ public class DeliveryScan extends BaseActivity {
             dnScanModel.setITEM_STATUS("AC");
             dnScanModel.setITEM_NO(dnDetailModels.get(index).getITEM_NO());
             dnScanModel.setITEM_NAME(dnDetailModels.get(index).getITEM_NAME());
-            dnScanModel.setUPDATE_DATE(new Date());
-            dnScanModel.setUPDATE_USER(ParamaterModel.Operater);
+            dnScanModel.setDEAL_SALE_DATE(new Date());
             dnScanModel.setMAT_TYPE(0);
-            dnDetailModels.get(index).getDnScanModels().add(dnScanModel);
+            dnDetailModels.get(index).getSERIALS().add(dnScanModel);
+            dnDetailModels.get(index).setDETAIL_STATUS("AC");
+            dnDetailModels.get(index).setSTATUS(0);
         }
         return isErrorStatus;
     }
@@ -343,25 +343,26 @@ public class DeliveryScan extends BaseActivity {
      */
     private void NewSerialByMaterialNo(List<DNDetailModel> dnDetailModels, BarCodeModel barCodeModel, DNDetailModel dnDetailModel) {
         //保存物料信息
-        dnDetailModel.setLINE_NO(dnModel.getDetailModels().size()+1);//行号
+        dnDetailModel.setLINE_NO(dnModel.getDETAILS().size()+1);//行号
         dnDetailModel.setDN_QTY(1);
         dnDetailModel.setSCAN_QTY(1);
-        dnDetailModel.setDETAIL_STATUS("1");
+        dnDetailModel.setDETAIL_STATUS("AC");
+        dnDetailModel.setSTATUS(0);
 
         //保存序列号
         DNScanModel dnScanModel=new DNScanModel();
         dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
         dnScanModel.setLINE_NO(dnDetailModel.getLINE_NO());
-        dnScanModel.setITEM_SERIAL_NO(barCodeModel.getSerial_Number());
+        dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
         dnScanModel.setPACKING_DATE(barCodeModel.getPacking_Date());
         dnScanModel.setREGION(barCodeModel.getPlace_Code());
         dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());
         dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
         dnScanModel.setITEM_STATUS("AC");
         dnDetailModel.__setDaoSession(dnInfo.getDaoSession());
-        if(dnDetailModel.getDnScanModels()==null)
-            dnDetailModel.setDnScanModels(new ArrayList<DNScanModel>());
-        dnDetailModel.getDnScanModels().add(dnScanModel);
+        if(dnDetailModel.getSERIALS()==null)
+            dnDetailModel.setSERIALS(new ArrayList<DNScanModel>());
+        dnDetailModel.getSERIALS().add(dnScanModel);
         dnDetailModels.add(dnDetailModel);
         //更新DN数据
 
@@ -378,9 +379,9 @@ public class DeliveryScan extends BaseActivity {
     private int  AddSerialByMaterialNo(List<DNDetailModel> dnDetailModels, BarCodeModel barCodeModel, int index) {
         //判断条码是否存在
         dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
-        List<DNScanModel> dnScanModels=dnDetailModels.get(index).getDnScanModels();
+        List<DNScanModel> dnScanModels=dnDetailModels.get(index).getSERIALS();
         DNScanModel dnScanModel=new DNScanModel();
-        dnScanModel.setITEM_SERIAL_NO(barCodeModel.getSerial_Number());
+        dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
         int barcodeIndex=dnScanModels.indexOf(dnScanModel);
         if(barcodeIndex!=-1) return 0;
 
@@ -392,7 +393,7 @@ public class DeliveryScan extends BaseActivity {
         dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());
         dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
         dnScanModel.setITEM_STATUS("AC");
-        dnDetailModels.get(index).getDnScanModels().add(dnScanModel);
+        dnDetailModels.get(index).getSERIALS().add(dnScanModel);
 
         //更新物料扫码数量
         int qty = dnDetailModels.get(index).getDN_QTY() + 1;

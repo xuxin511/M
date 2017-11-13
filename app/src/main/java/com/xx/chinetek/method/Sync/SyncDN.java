@@ -145,22 +145,35 @@ public class SyncDN {
            if (reader.readLine() != null) {
                List<DNDetailModel> dnDetailModels = new ArrayList<>();
                int Qty = 0;
+               int firstIndex=0;
                while ((line = reader.readLine()) != null) {
                    String[] lines = line.split(",");
                    String DNNo = lines[0].trim();
-                   if(dnModel.getAGENT_DN_NO()==null && TextUtils.isEmpty(dnModel.getAGENT_DN_NO())) {
-                       dnModel.setAGENT_DN_NO(DNNo);
-                       dnModel.setLEVEL_2_AGENT_NO(lines[2].trim());
-                       String cusName = DbBaseInfo.getInstance().GetCustomName(lines[2].trim());
-                       dnModel.setLEVEL_2_AGENT_NAME(cusName);
-                       dnModel.setCUSTOM_NO(lines[3].trim());
-                       cusName = DbBaseInfo.getInstance().GetCustomName(lines[3].trim());
-                       dnModel.setCUSTOM_NAME(cusName);
+                   if(firstIndex==0) {
+                       dnModel = DbDnInfo.getInstance().GetLoaclDN(DNNo);
+                       if(dnModel==null){
+                           dnModel=new DNModel();
+                           dnModel.setDN_STATUS(1);
+                       }
+                       firstIndex++;
 
+                       dnModel.setAGENT_DN_NO(DNNo);
+                       String cusNo = DbBaseInfo.getInstance().GetCustomName(lines[2].trim());
+                       dnModel.setLEVEL_2_AGENT_NO(cusNo);
+                       dnModel.setLEVEL_2_AGENT_NAME(lines[2].trim());
+                       cusNo = DbBaseInfo.getInstance().GetCustomName(lines[3].trim());
+                       dnModel.setCUSTOM_NO(cusNo);
+                       dnModel.setCUSTOM_NAME(lines[3].trim());
+                  }
+                   int lineno=Integer.parseInt(lines[1].trim());
+                   DNDetailModel dnDetailModel =DbDnInfo.getInstance().GetLoaclDNDetail(DNNo,lineno);
+                   if(dnDetailModel==null) {
+                       dnDetailModel = new DNDetailModel();
+                       dnDetailModel.setDETAIL_STATUS("1");
+                       dnDetailModel.setSTATUS(0);
                    }
-                   DNDetailModel dnDetailModel = new DNDetailModel();
                    dnDetailModel.setAGENT_DN_NO(DNNo);
-                   dnDetailModel.setLINE_NO(Integer.parseInt(lines[1].trim()));
+                   dnDetailModel.setLINE_NO(lineno);
                    dnDetailModel.setITEM_NO(lines[4].trim());
                    dnDetailModel.setGOLFA_CODE(lines[6].trim());
                    if(TextUtils.isEmpty(lines[5].trim())) {
@@ -174,18 +187,14 @@ public class SyncDN {
                    int dnQty = Integer.parseInt(lines[7].trim());
                    Qty += dnQty;
                    dnDetailModel.setDN_QTY(dnQty);
-                   dnDetailModel.setDETAIL_STATUS("1");
-                   dnDetailModel.setUPDATE_DATE(new Date());
-                   dnDetailModel.setUPDATE_USER(ParamaterModel.Operater);
-                   int scanQTY=DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo,lines[6].trim());
+                   dnDetailModel.setOPER_DATE(new Date());
+                   int scanQTY=DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo,lines[6].trim(),lineno);
                    dnDetailModel.setSCAN_QTY(scanQTY);
                    dnDetailModels.add(dnDetailModel);
                }
-               dnModel.setUPDATE_USER(ParamaterModel.Operater);
-               dnModel.setUPDATE_DATE(new Date());
+               dnModel.setOPER_DATE(new Date());
                dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType().toString());
-               dnModel.setDN_STATUS(1);
-               dnModel.setDetailModels(dnDetailModels);
+               dnModel.setDETAILS(dnDetailModels);
                dnModel.setDN_QTY(Qty);
            }
            reader.close();

@@ -25,14 +25,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
      */
     public static class Properties {
         public final static Property MATNR = new Property(0, String.class, "MATNR", false, "MATNR");
-        public final static Property MTART = new Property(1, String.class, "MTART", false, "MTART");
-        public final static Property MATKL = new Property(2, String.class, "MATKL", false, "MATKL");
-        public final static Property BISMT = new Property(3, String.class, "BISMT", false, "BISMT");
-        public final static Property NORMT = new Property(4, String.class, "NORMT", false, "NORMT");
-        public final static Property SPART = new Property(5, String.class, "SPART", false, "SPART");
-        public final static Property MAKTX = new Property(6, String.class, "MAKTX", false, "MAKTX");
-        public final static Property ZMAKTX = new Property(7, String.class, "ZMAKTX", false, "ZMAKTX");
-        public final static Property ZEINR = new Property(8, String.class, "ZEINR", false, "ZEINR");
+        public final static Property BISMT = new Property(1, String.class, "BISMT", false, "BISMT");
+        public final static Property SPART = new Property(2, String.class, "SPART", false, "SPART");
+        public final static Property MAKTX = new Property(3, String.class, "MAKTX", false, "MAKTX");
+        public final static Property ZMAKTX = new Property(4, String.class, "ZMAKTX", false, "ZMAKTX");
     }
 
 
@@ -49,14 +45,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MATERIAL_MODEL\" (" + //
                 "\"MATNR\" TEXT UNIQUE ," + // 0: MATNR
-                "\"MTART\" TEXT," + // 1: MTART
-                "\"MATKL\" TEXT," + // 2: MATKL
-                "\"BISMT\" TEXT," + // 3: BISMT
-                "\"NORMT\" TEXT," + // 4: NORMT
-                "\"SPART\" TEXT," + // 5: SPART
-                "\"MAKTX\" TEXT," + // 6: MAKTX
-                "\"ZMAKTX\" TEXT," + // 7: ZMAKTX
-                "\"ZEINR\" TEXT);"); // 8: ZEINR
+                "\"BISMT\" TEXT," + // 1: BISMT
+                "\"SPART\" TEXT," + // 2: SPART
+                "\"MAKTX\" TEXT," + // 3: MAKTX
+                "\"ZMAKTX\" TEXT);"); // 4: ZMAKTX
     }
 
     /** Drops the underlying database table. */
@@ -74,44 +66,24 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
             stmt.bindString(1, MATNR);
         }
  
-        String MTART = entity.getMTART();
-        if (MTART != null) {
-            stmt.bindString(2, MTART);
-        }
- 
-        String MATKL = entity.getMATKL();
-        if (MATKL != null) {
-            stmt.bindString(3, MATKL);
-        }
- 
         String BISMT = entity.getBISMT();
         if (BISMT != null) {
-            stmt.bindString(4, BISMT);
-        }
- 
-        String NORMT = entity.getNORMT();
-        if (NORMT != null) {
-            stmt.bindString(5, NORMT);
+            stmt.bindString(2, BISMT);
         }
  
         String SPART = entity.getSPART();
         if (SPART != null) {
-            stmt.bindString(6, SPART);
+            stmt.bindString(3, SPART);
         }
  
         String MAKTX = entity.getMAKTX();
         if (MAKTX != null) {
-            stmt.bindString(7, MAKTX);
+            stmt.bindString(4, MAKTX);
         }
  
         String ZMAKTX = entity.getZMAKTX();
         if (ZMAKTX != null) {
-            stmt.bindString(8, ZMAKTX);
-        }
- 
-        String ZEINR = entity.getZEINR();
-        if (ZEINR != null) {
-            stmt.bindString(9, ZEINR);
+            stmt.bindString(5, ZMAKTX);
         }
     }
 
@@ -124,44 +96,24 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
             stmt.bindString(1, MATNR);
         }
  
-        String MTART = entity.getMTART();
-        if (MTART != null) {
-            stmt.bindString(2, MTART);
-        }
- 
-        String MATKL = entity.getMATKL();
-        if (MATKL != null) {
-            stmt.bindString(3, MATKL);
-        }
- 
         String BISMT = entity.getBISMT();
         if (BISMT != null) {
-            stmt.bindString(4, BISMT);
-        }
- 
-        String NORMT = entity.getNORMT();
-        if (NORMT != null) {
-            stmt.bindString(5, NORMT);
+            stmt.bindString(2, BISMT);
         }
  
         String SPART = entity.getSPART();
         if (SPART != null) {
-            stmt.bindString(6, SPART);
+            stmt.bindString(3, SPART);
         }
  
         String MAKTX = entity.getMAKTX();
         if (MAKTX != null) {
-            stmt.bindString(7, MAKTX);
+            stmt.bindString(4, MAKTX);
         }
  
         String ZMAKTX = entity.getZMAKTX();
         if (ZMAKTX != null) {
-            stmt.bindString(8, ZMAKTX);
-        }
- 
-        String ZEINR = entity.getZEINR();
-        if (ZEINR != null) {
-            stmt.bindString(9, ZEINR);
+            stmt.bindString(5, ZMAKTX);
         }
     }
 
@@ -174,14 +126,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
     public MaterialModel readEntity(Cursor cursor, int offset) {
         MaterialModel entity = new MaterialModel( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // MATNR
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // MTART
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // MATKL
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // BISMT
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // NORMT
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // SPART
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // MAKTX
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // ZMAKTX
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // ZEINR
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // BISMT
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // SPART
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // MAKTX
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // ZMAKTX
         );
         return entity;
     }
@@ -189,14 +137,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
     @Override
     public void readEntity(Cursor cursor, MaterialModel entity, int offset) {
         entity.setMATNR(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setMTART(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setMATKL(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setBISMT(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setNORMT(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setSPART(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setMAKTX(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setZMAKTX(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setZEINR(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setBISMT(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setSPART(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setMAKTX(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setZMAKTX(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     @Override

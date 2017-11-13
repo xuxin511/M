@@ -32,14 +32,20 @@ public class DNDetailModel {
     private String  ITEM_NAME;
     private String  GOLFA_CODE;
     private Integer  DN_QTY;
+    /**
+     * AC正常，CO关闭
+     */
     private String  DETAIL_STATUS;
-    private Date UPDATE_DATE;
-    private String UPDATE_USER;
+    private Date OPER_DATE;
     private Integer  SCAN_QTY;
+    /**
+     * 状态 0正常 1序列号重复 2数量超出
+     */
+    private Integer STATUS;
     @ToMany(joinProperties = {
             @JoinProperty(name = "AGENT_DN_NO", referencedName = "AGENT_DN_NO"),
             @JoinProperty(name = "LINE_NO", referencedName = "LINE_NO")})
-    List<DNScanModel> dnScanModels;
+    List<DNScanModel> SERIALS;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -49,10 +55,12 @@ public class DNDetailModel {
 
 
 
-    @Generated(hash = 823850877)
-    public DNDetailModel(String AGENT_DN_NO, Integer LINE_NO, String ITEM_NO, String ITEM_NAME,
-            String GOLFA_CODE, Integer DN_QTY, String DETAIL_STATUS, Date UPDATE_DATE,
-            String UPDATE_USER, Integer SCAN_QTY) {
+
+    @Generated(hash = 2137669822)
+    public DNDetailModel(String AGENT_DN_NO, Integer LINE_NO, String ITEM_NO,
+            String ITEM_NAME, String GOLFA_CODE, Integer DN_QTY,
+            String DETAIL_STATUS, Date OPER_DATE, Integer SCAN_QTY,
+            Integer STATUS) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.LINE_NO = LINE_NO;
         this.ITEM_NO = ITEM_NO;
@@ -60,16 +68,19 @@ public class DNDetailModel {
         this.GOLFA_CODE = GOLFA_CODE;
         this.DN_QTY = DN_QTY;
         this.DETAIL_STATUS = DETAIL_STATUS;
-        this.UPDATE_DATE = UPDATE_DATE;
-        this.UPDATE_USER = UPDATE_USER;
+        this.OPER_DATE = OPER_DATE;
         this.SCAN_QTY = SCAN_QTY;
+        this.STATUS = STATUS;
     }
+
 
 
 
     @Generated(hash = 395629670)
     public DNDetailModel() {
     }
+
+
 
 
     @Keep
@@ -90,18 +101,19 @@ public class DNDetailModel {
 
 
 
+
     public String getAGENT_DN_NO() {
         return this.AGENT_DN_NO;
     }
 
-
-    public void setDnScanModels(List<DNScanModel> dnScanModels) {
-        this.dnScanModels = dnScanModels;
+    public void setSERIALS(List<DNScanModel> SERIALS) {
+        this.SERIALS = SERIALS;
     }
 
     public void setAGENT_DN_NO(String AGENT_DN_NO) {
         this.AGENT_DN_NO = AGENT_DN_NO;
     }
+
 
 
 
@@ -111,9 +123,11 @@ public class DNDetailModel {
 
 
 
+
     public void setLINE_NO(Integer LINE_NO) {
         this.LINE_NO = LINE_NO;
     }
+
 
 
 
@@ -123,15 +137,18 @@ public class DNDetailModel {
 
 
 
+
     public void setITEM_NO(String ITEM_NO) {
         this.ITEM_NO = ITEM_NO;
     }
 
 
 
+
     public String getITEM_NAME() {
         return this.ITEM_NAME;
     }
+
 
 
 
@@ -148,9 +165,11 @@ public class DNDetailModel {
 
 
 
+
     public void setGOLFA_CODE(String GOLFA_CODE) {
         this.GOLFA_CODE = GOLFA_CODE;
     }
+
 
 
 
@@ -160,9 +179,11 @@ public class DNDetailModel {
 
 
 
+
     public void setDN_QTY(Integer DN_QTY) {
         this.DN_QTY = DN_QTY;
     }
+
 
 
 
@@ -172,22 +193,24 @@ public class DNDetailModel {
 
 
 
+
     public void setDETAIL_STATUS(String DETAIL_STATUS) {
         this.DETAIL_STATUS = DETAIL_STATUS;
     }
 
 
 
-    public Date getUPDATE_DATE() {
-        return this.UPDATE_DATE;
+
+    public Date getOPER_DATE() {
+        return this.OPER_DATE;
     }
 
 
 
-    public void setUPDATE_DATE(Date UPDATE_DATE) {
-        this.UPDATE_DATE = UPDATE_DATE;
-    }
 
+    public void setOPER_DATE(Date OPER_DATE) {
+        this.OPER_DATE = OPER_DATE;
+    }
 
 
 
@@ -198,9 +221,25 @@ public class DNDetailModel {
 
 
 
+
     public void setSCAN_QTY(Integer SCAN_QTY) {
         this.SCAN_QTY = SCAN_QTY;
     }
+
+
+
+
+    public Integer getSTATUS() {
+        return this.STATUS;
+    }
+
+
+
+
+    public void setSTATUS(Integer STATUS) {
+        this.STATUS = STATUS;
+    }
+
 
 
 
@@ -208,32 +247,34 @@ public class DNDetailModel {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1346071709)
-    public List<DNScanModel> getDnScanModels() {
-        if (dnScanModels == null) {
+    @Generated(hash = 1047623420)
+    public List<DNScanModel> getSERIALS() {
+        if (SERIALS == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             DNScanModelDao targetDao = daoSession.getDNScanModelDao();
-            List<DNScanModel> dnScanModelsNew = targetDao
-                    ._queryDNDetailModel_DnScanModels(AGENT_DN_NO, LINE_NO);
+            List<DNScanModel> SERIALSNew = targetDao
+                    ._queryDNDetailModel_SERIALS(AGENT_DN_NO, LINE_NO);
             synchronized (this) {
-                if (dnScanModels == null) {
-                    dnScanModels = dnScanModelsNew;
+                if (SERIALS == null) {
+                    SERIALS = SERIALSNew;
                 }
             }
         }
-        return dnScanModels;
+        return SERIALS;
     }
+
 
 
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 630488495)
-    public synchronized void resetDnScanModels() {
-        dnScanModels = null;
+    @Generated(hash = 1077848333)
+    public synchronized void resetSERIALS() {
+        SERIALS = null;
     }
+
 
 
 
@@ -251,6 +292,7 @@ public class DNDetailModel {
 
 
 
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -262,6 +304,7 @@ public class DNDetailModel {
         }
         myDao.refresh(this);
     }
+
 
 
 
@@ -279,6 +322,7 @@ public class DNDetailModel {
 
 
 
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2036050164)
     public void __setDaoSession(DaoSession daoSession) {
@@ -288,13 +332,4 @@ public class DNDetailModel {
 
 
 
-    public String getUPDATE_USER() {
-        return this.UPDATE_USER;
-    }
-
-
-
-    public void setUPDATE_USER(String UPDATE_USER) {
-        this.UPDATE_USER = UPDATE_USER;
-    }
 }

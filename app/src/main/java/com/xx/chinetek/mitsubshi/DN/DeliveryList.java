@@ -96,6 +96,12 @@ public class DeliveryList extends BaseActivity {
     protected void initData() {
         super.initData();
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         ImportDelivery();
     }
 

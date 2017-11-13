@@ -78,6 +78,16 @@ public class DeliveryStart extends BaseActivity {
         InitForm();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(dnTypeModel!=null){
+            spinsendType.setSelection(dnTypeModel.getDNType());
+            spinCustom.setSelection(dnTypeModel.getDNCusType());
+
+        }
+    }
+
     @Event(R.id.btn_StartOutPut)
     private void btnStartOutPutClick(View view){
         String code=edtContentText.getText().toString().trim();
@@ -145,7 +155,7 @@ public class DeliveryStart extends BaseActivity {
     private void lsvPartneronItemClick(AdapterView<?> parent, View view, int position, long id) {
         customModel =(CustomModel) partnerItemAdapter.getItem(position);
         if(customModel !=null) {
-            edtContentText.setText(customModel.getPartnerID());
+            edtContentText.setText(customModel.getCUSTOMER());
             CommonUtil.setEditFocus(edtContentText);
         }
     }
@@ -187,11 +197,7 @@ public class DeliveryStart extends BaseActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinCustom.setAdapter(adapter);
         spinCustom.setPrompt(getString(R.string.choiceSendCusttom));
-        if(dnTypeModel!=null){
-            spinsendType.setSelection(dnTypeModel.getDNType());
-            spinCustom.setSelection(dnTypeModel.getDNCusType());
 
-        }
     }
 
     void BindData(){
@@ -214,7 +220,7 @@ public class DeliveryStart extends BaseActivity {
         if(dnTypeModel==null) dnTypeModel=new DNTypeModel();
         customModel =dnTypeModel.getCustomModel();
         if(customModel !=null)
-            edtContentText.setText(customModel.getPartnerID());
+            edtContentText.setText(customModel.getCUSTOMER());
         CommonUtil.setEditFocus(edtContentText);
     }
 

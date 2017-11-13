@@ -60,10 +60,10 @@ public class DbDnInfo {
             dnModelDao.insertOrReplaceInTx(dnModels);
             dnModelDao.detachAll();
             for(DNModel  dnModel :dnModels){
-                dnDetailModelDao.insertOrReplaceInTx(dnModel.getDetailModels());
+                dnDetailModelDao.insertOrReplaceInTx(dnModel.getDETAILS());
                 dnDetailModelDao.detachAll();
-                for(DNDetailModel  dnDetailModel:dnModel.getDetailModels()){
-                    dnScanModelDao.insertOrReplaceInTx(dnDetailModel.getDnScanModels());
+                for(DNDetailModel  dnDetailModel:dnModel.getDETAILS()){
+                    dnScanModelDao.insertOrReplaceInTx(dnDetailModel.getSERIALS());
                     dnScanModelDao.detachAll();
                 }
             }
@@ -81,6 +81,23 @@ public class DbDnInfo {
                         DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.download)).list();
         return dnModels;
     }
+
+    /**
+     * 根据单号获取DN
+     * @return
+     */
+    public  DNModel GetLoaclDN(String Dnno){
+        return dnModelDao.queryBuilder().where(DNModelDao.Properties.AGENT_DN_NO.eq(Dnno)).unique();
+    }
+
+    /**
+     * 根据单号、行号获取DN明细
+     * @return
+     */
+    public  DNDetailModel GetLoaclDNDetail(String Dnno,Integer lineNo){
+        return dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(Dnno), DNDetailModelDao.Properties.LINE_NO.eq(lineNo)).unique();
+    }
+
 
     /**
      * 根据DN单号获取DN明细
@@ -121,10 +138,10 @@ public class DbDnInfo {
      * @param condition
      * @return
      */
-    public Integer GetScanQtyInDNScanModel(String DNNo,String condition){
+    public Integer GetScanQtyInDNScanModel(String DNNo,String condition,int lineNo){
         Integer qty=0;
         String sql="select  COUNT(ITEM__SERIAL__NO) as  SCANQTY from DNSCAN_MODEL " +
-                "where AGENT__DN__NO='"+DNNo+"' and   GOLFA__CODE='"+condition+"'";
+                "where AGENT__DN__NO='"+DNNo+"' and   GOLFA__CODE='"+condition+"' and LINE__NO="+lineNo;
         Cursor cursor= dnDetailModelDao.getDatabase().rawQuery(sql,null);
         if(cursor!=null){
             if(cursor.moveToFirst()){

@@ -56,7 +56,7 @@ public class BarcodeDetail extends BaseActivity {
         ArrayList<DNScanModel> dnScanModels =new ArrayList<>();
         for(int i=0;i<10;i++) {
             DNScanModel DNModel = new DNScanModel();
-            DNModel.setITEM_SERIAL_NO("123333333"+i);
+            DNModel.setSERIAL_NO("123333333"+i);
             dnScanModels.add(DNModel);
         }
         return dnScanModels;

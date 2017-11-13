@@ -70,7 +70,7 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
             listItemView = (ListItemView) convertView.getTag();
         }
         CustomModel customModel = customModels.get(selectID);
-        listItemView.txtPartnerName.setText(customModel.getPartnerName());
+        listItemView.txtPartnerName.setText(customModel.getNAME());
         return convertView;
     }
 
@@ -106,7 +106,7 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
                 for (int i = 0; i < count; i++) {
                     CustomModel pc = unfilteredValues.get(i);
                     if (pc != null) {
-                        if(pc.getPartnerID()!=null && pc.getPartnerID().startsWith(prefixString.toUpperCase())){
+                        if(pc.getCUSTOMER()!=null && pc.getCUSTOMER().startsWith(prefixString.toUpperCase())){
 
                             newValues.add(pc);
                         }

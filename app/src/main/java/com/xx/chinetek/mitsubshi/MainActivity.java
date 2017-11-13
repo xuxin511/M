@@ -93,6 +93,13 @@ public class MainActivity extends BaseActivity {
     private void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         LinearLayout linearLayout = (LinearLayout) gridView.getAdapter().getView(position, view, null);
         TextView textView = (TextView) linearLayout.getChildAt(1);
+        if(!textView.getText().toString().equals(getString(R.string.sync))){
+            if(!DbBaseInfo.getInstance().HasMaterialInfo()){
+                MessageBox.Show(context,getString(R.string.Msg_No_Sync));
+                return;
+            }
+        }
+
         Intent intent = new Intent();
         if (textView.getText().toString().equals(getString(R.string.outputscan))){
             intent.setClass(context, DeliveryStart.class);
@@ -111,29 +118,26 @@ public class MainActivity extends BaseActivity {
                 materialModel.setBISMT("1W4A31");
                 materialModel.setMAKTX("物料名称1");
                 materialModel.setZMAKTX("物料名称1-长");
-                materialModel.setNORMT("Y");
                 materialModels.add(materialModel);
                 materialModel = new MaterialModel();
                 materialModel.setMATNR("1120000002");
                 materialModel.setBISMT("09M473");
                 materialModel.setMAKTX("物料名称2");
                 materialModel.setZMAKTX("物料名称2-长");
-                materialModel.setNORMT("Y");
                 materialModels.add(materialModel);
             }
             ArrayList<CustomModel> customModels = new ArrayList<>();
             for(int i=0;i<25;i++){
                 CustomModel customModel =new CustomModel();
-                customModel.setPartnerID("1"+i+"2345");
-                customModel.setPartnerName("客户名称"+i);
-                customModel.setType(i%2==0?"Z2":"Z3");
+                customModel.setCUSTOMER("1"+i+"2345");
+                customModel.setNAME("客户名称"+i);
+                customModel.setPARTNER_FUNCTION(i%2==0?"Z2":"Z3");
                 customModels.add(customModel);
             }
             ArrayList<SyncParaModel> syncParaModels = new ArrayList<>();
             SyncParaModel syncParaModel = new SyncParaModel();
-            syncParaModel.setParaID("123333");
-            syncParaModel.setParaName("rule");
-            syncParaModel.setParaContext("211#***#");
+            syncParaModel.setKey("rule");
+            syncParaModel.setValue("211#***#");
             syncParaModels.add(syncParaModel);
 
             //插入数据

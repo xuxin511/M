@@ -24,9 +24,8 @@ public class SyncParaModelDao extends AbstractDao<SyncParaModel, Void> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property ParaID = new Property(0, String.class, "ParaID", false, "PARA_ID");
-        public final static Property ParaName = new Property(1, String.class, "ParaName", false, "PARA_NAME");
-        public final static Property ParaContext = new Property(2, String.class, "ParaContext", false, "PARA_CONTEXT");
+        public final static Property Key = new Property(0, String.class, "Key", false, "KEY");
+        public final static Property Value = new Property(1, String.class, "Value", false, "VALUE");
     }
 
 
@@ -42,9 +41,8 @@ public class SyncParaModelDao extends AbstractDao<SyncParaModel, Void> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SYNC_PARA_MODEL\" (" + //
-                "\"PARA_ID\" TEXT UNIQUE ," + // 0: ParaID
-                "\"PARA_NAME\" TEXT," + // 1: ParaName
-                "\"PARA_CONTEXT\" TEXT);"); // 2: ParaContext
+                "\"KEY\" TEXT UNIQUE ," + // 0: Key
+                "\"VALUE\" TEXT);"); // 1: Value
     }
 
     /** Drops the underlying database table. */
@@ -57,19 +55,14 @@ public class SyncParaModelDao extends AbstractDao<SyncParaModel, Void> {
     protected final void bindValues(DatabaseStatement stmt, SyncParaModel entity) {
         stmt.clearBindings();
  
-        String ParaID = entity.getParaID();
-        if (ParaID != null) {
-            stmt.bindString(1, ParaID);
+        String Key = entity.getKey();
+        if (Key != null) {
+            stmt.bindString(1, Key);
         }
  
-        String ParaName = entity.getParaName();
-        if (ParaName != null) {
-            stmt.bindString(2, ParaName);
-        }
- 
-        String ParaContext = entity.getParaContext();
-        if (ParaContext != null) {
-            stmt.bindString(3, ParaContext);
+        String Value = entity.getValue();
+        if (Value != null) {
+            stmt.bindString(2, Value);
         }
     }
 
@@ -77,19 +70,14 @@ public class SyncParaModelDao extends AbstractDao<SyncParaModel, Void> {
     protected final void bindValues(SQLiteStatement stmt, SyncParaModel entity) {
         stmt.clearBindings();
  
-        String ParaID = entity.getParaID();
-        if (ParaID != null) {
-            stmt.bindString(1, ParaID);
+        String Key = entity.getKey();
+        if (Key != null) {
+            stmt.bindString(1, Key);
         }
  
-        String ParaName = entity.getParaName();
-        if (ParaName != null) {
-            stmt.bindString(2, ParaName);
-        }
- 
-        String ParaContext = entity.getParaContext();
-        if (ParaContext != null) {
-            stmt.bindString(3, ParaContext);
+        String Value = entity.getValue();
+        if (Value != null) {
+            stmt.bindString(2, Value);
         }
     }
 
@@ -101,18 +89,16 @@ public class SyncParaModelDao extends AbstractDao<SyncParaModel, Void> {
     @Override
     public SyncParaModel readEntity(Cursor cursor, int offset) {
         SyncParaModel entity = new SyncParaModel( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // ParaID
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // ParaName
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // ParaContext
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // Key
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // Value
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, SyncParaModel entity, int offset) {
-        entity.setParaID(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setParaName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setParaContext(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setKey(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setValue(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
      }
     
     @Override

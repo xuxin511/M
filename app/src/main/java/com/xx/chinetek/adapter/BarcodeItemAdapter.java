@@ -68,7 +68,7 @@ public class BarcodeItemAdapter extends BaseAdapter {
             listItemView = (ListItemView) convertView.getTag();
         }
         DNScanModel dnScanModel = dnScanModels.get(selectID);
-        listItemView.txtBarcode.setText(dnScanModel.getITEM_SERIAL_NO());
+        listItemView.txtBarcode.setText(dnScanModel.getSERIAL_NO());
         listItemView.txtIndex.setText(convertView.getResources().getString(R.string.RowNo)+(++index));
         return convertView;
     }

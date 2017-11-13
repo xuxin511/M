@@ -80,9 +80,9 @@ public class ExceptionListItemAdapter extends BaseAdapter {
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
         listItemView.txtStatus.setText(DNModel.getDN_STATUS());
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME());
-        listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.submittime)+ CommonUtil.DateToString(DNModel.getUPDATE_DATE(),null));
+        listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.submittime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
         listItemView.txtSource.setText(DNModel.getDN_SOURCE());
-        listItemView.txtSubmitUser.setText(convertView.getResources().getString(R.string.submituser)+DNModel.getUPDATE_USER());
+       // listItemView.txtSubmitUser.setText(convertView.getResources().getString(R.string.submituser)+DNModel.());
         return convertView;
     }
 
