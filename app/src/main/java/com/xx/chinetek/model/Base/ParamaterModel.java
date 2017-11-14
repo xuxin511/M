@@ -20,7 +20,12 @@ public class ParamaterModel {
     /**
      * 序列号
      */
-    public static String SerialNo;
+    public static String SerialNo=null;
+
+    /**
+     * 设备型号
+     */
+    public static String Model=null;
 
     /**
      * 代理商编号

@@ -35,7 +35,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         public final static Property CUSTOM_NAME = new Property(8, String.class, "CUSTOM_NAME", false, "CUSTOM__NAME");
         public final static Property DN_QTY = new Property(9, Integer.class, "DN_QTY", false, "DN__QTY");
         public final static Property OPER_DATE = new Property(10, java.util.Date.class, "OPER_DATE", false, "OPER__DATE");
-        public final static Property DN_SOURCE = new Property(11, String.class, "DN_SOURCE", false, "DN__SOURCE");
+        public final static Property DN_SOURCE = new Property(11, Integer.class, "DN_SOURCE", false, "DN__SOURCE");
         public final static Property STATUS = new Property(12, int.class, "STATUS", false, "STATUS");
         public final static Property CUS_DN_NO = new Property(13, String.class, "CUS_DN_NO", false, "CUS__DN__NO");
         public final static Property REMARK = new Property(14, String.class, "REMARK", false, "REMARK");
@@ -68,7 +68,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
                 "\"CUSTOM__NAME\" TEXT," + // 8: CUSTOM_NAME
                 "\"DN__QTY\" INTEGER," + // 9: DN_QTY
                 "\"OPER__DATE\" INTEGER," + // 10: OPER_DATE
-                "\"DN__SOURCE\" TEXT," + // 11: DN_SOURCE
+                "\"DN__SOURCE\" INTEGER," + // 11: DN_SOURCE
                 "\"STATUS\" INTEGER NOT NULL ," + // 12: STATUS
                 "\"CUS__DN__NO\" TEXT," + // 13: CUS_DN_NO
                 "\"REMARK\" TEXT);"); // 14: REMARK
@@ -135,9 +135,9 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
             stmt.bindLong(11, OPER_DATE.getTime());
         }
  
-        String DN_SOURCE = entity.getDN_SOURCE();
+        Integer DN_SOURCE = entity.getDN_SOURCE();
         if (DN_SOURCE != null) {
-            stmt.bindString(12, DN_SOURCE);
+            stmt.bindLong(12, DN_SOURCE);
         }
         stmt.bindLong(13, entity.getSTATUS());
  
@@ -207,9 +207,9 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
             stmt.bindLong(11, OPER_DATE.getTime());
         }
  
-        String DN_SOURCE = entity.getDN_SOURCE();
+        Integer DN_SOURCE = entity.getDN_SOURCE();
         if (DN_SOURCE != null) {
-            stmt.bindString(12, DN_SOURCE);
+            stmt.bindLong(12, DN_SOURCE);
         }
         stmt.bindLong(13, entity.getSTATUS());
  
@@ -249,7 +249,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // CUSTOM_NAME
             cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // DN_QTY
             cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)), // OPER_DATE
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // DN_SOURCE
+            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // DN_SOURCE
             cursor.getInt(offset + 12), // STATUS
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // CUS_DN_NO
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // REMARK
@@ -270,7 +270,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         entity.setCUSTOM_NAME(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setDN_QTY(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
         entity.setOPER_DATE(cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)));
-        entity.setDN_SOURCE(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setDN_SOURCE(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
         entity.setSTATUS(cursor.getInt(offset + 12));
         entity.setCUS_DN_NO(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setREMARK(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));

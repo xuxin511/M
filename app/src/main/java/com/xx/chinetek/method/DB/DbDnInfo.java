@@ -140,7 +140,7 @@ public class DbDnInfo {
      */
     public Integer GetScanQtyInDNScanModel(String DNNo,String condition,int lineNo){
         Integer qty=0;
-        String sql="select  COUNT(ITEM__SERIAL__NO) as  SCANQTY from DNSCAN_MODEL " +
+        String sql="select  COUNT(SERIAL__NO) as  SCANQTY from DNSCAN_MODEL " +
                 "where AGENT__DN__NO='"+DNNo+"' and   GOLFA__CODE='"+condition+"' and LINE__NO="+lineNo;
         Cursor cursor= dnDetailModelDao.getDatabase().rawQuery(sql,null);
         if(cursor!=null){

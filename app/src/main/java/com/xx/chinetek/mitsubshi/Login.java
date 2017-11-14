@@ -13,6 +13,7 @@ import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.ModelInfo;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
@@ -47,13 +48,12 @@ public class Login extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
+        ModelInfo.GetSysINfo();
         SharePreferUtil.ReadShare(context);
         SharePreferUtil.ReadUserShare(context);
         edtOperater.setText(ParamaterModel.Operater);
-        String serialNo=android.os.Build.SERIAL;
-        if(serialNo!=null) {
-            txtSerialNo.setText(serialNo);
-            ParamaterModel.SerialNo=serialNo;
+        if(ParamaterModel.SerialNo!=null) {
+            txtSerialNo.setText(ParamaterModel.SerialNo);
         }
     }
 
@@ -65,9 +65,9 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
-        String model = android.os.Build.MODEL;
-        if (!(model.toUpperCase().equals("TC75") || model.toUpperCase().equals("IDATA1500"))) {
-            MessageBox.Show(context, "设备型号不支持！");
+        unregisterReceiver(ModelInfo.myReceiver); //取消MDM注册广播
+        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
+            MessageBox.Show(context,getString(R.string.Msg_NotSupportModel));
             return;
         }
 

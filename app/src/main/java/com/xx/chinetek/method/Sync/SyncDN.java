@@ -193,7 +193,7 @@ public class SyncDN {
                    dnDetailModels.add(dnDetailModel);
                }
                dnModel.setOPER_DATE(new Date());
-               dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType().toString());
+               dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
                dnModel.setDETAILS(dnDetailModels);
                dnModel.setDN_QTY(Qty);
            }

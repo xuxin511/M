@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -14,15 +15,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.xx.chinetek.adapter.DN.DeliveryListItemAdapter;
-import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
+import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
+import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -40,18 +42,21 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
 
 @ContentView(R.layout.activity_delivery_list)
-public class DeliveryList extends BaseActivity {
+public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     Context context = DeliveryList.this;
     @ViewInject(R.id.edt_DeleveryNoFuilter)
     EditText edtDeleveryNoFuilter;
     @ViewInject(R.id.Lsv_DeliveryList)
     ListView LsvDeliveryList;
+    @ViewInject(R.id.mSwipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
 
     DeliveryListItemAdapter deliveryListItemAdapter;
     ArrayList<DNModel> DNModels; //所有未完成出库单
 
     LoadingDialog dialog;
+
 
     @Override
     public void onHandleMessage(Message msg) {
@@ -62,20 +67,21 @@ public class DeliveryList extends BaseActivity {
                     break;
                 case RESULT_SyncUSB:
                     SyncDN.DNFromFiles();
-                    dialog.dismiss();
                     break;
                 case RESULT_SyncMail:
                 case RESULT_SyncFTP:
                     if ((int) msg.obj > 0) {
                         SyncDN.DNFromFiles();
                     }
-                    dialog.dismiss();
-                    //导入文件至数据库
+                    break;
+                case TAG_SCAN:
+                    CheckDNByDnNo((String) msg.obj);
                     break;
                 case NetworkError.NET_ERROR_CUSTOM:
                     ToastUtil.show("获取请求失败_____" + msg.obj);
                     break;
             }
+            dialog.dismiss();
             DNModels= DbDnInfo.getInstance().GetLoaclDN();
             BindListView();
         } catch (Exception ex) {
@@ -83,6 +89,8 @@ public class DeliveryList extends BaseActivity {
             dialog.dismiss();
         }
     }
+
+
 
 
     @Override
@@ -96,7 +104,13 @@ public class DeliveryList extends BaseActivity {
     protected void initData() {
         super.initData();
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
+        mSwipeLayout.setOnRefreshListener(this); //下拉刷新
+    }
 
+    @Override
+    public void onRefresh() {
+        ImportDelivery();
+        mSwipeLayout.setRefreshing(false);
     }
 
     @Override
@@ -138,12 +152,33 @@ public class DeliveryList extends BaseActivity {
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemClickListener.class)
     private void LsvDeliveryListonItemClick(AdapterView<?> parent, View view, int position, long id) {
         DNModel  dnModel=(DNModel)deliveryListItemAdapter.getItem(position);
+        ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
+        StartScan(dnModel);
+    }
+
+    private void StartScan(DNModel dnModel) {
         Intent intent=new Intent(context,DeliveryScan.class);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
         intent.putExtras(bundle);
         intent.putExtra("DNNo",dnModel.getAGENT_DN_NO());
         startActivityLeft(intent);
+    }
+
+    void CheckDNByDnNo(String DNNo){
+        if(DNModels!=null) {
+            DNModel dnModel=new DNModel();
+            dnModel.setAGENT_DN_NO(DNNo);
+            int index=DNModels.indexOf(dnModel);
+            if(index!=-1) {
+                dnModel=DNModels.get(index);
+                StartScan(dnModel);
+            }else{
+                MessageBox.Show(context,getString(R.string.Msg_No_DNno));
+                edtDeleveryNoFuilter.setText(DNNo);
+                CommonUtil.setEditFocus(edtDeleveryNoFuilter);
+            }
+        }
     }
 
 
@@ -157,8 +192,9 @@ public class DeliveryList extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(!edtDeleveryNoFuilter.getText().toString().equals(""))
-                deliveryListItemAdapter.getFilter().filter(edtDeleveryNoFuilter.getText().toString());
+            String filterContent=edtDeleveryNoFuilter.getText().toString();
+            if(!filterContent.equals(""))
+                deliveryListItemAdapter.getFilter().filter(filterContent);
             else{
                 BindListView();
             }
@@ -169,7 +205,6 @@ public class DeliveryList extends BaseActivity {
 
         }
     };
-
     void BindListView(){
         if(DNModels!=null) {
             deliveryListItemAdapter = new DeliveryListItemAdapter(context, DNModels);
@@ -204,6 +239,11 @@ public class DeliveryList extends BaseActivity {
                 dialog.show();
                 android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB,null);
                 mHandler.sendMessage(msg);
+                break;
+            case 3:
+            case 5:
+                DNModels= DbDnInfo.getInstance().GetLoaclDN();
+                BindListView();
                 break;
         }
 

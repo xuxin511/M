@@ -76,7 +76,7 @@ public class ExceptionList extends BaseActivity {
             DNModel.setDN_STATUS(3);
             DNModel.setCUSTOM_NAME("收货方xxxxxxx");
             DNModel.setOPER_DATE(CommonUtil.dateStrConvertDate("2017-10-30",null));
-            DNModel.setDN_SOURCE("MAPS");
+           // DNModel.setDN_SOURCE("MAPS");
             DNModels.add(DNModel);
         }
         return DNModels;

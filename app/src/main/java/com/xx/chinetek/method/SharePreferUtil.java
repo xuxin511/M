@@ -42,8 +42,8 @@ public class SharePreferUtil {
             ParamaterModel.ftpModel.setFtpUserName(sharedPreferences.getString("FtpUserName","anonymous"));
             ParamaterModel.ftpModel.setFtpPassword(sharedPreferences.getString("FtpPassword","12345"));
             ParamaterModel.ftpModel.setFtpPort(sharedPreferences.getInt("FtpPort",21));
-            ParamaterModel.ftpModel.setFtpDownLoad(sharedPreferences.getString("FtpDownLoad",""));
-            ParamaterModel.ftpModel.setFtpUpLoad(sharedPreferences.getString("FtpUpLoad",""));
+            ParamaterModel.ftpModel.setFtpDownLoad(sharedPreferences.getString("FtpDownLoad","/website/down/"));
+            ParamaterModel.ftpModel.setFtpUpLoad(sharedPreferences.getString("FtpUpLoad","/website/up/"));
         }
     }
 
