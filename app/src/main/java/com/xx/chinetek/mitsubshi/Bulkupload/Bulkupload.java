@@ -68,50 +68,12 @@ public class Bulkupload extends BaseActivity {
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
     private void LsvExceptionListonItemClick(AdapterView<?> parent, View view, int position, long id) {
         try{
-            clickposition=position;
-            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("请选择操作" )
-                    .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
-                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // TODO 自动生成的方法
-                                            //删除扫描记录，改变表头状态，改变明细数量
-                                            if(clickposition==-1){
-                                                MessageBox.Show(context,"请先选择操作的行！");
-                                                return;
-                                            }
-                                            DNModel Model= (DNModel)exceptionListItemAdapter.getItem(clickposition);
-                                            if(DbDnInfo.getInstance().DELscanbyagent(Model.getAGENT_DN_NO(),"")){
-                                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyDN(Model.getAGENT_DN_NO(),"");
-                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"2","");
-                                                MessageBox.Show(context,"删除成功！");
-                                                GetbulkuploadList();
-                                            }else{
-                                                MessageBox.Show(context,"删除失败！");
-                                            }
-
-                                        }
-                                    }).setNegativeButton("取消", null).show();
-                        }
-                    }).setNegativeButton("查看", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if(clickposition==-1){
-                        MessageBox.Show(context,"请先选择操作的行！");
-                        return;
-                    }
-                    Intent intent=new Intent(context, ExceptionScan.class);
-                    Bundle bundle=new Bundle();
-                    DNModel Model= (DNModel)exceptionListItemAdapter.getItem(clickposition);
-                    bundle.putParcelable("DNModel",Model);
-                    intent.putExtras(bundle);
-                    startActivityLeft(intent);
-
-                }
-            }).show();
+            Intent intent=new Intent(context, ExceptionScan.class);
+            Bundle bundle=new Bundle();
+            DNModel Model= (DNModel)exceptionListItemAdapter.getItem(clickposition);
+            bundle.putParcelable("DNModel",Model);
+            intent.putExtras(bundle);
+            startActivityLeft(intent);
 
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
