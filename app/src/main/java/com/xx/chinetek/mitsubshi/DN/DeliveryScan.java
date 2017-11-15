@@ -1,6 +1,8 @@
 package com.xx.chinetek.mitsubshi.DN;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Message;
 import android.text.TextUtils;
@@ -52,6 +54,8 @@ public class DeliveryScan extends BaseIntentActivity {
     ImageView imgRemark;
     @ViewInject(R.id.txt_ItemNo)
     TextView txtItemNo;
+    @ViewInject(R.id.txt_Remark)
+    TextView txtRemark;
     @ViewInject(R.id.txt_ItemName)
     TextView txtItemName;
     @ViewInject(R.id.txt_ScanQty)
@@ -88,8 +92,9 @@ public class DeliveryScan extends BaseIntentActivity {
     protected void initData() {
         super.initData();
         dnInfo=DbDnInfo.getInstance();
-        txtDnNo.setText(getIntent().getStringExtra("DNNo"));
         dnModel=getIntent().getParcelableExtra("DNModel");
+        txtDnNo.setText(getIntent().getStringExtra("DNNo"));
+        ShowRemark();
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         GetDeliveryOrderScanList();
         if (dnModel.getDETAILS() == null)
@@ -108,8 +113,38 @@ public class DeliveryScan extends BaseIntentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_submit){
 
+            if(dnModel.getSTATUS()!=3) {
+                //提交成功修改单据状态
+            }else{
+                MessageBox.Show(context,getString(R.string.Msg_Dn_Finished));
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 备注
+     * @param view
+     */
+    @Event(R.id.img_Remark)
+    private  void ImgRemarkClick(View view){
+        final EditText et = new EditText(this);
+        et.setTextColor(getResources().getColor(R.color.black));
+        new AlertDialog.Builder(this).setTitle("备注")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(et)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String input = et.getText().toString();
+                        if(!TextUtils.isEmpty(input)) {
+                            dnModel.setREMARK(input);
+                            ShowRemark();
+                        }
+
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
@@ -123,6 +158,11 @@ public class DeliveryScan extends BaseIntentActivity {
         return false;
     }
 
+    /**
+     * 扫描条码
+     * @param barcode
+     * @return
+     */
     private Boolean CheckScanBarcode(String barcode) {
         if (TextUtils.isEmpty(barcode)) {
             MessageBox.Show(context, getString(R.string.Msg_No_Barcode));
@@ -156,6 +196,9 @@ public class DeliveryScan extends BaseIntentActivity {
         startActivityLeft(intent);
     }
 
+    /**
+     * 绑定列表
+     */
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(txtDnNo.getText().toString());
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels);
@@ -183,6 +226,12 @@ public class DeliveryScan extends BaseIntentActivity {
         return true;
     }
 
+    private  void ShowRemark(){
+        if(dnModel.getREMARK()!=null){
+            txtRemark.setVisibility(View.VISIBLE);
+            txtRemark.setText(dnModel.getREMARK());
+        }
+    }
 
     /**
      * 条码扫描（非自建方式）
@@ -343,7 +392,8 @@ public class DeliveryScan extends BaseIntentActivity {
             dnModel.setDN_QTY(dnModel.getDN_QTY() + 1);
         }
         if (ShowErrMag(isErrorStatus)) return true;
-        dnModel.setDN_STATUS(1);
+        dnModel.setDN_STATUS("AC");
+        dnModel.setSTATUS(1);
         if(ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z2")){
             dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
             dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());

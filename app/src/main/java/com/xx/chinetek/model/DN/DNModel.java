@@ -38,7 +38,7 @@ public class DNModel implements Parcelable {
     /*
       出库状态 AC正常，CO关闭
     */
-    private int DN_STATUS;
+    private String DN_STATUS;
     /*
     一级代理商编码
     */
@@ -78,7 +78,7 @@ public class DNModel implements Parcelable {
     private Integer DN_SOURCE;
 
     /**
-     * //单据状态：-1:异常 0：未下载 1：已下载  2：完成
+     * //单据状态：-1:异常 0：未下载 1：已下载  2：完成 3:已提交
      */
     private int STATUS ;
     /**
@@ -117,7 +117,7 @@ public class DNModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.AGENT_DN_NO);
         dest.writeLong(this.DN_DATE != null ? this.DN_DATE.getTime() : -1);
-        dest.writeInt(this.DN_STATUS);
+        dest.writeString(this.DN_STATUS);
         dest.writeString(this.LEVEL_1_AGENT_NO);
         dest.writeString(this.LEVEL_1_AGENT_NAME);
         dest.writeString(this.LEVEL_2_AGENT_NO);
@@ -157,12 +157,12 @@ public class DNModel implements Parcelable {
     }
 
 
-    public int getDN_STATUS() {
+    public String getDN_STATUS() {
         return this.DN_STATUS;
     }
 
 
-    public void setDN_STATUS(int DN_STATUS) {
+    public void setDN_STATUS(String DN_STATUS) {
         this.DN_STATUS = DN_STATUS;
     }
 
@@ -371,7 +371,7 @@ public class DNModel implements Parcelable {
         this.AGENT_DN_NO = in.readString();
         long tmpDN_DATE = in.readLong();
         this.DN_DATE = tmpDN_DATE == -1 ? null : new Date(tmpDN_DATE);
-        this.DN_STATUS = in.readInt();
+        this.DN_STATUS = in.readString();
         this.LEVEL_1_AGENT_NO = in.readString();
         this.LEVEL_1_AGENT_NAME = in.readString();
         this.LEVEL_2_AGENT_NO = in.readString();
@@ -390,8 +390,8 @@ public class DNModel implements Parcelable {
     }
 
 
-    @Generated(hash = 2091443833)
-    public DNModel(String AGENT_DN_NO, Date DN_DATE, int DN_STATUS,
+    @Generated(hash = 1075540711)
+    public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS,
             String LEVEL_1_AGENT_NO, String LEVEL_1_AGENT_NAME,
             String LEVEL_2_AGENT_NO, String LEVEL_2_AGENT_NAME, String CUSTOM_NO,
             String CUSTOM_NAME, Integer DN_QTY, Date OPER_DATE, Integer DN_SOURCE,

@@ -153,7 +153,8 @@ public class SyncDN {
                        dnModel = DbDnInfo.getInstance().GetLoaclDN(DNNo);
                        if(dnModel==null){
                            dnModel=new DNModel();
-                           dnModel.setDN_STATUS(1);
+                           dnModel.setSTATUS(1);
+                           dnModel.setDN_STATUS("AC");
                        }
                        firstIndex++;
 

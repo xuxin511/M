@@ -80,7 +80,7 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
         }
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
-        listItemView.txtStatus.setText(DNModel.getDN_STATUS()==1?"已下载":"未下载");
+        listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME()==null?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
         listItemView.txtCreateTime.setText(convertView.getResources().getString(R.string.createtime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
         if(DNModel.getDN_SOURCE()!=null)

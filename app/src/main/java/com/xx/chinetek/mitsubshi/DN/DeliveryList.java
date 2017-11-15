@@ -156,6 +156,18 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         StartScan(dnModel);
     }
 
+//    @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemLongClickListener.class)
+//    private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//        DNModel  dnModel=(DNModel)deliveryListItemAdapter.getItem(i);
+//        new AlertDialog.Builder(context)
+//                .setTitle("提示")
+//                .setCancelable(false)
+//                .setMessage(getString(R.string.Msg_Delete_DN)+dnModel.getAGENT_DN_NO())
+//                .setPositiveButton("确定", null).show();
+//
+//        return false;
+//    }
+
     private void StartScan(DNModel dnModel) {
         Intent intent=new Intent(context,DeliveryScan.class);
         Bundle bundle=new Bundle();
