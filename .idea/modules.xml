@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MITSUBSHI.iml" filepath="$PROJECT_DIR$/MITSUBSHI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SL.iml" filepath="$PROJECT_DIR$/SL.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/chineteklib/chineteklib.iml" filepath="$PROJECT_DIR$/chineteklib/chineteklib.iml" />
     </modules>

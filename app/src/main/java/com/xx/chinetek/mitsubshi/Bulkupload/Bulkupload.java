@@ -1,8 +1,8 @@
-package com.xx.chinetek.mitsubshi;
+package com.xx.chinetek.mitsubshi.Bulkupload;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-
 import com.xx.chinetek.adapter.ExceptionListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -19,6 +18,7 @@ import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
+import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -29,9 +29,9 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 @ContentView(R.layout.activity_exception_list)
-public class ExceptionList extends BaseActivity {
+public class Bulkupload extends BaseActivity {
 
-    Context context = ExceptionList.this;
+    Context context = Bulkupload.this;
     @ViewInject(R.id.edt_DNNoFuilter)
     EditText edtDNNoFuilter;
     @ViewInject(R.id.Lsv_ExceptionList)
@@ -51,14 +51,9 @@ public class ExceptionList extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
-        GetExceptionList();
+        GetbulkuploadList();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        GetExceptionList();
-    }
 
     @Event(value = R.id.edt_DNNoFuilter, type = View.OnKeyListener.class)
     private boolean edtDNNoFuilterOnkeyUp(View v, int keyCode, KeyEvent event) {
@@ -90,14 +85,10 @@ public class ExceptionList extends BaseActivity {
                                             }
                                             DNModel Model= (DNModel)exceptionListItemAdapter.getItem(clickposition);
                                             if(DbDnInfo.getInstance().DELscanbyagent(Model.getAGENT_DN_NO(),"")){
-//                                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyDN(Model.getAGENT_DN_NO(),"");
-//                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"2","");
-                                                //判断剩余的扫描数量
-                                                DbDnInfo.getInstance().UpdateDetailAllNum(Model.getAGENT_DN_NO(),0);
-                                                //需要改变主表状态
-                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"3","");
+                                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyDN(Model.getAGENT_DN_NO(),"");
+                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"2","");
                                                 MessageBox.Show(context,"删除成功！");
-                                                GetExceptionList();
+                                                GetbulkuploadList();
                                             }else{
                                                 MessageBox.Show(context,"删除失败！");
                                             }
@@ -130,12 +121,12 @@ public class ExceptionList extends BaseActivity {
 
 
 
-    @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
-    private void LsvExceptionListonItemlongClick(AdapterView<?> parent, View view, int position, long id) {
-        try{
-
-            MessageBox.Show(context,"请先选择操作的行！");
-
+//    @Event(value = R.id.Lsv_ExceptionList,type = AdapterView..class)
+//    private void LsvExceptionListonItemlongClick(AdapterView<?> parent, View view, int position, long id) {
+//        try{
+//
+//            MessageBox.Show(context,"请先选择操作的行！");
+//
 //            clickposition=position;
 //            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
 //                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -155,17 +146,17 @@ public class ExceptionList extends BaseActivity {
 //
 //                        }
 //                    }).setNegativeButton("取消", null).show();
+//
+//
+//        }catch(Exception ex){
+//            MessageBox.Show(context,ex.toString());
+//        }
+//
+//
+//    }
 
 
-        }catch(Exception ex){
-            MessageBox.Show(context,ex.toString());
-        }
-
-
-    }
-
-
-    void GetExceptionList(){
+    void GetbulkuploadList(){
         try{
             DNModels =ImportExceptionList();
             exceptionListItemAdapter=new ExceptionListItemAdapter(context, DNModels);

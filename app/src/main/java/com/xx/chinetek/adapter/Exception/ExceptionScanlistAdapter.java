@@ -1,4 +1,4 @@
-package com.xx.chinetek.adapter.DN;
+package com.xx.chinetek.adapter.Exception;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by GHOST on 2017/1/13.
  */
 
-public class DeliveryScanItemAdapter extends BaseAdapter {
+public class ExceptionScanlistAdapter extends BaseAdapter {
     private Context context; // 运行上下文
     private ArrayList<DNDetailModel> dnDetailModels; // 信息集合
     private LayoutInflater listContainer; // 视图容器
@@ -31,7 +31,7 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         public TextView txtScanQty ;
     }
 
-    public DeliveryScanItemAdapter(Context context, ArrayList<DNDetailModel> dnDetailModels) {
+    public ExceptionScanlistAdapter(Context context, ArrayList<DNDetailModel> dnDetailModels) {
         this.context = context;
         listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
         this.dnDetailModels = dnDetailModels;
@@ -63,11 +63,11 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
             listItemView = new ListItemView();
 
             // 获取list_item布局文件的视图
-            convertView = listContainer.inflate(R.layout.item_delivery_scan,null);
-//            listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.item_ItemNo);
+            convertView = listContainer.inflate(R.layout.item_exception_scan,null);
+            listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.item_barcode);
             listItemView.txtRowNo = (TextView) convertView.findViewById(R.id.item_RowNo);
             listItemView.txtItemName = (TextView) convertView.findViewById(R.id.item_ItemName);
-//            listItemView.txtDNQty = (TextView) convertView.findViewById(R.id.item_DNQty);
+            listItemView.txtDNQty = (TextView) convertView.findViewById(R.id.item_reason);
             listItemView.txtScanQty = (TextView) convertView.findViewById(R.id.item_ScanQty);
             convertView.setTag(listItemView);
         } else {
@@ -75,18 +75,10 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         }
         DNDetailModel dnDetailModel = dnDetailModels.get(selectID);
         listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
-        listItemView.txtRowNo.setText(convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO());
+        listItemView.txtRowNo.setText(convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO().toString());
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());
-        listItemView.txtDNQty.setText(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY());
-        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+dnDetailModel.getSCAN_QTY());
-        if(dnDetailModel.getDN_QTY()==dnDetailModel.getSCAN_QTY()){
-            convertView.setBackgroundResource(R.color.mediumaquamarine);
-        }else if(dnDetailModel.getDN_QTY()!=dnDetailModel.getSCAN_QTY() && dnDetailModel.getSCAN_QTY()!=0){
-            convertView.setBackgroundResource(R.color.antiquewhite);
-        }
-        else {
-            convertView.setBackgroundResource(R.color.trans);
-        }
+        listItemView.txtDNQty.setText(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY().toString());
+        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+dnDetailModel.getSCAN_QTY().toString());
         return convertView;
     }
 

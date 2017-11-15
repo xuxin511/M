@@ -10,6 +10,7 @@ import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.DNScanModel;
 
 import java.util.ArrayList;
 
@@ -153,6 +154,187 @@ public class DbDnInfo {
         return qty;
     }
 
+    //ymh
+    /**
+     * 获取本地数据所有异常的单据
+     * @return
+     */
+    public  ArrayList<DNModel> GetLoaclExceptionDN(){
+        ArrayList<DNModel> dnModels=new ArrayList<>();
+        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
+                .where(DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.exeption)).list();
+        return dnModels;
+    }
+
+    /**
+     * 获取本地数据所有异常的单据的明细
+     * @return
+     */
+    public  ArrayList<DNDetailModel> GetLoaclExceptionDetailsDN(String DNNo){
+        ArrayList<DNDetailModel> dnModeldetails=new ArrayList<>();
+        dnModeldetails=(ArrayList<DNDetailModel>) dnDetailModelDao.queryBuilder().distinct()
+                .where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo)).list();
+        return dnModeldetails;
+    }
+
+    /**
+     * 获取本地数据所有异常的单据的明细扫描数据
+     * @return
+     */
+    public  ArrayList<DNScanModel> GetLoaclDNScanModelDN(String DNNo, String Material){
+        ArrayList<DNScanModel> DNScanModels=new ArrayList<>();
+        DNScanModels=(ArrayList<DNScanModel>) dnScanModelDao.queryBuilder().distinct()
+                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.GOLFA_CODE.eq(Material)).list();
+        return DNScanModels;
+    }
+
+    /**
+     * 获取本地数据所有异常的单据的明细扫描数据
+     * @return
+     */
+    public  Integer GetLoaclDNScanModelDNNum(String DNNo,String Material){
+        ArrayList<DNScanModel> DNScanModels=new ArrayList<>();
+        DNScanModels=(ArrayList<DNScanModel>) dnScanModelDao.queryBuilder().distinct()
+                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.GOLFA_CODE.eq(Material)).list();
+        return DNScanModels.size();
+    }
+
+    /**
+     * 修改主表明细行的扫描数据
+     * @param DNNo
+     * @param Material
+     */
+    public boolean UpdateDetailNum(String DNNo,String Material,Integer Number){
+        try{
+            String deletesql="update DNDETAIL_MODEL set SCAN__QTY= '"+Number+"' where AGENT__DN__NO='"+DNNo+"' and GOLFA__CODE='"+Material+"'";
+            daoSession.getDatabase().execSQL(deletesql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
+    }
+
+    /**
+     * 修改主表明细行的扫描数据
+     * @param DNNo
+     * @param Number
+     */
+    public boolean UpdateDetailAllNum(String DNNo,Integer Number){
+        try{
+            String deletesql="update DNDETAIL_MODEL set SCAN__QTY= '"+Number+"' where AGENT__DN__NO='"+DNNo+"'";
+            daoSession.getDatabase().execSQL(deletesql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
+    }
+
+
+    /**
+     * 删除扫描记录根据主表主键
+     * @param DNNo
+     * @param condition
+     */
+    public boolean DELscanbyagent(String DNNo,String condition){
+        try{
+            String deletesql="delete from DNSCAN_MODEL " +
+                    "where AGENT__DN__NO='"+DNNo+"'";
+            daoSession.getDatabase().execSQL(deletesql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
+    }
+
+    /**
+     * 删除扫描记录根据主表明细主键
+     * @param model
+     * @param condition
+     */
+    public boolean DELscanbyagentdetail(DNDetailModel model,String condition){
+        try{
+            String deletesql="delete from DNSCAN_MODEL " +
+                    "where AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and GOLFA__CODE='"+ model.getGOLFA_CODE()+"'";
+            daoSession.getDatabase().execSQL(deletesql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
+    }
+
+    /**
+     * 删除扫描记录根据序列号ymh
+     * @param serialno
+     * @param condition
+     */
+    public boolean DELscanbyserial(String serialno,String condition){
+        try{
+            String deletesql="delete from DNSCAN_MODEL " +
+                    "where SERIAL__NO='"+ serialno+"'";
+            daoSession.getDatabase().execSQL(deletesql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
+    }
+
+
+    /**
+     * 修改主表的状态
+     * @param DNNo
+     *  @param status
+     * @param condition
+     */
+    public boolean UpdateDNmodelState(String DNNo,String status,String condition){
+        try{
+            String sql="update DNMODEL " +
+                    "set DN__STATUS='"+status+"' where AGENT__DN__NO='"+ DNNo+"'";
+            daoSession.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
+
+    /**
+     * 修改主表的状态异常出库表
+     * @param DNNo
+     * @param condition
+     */
+    public boolean UpdateDNmodelDetailNumberbyDN(String DNNo,String condition){
+        try{
+            String sql="update DNDETAIL_MODEL set DN__QTY=0 " +
+                    "where AGENT__DN__NO='"+ DNNo +"'";
+            daoSession.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
+//    /**
+//     * 修改主表的状态根据明细行
+//     * @param model
+//     * @param condition
+//     */
+//    public boolean UpdateDNmodelDetailNumberbyGOLFACODE(DNDetailModel model,String condition){
+//        try{
+//            String sql="update DNMODEL set DN__QTY=0 " +
+//                    "where AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and GOLFA_CODE='"+ model.getGOLFA_CODE()+"'";
+//            daoSession.getDatabase().execSQL(sql);
+//            return true;
+//        }catch(Exception ex){
+//            return false;
+//        }
+//    }
+
 
 
 }
+

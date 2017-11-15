@@ -1,5 +1,8 @@
 package com.xx.chinetek.model.DN;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
 import com.xx.chinetek.greendao.DaoSession;
@@ -24,7 +27,7 @@ import java.util.List;
             @Index(value = "AGENT_DN_NO,LINE_NO", unique = true)
         }
 )
-public class DNDetailModel {
+public class DNDetailModel implements Parcelable {
 
     private String  AGENT_DN_NO;
     private Integer  LINE_NO;
@@ -331,5 +334,50 @@ public class DNDetailModel {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.AGENT_DN_NO);
+        dest.writeValue(this.LINE_NO);
+        dest.writeString(this.ITEM_NO);
+        dest.writeString(this.ITEM_NAME);
+        dest.writeString(this.GOLFA_CODE);
+        dest.writeValue(this.DN_QTY);
+        dest.writeString(this.DETAIL_STATUS);
+        dest.writeLong(this.OPER_DATE != null ? this.OPER_DATE.getTime() : -1);
+        dest.writeValue(this.SCAN_QTY);
+        dest.writeValue(this.STATUS);
+        dest.writeTypedList(this.SERIALS);
+    }
+
+    protected DNDetailModel(Parcel in) {
+        this.AGENT_DN_NO = in.readString();
+        this.LINE_NO = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.ITEM_NO = in.readString();
+        this.ITEM_NAME = in.readString();
+        this.GOLFA_CODE = in.readString();
+        this.DN_QTY = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.DETAIL_STATUS = in.readString();
+        long tmpOPER_DATE = in.readLong();
+        this.OPER_DATE = tmpOPER_DATE == -1 ? null : new Date(tmpOPER_DATE);
+        this.SCAN_QTY = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.STATUS = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.SERIALS = in.createTypedArrayList(DNScanModel.CREATOR);
+    }
+
+    public static final Parcelable.Creator<DNDetailModel> CREATOR = new Parcelable.Creator<DNDetailModel>() {
+        @Override
+        public DNDetailModel createFromParcel(Parcel source) {
+            return new DNDetailModel(source);
+        }
+
+        @Override
+        public DNDetailModel[] newArray(int size) {
+            return new DNDetailModel[size];
+        }
+    };
 }
