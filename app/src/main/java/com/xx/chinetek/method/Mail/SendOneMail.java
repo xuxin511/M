@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -27,6 +28,7 @@ import javax.mail.internet.MimeUtility;
 public class SendOneMail {
     private MailModel info;
     private String path;
+    public SendOneMail(){}
     public SendOneMail(String path){
         this.path = path;
     }
@@ -89,14 +91,14 @@ public class SendOneMail {
      * 发送带有附件的邮件
      * @param info
      */
-    public void sendAttachment(MailModel info,ArrayList<String> list){
+    public void sendAttachment(MailModel info,List<String> list) throws Exception{
         this.info = info;
         Properties properties = info.getProperties();
         //1、根据邮件会话属性和密码验证器构造一个发送邮件的session
         Session sendMailSession  = Session.getDefaultInstance(properties);
         //开启Session的debug模式，这样就可以查看到程序发送Email的运行状态
         sendMailSession.setDebug(true);
-        try {
+
             //2、通过session得到transport对象,以便连接邮箱并发送
             Transport transport = sendMailSession.getTransport();
             //3、使用邮箱的用户名和密码连上邮件服务器，发送邮件时，发件人需要提交邮箱的用户名和密码给SMTP服务器，用户名和密码都通过验证之后才能够正常发送邮件给收件人。
@@ -106,9 +108,7 @@ public class SendOneMail {
             //5、发送邮件消息
             transport.sendMessage(mailMessage, mailMessage.getAllRecipients());
             transport.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
@@ -220,7 +220,7 @@ public class SendOneMail {
      * @param list 选中的CSV文件的集合
      * @return
      */
-    private Message createAttachmentMail(Session sendMailSession,ArrayList<String> list) {
+    private Message createAttachmentMail(Session sendMailSession,List<String> list) {
         //创建邮件
         MimeMessage message = null;
         try {
@@ -247,7 +247,7 @@ public class SendOneMail {
             for (int i = 0; i < list.size(); i++) {
                 // 创建邮件附件
                 MimeBodyPart attach = new MimeBodyPart();
-                DataHandler dh = new DataHandler(new FileDataSource(path + list.get(i)));
+                DataHandler dh = new DataHandler(new FileDataSource(list.get(i)));
                 attach.setDataHandler(dh);
                 attach.setFileName(MimeUtility.encodeText(dh.getName()));
                 mp.addBodyPart(attach);

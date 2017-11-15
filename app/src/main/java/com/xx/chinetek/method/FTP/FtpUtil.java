@@ -4,6 +4,8 @@ import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
+import java.io.File;
+
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
 
 /**
@@ -22,6 +24,33 @@ public class FtpUtil {
 //        if (total != 0) {
 //            total=ftp.deleteFolder(ParamaterModel.ftpModel.getFtpDownLoad());
 //        }
+        if (ftp.isConnect()) {
+            ftp.closeConnect();
+        }
+
+        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, total);
+        mHandler.sendMessage(msg);
+    }
+
+    public static void FtpUploadDN(FtpModel ftpModel,File[] files, MyHandler<BaseActivity> mHandler ) throws Exception {
+        int total = 0;
+        if (ftp == null) {
+            ftp = new FtpHelper(ftpModel);
+        }
+        ftp.openConnect();
+        for(File file:files) {
+            boolean flag = false;
+            flag = ftp.uploadFile(file.getAbsolutePath(),ParamaterModel.ftpModel.getFtpUpLoad());
+            if (flag) {
+                total++;
+            }
+        }
+        if (total ==files.length) {
+            for (int i = 0; i < files.length; i++) {
+                File f = files[i];
+                f.delete();
+            }
+        }
         if (ftp.isConnect()) {
             ftp.closeConnect();
         }

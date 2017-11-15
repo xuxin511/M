@@ -7,6 +7,7 @@ import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Flags;
@@ -62,6 +63,18 @@ public class MailUtil {
         }
         android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail,total);
         mHandler.sendMessage(msg);
+    }
+
+    public  static void SendMail(MailModel mailModel, List<String> list, MyHandler<BaseActivity> mHandler ){
+        try {
+            SendOneMail sendOneMail = new SendOneMail();
+            sendOneMail.sendAttachment(mailModel, list);
+            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail,"SUCCESS");
+            mHandler.sendMessage(msg);
+        }catch (Exception ex){
+            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail,ex.getMessage());
+            mHandler.sendMessage(msg);
+        }
     }
 
 }

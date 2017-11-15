@@ -366,7 +366,7 @@ public class FtpHelper {
      * @return true上传成功, false上传失败
      * @throws IOException
      */
-    private boolean uploadingSingle(File localFile) throws IOException {
+    public boolean uploadingSingle(File localFile) throws IOException {
         boolean flag;
         // 创建输入流
         InputStream inputStream = new FileInputStream(localFile);
