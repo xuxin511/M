@@ -26,7 +26,8 @@
         <activity android:name=".BarcodeDetail" />
         <activity android:name=".ExceptionList" />
         <activity android:name=".Setting" />
-        <activity android:name=".DN.QRScan"></activity>
+        <activity android:name=".DN.QRScan" />
+        <activity android:name=".Query.QueryList"></activity>
     </application>
 
 </manifest>

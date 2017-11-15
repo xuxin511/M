@@ -9,6 +9,7 @@
     <string name="outputscan">出库</string>
     <string name="qrscan">QR扫描</string>
     <string name="exceptionList">异常处理</string>
+    <string name="Query">出库查询</string>
     <string name="sync">基础数据同步</string>
     <string name="deliveryScan">出库扫描</string>
     <string name="startOutput">开始出库扫描</string>
@@ -61,6 +62,18 @@
         <item>USB</item>
         <item>二维码</item>
     </string-array>
+    <string-array name="ExportTypeList">
+        <item>邮件</item>
+        <item>FTP</item>
+        <item>USB</item>
+    </string-array>
+    <string-array name="DNStatus">
+        <item>异常</item>
+        <item>未下载</item>
+        <item>已下载</item>
+        <item>完成</item>
+        <item>已提交</item>
+    </string-array>
     <string-array name="sendCustomList">
         <item>代理商</item>
         <item>客户</item>
@@ -75,11 +88,14 @@
     <string name="Msg_No_Partner">请先设置代理商编号！</string>
     <string name="Msg_Serial_Scaned">该条码已扫描！</string>
     <string name="Msg_No_DNno">出库单不存在！</string>
+    <string name="Msg_Delete_DN">是否删除出库单所有扫描记录？\n单号：</string>
     <string name="Msg_SerialNum_Finished">该物料已扫描完毕！</string>
     <string name="Msg_Material_NotMatch">该物料不存在于出库单中！</string>
     <string name="Msg_NoSelect_CusCode">请选择客户或代理商</string>
     <string name="Msg_No_CusCode">请输入代理商或客户编号！</string>
     <string name="Msg_No_Barcode">请扫描条码！</string>
+    <string name="Msg_Dn_Finished">出库单关闭,不能重复提交！</string>
+    <string name="Msg_Export_Type">请选择导出方式</string>
 
     <string name="Dia_UploadLogFile">日志文件上传中...</string>
     <string name="Dia_SyncMaterial">正在同步物料数据...</string>

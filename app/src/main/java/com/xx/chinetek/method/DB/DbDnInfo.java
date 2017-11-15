@@ -78,8 +78,19 @@ public class DbDnInfo {
     public  ArrayList<DNModel> GetLoaclDN(){
         ArrayList<DNModel> dnModels=new ArrayList<>();
         dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
-                .whereOr(DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.ready),
-                        DNModelDao.Properties.DN_STATUS.eq(DNStatusEnum.download)).list();
+                .whereOr(DNModelDao.Properties.STATUS.eq(DNStatusEnum.ready),
+                        DNModelDao.Properties.STATUS.eq(DNStatusEnum.download)).list();
+        return dnModels;
+    }
+
+    /**
+     * 查询除未下载之外所有单据
+     * @return
+     */
+    public  ArrayList<DNModel> GetLoaclDNbyCondition(){
+        ArrayList<DNModel> dnModels=new ArrayList<>();
+        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder()
+                .where(DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().list();
         return dnModels;
     }
 

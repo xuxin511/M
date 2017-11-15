@@ -26,7 +26,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
     public static class Properties {
         public final static Property AGENT_DN_NO = new Property(0, String.class, "AGENT_DN_NO", false, "AGENT__DN__NO");
         public final static Property DN_DATE = new Property(1, java.util.Date.class, "DN_DATE", false, "DN__DATE");
-        public final static Property DN_STATUS = new Property(2, int.class, "DN_STATUS", false, "DN__STATUS");
+        public final static Property DN_STATUS = new Property(2, String.class, "DN_STATUS", false, "DN__STATUS");
         public final static Property LEVEL_1_AGENT_NO = new Property(3, String.class, "LEVEL_1_AGENT_NO", false, "LEVEL_1__AGENT__NO");
         public final static Property LEVEL_1_AGENT_NAME = new Property(4, String.class, "LEVEL_1_AGENT_NAME", false, "LEVEL_1__AGENT__NAME");
         public final static Property LEVEL_2_AGENT_NO = new Property(5, String.class, "LEVEL_2_AGENT_NO", false, "LEVEL_2__AGENT__NO");
@@ -59,7 +59,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         db.execSQL("CREATE TABLE " + constraint + "\"DNMODEL\" (" + //
                 "\"AGENT__DN__NO\" TEXT UNIQUE ," + // 0: AGENT_DN_NO
                 "\"DN__DATE\" INTEGER," + // 1: DN_DATE
-                "\"DN__STATUS\" INTEGER NOT NULL ," + // 2: DN_STATUS
+                "\"DN__STATUS\" TEXT," + // 2: DN_STATUS
                 "\"LEVEL_1__AGENT__NO\" TEXT," + // 3: LEVEL_1_AGENT_NO
                 "\"LEVEL_1__AGENT__NAME\" TEXT," + // 4: LEVEL_1_AGENT_NAME
                 "\"LEVEL_2__AGENT__NO\" TEXT," + // 5: LEVEL_2_AGENT_NO
@@ -93,7 +93,11 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         if (DN_DATE != null) {
             stmt.bindLong(2, DN_DATE.getTime());
         }
-        stmt.bindLong(3, entity.getDN_STATUS());
+ 
+        String DN_STATUS = entity.getDN_STATUS();
+        if (DN_STATUS != null) {
+            stmt.bindString(3, DN_STATUS);
+        }
  
         String LEVEL_1_AGENT_NO = entity.getLEVEL_1_AGENT_NO();
         if (LEVEL_1_AGENT_NO != null) {
@@ -165,7 +169,11 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         if (DN_DATE != null) {
             stmt.bindLong(2, DN_DATE.getTime());
         }
-        stmt.bindLong(3, entity.getDN_STATUS());
+ 
+        String DN_STATUS = entity.getDN_STATUS();
+        if (DN_STATUS != null) {
+            stmt.bindString(3, DN_STATUS);
+        }
  
         String LEVEL_1_AGENT_NO = entity.getLEVEL_1_AGENT_NO();
         if (LEVEL_1_AGENT_NO != null) {
@@ -240,7 +248,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         DNModel entity = new DNModel( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // AGENT_DN_NO
             cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)), // DN_DATE
-            cursor.getInt(offset + 2), // DN_STATUS
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // DN_STATUS
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // LEVEL_1_AGENT_NO
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // LEVEL_1_AGENT_NAME
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // LEVEL_2_AGENT_NO
@@ -261,7 +269,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
     public void readEntity(Cursor cursor, DNModel entity, int offset) {
         entity.setAGENT_DN_NO(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
         entity.setDN_DATE(cursor.isNull(offset + 1) ? null : new java.util.Date(cursor.getLong(offset + 1)));
-        entity.setDN_STATUS(cursor.getInt(offset + 2));
+        entity.setDN_STATUS(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setLEVEL_1_AGENT_NO(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setLEVEL_1_AGENT_NAME(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setLEVEL_2_AGENT_NO(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
