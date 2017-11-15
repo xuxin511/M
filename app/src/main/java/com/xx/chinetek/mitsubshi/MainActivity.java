@@ -24,6 +24,7 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.DN.DeliveryStart;
+import com.xx.chinetek.mitsubshi.Query.QueryList;
 import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -107,6 +108,10 @@ public class MainActivity extends BaseActivity {
         }
         else if (textView.getText().toString().equals(getString(R.string.exceptionList))) {
             intent.setClass(context, ExceptionList.class);
+            startActivityLeft(intent);
+        }
+        else if (textView.getText().toString().equals(getString(R.string.Query))) {
+            intent.setClass(context, QueryList.class);
             startActivityLeft(intent);
         }
         else if (textView.getText().toString().equals(getString(R.string.sync))) {
@@ -252,7 +257,7 @@ public class MainActivity extends BaseActivity {
         itemIconList.add(R.drawable.ico);
         itemNamesList.add(getString(R.string.exceptionList));
         itemIconList.add(R.drawable.ico);
-        itemNamesList.add("出库查询");
+        itemNamesList.add(getString(R.string.Query));
         itemIconList.add(R.drawable.ico);
         itemNamesList.add("批量上报");
         itemIconList.add(R.drawable.ico);

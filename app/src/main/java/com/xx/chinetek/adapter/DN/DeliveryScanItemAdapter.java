@@ -64,10 +64,10 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
 
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_delivery_scan,null);
-//            listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.item_ItemNo);
+           listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.txt_ItemNo);
             listItemView.txtRowNo = (TextView) convertView.findViewById(R.id.item_RowNo);
             listItemView.txtItemName = (TextView) convertView.findViewById(R.id.item_ItemName);
-//            listItemView.txtDNQty = (TextView) convertView.findViewById(R.id.item_DNQty);
+            listItemView.txtDNQty = (TextView) convertView.findViewById(R.id.item_DNQty);
             listItemView.txtScanQty = (TextView) convertView.findViewById(R.id.item_ScanQty);
             convertView.setTag(listItemView);
         } else {

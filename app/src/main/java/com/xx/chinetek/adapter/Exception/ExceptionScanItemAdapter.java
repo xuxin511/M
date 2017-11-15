@@ -63,7 +63,7 @@ public class ExceptionScanItemAdapter extends BaseAdapter {
             listItemView = new ListItemView();
 
             // 获取list_item布局文件的视图
-            convertView = listContainer.inflate(R.layout.item_delivery_scan,null);
+            convertView = listContainer.inflate(R.layout.item_exception_scan,null);
             listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.item_barcode);
             listItemView.txtRowNo = (TextView) convertView.findViewById(R.id.item_RowNo);
             listItemView.txtItemName = (TextView) convertView.findViewById(R.id.item_ItemName);
