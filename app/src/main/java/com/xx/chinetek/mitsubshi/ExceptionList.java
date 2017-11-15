@@ -52,6 +52,7 @@ public class ExceptionList extends BaseActivity {
     protected void initData() {
         super.initData();
         GetExceptionList();
+
     }
 
     @Override
@@ -126,12 +127,13 @@ public class ExceptionList extends BaseActivity {
             MessageBox.Show(context,ex.toString());
         }
 
+
     }
 
 
 
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
-    private void LsvExceptionListonItemlongClick(AdapterView<?> parent, View view, int position, long id) {
+    private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         try{
 
             MessageBox.Show(context,"请先选择操作的行！");
@@ -160,7 +162,7 @@ public class ExceptionList extends BaseActivity {
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
-
+        return true;
 
     }
 

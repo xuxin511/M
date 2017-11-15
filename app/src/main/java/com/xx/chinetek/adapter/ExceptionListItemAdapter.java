@@ -78,11 +78,11 @@ public class ExceptionListItemAdapter extends BaseAdapter {
         }
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
-        listItemView.txtStatus.setText(DNModel.getDN_STATUS()==-1?"异常":DNModel.getDN_STATUS()==0?"未下载":DNModel.getDN_STATUS()==1?"已下载":"完成");
+        listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME());
 //        listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.submituser)+DNModel.());
         listItemView.txtSumbitTime.setText("");
-        listItemView.txtSource.setText(DNModel.getDN_SOURCE()==0?"MAPS":DNModel.getDN_SOURCE()==1?"邮件":DNModel.getDN_SOURCE()==2?"FTP":DNModel.getDN_SOURCE()==3?"自建":DNModel.getDN_SOURCE()==4?"USB":"二维码");
+        listItemView.txtSource.setText(convertView.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         listItemView.txtSubmitUser.setText(convertView.getResources().getString(R.string.submittime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
         return convertView;
     }
