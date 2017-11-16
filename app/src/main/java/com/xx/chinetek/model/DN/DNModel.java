@@ -91,6 +91,7 @@ public class DNModel implements Parcelable {
      */
     private String REMARK;
 
+
     @ToMany(joinProperties = {
             @JoinProperty(name = "AGENT_DN_NO", referencedName = "AGENT_DN_NO")})
     List<DNDetailModel> DETAILS;

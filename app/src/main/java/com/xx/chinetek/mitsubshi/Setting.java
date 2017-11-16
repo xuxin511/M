@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -48,8 +49,8 @@ public class Setting extends BaseActivity {
     EditText edtPort;
     @ViewInject(R.id.edt_TimeOut)
     EditText edtTimeOut;
-    @ViewInject(R.id.edt_PartenerNo)
-    EditText edtPartenerNo;
+    @ViewInject(R.id.txt_Partner)
+    TextView txtPartner;
     @ViewInject(R.id.edt_MailAccount)
     EditText edtMailAccount;
     @ViewInject(R.id.edt_MailPassword)
@@ -97,7 +98,7 @@ public class Setting extends BaseActivity {
         edtIPAdress.setText(Paramater.IPAdress);
         edtPort.setText(Paramater.Port+"");
         edtTimeOut.setText(Paramater.SOCKET_TIMEOUT/1000+"");
-        edtPartenerNo.setText(ParamaterModel.PartenerID);
+        txtPartner.setText(ParamaterModel.PartenerID);
         if(ParamaterModel.mailModel!=null){
             edtMailAccount.setText(ParamaterModel.mailModel.getAccount());
             edtMailPassword.setText(ParamaterModel.mailModel.getPassword());
@@ -142,7 +143,7 @@ public class Setting extends BaseActivity {
         Paramater.IPAdress = edtIPAdress.getText().toString().trim();
         Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
         Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
-        ParamaterModel.PartenerID =edtPartenerNo.getText().toString().trim();
+        ParamaterModel.PartenerID =txtPartner.getText().toString().trim();
         if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
         ParamaterModel.mailModel.setAccount(edtMailAccount.getText().toString().trim());
         ParamaterModel.mailModel.setPassword(edtMailPassword.getText().toString().trim());

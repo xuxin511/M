@@ -93,8 +93,30 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btnSetting)
     private void btnSettingClick(View view) {
-        Intent intent=new Intent(context,Setting.class);
+
+        Intent intent = new Intent(context, Setting.class);
         startActivityLeft(intent);
+
+//        final EditText et = new EditText(this);
+//        et.setInputType(InputType.TYPE_CLASS_TEXT
+//                | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+//        et.setTextColor(getResources().getColor(R.color.black));
+//        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputPassword))
+//                .setIcon(android.R.drawable.ic_dialog_info)
+//                .setView(et)
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        String input = et.getText().toString();
+//                        if(!ParamaterModel.SysPassword.equals(input)) {
+//                            MessageBox.Show(context,getString(R.string.Msg_PasswordError));
+//                            return;
+//                        }
+//                        Intent intent = new Intent(context, Setting.class);
+//                        startActivityLeft(intent);
+//                    }
+//                })
+//                .setNegativeButton("取消", null)
+//                .show();
     }
 
 

@@ -40,4 +40,70 @@
 
         <requestFocus />
     </EditText>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="259dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="#F0F3F6"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="259dp">
+
+
+        <LinearLayout style="@style/wrap_layout">
+            <!-- 上圆角-->
+            <LinearLayout style="@style/top_layout">
+
+                <TextView
+                    style="@style/usertext"
+                    android:text="个性签名" />
+
+                <ImageView style="@style/img_arrow" />
+            </LinearLayout>
+
+            <!-- 分割线 -->
+            <View style="@style/bg_line" />
+            <!-- 无圆角-->
+            <LinearLayout style="@style/mid_layout">
+
+                <TextView
+                    style="@style/usertext"
+                    android:text="我的资料" />
+
+                <ImageView style="@style/img_arrow" />
+            </LinearLayout>
+
+            <View style="@style/bg_line" />
+            <!-- 下圆角-->
+            <LinearLayout style="@style/bottom_layout">
+
+                <TextView
+                    style="@style/usertext"
+                    android:text="消息通知" />
+
+                <ImageView style="@style/img_arrow" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- 全圆角-->
+        <LinearLayout style="@style/wrap_layout">
+
+            <LinearLayout style="@style/single_layout">
+
+                <TextView
+                    style="@style/usertext"
+                    android:text="辅助功能" />
+
+                <ImageView style="@style/img_arrow" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

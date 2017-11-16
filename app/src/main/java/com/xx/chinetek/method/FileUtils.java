@@ -24,23 +24,26 @@ public class FileUtils {
      * @throws Exception
      */
     public static void ExportDNFile(ArrayList<DNModel> selectDnModels) throws Exception{
+        String Title="DDN_NO,LINE_NO,Tnd_Dealer,Tnd_Dealer,End_User,End_User,SAP_MAT,MAKTX,Golfa_Code,Serial_No,Packing_Date,Region,Country,Deal_Sale_Date";
         for (DNModel dnModel:selectDnModels ) {
             String DnNo=dnModel.getAGENT_DN_NO();
-            String level2No=dnModel.getLEVEL_2_AGENT_NO();
-            String level2Name=dnModel.getLEVEL_2_AGENT_NAME();
-            String custom=dnModel.getCUSTOM_NO();
-            String customName=dnModel.getCUSTOM_NAME();
+            String level2No=dnModel.getLEVEL_2_AGENT_NO()==null?"":dnModel.getLEVEL_2_AGENT_NO();
+            String level2Name=dnModel.getLEVEL_2_AGENT_NAME()==null?"":dnModel.getLEVEL_2_AGENT_NAME();
+            String custom=dnModel.getCUSTOM_NO()==null?"":dnModel.getCUSTOM_NO();
+            String customName=dnModel.getCUSTOM_NAME()==null?"":dnModel.getCUSTOM_NAME();
             String fileName="DDN"+DnNo+"_QR.csv";
             File file = new File(ParamaterModel.UpDirectory+File.separator+fileName);
             //第二个参数意义是说是否以append方式添加内容
             OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(file),"GBK");
             BufferedWriter bw = new BufferedWriter(writerStream);
+            bw.write(Title);
+            bw.newLine();
             if(dnModel.getDETAILS()!=null && dnModel.getDETAILS().size()!=0){
                 for (DNDetailModel dnDetailModel:dnModel.getDETAILS()) {
                     StringBuffer sBuff=new StringBuffer();
                     String lineNo=dnDetailModel.getLINE_NO().toString();
                     String sapMaterial=dnDetailModel.getITEM_NO();
-                    String maktx=dnDetailModel.getITEM_NAME();
+                    String maktx=dnDetailModel.getITEM_NAME()==null?"":dnDetailModel.getITEM_NAME();
                     String golfaCode=dnDetailModel.getGOLFA_CODE();
                     sBuff.append(DnNo+","+lineNo+","+level2No+","+level2Name
                             +","+custom+","+customName+","+sapMaterial+","+maktx+","+golfaCode);
@@ -48,9 +51,9 @@ public class FileUtils {
                         for (DNScanModel dnScanModel:dnDetailModel.getSERIALS()) {
                             String Serial=dnScanModel.getSERIAL_NO();
                             String packingDate=dnScanModel.getPACKING_DATE();
-                            String region=dnScanModel.getREGION();
-                            String country=dnScanModel.getCOUNTRY();
-                            String dealSaleDate= CommonUtil.DateToString(dnScanModel.getDEAL_SALE_DATE(),null);
+                            String region=dnScanModel.getREGION()==null?"":dnScanModel.getREGION();
+                            String country=dnScanModel.getCOUNTRY()==null?"":dnScanModel.getCOUNTRY();
+                            String dealSaleDate= CommonUtil.DateToString(dnScanModel.getDEAL_SALE_DATE(),"yyyy-MM-dd HH:mm:ss");
                             String writeLine=sBuff.toString()+","+Serial+","+packingDate+","
                                     +region+","+country+","+dealSaleDate;
                             bw.write(writeLine);

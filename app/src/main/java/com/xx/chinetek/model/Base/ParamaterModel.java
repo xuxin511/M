@@ -21,6 +21,10 @@ public class ParamaterModel {
      * 序列号
      */
     public static String SerialNo=null;
+    /**
+     * 管理员密码
+     */
+    public static String SysPassword;
 
     /**
      * 设备型号

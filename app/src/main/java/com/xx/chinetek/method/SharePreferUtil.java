@@ -31,6 +31,7 @@ public class SharePreferUtil {
             Paramater.Port=sharedPreferences.getInt("Port", 9000);
             Paramater.SOCKET_TIMEOUT=sharedPreferences.getInt("TimeOut", 20000);
             ParamaterModel.PartenerID=sharedPreferences.getString("PartenerNo","");
+            ParamaterModel.SysPassword=sharedPreferences.getString("SysPassword","123456");
             if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
             ParamaterModel.mailModel.setAccount(sharedPreferences.getString("Account",""));
             ParamaterModel.mailModel.setPassword(sharedPreferences.getString("Password",""));
