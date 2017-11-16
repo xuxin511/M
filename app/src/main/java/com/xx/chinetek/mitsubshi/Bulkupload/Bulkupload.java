@@ -69,6 +69,22 @@ public class Bulkupload extends BaseActivity {
     }
 
 
+    @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
+    private boolean LsvItemlongClick(AdapterView<?> parent, View view, int position, long id) {
+        try{
+            DNModel  dnModel=(DNModel)bulkuploadListItemAdapter.getItem(position);
+                if(dnModel.getFlag()==null||dnModel.getFlag().equals("0")){
+                    dnModel.setFlag("1");
+                }else{
+                    dnModel.setFlag("0");
+                }
+            bulkuploadListItemAdapter.notifyDataSetInvalidated();
+        }catch(Exception ex){
+            MessageBox.Show(context,ex.toString());
+        }
+        return true;
+    }
+
 
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
     private void LsvExceptionListonItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -54,6 +54,9 @@ public class bulkuploadBarcodeDetail extends BaseActivity {
 
     void GetBarcodeDetailList(){
         dnScanModels =ImportDetail();
+        DNScanModel model= new DNScanModel();
+        model.setSERIAL_NO("数量："+dnScanModels.size());
+        dnScanModels.add(model);
         barcodeItemAdapter=new BarcodeItemAdapter(context, dnScanModels);
         lsvBarcodeDetail.setAdapter(barcodeItemAdapter);
     }

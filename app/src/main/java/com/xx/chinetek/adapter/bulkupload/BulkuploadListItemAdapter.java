@@ -84,6 +84,12 @@ public class BulkuploadListItemAdapter extends BaseAdapter {
         listItemView.txtSumbitTime.setText("");
         listItemView.txtSource.setText(convertView.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         listItemView.txtSubmitUser.setText(convertView.getResources().getString(R.string.submittime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
+        if(DNModel.getFlag()!=null&&DNModel.getFlag().equals("1")){
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.gray));
+        }else{
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.white));
+        }
+
         return convertView;
     }
 
