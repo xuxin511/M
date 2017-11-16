@@ -23,6 +23,8 @@
         <activity android:name=".Exception.ExceptionScan" />
         <activity android:name=".Exception.ExceptionBarcodelist" />
         <activity android:name=".Bulkupload.Bulkupload" />
+        <activity android:name=".Bulkupload.BulkuploadScan" />
+        <activity android:name=".Bulkupload.bulkuploadBarcodeDetail" />
         <activity android:name=".BarcodeDetail" />
         <activity android:name=".ExceptionList" />
         <activity android:name=".Setting" />
