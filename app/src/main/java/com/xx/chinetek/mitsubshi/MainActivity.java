@@ -23,6 +23,7 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
+import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
 import com.xx.chinetek.mitsubshi.DN.DeliveryStart;
 import com.xx.chinetek.mitsubshi.Query.QueryList;
 import com.xx.chinetek.model.Base.CustomModel;
@@ -112,6 +113,10 @@ public class MainActivity extends BaseActivity {
         }
         else if (textView.getText().toString().equals(getString(R.string.Query))) {
             intent.setClass(context, QueryList.class);
+            startActivityLeft(intent);
+        }
+        else if (textView.getText().toString().equals(getString(R.string.Bulkupload))) {
+            intent.setClass(context, Bulkupload.class);
             startActivityLeft(intent);
         }
         else if (textView.getText().toString().equals(getString(R.string.sync))) {
