@@ -13,6 +13,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.ArrayList;
@@ -91,6 +92,19 @@ public class DNModel implements Parcelable {
      */
     private String REMARK;
 
+    /**
+     * Falg
+     */
+    @Transient
+    private String Flag;
+
+    public String getFlag() {
+        return Flag;
+    }
+
+    public void setFlag(String flag) {
+        Flag = flag;
+    }
 
     @ToMany(joinProperties = {
             @JoinProperty(name = "AGENT_DN_NO", referencedName = "AGENT_DN_NO")})
@@ -393,10 +407,10 @@ public class DNModel implements Parcelable {
 
     @Generated(hash = 1075540711)
     public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS,
-            String LEVEL_1_AGENT_NO, String LEVEL_1_AGENT_NAME,
-            String LEVEL_2_AGENT_NO, String LEVEL_2_AGENT_NAME, String CUSTOM_NO,
-            String CUSTOM_NAME, Integer DN_QTY, Date OPER_DATE, Integer DN_SOURCE,
-            int STATUS, String CUS_DN_NO, String REMARK) {
+                   String LEVEL_1_AGENT_NO, String LEVEL_1_AGENT_NAME,
+                   String LEVEL_2_AGENT_NO, String LEVEL_2_AGENT_NAME, String CUSTOM_NO,
+                   String CUSTOM_NAME, Integer DN_QTY, Date OPER_DATE, Integer DN_SOURCE,
+                   int STATUS, String CUS_DN_NO, String REMARK) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.DN_DATE = DN_DATE;
         this.DN_STATUS = DN_STATUS;

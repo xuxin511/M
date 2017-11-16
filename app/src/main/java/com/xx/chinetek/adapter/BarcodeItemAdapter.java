@@ -69,7 +69,8 @@ public class BarcodeItemAdapter extends BaseAdapter {
         }
         DNScanModel dnScanModel = dnScanModels.get(selectID);
         listItemView.txtBarcode.setText(dnScanModel.getSERIAL_NO());
-        listItemView.txtIndex.setText(convertView.getResources().getString(R.string.RowNo)+(++index));
+//        listItemView.txtIndex.setText(convertView.getResources().getString(R.string.RowNo)+(++index));
+        listItemView.txtIndex.setText(dnScanModel.getSERIAL_NO().indexOf("数量")!=-1?"":"序列号：");
         return convertView;
     }
 

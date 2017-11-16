@@ -369,7 +369,7 @@ public class DNDetailModel implements Parcelable {
         this.SERIALS = in.createTypedArrayList(DNScanModel.CREATOR);
     }
 
-    public static final Parcelable.Creator<DNDetailModel> CREATOR = new Parcelable.Creator<DNDetailModel>() {
+    public static final Creator<DNDetailModel> CREATOR = new Creator<DNDetailModel>() {
         @Override
         public DNDetailModel createFromParcel(Parcel source) {
             return new DNDetailModel(source);
