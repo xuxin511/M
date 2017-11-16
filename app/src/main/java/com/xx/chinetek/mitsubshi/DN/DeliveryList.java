@@ -229,8 +229,12 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
      * @return
      */
    private void ImportDelivery(){
+
         switch (ParamaterModel.DnTypeModel.getDNType()){
             case 0://MAPS
+                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
+                dialog =new LoadingDialog(context);
+                dialog.show();
                 SyncDN.SyncMAPS(mHandler);
                 break;
             case 1://邮件

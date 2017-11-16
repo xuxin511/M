@@ -1,8 +1,11 @@
 package com.xx.chinetek.mitsubshi.DN;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,15 +18,22 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.adapter.DN.PartnerItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
+import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
+import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.GetPartner;
 import com.xx.chinetek.method.SharePreferUtil;
+import com.xx.chinetek.method.Upload.UploadNewCus;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -36,6 +46,9 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadCus;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadCus;
 
 @ContentView(R.layout.activity_delivery_start)
 public class DeliveryStart extends BaseActivity {
@@ -60,6 +73,19 @@ public class DeliveryStart extends BaseActivity {
     ArrayList<CustomModel> customModels;
 
     Boolean isFirstRun=true;
+
+    @Override
+    public void onHandleMessage(Message msg) {
+        switch (msg.what) {
+            case RESULT_UploadCus:
+                AnalysisUploadCusJson((String) msg.obj);
+                break;
+            case NetworkError.NET_ERROR_CUSTOM:
+                ToastUtil.show("获取请求失败_____"+ msg.obj);
+                break;
+        }
+    }
+
 
     @Override
     protected void initViews() {
@@ -90,16 +116,35 @@ public class DeliveryStart extends BaseActivity {
 
     @Event(R.id.btn_StartOutPut)
     private void btnStartOutPutClick(View view){
-        String code=edtContentText.getText().toString().trim();
+       final String code=edtContentText.getText().toString().trim();
         if(TextUtils.isEmpty(code)){
             MessageBox.Show(context,getString(R.string.Msg_No_CusCode));
+            CommonUtil.setEditFocus(edtContentText);
             return;
         }
+        //新增客户
+        if(partnerItemAdapter.getCount()==0) {
+            new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_New_Custom))// 设置对话框标题
+                    .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
+                    .setMessage(code)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            UploadNewCus.AddNewCusToMaps(code,mHandler);
+                        }
+                    })
+                    .setNegativeButton("取消",null)
+                    .show();
+            CommonUtil.setEditFocus(edtContentText);
+            return;
+        }
+
         if(customModel ==null && partnerItemAdapter.getCount()==1){
             customModel =(CustomModel) partnerItemAdapter.getItem(0);
         }
         if(customModel ==null){
             MessageBox.Show(context,getString(R.string.Msg_NoSelect_CusCode));
+            CommonUtil.setEditFocus(edtContentText);
             return;
         }
 
@@ -206,7 +251,6 @@ public class DeliveryStart extends BaseActivity {
             InitListview();
         }catch (Exception ex){
             MessageBox.Show(context,ex.getMessage());
-            LogUtil.WriteLog(DeliveryStart.class,"GetPartners",ex.getMessage());
         }
     }
 
@@ -225,5 +269,30 @@ public class DeliveryStart extends BaseActivity {
     }
 
 
+    /**
+     * 获取新增客户
+     * @param result
+     */
+    void AnalysisUploadCusJson(String result){
+        LogUtil.WriteLog(DeliveryStart.class,TAG_UploadCus,result);
+        try {
+            ReturnMsgModelList<CustomModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<CustomModel>>() {
+            }.getType());
+            if (returnMsgModel.getHeaderStatus().equals("S")) {
+                ArrayList<CustomModel> customModel = returnMsgModel.getModelJson();
+                //插入数据
+                DbBaseInfo.getInstance().InsertCustomDB(customModels);
+                ParamaterModel.CustomSyncTime="";
+                //保存同步时间
+                SharePreferUtil.SetSyncTimeShare(context);
+                BindData();
+                edtContentText.setText(customModel.get(0).getCUSTOMER());
+            } else {
+                MessageBox.Show(context,returnMsgModel.getMessage());
+            }
+        }catch (Exception ex) {
+            MessageBox.Show(context,ex.getMessage());
+        }
+    }
 
 }

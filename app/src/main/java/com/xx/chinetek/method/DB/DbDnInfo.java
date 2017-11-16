@@ -165,6 +165,22 @@ public class DbDnInfo {
         return qty;
     }
 
+    /**
+     *更新单据状态
+     * @param DnNo
+     */
+    public void ChangeDNStatusByDnNo(String DnNo,int Status){
+        String sql="update DNMODEL set status="+Status+" where AGENT__DN__NO='"+DnNo+"'";
+        dnModelDao.getDatabase().execSQL(sql);
+        if(Status==DNStatusEnum.Sumbit){
+            sql="update DNDETAIL_MODEL set status=0 where AGENT__DN__NO='"+DnNo+"'";
+            dnDetailModelDao.getDatabase().execSQL(sql);
+            sql="update DNSCAN_MODEL set status=0 where AGENT__DN__NO='"+DnNo+"'";
+            dnScanModelDao.getDatabase().execSQL(sql);
+        }
+    }
+
+
     //ymh
     /**
      * 获取本地数据所有异常的单据

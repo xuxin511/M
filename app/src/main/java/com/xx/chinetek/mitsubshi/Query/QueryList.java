@@ -40,8 +40,6 @@ import org.xutils.x;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
@@ -65,11 +63,10 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
 
     @Override
     public void onHandleMessage(Message msg) {
-        try {
             switch (msg.what) {
                 case RESULT_SyncMail:
                 case RESULT_SyncFTP:
-                    MessageBox.Show(context,getString(R.string.Msg_UploadSuccess)+msg.obj);
+                    MessageBox.Show(context,(String)msg.obj);
                     break;
                 case RESULT_SyncUSB:
                     MessageBox.Show(context,getString(R.string.Msg_UploadSuccess)+msg.obj+"\n路径："+ParamaterModel.UpDirectory);
@@ -78,11 +75,9 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                     ToastUtil.show("获取请求失败_____" + msg.obj);
                     break;
             }
-            dialog.dismiss();
-        } catch (Exception ex) {
-            MessageBox.Show(context,ex.getMessage());
-            dialog.dismiss();
-        }
+
+        dialog.dismiss();
+        BindListView();
     }
 
 
@@ -118,6 +113,8 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                 }
             }
             if(SelectDnModels.size()!=0) {
+//                ContextThemeWrapper contextThemeWrapper =
+//                        new ContextThemeWrapper(context, R.style.dialog);
                 new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_Export_Type))// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
                         .setItems(items, new DialogInterface.OnClickListener() {
@@ -178,32 +175,35 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
      * @throws Exception
      */
     void ExportDN(ArrayList<DNModel> selectDnModels, int Index) throws Exception{
-        FileUtils.ExportDNFile(selectDnModels);
+        FileUtils.ExportDNFile(selectDnModels); //导出文件只本地目录
         File dirFile=new File(ParamaterModel.UpDirectory);
-        if(dirFile.isDirectory()){
-            File[] Files=dirFile.listFiles();
-            switch (Index){
-                case 0: //邮件
-                    List<String> files = Arrays.asList(dirFile.list());
-                    BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
-                    dialog =new LoadingDialog(context);
-                    dialog.show();
-                    UploadFiles.UploadMail(files,mHandler);
-                    break;
-                case 1: //FTP
-                    BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
-                    dialog =new LoadingDialog(context);
-                    dialog.show();
-                    UploadFiles.UploadFtp(Files,mHandler);
-                    break;
-                case 2:
-                    BaseApplication.DialogShowText = getString(R.string.Dia_UploadUSB);
-                    dialog =new LoadingDialog(context);
-                    dialog.show();
-                    android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB,Files.length);
-                    mHandler.sendMessage(msg);
-                    break;
+        if(dirFile.isDirectory()) {
+            File[] Files = dirFile.listFiles();
+            if (Files.length > 0) {
+                switch (Index) {
+                    case 0: //邮件
+                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
+                        dialog = new LoadingDialog(context);
+                        dialog.show();
+                        UploadFiles.UploadMail(Files, mHandler);
+                        break;
+                    case 1: //FTP
+                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
+                        dialog = new LoadingDialog(context);
+                        dialog.show();
+                        UploadFiles.UploadFtp(Files, mHandler);
+                        break;
+                    case 2://USB
+                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadUSB);
+                        dialog = new LoadingDialog(context);
+                        dialog.show();
+                        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, Files.length);
+                        mHandler.sendMessage(msg);
+                        break;
+                }
             }
+        }else{
+            MessageBox.Show(context,getString(R.string.Msg_No_DirExportDn));
         }
     }
 

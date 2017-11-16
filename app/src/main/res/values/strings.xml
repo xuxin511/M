@@ -84,6 +84,7 @@
 
     <string name="Msg_SaveSuccess">保存成功！</string>
     <string name="Msg_UploadSuccess">DN导出成功!\n导出文件数：</string>
+    <string name="Msg_UploadFailue">DN导出失败!\n失败原因：</string>
     <string name="Msg_NotSupportModel">设备型号不支持！</string>
     <string name="Msg_No_Sync">无基础资料信息，请先同步！</string>
     <string name="Msg_No_Partner">请先设置代理商编号！</string>
@@ -97,11 +98,16 @@
     <string name="Msg_No_Barcode">请扫描条码！</string>
     <string name="Msg_Dn_Finished">出库单关闭,不能重复提交！</string>
     <string name="Msg_Export_Type">请选择导出方式</string>
-    <string name="Msg_No_ExportDn">请选择需要导出的DN</string>
+    <string name="Msg_New_Custom">新增客户</string>
+    <string name="Msg_No_ExportDn">请选择需要导出的出库单</string>
+    <string name="Msg_No_DirExportDn">不存在需要导出的出库单单据！</string>
+    <string name="Msg_Upload_DN">出库单未完成，确定上传?</string>
 
     <string name="Dia_UploadLogFile">日志文件上传中...</string>
     <string name="Dia_SyncMaterial">正在同步物料数据...</string>
     <string name="Dia_SyncCus">正在同步客户和代理商...</string>
+    <string name="Dia_UploadCus">正在上传新增客户信息...</string>
+    <string name="Dia_UploadDN">正在上传出库单...</string>
     <string name="Dia_SyncPara">正在同步参数设置...</string>
     <string name="Dia_SyncDn">通过MAPS形式获取出库单...</string>
     <string name="Dia_SyncMail">通过邮件形式获取出库单...</string>

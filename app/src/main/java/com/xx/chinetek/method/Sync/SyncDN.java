@@ -19,7 +19,6 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailUtil;
 import com.xx.chinetek.method.SharePreferUtil;
-import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
@@ -60,8 +59,7 @@ public class SyncDN {
         params.put("Synctime", ParamaterModel.DNSyncTime);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncDn, para);
-        RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncDn,
-                context.getString(R.string.Dia_SyncDn), context, mHandler, RESULT_SyncDn, null,  URLModel.GetURL().SyncDn, params, null);
+        RequestHandler.addRequest(Request.Method.POST, TAG_SyncDn, mHandler, RESULT_SyncDn, null,  URLModel.GetURL().SyncDn, params, null);
     }
 
     /**

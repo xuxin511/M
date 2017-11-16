@@ -1,7 +1,9 @@
 package com.xx.chinetek.method.FTP;
 
 import com.xx.chinetek.chineteklib.base.BaseActivity;
+import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
+import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import java.io.File;
@@ -32,31 +34,36 @@ public class FtpUtil {
         mHandler.sendMessage(msg);
     }
 
-    public static void FtpUploadDN(FtpModel ftpModel,File[] files, MyHandler<BaseActivity> mHandler ) throws Exception {
-        int total = 0;
-        if (ftp == null) {
-            ftp = new FtpHelper(ftpModel);
-        }
-        ftp.openConnect();
-        for(File file:files) {
-            boolean flag = false;
-            flag = ftp.uploadFile(file.getAbsolutePath(),ParamaterModel.ftpModel.getFtpUpLoad());
-            if (flag) {
-                total++;
+    public static void FtpUploadDN(FtpModel ftpModel,File[] files, MyHandler<BaseActivity> mHandler ) {
+        try {
+            int total = 0;
+            if (ftp == null) {
+                ftp = new FtpHelper(ftpModel);
             }
-        }
-        if (total ==files.length) {
-            for (int i = 0; i < files.length; i++) {
-                File f = files[i];
-                f.delete();
+            ftp.openConnect();
+            for (File file : files) {
+                boolean flag = false;
+                flag = ftp.uploadFile(file.getAbsolutePath(), ParamaterModel.ftpModel.getFtpUpLoad());
+                if (flag) {
+                    total++;
+                }
             }
-        }
-        if (ftp.isConnect()) {
-            ftp.closeConnect();
-        }
+            if (total == files.length) {
+                for (int i = 0; i < files.length; i++) {
+                    File f = files[i];
+                    f.delete();
+                }
+            }
+            if (ftp.isConnect()) {
+                ftp.closeConnect();
+            }
 
-        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, total);
-        mHandler.sendMessage(msg);
+            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadSuccess)+total);
+            mHandler.sendMessage(msg);
+        }catch (Exception ex){
+            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadFailue)+ex.getMessage());
+            mHandler.sendMessage(msg);
+        }
     }
 
 

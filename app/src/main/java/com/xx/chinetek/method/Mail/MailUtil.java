@@ -3,10 +3,13 @@ package com.xx.chinetek.method.Mail;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
+import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
+import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -65,14 +68,23 @@ public class MailUtil {
         mHandler.sendMessage(msg);
     }
 
-    public  static void SendMail(MailModel mailModel, List<String> list, MyHandler<BaseActivity> mHandler ){
+    public  static void SendMail(MailModel mailModel, File[] Files, MyHandler<BaseActivity> mHandler ){
         try {
+
+            List<String> list = new ArrayList<>();
+            for (File file : Files) {
+                list.add(file.getAbsolutePath());
+            }
             SendOneMail sendOneMail = new SendOneMail();
             sendOneMail.sendAttachment(mailModel, list);
-            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail,"SUCCESS");
+            for (int i = 0; i < Files.length; i++) {
+                File f = Files[i];
+                f.delete();
+            }
+            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail, BaseApplication.context.getString(R.string.Msg_UploadSuccess)+Files.length);
             mHandler.sendMessage(msg);
         }catch (Exception ex){
-            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail,ex.getMessage());
+            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail,BaseApplication.context.getString(R.string.Msg_UploadFailue)+ex.getMessage());
             mHandler.sendMessage(msg);
         }
     }

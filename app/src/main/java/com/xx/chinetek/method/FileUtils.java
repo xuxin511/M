@@ -18,6 +18,11 @@ import java.util.ArrayList;
 
 public class FileUtils {
 
+    /**
+     * 导出文件至本地
+     * @param selectDnModels
+     * @throws Exception
+     */
     public static void ExportDNFile(ArrayList<DNModel> selectDnModels) throws Exception{
         for (DNModel dnModel:selectDnModels ) {
             String DnNo=dnModel.getAGENT_DN_NO();

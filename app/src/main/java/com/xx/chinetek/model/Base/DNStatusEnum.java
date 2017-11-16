@@ -27,4 +27,8 @@ public class DNStatusEnum {
      */
     public static final int complete =2;
 
+    /**
+     * 已提交
+     */
+    public static final int Sumbit =3;
 }

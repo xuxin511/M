@@ -185,7 +185,6 @@ public class MainActivity extends BaseActivity {
             }
         }catch (Exception ex) {
             MessageBox.Show(context,ex.getMessage());
-            LogUtil.WriteLog(MainActivity.class,TAG_SyncMaterial,result);
         }
     }
 
@@ -213,7 +212,6 @@ public class MainActivity extends BaseActivity {
             }
         }catch (Exception ex) {
             MessageBox.Show(context,ex.getMessage());
-            LogUtil.WriteLog(MainActivity.class,TAG_SyncMaterial,result);
         }
     }
 
@@ -239,7 +237,6 @@ public class MainActivity extends BaseActivity {
             }
         }catch (Exception ex) {
             MessageBox.Show(context,ex.getMessage());
-            LogUtil.WriteLog(MainActivity.class,TAG_SyncMaterial,result);
         }
     }
 
