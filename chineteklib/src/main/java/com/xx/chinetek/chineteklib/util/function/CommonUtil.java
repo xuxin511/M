@@ -305,7 +305,7 @@ public class CommonUtil {
      * @param leng
      * @return
      */
-    public static String PadRight(String str, int leng) {
+    public static String PadRight(String str,String padChar, int leng) {
         int temp = 0;
         if (IsInputChinese(str)) {
             temp = leng - str.length() * 2;
@@ -315,11 +315,13 @@ public class CommonUtil {
 
         if (temp > 0) {
             for (int i = 0; i < temp; i++) {
-                str += " ";
+                str += padChar;
             }
         }
         return str;
     }
+
+
 
     /***
      * 判断输入的是否中文字符

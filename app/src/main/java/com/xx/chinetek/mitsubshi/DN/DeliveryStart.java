@@ -30,6 +30,7 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.GetPartner;
 import com.xx.chinetek.method.SharePreferUtil;
@@ -157,10 +158,10 @@ public class DeliveryStart extends BaseActivity {
         DNModel dnModel=new DNModel();
         switch (dnTypeModel.getDNType()){
             case 3:
-                String Dnno="CS1233335";
-                dnModel.setAGENT_DN_NO(Dnno);
+                CreateDnNo.GetDnNo(context,dnModel);
+               // dnModel.setAGENT_DN_NO(Dnno);
                 dnModel.setDN_QTY(0);
-                intent.putExtra("DNNo",Dnno);
+               // intent.putExtra("DNNo",Dnno);
                 jumpClass=DeliveryScan.class;
                 break;
             case 5:

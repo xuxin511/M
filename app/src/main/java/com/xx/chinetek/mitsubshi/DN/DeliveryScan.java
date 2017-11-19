@@ -110,7 +110,7 @@ public class DeliveryScan extends BaseIntentActivity {
         super.initData();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
-        txtDnNo.setText(getIntent().getStringExtra("DNNo"));
+        txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
         ShowRemark();
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         GetDeliveryOrderScanList();
@@ -193,9 +193,11 @@ public class DeliveryScan extends BaseIntentActivity {
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
-                txtItemNo.setText(materialModel.getMATNR());
-                txtItemName.setText(materialModel.getMAKTX());
-                txtScanQty.setText(getString(R.string.scanQty)+barCodeModels.size());
+                if(materialModel!=null) {
+                    txtItemNo.setText(materialModel.getMATNR());
+                    txtItemName.setText(materialModel.getMAKTX());
+                    txtScanQty.setText(getString(R.string.scanQty) + barCodeModels.size());
+                }
                 if (ParamaterModel.DnTypeModel.getDNType() == 3) { //自建
                     return CreateNewDN(barCodeModels,materialModel);
                 } else {
@@ -222,7 +224,7 @@ public class DeliveryScan extends BaseIntentActivity {
      * 绑定列表
      */
     void GetDeliveryOrderScanList(){
-        dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(txtDnNo.getText().toString());
+        dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels);
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
         edtBarcode.setText("");

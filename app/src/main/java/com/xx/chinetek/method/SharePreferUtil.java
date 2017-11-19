@@ -9,6 +9,7 @@ import com.xx.chinetek.chineteklib.model.Paramater;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.model.Base.CusBarcodeRule;
+import com.xx.chinetek.model.Base.CusDnnoRule;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
@@ -38,6 +39,8 @@ public class SharePreferUtil {
             Gson gson = new Gson();
             Type type = new TypeToken<CusBarcodeRule>(){}.getType();
             ParamaterModel.cusBarcodeRule= gson.fromJson(sharedPreferences.getString("cusBarcodeRule", ""), type);
+            Type typeDn = new TypeToken<CusDnnoRule>() {}.getType();
+            ParamaterModel.cusDnnoRule= gson.fromJson(sharedPreferences.getString("cusDnnoRule", ""), typeDn);
             if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
             ParamaterModel.mailModel.setAccount(sharedPreferences.getString("Account",""));
             ParamaterModel.mailModel.setPassword(sharedPreferences.getString("Password",""));
@@ -67,6 +70,8 @@ public class SharePreferUtil {
         Gson gson=new Gson();
         Type type = new TypeToken<CusBarcodeRule>() {}.getType();
         edit.putString("cusBarcodeRule",gson.toJson(ParamaterModel.cusBarcodeRule,type));
+        Type typeDn = new TypeToken<CusDnnoRule>() {}.getType();
+        edit.putString("cusDnnoRule",gson.toJson(ParamaterModel.cusDnnoRule,typeDn));
         if(ParamaterModel.mailModel!=null){
             edit.putString("Account", ParamaterModel.mailModel.getAccount());
             edit.putString("Password", ParamaterModel.mailModel.getPassword());

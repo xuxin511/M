@@ -27,6 +27,7 @@ import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.CusBarcodeRule;
+import com.xx.chinetek.model.Base.CusDnnoRule;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import org.xutils.common.Callback;
@@ -91,6 +92,8 @@ public class Setting extends BaseActivity {
     String Password;//临时存放密码
     String startwords;
     Integer barcodeLength=0;
+    String startwordsCusDN;
+    Integer indexLength=0;
 
     @Override
     protected void initViews() {
@@ -210,16 +213,17 @@ public class Setting extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             String startword=edtStartWords.getText().toString().trim();
                             String length=edtbarcodeLength.getText().toString().trim();
+                            if(TextUtils.isEmpty(length)) length="0";
                             if(!CommonUtil.isNumeric(length)){
                                 MessageBox.Show(context,getString(R.string.Msg_inputNumic));
                                 ckSelfBarcode.setChecked(false);
                                 return;
                             }
-                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
-                                MessageBox.Show(context,getString(R.string.Msg_notEmpty));
-                                ckSelfBarcode.setChecked(false);
-                                return;
-                            }
+//                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
+//                                MessageBox.Show(context,getString(R.string.Msg_notEmpty));
+//                                ckSelfBarcode.setChecked(false);
+//                                return;
+//                            }
                             startwords=startword;
                             barcodeLength=Integer.parseInt(length);
                             ckSelfBarcode.setChecked(true);
@@ -241,12 +245,43 @@ public class Setting extends BaseActivity {
 
 
     }
-//
-//    @Event(value = R.id.ckSelfBarcode,type = CompoundButton.OnCheckedChangeListener.class)
-//    private void ckSelfBarcodeonCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
-//
-//    }
 
+    @Event(R.id.layoutCusDnNo)
+    private void layoutCusDnNoClick(View view){
+        final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_cusdnno_content, null);
+        final EditText edtStartWords=(EditText) textEntryView.findViewById(R.id.edt_StartWords);
+        final EditText edtIndexLength=(EditText)textEntryView.findViewById(R.id.edt_barcodeLength);
+        if(ParamaterModel.cusDnnoRule!=null){
+            edtStartWords.setText(ParamaterModel.cusDnnoRule.getStartWords());
+            edtIndexLength.setText(ParamaterModel.cusDnnoRule.getIndexLength().toString());
+        }
+        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_SetbarcodeRule))
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(textEntryView)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String startword=edtStartWords.getText().toString().trim();
+                        String length=edtIndexLength.getText().toString().trim();
+                        if(!CommonUtil.isNumeric(length)){
+                            MessageBox.Show(context,getString(R.string.Msg_inputNumic));
+                            return;
+                        }
+                        if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
+                            MessageBox.Show(context,getString(R.string.Msg_notEmpty));
+                            return;
+                        }
+                        int len=Integer.parseInt(length);
+                        if(startword.length()+len>12){
+                            MessageBox.Show(context,getString(R.string.Msg_lenMax));
+                            return;
+                        }
+                        startwordsCusDN=startword;
+                        indexLength=len;
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
 
 
     @Override
@@ -281,8 +316,13 @@ public class Setting extends BaseActivity {
         ParamaterModel.cusBarcodeRule=new CusBarcodeRule();
         ParamaterModel.cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
         if(ckSelfBarcode.isChecked()){
-            ParamaterModel.cusBarcodeRule.setStartWords(startwords);
+            ParamaterModel.cusBarcodeRule.setStartWords(startwords==null?"":startwords);
             ParamaterModel.cusBarcodeRule.setBarcodeLength(barcodeLength);
+        }
+        if(!TextUtils.isEmpty(startwordsCusDN) && indexLength!=0) {
+            if (ParamaterModel.cusDnnoRule == null) ParamaterModel.cusDnnoRule = new CusDnnoRule();
+            ParamaterModel.cusDnnoRule.setStartWords(startwordsCusDN==null?"":startwordsCusDN);
+            ParamaterModel.cusDnnoRule.setIndexLength(indexLength);
         }
         if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
         ParamaterModel.mailModel.setAccount(edtMailAccount.getText().toString().trim());

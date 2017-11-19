@@ -22,6 +22,7 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
@@ -134,12 +135,10 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         }
         if(item.getItemId()==R.id.action_New){
             Intent intent=new Intent(context,DeliveryScan.class);
-            String Dnno="CS1233333";
-            intent.putExtra("DNNo",Dnno);
             ParamaterModel.DnTypeModel.setDNType(3);
             Bundle bundle=new Bundle();
             DNModel dnModel=new DNModel();
-            dnModel.setAGENT_DN_NO(Dnno);
+            CreateDnNo.GetDnNo(context,dnModel);
             dnModel.setDN_QTY(0);
             bundle.putParcelable("DNModel",dnModel);
             intent.putExtras(bundle);
@@ -173,7 +172,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
         intent.putExtras(bundle);
-        intent.putExtra("DNNo",dnModel.getAGENT_DN_NO());
         startActivityLeft(intent);
     }
 

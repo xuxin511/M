@@ -45,6 +45,7 @@
     <string name="Setting_Save">保存</string>
     <string name="Setting_StartWords">起始字符：</string>
     <string name="Setting_BarcodeLength">条码长度：</string>
+    <string name="Setting_IndexLength">序号长度：</string>
 
 
     <string name="sendType">发货方式：</string>
@@ -101,6 +102,7 @@
     <string name="Msg_SaveSuccess">保存成功！</string>
     <string name="Msg_inputNumic">请输入数字！</string>
     <string name="Msg_notEmpty">输入数据不能为空！</string>
+    <string name="Msg_lenMax">起始字符长度+序号长度不能超过12位！</string>
     <string name="Msg_BarcodeNotmatch">条码不匹配！</string>
     <string name="Msg_InputPassword">请输入管理员密码</string>
     <string name="Msg_SetbarcodeRule">请设置条码规则</string>
@@ -112,6 +114,7 @@
     <string name="Msg_NotSupportModel">设备型号不支持！</string>
     <string name="Msg_No_Sync">无基础资料信息，请先同步！</string>
     <string name="Msg_No_Partner">请先设置代理商编号！</string>
+    <string name="Msg_No_CusDnRule">请先设置自定义出库单规则！</string>
     <string name="Msg_Serial_Scaned">该条码已扫描！</string>
     <string name="Msg_No_DNno">出库单不存在！</string>
     <string name="Msg_Delete_DN">是否删除出库单所有扫描记录？\n单号：</string>
