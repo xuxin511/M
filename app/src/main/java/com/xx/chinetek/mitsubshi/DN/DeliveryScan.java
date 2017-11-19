@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -30,6 +31,7 @@ import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.BarcodeDetail;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
+import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.MaterialModel;
@@ -214,9 +216,17 @@ public class DeliveryScan extends BaseIntentActivity {
 
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent=new Intent(context,BarcodeDetail.class);
+        Intent intent=new Intent(context,ExceptionBarcodelist.class);
+        Bundle bundle=new Bundle();
+        DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(position);
+        bundle.putParcelable("DNdetailModel",DNdetailModel);
+        bundle.putParcelable("DNModel",dnModel);
+//        bundle.putString("Flag","1");
+        intent.putExtras(bundle);
         startActivityLeft(intent);
+
     }
+
 
     /**
      * 绑定列表
@@ -255,6 +265,58 @@ public class DeliveryScan extends BaseIntentActivity {
     }
 
 
+    private int clickpositionlong=-1;
+    @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemLongClickListener.class)
+    private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        try{
+            clickpositionlong=i;
+            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO 自动生成的方法
+                            //删除扫描记录，改变明细数量
+                            if(clickpositionlong==-1){
+                                MessageBox.Show(context,"请先选择操作的行！");
+                                return;
+                            }
+                            DNDetailModel Model= (DNDetailModel)deliveryScanItemAdapter.getItem(clickpositionlong);
+                            if(DbDnInfo.getInstance().DELscanbyagentdetail(Model,"")){
+//                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyGOLFACODE(Model,"");
+                                //判断剩余的扫描数量
+                                Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO());
+                                if(DbDnInfo.getInstance().UpdateDetailNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
+                                    if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(Model.getAGENT_DN_NO())==0){
+                                        //需要改变主表状态
+//                                        DNModel modeldn=dnModel;
+//                                        modeldn.setSTATUS(1);
+                                        if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
+
+                                        }else{
+                                            MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
+                                            return;
+                                        }
+                                    }
+                                    GetDeliveryOrderScanList();
+                                    MessageBox.Show(context,getString(R.string.Msg_del_success));
+
+                                }else{
+                                    MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
+                                    return;
+                                }
+
+                            }else{
+                                MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
+                            }
+                        }
+                    }).setNegativeButton("取消", null).show();
+
+        }catch(Exception ex){
+            MessageBox.Show(context,ex.toString());
+        }
+        return true;
+
+    }
 
 
 

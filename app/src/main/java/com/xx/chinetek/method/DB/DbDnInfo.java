@@ -421,22 +421,24 @@ public class DbDnInfo {
         }
     }
 
-//    /**
-//     * 修改主表的状态根据明细行
-//     * @param model
-//     * @param condition
-//     */
-//    public boolean UpdateDNmodelDetailNumberbyGOLFACODE(DNDetailModel model,String condition){
-//        try{
-//            String sql="update DNMODEL set DN__QTY=0 " +
-//                    "where AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and GOLFA_CODE='"+ model.getGOLFA_CODE()+"'";
-//            daoSession.getDatabase().execSQL(sql);
-//            return true;
-//        }catch(Exception ex){
-//            return false;
-//        }
-//    }
 
+    /**
+     * 整理三层的提交数据
+     * @param model
+     */
+    public DNModel AllPostDate(DNModel model){
+        try{
+            ArrayList<DNDetailModel> dndetails = GetLoaclExceptionDetailsDN(model.getAGENT_DN_NO());
+            for(int i=0;i<dndetails.size();i++){
+                ArrayList<DNScanModel> dnscans =  GetLoaclDNScanModelDN(dndetails.get(i).getAGENT_DN_NO(),dndetails.get(i).getGOLFA_CODE(),dndetails.get(i).getLINE_NO());
+                dndetails.get(i).setSERIALS(dnscans);
+            }
+            model.setDETAILS(dndetails);
+            return model;
+        }catch(Exception ex){
+            return null;
+        }
+    }
 
 
 }

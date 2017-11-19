@@ -20,6 +20,7 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
@@ -116,7 +117,16 @@ public class Bulkupload extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_Export){
-
+            for(int i=0;i<DNModels.size();i++){
+                if(DNModels.get(i).getFlag()=="1"){
+                    DNModel postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
+                    if(postmodel==null){
+                        MessageBox.Show(context,"出库单号【"+DNModels.get(i).getAGENT_DN_NO()+"】提交失败！");
+                    }else{
+                        UploadDN.SumbitDN(context,postmodel,mHandler);
+                    }
+                }
+            }
         }
         return super.onOptionsItemSelected(item);
     }

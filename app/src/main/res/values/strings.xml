@@ -20,6 +20,7 @@
     <string name="Bulkupload">批量上报</string>
     <string name="Reason">异常原因：</string>
     <string name="ExceptionScan">异常扫描</string>
+    <string name="ScanDetails">扫描明细</string>
 
     <string name="Setting_QRTitle">QR服务器设置</string>
     <string name="Setting_MAilTitle">邮件服务器设置</string>
@@ -140,6 +141,11 @@
     <string name="Dia_SyncFTP">通过FTP形式导入出库单...</string>
     <string name="Dia_UploadFtp">通过FTP形式导出出库单...</string>
     <string name="Dia_SyncSuccess">基础数据同步完成</string>
+
+    <string name="Error_del_dnmodelbarcode">删除扫描明细失败！</string>
+    <string name="Error_del_dnmodeldetail">更新表体扫描数量失败！</string>
+    <string name="Error_del_dnmodel">更新表头状态失败！</string>
+    <string name="Msg_del_success">删除成功！</string>
 </resources>
 
 

@@ -16,6 +16,7 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -43,7 +44,7 @@ public class ExceptionScan extends BaseActivity {
     @Override
     protected void initViews() {
        super.initViews();
-        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.ExceptionScan),true);
+        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.ScanDetails),true);
         x.view().inject(this);
     }
 
@@ -55,7 +56,7 @@ public class ExceptionScan extends BaseActivity {
         GetDeliveryOrderScanList();
         if (dnModel.getDETAILS() == null)
             dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-        dnModel.getDETAILS().addAll(dnDetailModels);
+        dnModel.setDETAILS(dnDetailModels);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class ExceptionScan extends BaseActivity {
         GetDeliveryOrderScanList();
         if (dnModel.getDETAILS() == null)
             dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-        dnModel.getDETAILS().addAll(dnDetailModels);
+        dnModel.setDETAILS(dnDetailModels);
     }
 
     @Override
@@ -81,6 +82,12 @@ public class ExceptionScan extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_submit){
+           DNModel postmodel = DbDnInfo.getInstance().AllPostDate(dnModel);
+            if(postmodel==null){
+                MessageBox.Show(context,"提交失败！");
+            }else{
+                UploadDN.SumbitDN(context,postmodel,mHandler);
+            }
 
         }
         return super.onOptionsItemSelected(item);
@@ -181,19 +188,20 @@ public class ExceptionScan extends BaseActivity {
                                         if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
 
                                         }else{
-                                            MessageBox.Show(context,"更新表头状态失败！");
+                                            MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
                                             return;
                                         }
                                     }
-                                    MessageBox.Show(context,"删除成功！");
+                                    GetDeliveryOrderScanList();
+                                    MessageBox.Show(context,getString(R.string.Msg_del_success));
 
                                 }else{
-                                    MessageBox.Show(context,"更新表体扫描数量失败！");
+                                    MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
                                     return;
                                 }
 
                             }else{
-                                MessageBox.Show(context,"删除扫描明细失败！");
+                                MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
                             }
                         }
                     }).setNegativeButton("取消", null).show();
