@@ -203,7 +203,7 @@ public class ExceptionList extends BaseActivity {
 
     ArrayList<DNModel> ImportExceptionList(){
         ArrayList<DNModel> DNModels =new ArrayList<>();
-        DNModels = DbDnInfo.getInstance().GetLoaclDN();
+        DNModels = DbDnInfo.getInstance().GetLoaclExceptDN();
         return DNModels;
     }
 }
