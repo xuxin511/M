@@ -14,6 +14,8 @@ import com.xx.chinetek.model.DN.DNModel;
 public class CreateDnNo {
     /**
      * 创建自定义单据号
+     * 自定义出库单设定：三菱单据号：DNN+代理商编号(后5位)+PDA序列号（后7位）+年（1位）+顺序号（4位）
+     *                客户单据号：起始字符+PDA序列号（7位）+ 年（最后1位）+顺序号 (起始字符+顺序号长度不超过12位)
      * @return
      */
     public static void GetDnNo(Context context,DNModel dnModel){
