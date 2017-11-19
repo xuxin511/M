@@ -164,7 +164,6 @@ public class MainActivity extends BaseActivity {
             SyncBase.getInstance().SyncMaterial(mHandler);
         }
 
-
     }
 
     /**

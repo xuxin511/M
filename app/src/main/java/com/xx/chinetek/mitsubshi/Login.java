@@ -80,6 +80,11 @@ public class Login extends BaseActivity {
             return;
         }
 
+        if (ParamaterModel.cusDnnoRule==null) {
+            MessageBox.Show(context, getString(R.string.Msg_No_CusDnRule));
+            return;
+        }
+
         ParamaterModel.Operater = edtOperater.getText().toString().trim();
         if (!TextUtils.isEmpty(ParamaterModel.Operater)) {
             SharePreferUtil.SetUserShare(context);

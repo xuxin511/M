@@ -40,6 +40,12 @@ public class ParamaterModel {
      * 是否启用三菱条码
      */
     public static CusBarcodeRule cusBarcodeRule=null;
+
+    /**
+     * 自定义出库单规则
+     */
+    public static CusDnnoRule cusDnnoRule=null;
+
     /**
      * 设备型号
      */

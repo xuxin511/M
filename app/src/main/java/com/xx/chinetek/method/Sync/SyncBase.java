@@ -47,7 +47,9 @@ public class SyncBase {
 
      public void SyncMaterial(MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("Synctime", ParamaterModel.MaterialSyncTime);
+//        params.put("lastSyncTime", ParamaterModel.MaterialSyncTime);
+        params.put("DateString", ParamaterModel.MaterialSyncTime);
+        params.put("UserInfoJS", "");
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncMaterial, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncMaterial,

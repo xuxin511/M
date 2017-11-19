@@ -1,5 +1,7 @@
 package com.xx.chinetek.method;
 
+import android.text.TextUtils;
+
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.mitsubshi.R;
@@ -19,12 +21,24 @@ public class AnalyticsBarCode {
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         //判断是否启用非三菱条码
         if(ParamaterModel.cusBarcodeRule!=null && ParamaterModel.cusBarcodeRule.getUsed()){
-            if(!Barcode.startsWith(ParamaterModel.cusBarcodeRule.getStartWords()) || Barcode.length()!=ParamaterModel.cusBarcodeRule.getBarcodeLength()){
+            Boolean isCheck=true;
+            if(TextUtils.isEmpty(ParamaterModel.cusBarcodeRule.getStartWords())){
+                if(!Barcode.startsWith(ParamaterModel.cusBarcodeRule.getStartWords())){
+                    isCheck=false;
+                }
+            }
+            if(ParamaterModel.cusBarcodeRule.getBarcodeLength()!=0){
+               if(Barcode.length()!=ParamaterModel.cusBarcodeRule.getBarcodeLength()){
+                    isCheck=false;
+                }
+            }
+            if(!isCheck){
                 MessageBox.Show(BaseApplication.context,BaseApplication.context.getString(R.string.Msg_BarcodeNotmatch));
                 return new ArrayList<>();
             }
             BarCodeModel barCodeModel=new BarCodeModel();
             barCodeModel.setSerial_Number(Barcode);
+            barCodeModel.setGolfa_Code(Barcode);
             barCodeModels.add(barCodeModel);
         }else{
             barCodeModels=  Barcode.length() < 400 ?
