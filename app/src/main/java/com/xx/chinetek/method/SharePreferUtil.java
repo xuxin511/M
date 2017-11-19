@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.model.Paramater;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
+import com.xx.chinetek.model.Base.CusBarcodeRule;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
@@ -32,6 +33,11 @@ public class SharePreferUtil {
             Paramater.SOCKET_TIMEOUT=sharedPreferences.getInt("TimeOut", 20000);
             ParamaterModel.PartenerID=sharedPreferences.getString("PartenerNo","");
             ParamaterModel.SysPassword=sharedPreferences.getString("SysPassword","123456");
+            ParamaterModel.DNSaveTime=sharedPreferences.getInt("DNSaveTime",30);
+            ParamaterModel.IsUseRemark=sharedPreferences.getBoolean("IsUseRemark",false);
+            Gson gson = new Gson();
+            Type type = new TypeToken<CusBarcodeRule>(){}.getType();
+            ParamaterModel.cusBarcodeRule= gson.fromJson(sharedPreferences.getString("cusBarcodeRule", ""), type);
             if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
             ParamaterModel.mailModel.setAccount(sharedPreferences.getString("Account",""));
             ParamaterModel.mailModel.setPassword(sharedPreferences.getString("Password",""));
@@ -55,6 +61,12 @@ public class SharePreferUtil {
         edit.putInt("Port",Paramater.Port);
         edit.putInt("TimeOut",Paramater.SOCKET_TIMEOUT);
         edit.putString("PartenerNo", ParamaterModel.PartenerID);
+        edit.putString("SysPassword", ParamaterModel.SysPassword);
+        edit.putInt("DNSaveTime",ParamaterModel.DNSaveTime);
+        edit.putBoolean("IsUseRemark",ParamaterModel.IsUseRemark);
+        Gson gson=new Gson();
+        Type type = new TypeToken<CusBarcodeRule>() {}.getType();
+        edit.putString("cusBarcodeRule",gson.toJson(ParamaterModel.cusBarcodeRule,type));
         if(ParamaterModel.mailModel!=null){
             edit.putString("Account", ParamaterModel.mailModel.getAccount());
             edit.putString("Password", ParamaterModel.mailModel.getPassword());

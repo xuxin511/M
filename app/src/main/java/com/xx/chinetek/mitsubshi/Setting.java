@@ -4,8 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -17,15 +22,17 @@ import com.xx.chinetek.chineteklib.model.Paramater;
 import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
-import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.method.SharePreferUtil;
+import com.xx.chinetek.model.Base.CusBarcodeRule;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
@@ -49,8 +56,6 @@ public class Setting extends BaseActivity {
     EditText edtPort;
     @ViewInject(R.id.edt_TimeOut)
     EditText edtTimeOut;
-    @ViewInject(R.id.txt_Partner)
-    TextView txtPartner;
     @ViewInject(R.id.edt_MailAccount)
     EditText edtMailAccount;
     @ViewInject(R.id.edt_MailPassword)
@@ -73,8 +78,19 @@ public class Setting extends BaseActivity {
     EditText edtFtpDown;
     @ViewInject(R.id.edt_FtpUp)
     EditText edtFtpUp;
+    @ViewInject(R.id.txt_Partner)
+    TextView txtPartner;
+    @ViewInject(R.id.txt_DNSaveTime)
+    TextView txtDNSaveTime;
+    @ViewInject(R.id.ckIsuserRemark)
+    CheckBox ckIsuserRemark;
+    @ViewInject(R.id.ckSelfBarcode)
+    CheckBox ckSelfBarcode;
 
     final  int LogUploadIndex=1;
+    String Password;//临时存放密码
+    String startwords;
+    Integer barcodeLength=0;
 
     @Override
     protected void initViews() {
@@ -99,6 +115,11 @@ public class Setting extends BaseActivity {
         edtPort.setText(Paramater.Port+"");
         edtTimeOut.setText(Paramater.SOCKET_TIMEOUT/1000+"");
         txtPartner.setText(ParamaterModel.PartenerID);
+        txtDNSaveTime.setText(ParamaterModel.DNSaveTime+"");
+        ckIsuserRemark.setChecked(ParamaterModel.IsUseRemark);
+        if(ParamaterModel.cusBarcodeRule!=null){
+            ckSelfBarcode.setChecked(ParamaterModel.cusBarcodeRule.getUsed());
+        }
         if(ParamaterModel.mailModel!=null){
             edtMailAccount.setText(ParamaterModel.mailModel.getAccount());
             edtMailPassword.setText(ParamaterModel.mailModel.getPassword());
@@ -115,7 +136,118 @@ public class Setting extends BaseActivity {
             edtFtpUp.setText(ParamaterModel.ftpModel.getFtpUpLoad());
 
         }
+
     }
+
+    @Event(R.id.layoutCustom)
+    private void layoutCustomClick(View view){
+        final EditText et = new EditText(this);
+        et.setTextColor(getResources().getColor(R.color.black));
+        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputCustom))
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(et)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String input = et.getText().toString();
+                        txtPartner.setText(input);
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    @Event(R.id.layoutSysPassword)
+    private void layoutSysPasswordClick(View view){
+        final EditText et = new EditText(this);
+        et.setTextColor(getResources().getColor(R.color.black));
+        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputPassword))
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(et)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Password= et.getText().toString();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    @Event(R.id.layoutDNSaveTime)
+    private void layoutDNSaveTimeClick(View view){
+        final String[] item=getResources().getStringArray(R.array.DNSaveTime);
+        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_ChoiceSaveTime))
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setItems(item, new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialogInterface, int i) {
+                    txtDNSaveTime.setText(item[i].toString());
+                  }
+              }).show();
+    }
+
+    @Event(value = R.id.ckIsuserRemark,type = CompoundButton.OnCheckedChangeListener.class)
+    private void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+        ckIsuserRemark.setChecked(isCheck);
+    }
+
+    @Event(value = R.id.ckSelfBarcode)
+    private void ckSelfBarcodeClick(View view){
+        if(!ckSelfBarcode.isChecked()){
+            ckSelfBarcode.setChecked(false);
+            return;
+        }
+            final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_selfbarcode_content, null);
+            final EditText edtStartWords=(EditText) textEntryView.findViewById(R.id.edt_StartWords);
+            final EditText edtbarcodeLength=(EditText)textEntryView.findViewById(R.id.edt_barcodeLength);
+            if(ParamaterModel.cusBarcodeRule!=null){
+                edtStartWords.setText(ParamaterModel.cusBarcodeRule.getStartWords());
+                edtbarcodeLength.setText(ParamaterModel.cusBarcodeRule.getBarcodeLength().toString());
+            }
+            new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_SetbarcodeRule))
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setView(textEntryView)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            String startword=edtStartWords.getText().toString().trim();
+                            String length=edtbarcodeLength.getText().toString().trim();
+                            if(!CommonUtil.isNumeric(length)){
+                                MessageBox.Show(context,getString(R.string.Msg_inputNumic));
+                                ckSelfBarcode.setChecked(false);
+                                return;
+                            }
+                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
+                                MessageBox.Show(context,getString(R.string.Msg_notEmpty));
+                                ckSelfBarcode.setChecked(false);
+                                return;
+                            }
+                            startwords=startword;
+                            barcodeLength=Integer.parseInt(length);
+                            ckSelfBarcode.setChecked(true);
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String startword=edtStartWords.getText().toString().trim();
+                            String length=edtbarcodeLength.getText().toString().trim();
+                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
+                                ckSelfBarcode.setChecked(false);
+                            }else{
+                                ckSelfBarcode.setChecked(true);
+                            }
+                        }
+                    })
+                    .show();
+
+
+    }
+//
+//    @Event(value = R.id.ckSelfBarcode,type = CompoundButton.OnCheckedChangeListener.class)
+//    private void ckSelfBarcodeonCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+//
+//    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,7 +266,6 @@ public class Setting extends BaseActivity {
             }
         }catch (Exception ex){
             MessageBox.Show(context,ex.getMessage());
-            LogUtil.WriteLog(Setting.class,"Error",ex.getMessage());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -144,6 +275,15 @@ public class Setting extends BaseActivity {
         Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
         Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
         ParamaterModel.PartenerID =txtPartner.getText().toString().trim();
+        ParamaterModel.DNSaveTime =Integer.parseInt(txtDNSaveTime.getText().toString().trim());
+        ParamaterModel.IsUseRemark =ckIsuserRemark.isChecked();
+        ParamaterModel.SysPassword=Password;
+        ParamaterModel.cusBarcodeRule=new CusBarcodeRule();
+        ParamaterModel.cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
+        if(ckSelfBarcode.isChecked()){
+            ParamaterModel.cusBarcodeRule.setStartWords(startwords);
+            ParamaterModel.cusBarcodeRule.setBarcodeLength(barcodeLength);
+        }
         if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
         ParamaterModel.mailModel.setAccount(edtMailAccount.getText().toString().trim());
         ParamaterModel.mailModel.setPassword(edtMailPassword.getText().toString().trim());

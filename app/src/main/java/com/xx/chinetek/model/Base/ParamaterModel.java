@@ -27,6 +27,20 @@ public class ParamaterModel {
     public static String SysPassword;
 
     /**
+     * DN单据本地保存时间
+     */
+    public static int DNSaveTime=30;
+
+    /**
+     * 是否启用备注栏
+     */
+    public static Boolean IsUseRemark=false;
+
+    /**
+     * 是否启用三菱条码
+     */
+    public static CusBarcodeRule cusBarcodeRule=null;
+    /**
      * 设备型号
      */
     public static String Model=null;

@@ -7,12 +7,15 @@ import com.xx.chinetek.greendao.DNModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
 import com.xx.chinetek.greendao.DaoSession;
 import com.xx.chinetek.model.Base.DNStatusEnum;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by GHOST on 2017/11/7.
@@ -49,6 +52,27 @@ public class DbDnInfo {
             }
         }
         return mSyncDn;
+    }
+
+    /**
+     * 删除超出时间DN单据
+     */
+    public void DeleteDnBySaveTime(){
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_MONTH, 0- ParamaterModel.DNSaveTime);
+            List<DNModel> dnModels = dnModelDao.queryBuilder().where(DNModelDao.Properties.OPER_DATE.le(cal.getTimeInMillis())).distinct().list();
+            if (dnModels != null & dnModels.size() != 0) {
+                for (DNModel dnModel : dnModels) {
+                    String sql = "delete from DNMODEL where AGENT__DN__NO='" + dnModel.getAGENT_DN_NO() + "'";
+                    dnModelDao.getDatabase().execSQL(sql);
+                    sql = "delete from DNDETAIL_MODEL where AGENT__DN__NO='" + dnModel.getAGENT_DN_NO() + "'";
+                    dnDetailModelDao.getDatabase().execSQL(sql);
+                    sql = "delete from DNSCAN_MODEL where AGENT__DN__NO='" + dnModel.getAGENT_DN_NO() + "'";
+                    dnScanModelDao.getDatabase().execSQL(sql);
+                }
+            }
+        }catch (Exception ex){}
     }
 
     /**

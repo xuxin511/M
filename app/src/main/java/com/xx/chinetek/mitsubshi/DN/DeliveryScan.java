@@ -99,6 +99,9 @@ public class DeliveryScan extends BaseIntentActivity {
        super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.deliveryScan),true);
         x.view().inject(this);
+        //显示备注栏
+        int visable=ParamaterModel.IsUseRemark?View.VISIBLE:View.GONE;
+        imgRemark.setVisibility(visable);
 
     }
 
@@ -187,9 +190,7 @@ public class DeliveryScan extends BaseIntentActivity {
             return true;
         }
         try {
-            ArrayList<BarCodeModel> barCodeModels = barcode.length() < 400 ?
-                    AnalyticsBarCode.AnalyticsSmall(barcode)
-                    : AnalyticsBarCode.AnalyticsLarge(barcode);
+            ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
                 txtItemNo.setText(materialModel.getMATNR());

@@ -6,6 +6,7 @@
 
     <style name="CustomCheckBoxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/checkbox_style</item>
+        <item name="android:background">@color/white</item>
     </style>
 
     <!-- 最外层样式 -->
@@ -65,7 +66,7 @@
         <item name="android:textColor">@color/text_clo</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginRight">10dp</item>
     </style>
 
 

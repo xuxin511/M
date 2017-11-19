@@ -78,7 +78,7 @@ public class ExceptionListItemAdapter extends BaseAdapter {
         }
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
-        listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()]);
+        listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME());
 //        listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.submituser)+DNModel.());
         listItemView.txtSumbitTime.setText("");

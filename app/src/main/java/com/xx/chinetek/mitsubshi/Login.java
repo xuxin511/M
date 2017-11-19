@@ -13,6 +13,7 @@ import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.ModelInfo;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -55,6 +56,8 @@ public class Login extends BaseActivity {
         if(ParamaterModel.SerialNo!=null) {
             txtSerialNo.setText(ParamaterModel.SerialNo);
         }
+        //删除超过保存日期的DN单据
+        DbDnInfo.getInstance().DeleteDnBySaveTime();
     }
 
     @Override

@@ -1,6 +1,10 @@
 package com.xx.chinetek.method;
 
+import com.xx.chinetek.chineteklib.base.BaseApplication;
+import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
+import com.xx.chinetek.model.Base.ParamaterModel;
 
 import java.util.ArrayList;
 
@@ -10,12 +14,32 @@ import java.util.ArrayList;
 
 public class AnalyticsBarCode {
 
+
+    public static ArrayList<BarCodeModel> CheckBarcode(String Barcode){
+        ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
+        //判断是否启用非三菱条码
+        if(ParamaterModel.cusBarcodeRule!=null && ParamaterModel.cusBarcodeRule.getUsed()){
+            if(!Barcode.startsWith(ParamaterModel.cusBarcodeRule.getStartWords()) || Barcode.length()!=ParamaterModel.cusBarcodeRule.getBarcodeLength()){
+                MessageBox.Show(BaseApplication.context,BaseApplication.context.getString(R.string.Msg_BarcodeNotmatch));
+                return new ArrayList<>();
+            }
+            BarCodeModel barCodeModel=new BarCodeModel();
+            barCodeModel.setSerial_Number(Barcode);
+            barCodeModels.add(barCodeModel);
+        }else{
+            barCodeModels=  Barcode.length() < 400 ?
+                    AnalyticsBarCode.AnalyticsSmall(Barcode)
+                    : AnalyticsBarCode.AnalyticsLarge(Barcode);
+        }
+        return  barCodeModels;
+    }
+
     /**
      * 解析小包装
      * @param Barcode
      * @return
      */
-    public static ArrayList<BarCodeModel> AnalyticsSmall(String Barcode){
+    private static ArrayList<BarCodeModel> AnalyticsSmall(String Barcode){
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         BarCodeModel barCodeModel=new BarCodeModel();
         String headCode=Barcode.substring(0,1);
@@ -49,7 +73,7 @@ public class AnalyticsBarCode {
      * @param Barcode
      * @return
      */
-    public static ArrayList<BarCodeModel> AnalyticsLarge(String Barcode){
+    private static ArrayList<BarCodeModel> AnalyticsLarge(String Barcode){
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         String temp_data = Barcode.substring(48);
         String[] data = temp_data.split(" ");
