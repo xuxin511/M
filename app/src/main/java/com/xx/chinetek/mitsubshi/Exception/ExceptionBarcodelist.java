@@ -3,10 +3,8 @@ package com.xx.chinetek.mitsubshi.Exception;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,23 +14,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.xx.chinetek.adapter.DN.DeliveryScanItemAdapter;
-import com.xx.chinetek.adapter.Exception.ExceptionScanItemAdapter;
 import com.xx.chinetek.adapter.Exception.ExceptionScanbarcodeAdapter;
-import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
-import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
-import com.xx.chinetek.mitsubshi.BarcodeDetail;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.MaterialModel;
-import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -142,9 +134,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             return true;
         }
         try {
-            ArrayList<BarCodeModel> barCodeModels = barcode.length() < 400 ?
-                    AnalyticsBarCode.AnalyticsSmall(barcode)
-                    : AnalyticsBarCode.AnalyticsLarge(barcode);
+            ArrayList<BarCodeModel> barCodeModels = AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
                 txtItemNo.setText(materialModel.getMATNR());
