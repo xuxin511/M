@@ -164,19 +164,19 @@ public class ExceptionList extends BaseActivity {
 //                                    DNModel modeldn=Model;
 //                                    modeldn.setSTATUS(1);
                                     if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",Model.getDN_SOURCE())){
-                                        MessageBox.Show(context,"删除成功！");
+                                        MessageBox.Show(context,getString(R.string.Msg_del_success));
                                         GetExceptionList();
                                     }else{
-                                        MessageBox.Show(context,"更新表头状态失败！");
+                                        MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
                                         return;
                                     }
 
                                 }else{
-                                    MessageBox.Show(context,"更新表体扫描数量失败！");
+                                    MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
                                     return;
                                 }
                             }else{
-                                MessageBox.Show(context,"删除扫描明细失败！");
+                                MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
                             }
 
                         }
@@ -203,7 +203,7 @@ public class ExceptionList extends BaseActivity {
 
     ArrayList<DNModel> ImportExceptionList(){
         ArrayList<DNModel> DNModels =new ArrayList<>();
-        DNModels = DbDnInfo.getInstance().GetLoaclExceptDN();
+        DNModels = DbDnInfo.getInstance().GetLoaclDN();
         return DNModels;
     }
 }

@@ -89,12 +89,14 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         }
     }
 
+//    private String Flag="";
     @Override
     protected void initData() {
         super.initData();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         dndetailmodel=getIntent().getParcelableExtra("DNdetailModel");
+//        Flag=getIntent().getStringExtra("Flag");
         //初始化数据
         txtDnNo.setText(dnModel.getAGENT_DN_NO().toString());
         txtItemName.setText("物料名称："+dndetailmodel.getGOLFA_CODE());
@@ -111,7 +113,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_scan_title, menu);
+        getMenuInflater().inflate(R.menu.menu_close, menu);
         return true;
     }
 
@@ -149,30 +151,6 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         return true;
     }
 
-//    @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
-//    private boolean edtBarcodeOnkeyUp(View v, int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-//            if (event.getAction() == KeyEvent.ACTION_UP) {
-//                String Barcode = edtBarcode.getText().toString();
-//                if (TextUtils.isEmpty(Barcode)) {
-//                    MessageBox.Show(context, getString(R.string.Msg_No_Barcode));
-//                    return true;
-//                }
-//                try {
-//                    ArrayList<BarCodeModel> barCodeModels = Barcode.length() < 400 ?
-//                            AnalyticsBarCode.AnalyticsSmall(Barcode)
-//                            : AnalyticsBarCode.AnalyticsLarge(Barcode);
-//                    if (barCodeModels != null && barCodeModels.size() != 0) {
-//                        return ScanBarccode(barCodeModels);
-//                    }
-//                } catch (Exception ex) {
-//                    MessageBox.Show(context, ex.getMessage());
-//                }
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
 
     /**
@@ -182,7 +160,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
      * @throws Exception
      */
     private boolean ScanBarccode(ArrayList<BarCodeModel> barCodeModels) throws Exception {
-        dnModel.resetDETAILS();
+//        dnModel.resetDETAILS();
         List<DNDetailModel> dnDetailModels = dnModel.getDETAILS();
         int isErrorStatus=-1;//0:物料已扫描  1：数量已超出 2：物料不存在
         DNDetailModel dnDetailModel = new DNDetailModel();
@@ -355,20 +333,20 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                                     if(DbDnInfo.getInstance().UpdateDNmodelState(dndetailmodel.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
 
                                     }else{
-                                        MessageBox.Show(context,"更新表头状态失败！");
+                                        MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
                                         return;
                                     }
                                 }
-                                MessageBox.Show(context,"删除成功！");
+                                MessageBox.Show(context,getString(R.string.Msg_del_success));
                                 txtScanQty.setText("扫描数量："+(dndetailmodel.getSCAN_QTY()-1));
                                 GetDeliveryOrderScanList();
 
                             }else{
-                                MessageBox.Show(context,"更新表体扫描数量失败！");
+                                MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
                                 return;
                             }
                         }else{
-                            MessageBox.Show(context,"删除扫描明细失败！");
+                            MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
                         }
                     }
                 }).setNegativeButton("取消", null).show();
