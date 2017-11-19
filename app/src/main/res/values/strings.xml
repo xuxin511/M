@@ -49,6 +49,7 @@
     <string name="createtime">创建时间：</string>
     <string name="submittime">提交时间：</string>
     <string name="submituser">最后提交人：</string>
+    <string name="overtime">完成时间：</string>
     <string name="barcode">条码:</string>
     <string name="scanQty">扫描数量：</string>
     <string name="dnQty">出库数量：</string>

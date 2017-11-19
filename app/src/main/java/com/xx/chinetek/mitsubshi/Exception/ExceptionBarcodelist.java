@@ -357,16 +357,28 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                         if(DbDnInfo.getInstance().DELscanbyserial(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),Model.getSERIAL_NO(),"")){
                             //判断剩余的扫描数量
                             Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
-                            DbDnInfo.getInstance().UpdateDetailNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO(),lastNum,dnModel.getDN_SOURCE());
-                            if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(dndetailmodel.getAGENT_DN_NO())==0){
-                                //需要改变主表状态
-                                DbDnInfo.getInstance().UpdateDNmodelState(dndetailmodel.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE());
+                            if(DbDnInfo.getInstance().UpdateDetailNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
+                                if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(dndetailmodel.getAGENT_DN_NO())==0){
+                                    //需要改变主表状态
+//                                    DNModel modeldn=dnModel;
+//                                    modeldn.setSTATUS(1);
+                                    if(DbDnInfo.getInstance().UpdateDNmodelState(dndetailmodel.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
+
+                                    }else{
+                                        MessageBox.Show(context,"更新表头状态失败！");
+                                        return;
+                                    }
+                                }
+                                MessageBox.Show(context,"删除成功！");
+                                txtScanQty.setText("扫描数量："+(dndetailmodel.getSCAN_QTY()-1));
+                                GetDeliveryOrderScanList();
+
+                            }else{
+                                MessageBox.Show(context,"更新表体扫描数量失败！");
+                                return;
                             }
-                            MessageBox.Show(context,"删除成功！");
-                            txtScanQty.setText("扫描数量："+(dndetailmodel.getSCAN_QTY()-1));
-                            GetDeliveryOrderScanList();
                         }else{
-                            MessageBox.Show(context,"删除失败！");
+                            MessageBox.Show(context,"删除扫描明细失败！");
                         }
                     }
                 }).setNegativeButton("取消", null).show();

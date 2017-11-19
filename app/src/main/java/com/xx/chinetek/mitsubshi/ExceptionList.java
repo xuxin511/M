@@ -159,13 +159,24 @@ public class ExceptionList extends BaseActivity {
 //                                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyDN(Model.getAGENT_DN_NO(),"");
 //                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"2","");
                                 //判断剩余的扫描数量
-                                DbDnInfo.getInstance().UpdateDetailAllNum(Model.getAGENT_DN_NO(),0,Model.getDN_SOURCE());
-                                //需要改变主表状态
-                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",Model.getDN_SOURCE());
-                                MessageBox.Show(context,"删除成功！");
-                                GetExceptionList();
+                                if(DbDnInfo.getInstance().UpdateDetailAllNum(Model.getAGENT_DN_NO(),0,Model.getDN_SOURCE())){
+                                    //需要改变主表状态
+//                                    DNModel modeldn=Model;
+//                                    modeldn.setSTATUS(1);
+                                    if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",Model.getDN_SOURCE())){
+                                        MessageBox.Show(context,"删除成功！");
+                                        GetExceptionList();
+                                    }else{
+                                        MessageBox.Show(context,"更新表头状态失败！");
+                                        return;
+                                    }
+
+                                }else{
+                                    MessageBox.Show(context,"更新表体扫描数量失败！");
+                                    return;
+                                }
                             }else{
-                                MessageBox.Show(context,"删除失败！");
+                                MessageBox.Show(context,"删除扫描明细失败！");
                             }
 
                         }
@@ -192,7 +203,7 @@ public class ExceptionList extends BaseActivity {
 
     ArrayList<DNModel> ImportExceptionList(){
         ArrayList<DNModel> DNModels =new ArrayList<>();
-        DNModels = DbDnInfo.getInstance().GetLoaclDN();
+        DNModels = DbDnInfo.getInstance().GetLoaclExceptDN();
         return DNModels;
     }
 }
