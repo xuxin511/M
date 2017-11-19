@@ -23,15 +23,7 @@ public class QRScan extends BaseIntentActivity {
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case TAG_SCAN:
-                try {
-                    String msgstr=(String) msg.obj;
-                   // String obj =new String(msgstr.getBytes("GBK"), "UTF-8");
-                    String obj =decode(msgstr);
-                            //URLEncoder.encode(, "GBK");
-
-                }catch (Exception  ex){
-
-                }
+                    String Barcode=(String) msg.obj;
                 break;
         }
     }
@@ -46,30 +38,5 @@ public class QRScan extends BaseIntentActivity {
     @Override
     protected void initData() {
         super.initData();
-        dnTypeModel=getIntent().getParcelableExtra("DNType");
-    }
-
-    public static String decode(String unicodeStr) {
-        if (unicodeStr == null) {
-            return null;
-        }
-        StringBuffer retBuf = new StringBuffer();
-        int maxLoop = unicodeStr.length();
-        for (int i = 0; i < maxLoop; i++) {
-            if (unicodeStr.charAt(i) == '\\') {
-                if ((i < maxLoop - 5) && ((unicodeStr.charAt(i + 1) == 'u') || (unicodeStr.charAt(i + 1) == 'U')))
-                    try {
-                        retBuf.append((char) Integer.parseInt(unicodeStr.substring(i + 2, i + 6), 16));
-                        i += 5;
-                    } catch (NumberFormatException localNumberFormatException) {
-                        retBuf.append(unicodeStr.charAt(i));
-                    }
-                else
-                    retBuf.append(unicodeStr.charAt(i));
-            } else {
-                retBuf.append(unicodeStr.charAt(i));
-            }
-        }
-        return retBuf.toString();
     }
 }

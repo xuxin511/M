@@ -163,7 +163,7 @@ public class SyncDN {
                        cusNo = DbBaseInfo.getInstance().GetCustomName(lines[3].trim());
                        dnModel.setCUSTOM_NO(cusNo);
                        dnModel.setCUSTOM_NAME(lines[3].trim());
-                  }
+                   }
                    int lineno=Integer.parseInt(lines[1].trim());
                    DNDetailModel dnDetailModel =DbDnInfo.getInstance().GetLoaclDNDetail(DNNo,lineno);
                    if(dnDetailModel==null) {

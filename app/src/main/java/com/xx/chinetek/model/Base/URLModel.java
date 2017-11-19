@@ -14,13 +14,13 @@ public class URLModel {
         return  new URLModel();
     }
 
-    private static String  LastContent="test/Service1.svc/";
+    private static String  LastContent="Service.svc/";
 
     String  GetWCFAdress(){
         return  "http://"+IPAdress+":"+Port+"/"+LastContent;
     }
 
-    public String SyncMaterial = GetWCFAdress()+"GetMatrials"; //同步物料基础数据
+    public String SyncMaterial = GetWCFAdress()+"GetData"; //同步物料基础数据
     public String SyncCus = GetWCFAdress()+"SyncCus"; //同步代理商和客户基础数据
     public String UploadCus = GetWCFAdress()+"UploadCus"; //上传新增客户
     public String UploadNDN = GetWCFAdress()+"UploadNDN"; //上传出库单
