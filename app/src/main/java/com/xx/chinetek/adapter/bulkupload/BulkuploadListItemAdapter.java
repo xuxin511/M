@@ -26,7 +26,7 @@ public class BulkuploadListItemAdapter extends BaseAdapter {
     public final class ListItemView { // 自定义控件集合
 
         public TextView txtDeliveryNo;
-//        public TextView txtStatus;
+        public TextView txtStatus;
         public TextView txtConsignee;
         public TextView txtSumbitTime;
         public TextView txtSource;
@@ -67,7 +67,7 @@ public class BulkuploadListItemAdapter extends BaseAdapter {
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_bulkupload_list,null);
             listItemView.txtDeliveryNo = (TextView) convertView.findViewById(R.id.item_DeliveryNo);
-//            listItemView.txtStatus = (TextView) convertView.findViewById(R.id.item_Status);
+            listItemView.txtStatus = (TextView) convertView.findViewById(R.id.item_Status);
             listItemView.txtConsignee = (TextView) convertView.findViewById(R.id.item_Consignee);
             listItemView.txtSumbitTime = (TextView) convertView.findViewById(R.id.item_SubmitTime);
             listItemView.txtSource = (TextView) convertView.findViewById(R.id.item_Source);
@@ -78,16 +78,16 @@ public class BulkuploadListItemAdapter extends BaseAdapter {
         }
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
-//        listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()]);
+        listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME());
 //        listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.submituser)+DNModel.());
         listItemView.txtSumbitTime.setText("");
         listItemView.txtSource.setText(convertView.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
-        listItemView.txtSubmitUser.setText(convertView.getResources().getString(R.string.submittime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
+        listItemView.txtSubmitUser.setText(convertView.getResources().getString(R.string.overtime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
         if(DNModel.getFlag()!=null&&DNModel.getFlag().equals("1")){
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.gray));
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.lightgreen));
         }else{
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.white));
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.trans));
         }
 
         return convertView;

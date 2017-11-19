@@ -82,7 +82,7 @@
         android:textAlignment="textStart"
         android:textColor="@color/blueviolet"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline3"
@@ -95,4 +95,21 @@
         android:id="@+id/guideline3"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.75" />
+
+    <TextView
+        android:id="@+id/item_Status"
+        style="@style/TextViewComminStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:textColor="@color/indianred"
+        android:text="状态"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_DeliveryNo"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

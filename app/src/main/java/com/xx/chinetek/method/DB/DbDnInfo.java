@@ -108,6 +108,28 @@ public class DbDnInfo {
     }
 
     /**
+     * 获取本地数据所有异常单据
+     * @return
+     */
+    public  ArrayList<DNModel> GetLoaclExceptDN(){
+        ArrayList<DNModel> dnModels=new ArrayList<>();
+        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
+                .where(DNModelDao.Properties.STATUS.eq(DNStatusEnum.exeption)).list();
+        return dnModels;
+    }
+
+    /**
+     * 获取本地数据所有完成单据
+     * @return
+     */
+    public  ArrayList<DNModel> GetLoaclcompleteDN(){
+        ArrayList<DNModel> dnModels=new ArrayList<>();
+        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
+                .where(DNModelDao.Properties.STATUS.eq(DNStatusEnum.complete)).list();
+        return dnModels;
+    }
+
+    /**
      * 查询除未下载之外所有单据
      * @return
      */
@@ -371,13 +393,12 @@ public class DbDnInfo {
             String sql="";
             if(DNSOURCE==3){
                 sql="delete from DNMODEL where AGENT__DN__NO='"+ DNNo+"'";
+                daoSession.getDatabase().execSQL(sql);
             }else{
-                sql="update DNMODEL set DN__STATUS="+status+" where AGENT__DN__NO='"+ DNNo+"'";
+                sql="update DNMODEL set status="+status+" where AGENT__DN__NO='"+DNNo+"'";
+                dnModelDao.getDatabase().execSQL(sql);
             }
-
-
-            daoSession.getDatabase().execSQL(sql);
-            return true;
+          return true;
         }catch(Exception ex){
             return false;
         }

@@ -135,7 +135,7 @@ public class Bulkupload extends BaseActivity {
 
     ArrayList<DNModel> ImportbulkuploadList(){
         ArrayList<DNModel> DNModels =new ArrayList<>();
-        DNModels = DbDnInfo.getInstance().GetLoaclDN();
+        DNModels = DbDnInfo.getInstance().GetLoaclcompleteDN();
         return DNModels;
     }
 }
