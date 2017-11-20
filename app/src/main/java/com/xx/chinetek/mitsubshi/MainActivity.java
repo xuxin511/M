@@ -260,7 +260,7 @@ public class MainActivity extends BaseActivity {
         itemIconList.add(R.drawable.ico);
         itemNamesList.add(getString(R.string.Query));
         itemIconList.add(R.drawable.ico);
-        itemNamesList.add("批量上报");
+        itemNamesList.add(getString(R.string.Bulkupload));
         itemIconList.add(R.drawable.ico);
         itemNamesList.add(getString(R.string.sync));
 
