@@ -1,10 +1,12 @@
 package com.xx.chinetek.mitsubshi.Bulkupload;
 
-import android.app.AlertDialog;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +15,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.xx.chinetek.adapter.ExceptionListItemAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import com.xx.chinetek.adapter.bulkupload.BulkuploadListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -21,10 +23,7 @@ import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Upload.UploadDN;
-import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
-import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
-import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -35,13 +34,15 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 @ContentView(R.layout.activity_exception_list)
-public class Bulkupload extends BaseActivity {
+public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     Context context = Bulkupload.this;
     @ViewInject(R.id.edt_DNNoFuilter)
     EditText edtDNNoFuilter;
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
+    @ViewInject(R.id.mSwipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
 
     ArrayList<DNModel> DNModels;
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
@@ -58,6 +59,14 @@ public class Bulkupload extends BaseActivity {
     protected void initData() {
         super.initData();
         GetbulkuploadList();
+        edtDNNoFuilter.addTextChangedListener(bululoadTextWatcher);
+        mSwipeLayout.setOnRefreshListener(this); //下拉刷新
+    }
+
+    @Override
+    public void onRefresh() {
+//        ImportDelivery();
+        mSwipeLayout.setRefreshing(false);
     }
 
 
@@ -98,6 +107,39 @@ public class Bulkupload extends BaseActivity {
         }
 
     }
+
+
+    /**
+     * 文本变化事件
+     */
+    TextWatcher bululoadTextWatcher=new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String filterContent=edtDNNoFuilter.getText().toString();
+            if(!filterContent.equals(""))
+                bulkuploadListItemAdapter.getFilter().filter(filterContent);
+            else{
+                BindListView();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    void BindListView(){
+        if(DNModels!=null) {
+            bulkuploadListItemAdapter = new BulkuploadListItemAdapter(context, DNModels);
+            LsvExceptionList.setAdapter(bulkuploadListItemAdapter);
+        }
+    }
+
 
     private void StartScan(DNModel dnModel) {
         Intent intent=new Intent(context,BulkuploadScan.class);

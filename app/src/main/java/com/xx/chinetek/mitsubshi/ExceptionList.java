@@ -5,6 +5,9 @@ import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 
+import com.xx.chinetek.adapter.DN.DeliveryListItemAdapter;
 import com.xx.chinetek.adapter.ExceptionListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -29,14 +33,15 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 @ContentView(R.layout.activity_exception_list)
-public class ExceptionList extends BaseActivity {
+public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     Context context = ExceptionList.this;
     @ViewInject(R.id.edt_DNNoFuilter)
     EditText edtDNNoFuilter;
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
-
+    @ViewInject(R.id.mSwipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
     ArrayList<DNModel> DNModels;
     ExceptionListItemAdapter exceptionListItemAdapter;
 
@@ -52,7 +57,14 @@ public class ExceptionList extends BaseActivity {
     protected void initData() {
         super.initData();
         GetExceptionList();
+        edtDNNoFuilter.addTextChangedListener(ExceptionTextWatcher);
+        mSwipeLayout.setOnRefreshListener(this); //下拉刷新
+    }
 
+    @Override
+    public void onRefresh() {
+//        ImportDelivery();
+        mSwipeLayout.setRefreshing(false);
     }
 
     @Override
@@ -137,7 +149,36 @@ public class ExceptionList extends BaseActivity {
 
     }
 
+    /**
+     * 文本变化事件
+     */
+    TextWatcher ExceptionTextWatcher=new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String filterContent=edtDNNoFuilter.getText().toString();
+            if(!filterContent.equals(""))
+                exceptionListItemAdapter.getFilter().filter(filterContent);
+            else{
+                BindListView();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    void BindListView(){
+        if(DNModels!=null) {
+            exceptionListItemAdapter = new ExceptionListItemAdapter(context, DNModels);
+            LsvExceptionList.setAdapter(exceptionListItemAdapter);
+        }
+    }
 
     private int clickpositionlong=-1;
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
