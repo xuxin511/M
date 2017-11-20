@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 
+import com.xx.chinetek.adapter.DN.DeliveryListItemAdapter;
 import com.xx.chinetek.adapter.ExceptionListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -137,7 +140,36 @@ public class ExceptionList extends BaseActivity {
 
     }
 
+    /**
+     * 文本变化事件
+     */
+    TextWatcher DeleveryNoTextWatcher=new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String filterContent=edtDNNoFuilter.getText().toString();
+            if(!filterContent.equals(""))
+                exceptionListItemAdapter.getFilter().filter(filterContent);
+            else{
+                BindListView();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    void BindListView(){
+        if(DNModels!=null) {
+            exceptionListItemAdapter = new ExceptionListItemAdapter(context, DNModels);
+            LsvExceptionList.setAdapter(exceptionListItemAdapter);
+        }
+    }
 
     private int clickpositionlong=-1;
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)

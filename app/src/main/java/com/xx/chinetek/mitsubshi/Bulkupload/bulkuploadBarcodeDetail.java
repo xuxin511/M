@@ -81,7 +81,8 @@ public class bulkuploadBarcodeDetail extends BaseActivity {
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
         DNScanModel Modelcheck= (DNScanModel)barcodeItemAdapter.getItem(position);
-        if(Modelcheck.getSERIAL_NO().indexOf("数量")!=-1){
+//        indexOf("数量")!=-1
+        if(Modelcheck.getSERIAL_NO().contains("数量")){
             return;
         }
         clickposition=position;
