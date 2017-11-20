@@ -64,7 +64,7 @@
         android:layout_marginTop="0dp"
         android:text="创建时间"
         android:textAlignment="textStart"
-        android:textColor="@color/silver"
+        android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline3"
