@@ -116,11 +116,11 @@ public class DeliveryScan extends BaseIntentActivity {
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
         ShowRemark();
         dnModel.__setDaoSession(dnInfo.getDaoSession());
-        GetDeliveryOrderScanList();
-        if (dnModel.getDETAILS() == null)
-            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-
-        dnModel.getDETAILS().addAll(dnDetailModels);
+//        GetDeliveryOrderScanList();
+//        if (dnModel.getDETAILS() == null)
+//            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
+//
+//        dnModel.getDETAILS().addAll(dnDetailModels);
     }
 
     @Override
@@ -138,6 +138,15 @@ public class DeliveryScan extends BaseIntentActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GetDeliveryOrderScanList();
+        if (dnModel.getDETAILS() == null)
+            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
+
+        dnModel.getDETAILS().addAll(dnDetailModels);
+    }
 
     /**
      * 备注
