@@ -121,21 +121,21 @@ public class MainActivity extends BaseActivity {
         }
         else if (textView.getText().toString().equals(getString(R.string.sync))) {
 //            //测试
-            ArrayList<MaterialModel> materialModels = new ArrayList<>();
-            for(int i=0;i<20;i++) {
-                MaterialModel materialModel = new MaterialModel();
-                materialModel.setMATNR("1120000001");
-                materialModel.setBISMT("1W4A31");
-                materialModel.setMAKTX("物料名称1");
-                materialModel.setZMAKTX("物料名称1-长");
-                materialModels.add(materialModel);
-                materialModel = new MaterialModel();
-                materialModel.setMATNR("1120000002");
-                materialModel.setBISMT("09M473");
-                materialModel.setMAKTX("物料名称2");
-                materialModel.setZMAKTX("物料名称2-长");
-                materialModels.add(materialModel);
-            }
+//            ArrayList<MaterialModel> materialModels = new ArrayList<>();
+//            for(int i=0;i<20;i++) {
+//                MaterialModel materialModel = new MaterialModel();
+//                materialModel.setMATNR("1120000001");
+//                materialModel.setBISMT("1W4A31");
+//                materialModel.setMAKTX("物料名称1");
+//                materialModel.setZMAKTX("物料名称1-长");
+//                materialModels.add(materialModel);
+//                materialModel = new MaterialModel();
+//                materialModel.setMATNR("1120000002");
+//                materialModel.setBISMT("09M473");
+//                materialModel.setMAKTX("物料名称2");
+//                materialModel.setZMAKTX("物料名称2-长");
+//                materialModels.add(materialModel);
+//            }
             ArrayList<CustomModel> customModels = new ArrayList<>();
             for(int i=0;i<25;i++){
                 CustomModel customModel =new CustomModel();
@@ -151,13 +151,13 @@ public class MainActivity extends BaseActivity {
             syncParaModels.add(syncParaModel);
 
             //插入数据
-            try {
-                DbBaseInfo.getInstance().InsertMaterialDB(materialModels);
-                DbBaseInfo.getInstance().InsertCustomDB(customModels);
-                DbBaseInfo.getInstance().InsertParamaterDB(syncParaModels);
-            }catch (Exception ex){
-                String str=ex.getMessage();
-            }
+//            try {
+//                DbBaseInfo.getInstance().InsertMaterialDB(materialModels);
+//                DbBaseInfo.getInstance().InsertCustomDB(customModels);
+//                DbBaseInfo.getInstance().InsertParamaterDB(syncParaModels);
+//            }catch (Exception ex){
+//                String str=ex.getMessage();
+//            }
             //获取同步时间
             SharePreferUtil.ReadSyncTimeShare(context);
             //同步物料

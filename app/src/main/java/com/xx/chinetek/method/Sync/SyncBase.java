@@ -58,12 +58,12 @@ public class SyncBase {
 
     public void SyncCus(MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("Synctime", ParamaterModel.CustomSyncTime);
+      //  params.put("Synctime", ParamaterModel.CustomSyncTime);
+        params.put("cusNo", ParamaterModel.PartenerID);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncCus, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncCus,
                 context.getString(R.string.Dia_SyncCus), context, mHandler, RESULT_SyncCus, null,  URLModel.GetURL().SyncCus, params, null);
-
     }
 
     public void  SyncPara(MyHandler<BaseActivity> mHandler){
