@@ -20,7 +20,7 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
     private Context context; // 运行上下文
     private ArrayList<DNDetailModel> dnDetailModels; // 信息集合
     private LayoutInflater listContainer; // 视图容器
-
+    private Integer dnsource=0;
 
     public final class ListItemView { // 自定义控件集合
 
@@ -31,7 +31,8 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         public TextView txtScanQty ;
     }
 
-    public DeliveryScanItemAdapter(Context context, ArrayList<DNDetailModel> dnDetailModels) {
+    public DeliveryScanItemAdapter(Context context, ArrayList<DNDetailModel> dnDetailModels, Integer SOURCE) {
+        dnsource=SOURCE;
         this.context = context;
         listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
         this.dnDetailModels = dnDetailModels;
@@ -77,7 +78,7 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
         listItemView.txtRowNo.setText(convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO());
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());
-        listItemView.txtDNQty.setText(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY());
+        listItemView.txtDNQty.setText(dnsource==3?"":(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY()));
         listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+dnDetailModel.getSCAN_QTY());
         if(dnDetailModel.getDN_QTY()==dnDetailModel.getSCAN_QTY()){
             convertView.setBackgroundResource(R.color.mediumaquamarine);

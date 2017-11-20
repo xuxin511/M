@@ -28,6 +28,7 @@ import com.xx.chinetek.method.FileUtils;
 import com.xx.chinetek.method.Upload.UploadFiles;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
+import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -93,7 +94,7 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
         super.initData();
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
-        BindListView();
+//        BindListView();
     }
 
     @Override
@@ -140,6 +141,13 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
         BindListView();
         mSwipeLayout.setRefreshing(false);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BindListView();
+    }
+
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemLongClickListener.class)
     private boolean LsvDeliveryListonItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         deliveryListItemAdapter.modifyStates(position);
@@ -152,14 +160,19 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
         DNModel  dnModel=(DNModel)deliveryListItemAdapter.getItem(position);
         ParamaterModel.DnTypeModel=new DNTypeModel();
         ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
+        Intent intent = new Intent();
+        Bundle bundle=new Bundle();
         switch (dnModel.getSTATUS()){
             case -1:
+                intent=new Intent(context, ExceptionScan.class);
+                bundle.putParcelable("DNModel",dnModel);
+                intent.putExtras(bundle);
+                startActivityLeft(intent);
                 break;
             case 1:
             case 2:
             case 3:
-                Intent intent=new Intent(context,DeliveryScan.class);
-                Bundle bundle=new Bundle();
+                intent=new Intent(context,DeliveryScan.class);
                 bundle.putParcelable("DNModel",dnModel);
                 intent.putExtras(bundle);
                 intent.putExtra("DNNo",dnModel.getAGENT_DN_NO());

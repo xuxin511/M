@@ -216,7 +216,7 @@ public class ExceptionScan extends BaseActivity {
 
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
-        exceptionScanItemAdapter=new ExceptionScanItemAdapter(context, dnDetailModels);
+        exceptionScanItemAdapter=new ExceptionScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(exceptionScanItemAdapter);
     }
 

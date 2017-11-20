@@ -242,7 +242,7 @@ public class DeliveryScan extends BaseIntentActivity {
      */
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
-        deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels);
+        deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
         edtBarcode.setText("");
         CommonUtil.setEditFocus(edtBarcode);
