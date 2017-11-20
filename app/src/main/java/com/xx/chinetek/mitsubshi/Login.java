@@ -72,7 +72,9 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         if(ModelInfo.myReceiver!=null)
-            unregisterReceiver(ModelInfo.myReceiver); //取消MDM注册广播
+            try {
+                unregisterReceiver(ModelInfo.myReceiver); //取消MDM注册广播
+            }catch (Exception ex){}
         if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
             MessageBox.Show(context,getString(R.string.Msg_NotSupportModel));
             return;

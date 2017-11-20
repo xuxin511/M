@@ -47,7 +47,7 @@ public class CustomModelDao extends AbstractDao<CustomModel, Void> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CUSTOM_MODEL\" (" + //
-                "\"CUSTOMER\" TEXT UNIQUE ," + // 0: CUSTOMER
+                "\"CUSTOMER\" TEXT," + // 0: CUSTOMER
                 "\"NAME\" TEXT," + // 1: NAME
                 "\"SALES__ORGANIZATION\" TEXT," + // 2: SALES_ORGANIZATION
                 "\"DISTRIBUTION__CHANNEL\" TEXT," + // 3: DISTRIBUTION_CHANNEL
@@ -55,6 +55,9 @@ public class CustomModelDao extends AbstractDao<CustomModel, Void> {
                 "\"PARTNER__FUNCTION\" TEXT," + // 5: PARTNER_FUNCTION
                 "\"PARTNER__COUNTER\" TEXT," + // 6: PARTNER_COUNTER
                 "\"CUST__NO__OF__BUSINESS__PARTNER\" TEXT);"); // 7: CUST_NO_OF_BUSINESS_PARTNER
+        // Add Indexes
+        db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_CUSTOM_MODEL_CUSTOMER_SALES__ORGANIZATION_DISTRIBUTION__CHANNEL_DIVISION_PARTNER__FUNCTION_PARTNER__COUNTER ON \"CUSTOM_MODEL\"" +
+                " (\"CUSTOMER\" ASC,\"SALES__ORGANIZATION\" ASC,\"DISTRIBUTION__CHANNEL\" ASC,\"DIVISION\" ASC,\"PARTNER__FUNCTION\" ASC,\"PARTNER__COUNTER\" ASC);");
     }
 
     /** Drops the underlying database table. */
