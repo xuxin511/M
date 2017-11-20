@@ -4,19 +4,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Index;
 
 /**
  * Created by GHOST on 2017/11/2.
  */
 
-@Entity
+@Entity(
+        indexes={
+                @Index(value = "CUSTOMER,SALES_ORGANIZATION,DISTRIBUTION_CHANNEL,DIVISION,PARTNER_FUNCTION,PARTNER_COUNTER", unique = true)
+        }
+)
 public class CustomModel implements Parcelable {
     /**
      * 客户编号
      */
-    @Unique
     private String CUSTOMER;
 
     /**
