@@ -29,10 +29,8 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.method.Upload.UploadDN;
-import com.xx.chinetek.mitsubshi.BarcodeDetail;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.Bulkupload.bulkuploadBarcodeDetail;
-import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.MaterialModel;
@@ -374,21 +372,25 @@ public class DeliveryScan extends BaseIntentActivity {
         if (ShowErrMag(isErrorStatus)) return true;
         dnModel.setDN_STATUS("AC");
         dnModel.setSTATUS(1);
-        if(ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z2")){
-            dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
-            dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
-        }else if(ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z3")){
-            dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
-            dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
+        if(ParamaterModel.DnTypeModel.getDNCusType()!=null) {
+            if (ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z2")) {
+                dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
+                dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
+            } else if (ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z3")) {
+                dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
+                dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
+            }
         }
         dnModel.setOPER_DATE(new Date());
         //添加客户
-        if(ParamaterModel.DnTypeModel.getDNCusType()==0){
-            dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
-            dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
-        }else if(ParamaterModel.DnTypeModel.getDNCusType()==1){
-            dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
-            dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
+        if(ParamaterModel.DnTypeModel.getDNCusType()!=null) {
+            if (ParamaterModel.DnTypeModel.getDNCusType() == 0) {
+                dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
+                dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
+            } else if (ParamaterModel.DnTypeModel.getDNCusType() == 1) {
+                dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
+                dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
+            }
         }
         dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
         dnModel.getDETAILS().addAll(dnDetailModels);
