@@ -157,11 +157,11 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         StartScan(dnModel);
     }
 
-    private int clickpositionlong=-1;
+
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemLongClickListener.class)
     private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         try{
-            clickpositionlong=i;
+            final int clickpositionlong=i;
             new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
@@ -183,6 +183,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 //                                    modeldn.setSTATUS(1);
                                     if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",Model.getDN_SOURCE())){
                                         MessageBox.Show(context,getString(R.string.Msg_del_success));
+                                        DNModels= DbDnInfo.getInstance().GetLoaclDN();
                                         BindListView();
                                     }else{
                                         MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
