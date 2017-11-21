@@ -219,11 +219,6 @@ public class Setting extends BaseActivity {
                                 ckSelfBarcode.setChecked(false);
                                 return;
                             }
-//                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
-//                                MessageBox.Show(context,getString(R.string.Msg_notEmpty));
-//                                ckSelfBarcode.setChecked(false);
-//                                return;
-//                            }
                             startwords=startword;
                             barcodeLength=Integer.parseInt(length);
                             ckSelfBarcode.setChecked(true);

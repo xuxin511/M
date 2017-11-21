@@ -187,7 +187,7 @@ public class UpdateVersionService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (null != hashMap) {
+        if (null != hashMap && hashMap.size()!=0) {
             double serverCode = Double.valueOf(hashMap.get("versionCode"));
             // 版本判断
             if (serverCode > versionCode) {

@@ -13,6 +13,11 @@ import java.io.File;
 public class ParamaterModel {
 
     /**
+     * 用户集合
+     */
+    public static UserInfoModel userInfoModel;
+
+    /**
      * 操作人编号
      */
     public static String Operater;

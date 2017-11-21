@@ -20,6 +20,7 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.ModelInfo;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.ParamaterModel;
+import com.xx.chinetek.model.Base.UserInfoModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -71,14 +72,14 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
-        if(ModelInfo.myReceiver!=null)
-            try {
-                unregisterReceiver(ModelInfo.myReceiver); //取消MDM注册广播
-            }catch (Exception ex){}
-        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
-            MessageBox.Show(context,getString(R.string.Msg_NotSupportModel));
-            return;
-        }
+//        if(ModelInfo.myReceiver!=null)
+//            try {
+//                unregisterReceiver(ModelInfo.myReceiver); //取消MDM注册广播
+//            }catch (Exception ex){}
+//        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
+//            MessageBox.Show(context,getString(R.string.Msg_NotSupportModel));
+//            return;
+//        }
 
         if (TextUtils.isEmpty(ParamaterModel.PartenerID)) {
             MessageBox.Show(context, getString(R.string.Msg_No_Partner));
@@ -95,7 +96,11 @@ public class Login extends BaseActivity {
             SharePreferUtil.SetUserShare(context);
         }
 
-
+        UserInfoModel userInfoModel=new UserInfoModel();
+        userInfoModel.setAGENT_NO(ParamaterModel.PartenerID);
+        userInfoModel.setPDA_CODE(ParamaterModel.SerialNo);
+        userInfoModel.setUSER_CODE(ParamaterModel.Operater);
+        ParamaterModel.userInfoModel=userInfoModel;
         CommonUtil.setEditFocus(edtOperater);
         LogUtil.WriteLog(Login.class,"btnLoginClick",ParamaterModel.Operater);
         Intent intent = new Intent(context, MainActivity.class);

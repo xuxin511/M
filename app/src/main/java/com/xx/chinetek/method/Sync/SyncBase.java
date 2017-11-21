@@ -3,6 +3,7 @@ package com.xx.chinetek.method.Sync;
 import com.android.volley.Request;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbManager;
@@ -47,9 +48,9 @@ public class SyncBase {
 
      public void SyncMaterial(MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("value", ParamaterModel.MaterialSyncTime);
-//        params.put("DateString", ParamaterModel.MaterialSyncTime);
-//        params.put("UserInfoJS", "");
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("DateString", ParamaterModel.MaterialSyncTime);
+        params.put("UserInfoJS", user);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncMaterial, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncMaterial,
@@ -58,8 +59,10 @@ public class SyncBase {
 
     public void SyncCus(MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
-      //  params.put("Synctime", ParamaterModel.CustomSyncTime);
-        params.put("cusNo", ParamaterModel.PartenerID);
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("DateString", ParamaterModel.CustomSyncTime);
+        params.put("UserInfoJS", user);
+      //  params.put("cusNo", ParamaterModel.PartenerID);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncCus, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncCus,
@@ -68,7 +71,9 @@ public class SyncBase {
 
     public void  SyncPara(MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("Synctime", ParamaterModel.ParamaterSyncTime);
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("DateString", ParamaterModel.ParamaterSyncTime);
+        params.put("UserInfoJS", user);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncPara, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncPara,
