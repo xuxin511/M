@@ -150,6 +150,7 @@ public class DeliveryStart extends BaseActivity {
         }
 
         dnTypeModel.setCustomModel(customModel);
+        dnTypeModel.setDNCusType(customModel.getPARTNER_FUNCTION().equals("Z3")?1:0);
         CommonUtil.setEditFocus(edtContentText);
         SharePreferUtil.SetDNTypeShare(context,dnTypeModel);
         ParamaterModel.DnTypeModel=dnTypeModel;
@@ -185,10 +186,12 @@ public class DeliveryStart extends BaseActivity {
         CommonUtil.setEditFocus(edtContentText);
     }
 
+    private int chooseposition=-1;
     @Event(value = R.id.spin_Custom,type = AdapterView.OnItemSelectedListener.class)
     private void spinCustomonItemSelected(AdapterView<?> adapterView, View view, int position,long id) {
-        txtContentName.setText(getString(position == 0 ? R.string.supplier : R.string.custom));
-         dnTypeModel.setDNCusType(position);
+        chooseposition=position;
+        txtContentName.setText(R.string.custom);
+//         dnTypeModel.setDNCusType(position);
         if(!isFirstRun) {
             edtContentText.setText("");
             BindData();
@@ -238,7 +241,7 @@ public class DeliveryStart extends BaseActivity {
         spinsendType.setAdapter(adapter);
         spinsendType.setPrompt(getString(R.string.choiceSendType));
         adapter = ArrayAdapter.createFromResource(
-                this, R.array.sendCustomList,
+                this, R.array.sendCustomListy,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinCustom.setAdapter(adapter);
@@ -248,7 +251,8 @@ public class DeliveryStart extends BaseActivity {
 
     void BindData(){
         try {
-            customModels = GetPartner.GetPartners(dnTypeModel == null ? 0 : dnTypeModel.getDNCusType());
+//            customModels = GetPartner.GetPartners(dnTypeModel == null ? 0 : dnTypeModel.getDNCusType());
+            customModels = GetPartner.GetPartnersbyposition(chooseposition == -1 ? 0 : chooseposition);
             InitListview();
         }catch (Exception ex){
             MessageBox.Show(context,ex.getMessage());

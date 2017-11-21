@@ -15,6 +15,7 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
+import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -64,16 +65,32 @@ public class BulkuploadScan extends BaseIntentActivity {
         dnModel.getDETAILS().addAll(dnDetailModels);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GetDeliveryOrderScanList();
+    }
 
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent=new Intent(context,bulkuploadBarcodeDetail.class);
+//        Intent intent=new Intent(context,bulkuploadBarcodeDetail.class);
+//        Bundle bundle=new Bundle();
+//        DNDetailModel DNdetailModel= (DNDetailModel)bulkuploadScanItemAdapter.getItem(position);
+//        bundle.putParcelable("DNdetailModel",DNdetailModel);
+//        bundle.putParcelable("DNModel",dnModel);
+//        intent.putExtras(bundle);
+//        startActivityLeft(intent);
+
+        Intent intent=new Intent(context,ExceptionBarcodelist.class);
         Bundle bundle=new Bundle();
         DNDetailModel DNdetailModel= (DNDetailModel)bulkuploadScanItemAdapter.getItem(position);
         bundle.putParcelable("DNdetailModel",DNdetailModel);
         bundle.putParcelable("DNModel",dnModel);
         intent.putExtras(bundle);
         startActivityLeft(intent);
+
+
+
     }
 
     /**

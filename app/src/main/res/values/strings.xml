@@ -20,6 +20,7 @@
     <string name="Bulkupload">批量上报</string>
     <string name="Reason">异常原因：</string>
     <string name="ExceptionScan">异常扫描</string>
+    <string name="BarcodeScan">异常扫描</string>
     <string name="ScanDetails">扫描明细</string>
 
     <string name="Setting_QRTitle">QR服务器设置</string>
@@ -55,6 +56,7 @@
     <string name="choiceSendCusttom">请选择收货方：</string>
     <string name="supplier">代理商：</string>
     <string name="custom">客户：</string>
+
     <string name="createtime">创建时间：</string>
     <string name="submittime">提交时间：</string>
     <string name="submituser">最后提交人：</string>
@@ -87,6 +89,11 @@
     <string-array name="sendCustomList">
         <item>代理商</item>
         <item>客户</item>
+    </string-array>
+
+    <string-array name="sendCustomListy">
+        <item>下属客户</item>
+        <item>所有</item>
     </string-array>
 
     <string-array name="DNSaveTime">
@@ -150,6 +157,8 @@
     <string name="Error_del_dnmodeldetail">更新表体扫描数量失败！</string>
     <string name="Error_del_dnmodel">更新表头状态失败！</string>
     <string name="Msg_del_success">删除成功！</string>
+    <string name="Msg_insert_failed">扫描添加失败！</string>
+    <string name="Msg_insert_success">扫描添加成功！</string>
 </resources>
 
 
