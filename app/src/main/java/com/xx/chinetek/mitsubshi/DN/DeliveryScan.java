@@ -31,6 +31,7 @@ import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.Bulkupload.bulkuploadBarcodeDetail;
+import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.MaterialModel;
@@ -225,7 +226,15 @@ public class DeliveryScan extends BaseIntentActivity {
 
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent=new Intent(context,bulkuploadBarcodeDetail.class);
+//        Intent intent=new Intent(context,bulkuploadBarcodeDetail.class);
+//        Bundle bundle=new Bundle();
+//        DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(position);
+//        bundle.putParcelable("DNdetailModel",DNdetailModel);
+//        bundle.putParcelable("DNModel",dnModel);
+//        intent.putExtras(bundle);
+//        startActivityLeft(intent);
+
+        Intent intent=new Intent(context,ExceptionBarcodelist.class);
         Bundle bundle=new Bundle();
         DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(position);
         bundle.putParcelable("DNdetailModel",DNdetailModel);

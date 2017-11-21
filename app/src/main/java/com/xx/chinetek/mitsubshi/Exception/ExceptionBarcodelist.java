@@ -3,8 +3,11 @@ package com.xx.chinetek.mitsubshi.Exception;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +21,22 @@ import com.xx.chinetek.adapter.Exception.ExceptionScanbarcodeAdapter;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
+import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.SharePreferUtil;
+import com.xx.chinetek.method.Upload.UploadNewCus;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
+import com.xx.chinetek.mitsubshi.DN.DeliveryList;
+import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
+import com.xx.chinetek.mitsubshi.DN.QRScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
+import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.MaterialModel;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -73,11 +85,8 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     @Override
     protected void initViews() {
        super.initViews();
-        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.ExceptionScan),true);
+        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.ScanDetails),true);
         x.view().inject(this);
-        edtBarcode.setVisibility(View.GONE);
-        textView5.setVisibility(View.GONE);
-        img_Remark.setVisibility(View.GONE);
     }
 
     @Override
@@ -110,20 +119,106 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
 
     }
 
+    @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
+    private boolean edtfilterOnKey(View v, int keyCode, KeyEvent event) {
+        try{
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP)// 如果为Enter键
+            {
+                final String code=edtBarcode.getText().toString().trim();
+                if(TextUtils.isEmpty(code)){
+                    MessageBox.Show(context,getString(R.string.Msg_No_Barcode));
+                    CommonUtil.setEditFocus(edtBarcode);
+                    return false;
+                }
+                BarCodeModel model = new BarCodeModel();
+                model.setSerial_Number(code);
+                model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
+                ArrayList<BarCodeModel> barCodeModels = new ArrayList<>();
+                barCodeModels.add(model);
+                if (barCodeModels != null && barCodeModels.size() != 0) {
+                    MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
+//                    txtItemNo.setText(materialModel.getMATNR());
+//                    txtItemName.setText(materialModel.getMAKTX());
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_close, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.action_close){
-            closeActiviry();
+//                    txtScanQty.setText("扫描数量："+(Integer.parseInt(txtScanQty.getText().toString().replace("扫描数量：",""))+1));
+                    ScanBarccode(barCodeModels);
+                    txtScanQty.setText(getString(R.string.scanQty)+(DNScanModels.size()));
+//                    txtScanQty.setText(getString(R.string.scanQty)+(barCodeModels.size()+dndetailmodel.getSERIALS().size()));
+                }
+                return true;
+            }
+            return false;
+        }catch(Exception ex){
+            MessageBox.Show(context, ex.getMessage());
+            return false;
         }
-        return super.onOptionsItemSelected(item);
     }
+
+
+
+//    @Event(R.id.edt_Barcode)
+//    private void btnedtBarcodeClick(View view){
+//        try {
+//            final String code=edtBarcode.getText().toString().trim();
+//            if(TextUtils.isEmpty(code)){
+//                MessageBox.Show(context,getString(R.string.Msg_No_Barcode));
+//                CommonUtil.setEditFocus(edtBarcode);
+//                return;
+//            }
+//            BarCodeModel model = new BarCodeModel();
+//            model.setSerial_Number(code);
+//            model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
+//            ArrayList<BarCodeModel> barCodeModels = new ArrayList<>();
+//            barCodeModels.add(model);
+//            if (barCodeModels != null && barCodeModels.size() != 0) {
+//                MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
+//                txtItemNo.setText(materialModel.getMATNR());
+//                txtItemName.setText(materialModel.getMAKTX());
+//                txtScanQty.setText(getString(R.string.scanQty)+barCodeModels.size());
+//                ScanBarccode(barCodeModels);
+//            }
+//        } catch (Exception ex) {
+//            MessageBox.Show(context, ex.getMessage());
+//        }
+//
+//
+////        DNScanModel dnScanModel= new DNScanModel();
+////        //保存序列号
+////        dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
+////        dnScanModel.setLINE_NO(dndetailmodel.getLINE_NO());
+////        dnScanModel.setITEM_NO( dndetailmodel.getITEM_NO());
+////        dnScanModel.setITEM_NAME( dndetailmodel.getITEM_NAME());
+////        dnScanModel.setSERIAL_NO(code);
+////        dnScanModel.setPACKING_DATE("");
+////        dnScanModel.setREGION("");
+////        dnScanModel.setCOUNTRY("");
+////        dnScanModel.setGOLFA_CODE(dndetailmodel.getGOLFA_CODE());
+////        dnScanModel.setITEM_STATUS("AC");
+////        dnScanModel.setDEAL_SALE_DATE(new Date());
+////        ArrayList<DNScanModel> scanmmodels= new ArrayList<DNScanModel>();
+////        scanmmodels.add(dnScanModel);
+////        if(DbDnInfo.getInstance().InsertDNScan(scanmmodels)){
+////            MessageBox.Show(context,getString(R.string.Msg_insert_success));
+////        }else{
+////            MessageBox.Show(context,getString(R.string.Msg_insert_failed));
+////        }
+//
+//    }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_close, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if(item.getItemId()==R.id.action_close){
+//            closeActiviry();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     /**
      * 扫描条码
@@ -189,7 +284,6 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
      * @throws Exception
      */
     private boolean SaveScanInfo(int isErrorStatus) throws Exception {
-
         //保存至数据库
         ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
         dnModels.add(dnModel);
@@ -338,6 +432,20 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                                     }
                                 }
                                 MessageBox.Show(context,getString(R.string.Msg_del_success));
+                                for(int j=0;j<dnModel.getDETAILS().size();j++){
+                                    boolean flag=false;
+                                    for(int i=0;i<dnModel.getDETAILS().get(j).getSERIALS().size();i++){
+                                        if(dnModel.getDETAILS().get(j).getSERIALS().get(i).getSERIAL_NO().equals(Model.getSERIAL_NO())){
+                                            dnModel.getDETAILS().get(j).getSERIALS().remove(i);
+                                            flag=true;
+                                        }
+                                    }
+                                    if(flag){
+                                        dnModel.getDETAILS().get(j).setSCAN_QTY(dnModel.getDETAILS().get(j).getSCAN_QTY()-1);
+                                        break;
+                                    }
+                                }
+
                                 txtScanQty.setText("扫描数量："+(dndetailmodel.getSCAN_QTY()-1));
                                 GetDeliveryOrderScanList();
 

@@ -441,5 +441,26 @@ public class DbDnInfo {
     }
 
 
+
+    /**
+     * 插入DNscan
+     * @param dnscanmodels
+     * @throws Exception
+     */
+    public Boolean InsertDNScan(ArrayList<DNScanModel> dnscanmodels){
+        try{
+            if(dnscanmodels!=null && dnscanmodels.size()!=0) {
+                for(DNScanModel  Model:dnscanmodels){
+                    dnScanModelDao.insertOrReplaceInTx(Model);
+                    dnScanModelDao.detachAll();
+                }
+            }
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
+    }
+
 }
 
