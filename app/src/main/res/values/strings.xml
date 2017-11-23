@@ -46,6 +46,7 @@
     <string name="Setting_Second">秒</string>
     <string name="Setting_LogUpload">日志上报</string>
     <string name="Setting_Save">保存</string>
+    <string name="Setting_Clear">重置</string>
     <string name="Setting_StartWords">起始字符：</string>
     <string name="Setting_BarcodeLength">条码长度：</string>
     <string name="Setting_IndexLength">序号长度：</string>
@@ -55,6 +56,8 @@
     <string name="Setting_SerialEndIndex">序列号结束位：</string>
     <string name="Setting_OtherStartIndex">其他项起始位：</string>
     <string name="Setting_OtherEndIndex">其他项结束位：</string>
+    <string name="Setting_Other">其他项设置</string>
+    <string name="Setting_ADD">添加</string>
 
 
     <string name="sendType">发货方式：</string>
@@ -164,6 +167,9 @@
     <string name="Error_del_dnmodelbarcode">删除扫描明细失败！</string>
     <string name="Error_del_dnmodeldetail">更新表体扫描数量失败！</string>
     <string name="Error_del_dnmodel">更新表头状态失败！</string>
+    <string name="Error_start_end">开始位不能大于结束位！</string>
+    <string name="Error_over_length">结束位超过条码最大长度！</string>
+    <string name="Error_barcodelengthnotEmpty">条码长度不能为空！</string>
     <string name="Msg_del_success">删除成功！</string>
     <string name="Msg_insert_failed">扫描添加失败！</string>
     <string name="Msg_insert_success">扫描添加成功！</string>

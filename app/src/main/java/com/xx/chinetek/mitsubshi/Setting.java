@@ -95,6 +95,7 @@ public class Setting extends BaseActivity {
 
     String startwordsCusDN;
     Integer indexLength=0;
+    CusBarcodeRule cusBarcodeRule;
 
     @Override
     protected void initViews() {
@@ -144,6 +145,15 @@ public class Setting extends BaseActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1001  && resultCode==1){
+            cusBarcodeRule=data.getParcelableExtra("cusBarcodeRule");
+            ckSelfBarcode.setChecked(true);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Event(R.id.layoutCustom)
     private void layoutCustomClick(View view){
         final EditText et = new EditText(this);
@@ -188,6 +198,17 @@ public class Setting extends BaseActivity {
                     txtDNSaveTime.setText(item[i].toString());
                   }
               }).show();
+
+    }
+
+    @Event(R.id.layoutCusBarcode)
+    private void layoutCusBarcodeClick(View view){
+        if(ckSelfBarcode.isChecked()){
+            ckSelfBarcode.setChecked(false);
+            return;
+        }
+        Intent intent=new Intent(context,Setting_CusBarcodeRule.class);
+        startActivityForResult(intent,1001);
     }
 
     @Event(value = R.id.ckIsuserRemark,type = CompoundButton.OnCheckedChangeListener.class)
@@ -195,55 +216,12 @@ public class Setting extends BaseActivity {
         ckIsuserRemark.setChecked(isCheck);
     }
 
-    @Event(value = R.id.ckSelfBarcode)
-    private void ckSelfBarcodeClick(View view){
-        if(!ckSelfBarcode.isChecked()){
-            ckSelfBarcode.setChecked(false);
-            return;
-        }
-
-        Intent intent=new Intent(context,Setting_CusBarcodeRule.class);
-        startActivityForResult(intent,1001);
-//            final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_selfbarcode_content, null);
-//            final EditText edtStartWords=(EditText) textEntryView.findViewById(R.id.edt_StartWords);
-//            final EditText edtbarcodeLength=(EditText)textEntryView.findViewById(R.id.edt_barcodeLength);
-//            if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null){
-//                //edtStartWords.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getStartWords());
-//                edtbarcodeLength.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeLength().toString());
-//            }
-//            new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_SetbarcodeRule))
-//                    .setIcon(android.R.drawable.ic_dialog_info)
-//                    .setView(textEntryView)
-//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            String startword=edtStartWords.getText().toString().trim();
-//                            String length=edtbarcodeLength.getText().toString().trim();
-//                            if(TextUtils.isEmpty(length)) length="0";
-//                            if(!CommonUtil.isNumeric(length)){
-//                                MessageBox.Show(context,getString(R.string.Msg_inputNumic));
-//                                ckSelfBarcode.setChecked(false);
-//                                return;
-//                            }
-//
-//                            ckSelfBarcode.setChecked(true);
-//                        }
-//                    })
-//                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            String startword=edtStartWords.getText().toString().trim();
-//                            String length=edtbarcodeLength.getText().toString().trim();
-//                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
-//                                ckSelfBarcode.setChecked(false);
-//                            }else{
-//                                ckSelfBarcode.setChecked(true);
-//                            }
-//                        }
-//                    })
-//                    .show();
+//    @Event(value = R.id.ckSelfBarcode,type = CompoundButton.OnCheckedChangeListener.class)
+//    private void ckSelfBarcodeChanged(CompoundButton compoundButton, boolean isCheck) {
+//        ckSelfBarcode.setChecked(!ckSelfBarcode.isChecked());
+//    }
 
 
-    }
 
     @Event(R.id.layoutCusDnNo)
     private void layoutCusDnNoClick(View view){
@@ -314,12 +292,9 @@ public class Setting extends BaseActivity {
         ParamaterModel.SysPassword=Password;
         ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
         ParamaterModel.baseparaModel.getCusBarcodeRule().setUsed(ckSelfBarcode.isChecked());
-        if(ckSelfBarcode.isChecked()){
-//            ParamaterModel.baseparaModel.getCusBarcodeRule().setBarcodeLength(barcodeLength);
-//            ParamaterModel.baseparaModel.getCusBarcodeRule().setKeyStartIndex(0);
-//            ParamaterModel.baseparaModel.getCusBarcodeRule().setKeyEndIndex(5);
-//            ParamaterModel.baseparaModel.getCusBarcodeRule().setSerialStartIndex(6);
-//            ParamaterModel.baseparaModel.getCusBarcodeRule().setSerialEndIndex(10);
+        if(cusBarcodeRule!=null) {
+            cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
+            ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);
         }
         if(!TextUtils.isEmpty(startwordsCusDN) && indexLength!=0) {
             if (ParamaterModel.baseparaModel.getCusDnnoRule() == null) ParamaterModel.baseparaModel.setCusDnnoRule(new CusDnnoRule());

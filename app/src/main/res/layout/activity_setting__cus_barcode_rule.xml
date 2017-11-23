@@ -7,19 +7,130 @@
     tools:context="com.xx.chinetek.mitsubshi.Setting_CusBarcodeRule">
 
 
-    <EditText
-        android:id="@+id/edt_IPAdress2"
-        style="@style/EditTextStyle"
+    <Button
+        android:id="@+id/btn_SaveRule"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bt_selector"
+        android:text="@string/Setting_ADD"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_otherEnd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/edt_otherStart" />
+
+    <TextView
+        android:id="@+id/textView21"
+        style="@style/TextViewComminStyleThemegreen"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/cornflowerblue"
+        android:paddingLeft="15dp"
+        android:text="@string/Setting_Other"
+        android:textAlignment="textStart"
+        android:textColor="@color/antiquewhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_SerialEnd" />
+
+    <EditText
+        android:id="@+id/edt_BarcodeLength"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
         android:layout_marginEnd="8dp"
         android:hint="请输入条码固定长度"
+        android:inputType="number"
         android:selectAllOnFocus="true"
-        app:layout_constraintBottom_toBottomOf="@+id/textView17"
+        app:layout_constraintBottom_toBottomOf="@+id/textView16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline12">
 
         <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/edt_KeyStart"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="8dp"
+        android:selectAllOnFocus="true"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="@+id/textView17"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView17">
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/edt_KeyEnd"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="8dp"
+        android:inputType="number"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView18"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline12">
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/edt_SerialStart"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:inputType="number"
+        android:layout_marginEnd="8dp"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline12">
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/edt_SerialEnd"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:inputType="number"
+        android:layout_marginEnd="8dp"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView19"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline12">
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/edt_otherStart"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:inputType="number"
+        android:layout_marginEnd="8dp"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView23"
+        app:layout_constraintEnd_toStartOf="@+id/btn_SaveRule"
+        app:layout_constraintStart_toStartOf="@+id/guideline12">
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/edt_otherEnd"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:inputType="number"
+        android:layout_marginEnd="8dp"
+        android:selectAllOnFocus="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView24"
+        app:layout_constraintEnd_toStartOf="@+id/btn_SaveRule"
+        app:layout_constraintStart_toStartOf="@+id/guideline12">
+
     </EditText>
 
     <TextView
@@ -27,28 +138,73 @@
         style="@style/TextViewComminStyleThemegreen"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/Setting_KeyStartIndex"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/textView18"
         style="@style/TextViewComminStyleThemegreen"
-        android:layout_width="169dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Setting_BarcodeLength"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="43dp" />
+        android:layout_marginTop="8dp"
+        android:text="@string/Setting_KeyEndIndex"
+        app:layout_constraintEnd_toStartOf="@+id/guideline12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+    <TextView
+        android:id="@+id/textView19"
+        style="@style/TextViewComminStyleThemegreen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/Setting_SerialEndIndex"
+        app:layout_constraintEnd_toStartOf="@+id/guideline12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+    <TextView
+        android:id="@+id/textView23"
+        style="@style/TextViewComminStyleThemegreen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/Setting_OtherStartIndex"
+        app:layout_constraintEnd_toStartOf="@+id/edt_otherStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+    <TextView
+        android:id="@+id/textView24"
+        style="@style/TextViewComminStyleThemegreen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/Setting_OtherEndIndex"
+        app:layout_constraintEnd_toStartOf="@+id/edt_otherEnd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView23" />
+
+    <TextView
+        android:id="@+id/textView20"
+        style="@style/TextViewComminStyleThemegreen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/Setting_SerialStartIndex"
+        app:layout_constraintEnd_toStartOf="@+id/guideline12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
     <TextView
         android:id="@+id/textView16"
         style="@style/TextViewComminStyleThemegreen"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="@string/Setting_BarcodeLength"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,5 +216,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.44" />
+
+    <ListView
+        android:id="@+id/lsv_Cusbarcode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_otherEnd" />
 
 </android.support.constraint.ConstraintLayout>

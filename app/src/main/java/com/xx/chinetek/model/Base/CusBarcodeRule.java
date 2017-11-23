@@ -1,12 +1,15 @@
 package com.xx.chinetek.model.Base;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by GHOST on 2017/11/19.
  */
 
-public class CusBarcodeRule {
+public class CusBarcodeRule implements Parcelable {
 
     /**
      * 是否启用非三菱条码
@@ -91,4 +94,46 @@ public class CusBarcodeRule {
     public void setOtherColumn(List<String> otherColumn) {
         OtherColumn = otherColumn;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.isUsed);
+        dest.writeValue(this.BarcodeLength);
+        dest.writeValue(this.KeyStartIndex);
+        dest.writeValue(this.KeyEndIndex);
+        dest.writeValue(this.SerialStartIndex);
+        dest.writeValue(this.SerialEndIndex);
+        dest.writeStringList(this.OtherColumn);
+    }
+
+    public CusBarcodeRule() {
+    }
+
+    protected CusBarcodeRule(Parcel in) {
+        this.isUsed = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.BarcodeLength = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.KeyStartIndex = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.KeyEndIndex = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.SerialStartIndex = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.SerialEndIndex = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.OtherColumn = in.createStringArrayList();
+    }
+
+    public static final Creator<CusBarcodeRule> CREATOR = new Creator<CusBarcodeRule>() {
+        @Override
+        public CusBarcodeRule createFromParcel(Parcel source) {
+            return new CusBarcodeRule(source);
+        }
+
+        @Override
+        public CusBarcodeRule[] newArray(int size) {
+            return new CusBarcodeRule[size];
+        }
+    };
 }
