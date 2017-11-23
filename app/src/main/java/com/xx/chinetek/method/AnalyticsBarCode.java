@@ -1,7 +1,5 @@
 package com.xx.chinetek.method;
 
-import android.text.TextUtils;
-
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.mitsubshi.R;
@@ -20,15 +18,15 @@ public class AnalyticsBarCode {
     public static ArrayList<BarCodeModel> CheckBarcode(String Barcode){
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         //判断是否启用非三菱条码
-        if(ParamaterModel.cusBarcodeRule!=null && ParamaterModel.cusBarcodeRule.getUsed()){
+        if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
             Boolean isCheck=true;
-            if(TextUtils.isEmpty(ParamaterModel.cusBarcodeRule.getStartWords())){
-                if(!Barcode.startsWith(ParamaterModel.cusBarcodeRule.getStartWords())){
-                    isCheck=false;
-                }
-            }
-            if(ParamaterModel.cusBarcodeRule.getBarcodeLength()!=0){
-               if(Barcode.length()!=ParamaterModel.cusBarcodeRule.getBarcodeLength()){
+//            if(TextUtils.isEmpty(ParamaterModel.baseparaModel.getCusBarcodeRule().getStartWords())){
+//                if(!Barcode.startsWith(ParamaterModel.baseparaModel.getCusBarcodeRule().getStartWords())){
+//                    isCheck=false;
+//                }
+//            }
+            if(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeLength()!=0){
+               if(Barcode.length()!=ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeLength()){
                     isCheck=false;
                 }
             }

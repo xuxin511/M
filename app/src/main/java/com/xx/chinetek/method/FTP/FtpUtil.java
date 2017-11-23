@@ -22,7 +22,7 @@ public class FtpUtil {
             ftp = new FtpHelper(ftpModel);
         }
         ftp.openConnect();
-        total = ftp.downloadFolder(ParamaterModel.ftpModel.getFtpDownLoad(), ParamaterModel.DownDirectory);
+        total = ftp.downloadFolder(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad(), ParamaterModel.DownDirectory);
 //        if (total != 0) {
 //            total=ftp.deleteFolder(ParamaterModel.ftpModel.getFtpDownLoad());
 //        }
@@ -43,7 +43,7 @@ public class FtpUtil {
             ftp.openConnect();
             for (File file : files) {
                 boolean flag = false;
-                flag = ftp.uploadFile(file.getAbsolutePath(), ParamaterModel.ftpModel.getFtpUpLoad());
+                flag = ftp.uploadFile(file.getAbsolutePath(), ParamaterModel.baseparaModel.getFtpModel().getFtpUpLoad());
                 if (flag) {
                     total++;
                 }

@@ -19,6 +19,7 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailUtil;
 import com.xx.chinetek.method.SharePreferUtil;
+import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
@@ -40,7 +41,9 @@ import java.util.Map;
 
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDnDetail;
 
 /**
  * Created by GHOST on 2017/11/2.
@@ -56,10 +59,27 @@ public class SyncDN {
     public static void SyncMAPS(MyHandler<BaseActivity> mHandler){
         //MAPS获取单据
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("Synctime", ParamaterModel.DNSyncTime);
+        ParamaterModel.DNSyncTime="2012-01-01 00:00:00";
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("DateString", ParamaterModel.DNSyncTime);
+        params.put("UserInfoJS", user);
+        //params.put("Synctime", ParamaterModel.DNSyncTime);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncDn, para);
         RequestHandler.addRequest(Request.Method.POST, TAG_SyncDn, mHandler, RESULT_SyncDn, null,  URLModel.GetURL().SyncDn, params, null);
+    }
+
+    /**
+     * 获取 出库单明细
+     * @param mHandler
+     */
+    public static void SyncMAPSDetail(String dnNo,MyHandler<BaseActivity> mHandler){
+        //MAPS获取单据明细
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put("DN_NO", dnNo);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_SyncDnDetail, para);
+        RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncDnDetail,context.getString(R.string.Dia_SyncDnDetail) ,context,mHandler, RESULT_SyncDnDetail, null,  URLModel.GetURL().SyncDnDetail, params, null);
     }
 
     /**
@@ -72,7 +92,7 @@ public class SyncDN {
             @Override
             public void run() {
                 try {
-                    MailUtil.GetMail(ParamaterModel.mailModel, mHandler);
+                    MailUtil.GetMail(ParamaterModel.baseparaModel.getMailModel(), mHandler);
                 }catch (Exception ex){
                     Message msg = mHandler.obtainMessage(NetworkError.NET_ERROR_CUSTOM, ex.getMessage());
                     mHandler.sendMessage(msg);
@@ -91,7 +111,7 @@ public class SyncDN {
             @Override
             public void run() {
                 try {
-                    FtpUtil.FtpDownDN(ParamaterModel.ftpModel,mHandler);
+                    FtpUtil.FtpDownDN(ParamaterModel.baseparaModel.getFtpModel(),mHandler);
                 }catch (Exception ex){
                     Message msg = mHandler.obtainMessage(NetworkError.NET_ERROR_CUSTOM, ex.getMessage());
                     mHandler.sendMessage(msg);
@@ -122,6 +142,8 @@ public class SyncDN {
            MessageBox.Show(context, returnMsgModel.getMessage());
        }
    }
+
+
 
 
     /**

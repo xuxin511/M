@@ -3,6 +3,7 @@ package com.xx.chinetek.mitsubshi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.method.SharePreferUtil;
+import com.xx.chinetek.model.Base.BaseparaModel;
 import com.xx.chinetek.model.Base.CusBarcodeRule;
 import com.xx.chinetek.model.Base.CusDnnoRule;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -90,8 +92,7 @@ public class Setting extends BaseActivity {
 
     final  int LogUploadIndex=1;
     String Password;//临时存放密码
-    String startwords;
-    Integer barcodeLength=0;
+
     String startwordsCusDN;
     Integer indexLength=0;
 
@@ -114,29 +115,30 @@ public class Setting extends BaseActivity {
         super.initData();
         BaseApplication.DialogShowText = getString(R.string.Dia_UploadLogFile);
 
+        if(ParamaterModel.baseparaModel==null) ParamaterModel.baseparaModel=new BaseparaModel();
         edtIPAdress.setText(Paramater.IPAdress);
         edtPort.setText(Paramater.Port+"");
         edtTimeOut.setText(Paramater.SOCKET_TIMEOUT/1000+"");
         txtPartner.setText(ParamaterModel.PartenerID);
-        txtDNSaveTime.setText(ParamaterModel.DNSaveTime+"");
-        ckIsuserRemark.setChecked(ParamaterModel.IsUseRemark);
-        if(ParamaterModel.cusBarcodeRule!=null){
-            ckSelfBarcode.setChecked(ParamaterModel.cusBarcodeRule.getUsed());
+        txtDNSaveTime.setText(ParamaterModel.baseparaModel.getDNSaveTime()+"");
+        ckIsuserRemark.setChecked(ParamaterModel.baseparaModel.getUseRemark());
+        if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null){
+            ckSelfBarcode.setChecked(ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed());
         }
-        if(ParamaterModel.mailModel!=null){
-            edtMailAccount.setText(ParamaterModel.mailModel.getAccount());
-            edtMailPassword.setText(ParamaterModel.mailModel.getPassword());
-            edtMailSMTPort.setText(ParamaterModel.mailModel.getMailServerPort());
-            edtMailSMTP.setText(ParamaterModel.mailModel.getMailServerHost());
-            edtMailIMAP.setText(ParamaterModel.mailModel.getMailClientHost());
+        if(ParamaterModel.baseparaModel.getMailModel()!=null){
+            edtMailAccount.setText(ParamaterModel.baseparaModel.getMailModel().getAccount());
+            edtMailPassword.setText(ParamaterModel.baseparaModel.getMailModel().getPassword());
+            edtMailSMTPort.setText(ParamaterModel.baseparaModel.getMailModel().getMailServerPort());
+            edtMailSMTP.setText(ParamaterModel.baseparaModel.getMailModel().getMailServerHost());
+            edtMailIMAP.setText(ParamaterModel.baseparaModel.getMailModel().getMailClientHost());
         }
-        if(ParamaterModel.ftpModel!=null){
-            edtFtpHost.setText(ParamaterModel.ftpModel.getFtpHost());
-            edtFtpUserName.setText(ParamaterModel.ftpModel.getFtpUserName());
-            edtFtpPassword.setText(ParamaterModel.ftpModel.getFtpPassword());
-            edtFtpPort.setText(ParamaterModel.ftpModel.getFtpPort()+"");
-            edtFtpDown.setText(ParamaterModel.ftpModel.getFtpDownLoad());
-            edtFtpUp.setText(ParamaterModel.ftpModel.getFtpUpLoad());
+        if(ParamaterModel.baseparaModel.getFtpModel()!=null){
+            edtFtpHost.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpHost());
+            edtFtpUserName.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpUserName());
+            edtFtpPassword.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpPassword());
+            edtFtpPort.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpPort()+"");
+            edtFtpDown.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad());
+            edtFtpUp.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpUpLoad());
 
         }
 
@@ -199,44 +201,46 @@ public class Setting extends BaseActivity {
             ckSelfBarcode.setChecked(false);
             return;
         }
-            final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_selfbarcode_content, null);
-            final EditText edtStartWords=(EditText) textEntryView.findViewById(R.id.edt_StartWords);
-            final EditText edtbarcodeLength=(EditText)textEntryView.findViewById(R.id.edt_barcodeLength);
-            if(ParamaterModel.cusBarcodeRule!=null){
-                edtStartWords.setText(ParamaterModel.cusBarcodeRule.getStartWords());
-                edtbarcodeLength.setText(ParamaterModel.cusBarcodeRule.getBarcodeLength().toString());
-            }
-            new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_SetbarcodeRule))
-                    .setIcon(android.R.drawable.ic_dialog_info)
-                    .setView(textEntryView)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            String startword=edtStartWords.getText().toString().trim();
-                            String length=edtbarcodeLength.getText().toString().trim();
-                            if(TextUtils.isEmpty(length)) length="0";
-                            if(!CommonUtil.isNumeric(length)){
-                                MessageBox.Show(context,getString(R.string.Msg_inputNumic));
-                                ckSelfBarcode.setChecked(false);
-                                return;
-                            }
-                            startwords=startword;
-                            barcodeLength=Integer.parseInt(length);
-                            ckSelfBarcode.setChecked(true);
-                        }
-                    })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            String startword=edtStartWords.getText().toString().trim();
-                            String length=edtbarcodeLength.getText().toString().trim();
-                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
-                                ckSelfBarcode.setChecked(false);
-                            }else{
-                                ckSelfBarcode.setChecked(true);
-                            }
-                        }
-                    })
-                    .show();
+
+        Intent intent=new Intent(context,Setting_CusBarcodeRule.class);
+        startActivityForResult(intent,1001);
+//            final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_selfbarcode_content, null);
+//            final EditText edtStartWords=(EditText) textEntryView.findViewById(R.id.edt_StartWords);
+//            final EditText edtbarcodeLength=(EditText)textEntryView.findViewById(R.id.edt_barcodeLength);
+//            if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null){
+//                //edtStartWords.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getStartWords());
+//                edtbarcodeLength.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeLength().toString());
+//            }
+//            new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_SetbarcodeRule))
+//                    .setIcon(android.R.drawable.ic_dialog_info)
+//                    .setView(textEntryView)
+//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            String startword=edtStartWords.getText().toString().trim();
+//                            String length=edtbarcodeLength.getText().toString().trim();
+//                            if(TextUtils.isEmpty(length)) length="0";
+//                            if(!CommonUtil.isNumeric(length)){
+//                                MessageBox.Show(context,getString(R.string.Msg_inputNumic));
+//                                ckSelfBarcode.setChecked(false);
+//                                return;
+//                            }
+//
+//                            ckSelfBarcode.setChecked(true);
+//                        }
+//                    })
+//                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            String startword=edtStartWords.getText().toString().trim();
+//                            String length=edtbarcodeLength.getText().toString().trim();
+//                            if(TextUtils.isEmpty(startword) || TextUtils.isEmpty(length)){
+//                                ckSelfBarcode.setChecked(false);
+//                            }else{
+//                                ckSelfBarcode.setChecked(true);
+//                            }
+//                        }
+//                    })
+//                    .show();
 
 
     }
@@ -246,9 +250,9 @@ public class Setting extends BaseActivity {
         final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_cusdnno_content, null);
         final EditText edtStartWords=(EditText) textEntryView.findViewById(R.id.edt_StartWords);
         final EditText edtIndexLength=(EditText)textEntryView.findViewById(R.id.edt_barcodeLength);
-        if(ParamaterModel.cusDnnoRule!=null){
-            edtStartWords.setText(ParamaterModel.cusDnnoRule.getStartWords());
-            edtIndexLength.setText(ParamaterModel.cusDnnoRule.getIndexLength().toString());
+        if(ParamaterModel.baseparaModel.getCusDnnoRule()!=null){
+            edtStartWords.setText(ParamaterModel.baseparaModel.getCusDnnoRule().getStartWords());
+            edtIndexLength.setText(ParamaterModel.baseparaModel.getCusDnnoRule().getIndexLength().toString());
         }
         new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_SetbarcodeRule))
                 .setIcon(android.R.drawable.ic_dialog_info)
@@ -305,33 +309,36 @@ public class Setting extends BaseActivity {
         Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
         Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
         ParamaterModel.PartenerID =txtPartner.getText().toString().trim();
-        ParamaterModel.DNSaveTime =Integer.parseInt(txtDNSaveTime.getText().toString().trim());
-        ParamaterModel.IsUseRemark =ckIsuserRemark.isChecked();
+        ParamaterModel.baseparaModel.setDNSaveTime(Integer.parseInt(txtDNSaveTime.getText().toString().trim()));
+        ParamaterModel.baseparaModel.setUseRemark(ckIsuserRemark.isChecked());
         ParamaterModel.SysPassword=Password;
-        ParamaterModel.cusBarcodeRule=new CusBarcodeRule();
-        ParamaterModel.cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
+        ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
+        ParamaterModel.baseparaModel.getCusBarcodeRule().setUsed(ckSelfBarcode.isChecked());
         if(ckSelfBarcode.isChecked()){
-            ParamaterModel.cusBarcodeRule.setStartWords(startwords==null?"":startwords);
-            ParamaterModel.cusBarcodeRule.setBarcodeLength(barcodeLength);
+//            ParamaterModel.baseparaModel.getCusBarcodeRule().setBarcodeLength(barcodeLength);
+//            ParamaterModel.baseparaModel.getCusBarcodeRule().setKeyStartIndex(0);
+//            ParamaterModel.baseparaModel.getCusBarcodeRule().setKeyEndIndex(5);
+//            ParamaterModel.baseparaModel.getCusBarcodeRule().setSerialStartIndex(6);
+//            ParamaterModel.baseparaModel.getCusBarcodeRule().setSerialEndIndex(10);
         }
         if(!TextUtils.isEmpty(startwordsCusDN) && indexLength!=0) {
-            if (ParamaterModel.cusDnnoRule == null) ParamaterModel.cusDnnoRule = new CusDnnoRule();
-            ParamaterModel.cusDnnoRule.setStartWords(startwordsCusDN==null?"":startwordsCusDN);
-            ParamaterModel.cusDnnoRule.setIndexLength(indexLength);
+            if (ParamaterModel.baseparaModel.getCusDnnoRule() == null) ParamaterModel.baseparaModel.setCusDnnoRule(new CusDnnoRule());
+            ParamaterModel.baseparaModel.getCusDnnoRule().setStartWords(startwordsCusDN==null?"":startwordsCusDN);
+            ParamaterModel.baseparaModel.getCusDnnoRule().setIndexLength(indexLength);
         }
-        if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
-        ParamaterModel.mailModel.setAccount(edtMailAccount.getText().toString().trim());
-        ParamaterModel.mailModel.setPassword(edtMailPassword.getText().toString().trim());
-        ParamaterModel.mailModel.setMailServerPort(edtMailSMTPort.getText().toString().trim());
-        ParamaterModel.mailModel.setMailServerHost(edtMailSMTP.getText().toString().trim());
-        ParamaterModel.mailModel.setMailClientHost(edtMailIMAP.getText().toString().trim());
-        if(ParamaterModel.ftpModel==null) ParamaterModel.ftpModel=new FtpModel();
-        ParamaterModel.ftpModel.setFtpHost(edtFtpHost.getText().toString().trim());
-        ParamaterModel.ftpModel.setFtpUserName(edtFtpUserName.getText().toString().trim());
-        ParamaterModel.ftpModel.setFtpPassword(edtFtpPassword.getText().toString().trim());
-        ParamaterModel.ftpModel.setFtpPort(Integer.parseInt(edtFtpPort.getText().toString().trim()));
-        ParamaterModel.ftpModel.setFtpDownLoad(edtFtpDown.getText().toString().trim());
-        ParamaterModel.ftpModel.setFtpUpLoad(edtFtpUp.getText().toString().trim());
+        if(ParamaterModel.baseparaModel.getMailModel()==null) ParamaterModel.baseparaModel.setMailModel(new MailModel());
+        ParamaterModel.baseparaModel.getMailModel().setAccount(edtMailAccount.getText().toString().trim());
+        ParamaterModel.baseparaModel.getMailModel().setPassword(edtMailPassword.getText().toString().trim());
+        ParamaterModel.baseparaModel.getMailModel().setMailServerPort(edtMailSMTPort.getText().toString().trim());
+        ParamaterModel.baseparaModel.getMailModel().setMailServerHost(edtMailSMTP.getText().toString().trim());
+        ParamaterModel.baseparaModel.getMailModel().setMailClientHost(edtMailIMAP.getText().toString().trim());
+        if(ParamaterModel.baseparaModel.getFtpModel()==null) ParamaterModel.baseparaModel.setFtpModel(new FtpModel());
+        ParamaterModel.baseparaModel.getFtpModel().setFtpHost(edtFtpHost.getText().toString().trim());
+        ParamaterModel.baseparaModel.getFtpModel().setFtpUserName(edtFtpUserName.getText().toString().trim());
+        ParamaterModel.baseparaModel.getFtpModel().setFtpPassword(edtFtpPassword.getText().toString().trim());
+        ParamaterModel.baseparaModel.getFtpModel().setFtpPort(Integer.parseInt(edtFtpPort.getText().toString().trim()));
+        ParamaterModel.baseparaModel.getFtpModel().setFtpDownLoad(edtFtpDown.getText().toString().trim());
+        ParamaterModel.baseparaModel.getFtpModel().setFtpUpLoad(edtFtpUp.getText().toString().trim());
 
         SharePreferUtil.SetShare(context);
         new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(getResources().getString(R.string.Msg_SaveSuccess)).setPositiveButton("确定", new DialogInterface.OnClickListener() {

@@ -25,7 +25,8 @@ public class URLModel {
     public String UploadCus = GetWCFAdress()+"UploadCus"; //上传新增客户
     public String UploadNDN = GetWCFAdress()+"UploadNDN"; //上传出库单
     public String SyncPara = GetWCFAdress()+"GetCustomerSettings"; //同步参数配置
-    public String SyncDn = GetWCFAdress()+"SyncDn"; //同步DN表头
+    public String SyncDn = GetWCFAdress()+"GetDNHeaders"; //同步DN表头
+    public String SyncDnDetail = GetWCFAdress()+"GetDNDetails"; //同步DN表体
 
 
 }

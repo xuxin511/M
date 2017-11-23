@@ -60,7 +60,7 @@ public class DbDnInfo {
     public void DeleteDnBySaveTime(){
         try {
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_MONTH, 0- ParamaterModel.DNSaveTime);
+            cal.add(Calendar.DAY_OF_MONTH, 0- ParamaterModel.baseparaModel.getDNSaveTime());
             List<DNModel> dnModels = dnModelDao.queryBuilder().where(DNModelDao.Properties.OPER_DATE.le(cal.getTimeInMillis())).distinct().list();
             if (dnModels != null & dnModels.size() != 0) {
                 for (DNModel dnModel : dnModels) {
@@ -92,6 +92,13 @@ public class DbDnInfo {
                     dnScanModelDao.detachAll();
                 }
             }
+        }
+    }
+
+    public void InsertDNDetailDB(ArrayList<DNDetailModel> dnDetailModels) throws Exception{
+        if(dnDetailModels!=null && dnDetailModels.size()!=0) {
+                dnDetailModelDao.insertOrReplaceInTx(dnDetailModels);
+                dnDetailModelDao.detachAll();
         }
     }
 

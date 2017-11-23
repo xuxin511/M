@@ -1,7 +1,5 @@
 package com.xx.chinetek.model.Base;
 
-import com.xx.chinetek.method.FTP.FtpModel;
-import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
 import java.io.File;
@@ -11,6 +9,8 @@ import java.io.File;
  */
 
 public class ParamaterModel {
+
+    public static BaseparaModel baseparaModel;
 
     /**
      * 用户集合
@@ -32,26 +32,6 @@ public class ParamaterModel {
     public static String SysPassword;
 
     /**
-     * DN单据本地保存时间
-     */
-    public static int DNSaveTime=30;
-
-    /**
-     * 是否启用备注栏
-     */
-    public static Boolean IsUseRemark=false;
-
-    /**
-     * 是否启用三菱条码
-     */
-    public static CusBarcodeRule cusBarcodeRule=null;
-
-    /**
-     * 自定义出库单规则
-     */
-    public static CusDnnoRule cusDnnoRule=null;
-
-    /**
      * 设备型号
      */
     public static String Model=null;
@@ -66,20 +46,12 @@ public class ParamaterModel {
      */
     public static DNTypeModel DnTypeModel;
 
-    /**
-     * 邮件服务器
-     */
-    public static MailModel mailModel=new MailModel();
 
     /**
      * 邮件过滤内容
      */
     public static String FilterContent="QR";
 
-    /**
-     * FTP服务器
-     */
-    public static FtpModel ftpModel;
 
     /**
      * 物料同步时间

@@ -17,6 +17,8 @@ public class TAG_RESULT {
 
     public static  String  TAG_SyncDn="SyncDn";
     public static final int RESULT_SyncDn=104;
+    public static  String  TAG_SyncDnDetail="SyncDnDetail";
+    public static final int RESULT_SyncDnDetail=110;
 
     public static final int RESULT_SyncMail=105;
 

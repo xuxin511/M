@@ -75,6 +75,8 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
             listItemView = (ListItemView) convertView.getTag();
         }
         DNDetailModel dnDetailModel = dnDetailModels.get(selectID);
+        if(dnDetailModel.getSCAN_QTY()==null)
+            dnDetailModel.setSCAN_QTY(0);
         listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
         listItemView.txtRowNo.setText(convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO());
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());

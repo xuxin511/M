@@ -65,7 +65,7 @@ public class FtpHelper {
         this.password = pass;
         this.ftpClient = new FTPClient();
         //如果不调用这个方法设置端口，则是使用默认端口21
-        this.ftpClient.setDefaultPort(ParamaterModel.ftpModel.getFtpPort());
+        this.ftpClient.setDefaultPort(ParamaterModel.baseparaModel.getFtpModel().getFtpPort());
     }
 
     public FtpHelper(FtpModel ftpModel) {
@@ -74,7 +74,7 @@ public class FtpHelper {
         this.password = ftpModel.getFtpPassword();
         this.ftpClient = new FTPClient();
         //如果不调用这个方法设置端口，则是使用默认端口21
-        this.ftpClient.setDefaultPort(ParamaterModel.ftpModel.getFtpPort());
+        this.ftpClient.setDefaultPort(ParamaterModel.baseparaModel.getFtpModel().getFtpPort());
     }
 
     /**

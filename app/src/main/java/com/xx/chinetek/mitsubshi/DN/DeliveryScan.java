@@ -30,7 +30,6 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
-import com.xx.chinetek.mitsubshi.Bulkupload.bulkuploadBarcodeDetail;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
@@ -102,7 +101,7 @@ public class DeliveryScan extends BaseIntentActivity {
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.deliveryScan),true);
         x.view().inject(this);
         //显示备注栏
-        int visable=ParamaterModel.IsUseRemark?View.VISIBLE:View.GONE;
+        int visable=ParamaterModel.baseparaModel.getUseRemark()?View.VISIBLE:View.GONE;
         imgRemark.setVisibility(visable);
 
     }

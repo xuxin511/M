@@ -29,7 +29,8 @@
         <activity android:name=".ExceptionList" />
         <activity android:name=".Setting" />
         <activity android:name=".DN.QRScan" />
-        <activity android:name=".Query.QueryList"></activity>
+        <activity android:name=".Query.QueryList" />
+        <activity android:name=".Setting_CusBarcodeRule" />
     </application>
 
 </manifest>

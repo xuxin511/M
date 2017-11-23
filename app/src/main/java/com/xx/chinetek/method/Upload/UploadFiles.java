@@ -28,7 +28,7 @@ public class UploadFiles {
             @Override
             public void run() {
                 try {
-                    FtpUtil.FtpUploadDN(ParamaterModel.ftpModel,files,mHandler);
+                    FtpUtil.FtpUploadDN(ParamaterModel.baseparaModel.getFtpModel(),files,mHandler);
                 }catch (Exception ex){
                     Message msg = mHandler.obtainMessage(NetworkError.NET_ERROR_CUSTOM, ex.getMessage());
                     mHandler.sendMessage(msg);
@@ -47,11 +47,11 @@ public class UploadFiles {
             @Override
             public void run() {
                 try {
-                    ParamaterModel.mailModel.setFromAddress(ParamaterModel.mailModel.getAccount());
-                    ParamaterModel.mailModel.setToAddress(ParamaterModel.mailModel.getAccount());
-                    ParamaterModel.mailModel.setSubject("DN_"+ CommonUtil.DateToString(new Date(),null));
-                    ParamaterModel.mailModel.setContent("QR");
-                    MailUtil.SendMail(ParamaterModel.mailModel, list,mHandler);
+                    ParamaterModel.baseparaModel.getMailModel().setFromAddress( ParamaterModel.baseparaModel.getMailModel().getAccount());
+                    ParamaterModel.baseparaModel.getMailModel().setToAddress(ParamaterModel.baseparaModel.getMailModel().getAccount());
+                    ParamaterModel.baseparaModel.getMailModel().setSubject("DN_"+ CommonUtil.DateToString(new Date(),null));
+                    ParamaterModel.baseparaModel.getMailModel().setContent("QR");
+                    MailUtil.SendMail(ParamaterModel.baseparaModel.getMailModel(), list,mHandler);
                 }catch (Exception ex){
                     Message msg = mHandler.obtainMessage(NetworkError.NET_ERROR_CUSTOM, ex.getMessage());
                     mHandler.sendMessage(msg);

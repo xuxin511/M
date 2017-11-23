@@ -3,13 +3,9 @@ package com.xx.chinetek.mitsubshi.Exception;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -22,22 +18,11 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
-import com.xx.chinetek.method.AnalyticsBarCode;
-import com.xx.chinetek.method.CreateDnNo;
-import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
-import com.xx.chinetek.method.SharePreferUtil;
-import com.xx.chinetek.method.Upload.UploadNewCus;
+import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
-import com.xx.chinetek.mitsubshi.DN.DeliveryList;
-import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
-import com.xx.chinetek.mitsubshi.DN.QRScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
-import com.xx.chinetek.model.Base.CustomModel;
-import com.xx.chinetek.model.Base.MaterialModel;
-import com.xx.chinetek.model.Base.ParamaterModel;
-import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
@@ -49,8 +34,6 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @ContentView(R.layout.activity_exception_scanlist)
 public class ExceptionBarcodelist extends BaseIntentActivity {
@@ -93,7 +76,11 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case TAG_SCAN:
-                CheckScanBarcode((String) msg.obj);
+                try {
+                    chaeckBarcode((String) msg.obj);
+                }catch (Exception ex){
+                    MessageBox.Show(context,ex.getMessage());
+                }
                 break;
         }
     }
@@ -130,21 +117,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                     CommonUtil.setEditFocus(edtBarcode);
                     return false;
                 }
-                BarCodeModel model = new BarCodeModel();
-                model.setSerial_Number(code);
-                model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
-                ArrayList<BarCodeModel> barCodeModels = new ArrayList<>();
-                barCodeModels.add(model);
-                if (barCodeModels != null && barCodeModels.size() != 0) {
-                    MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
-//                    txtItemNo.setText(materialModel.getMATNR());
-//                    txtItemName.setText(materialModel.getMAKTX());
-
-//                    txtScanQty.setText("扫描数量："+(Integer.parseInt(txtScanQty.getText().toString().replace("扫描数量：",""))+1));
-                    ScanBarccode(barCodeModels);
-                    txtScanQty.setText(getString(R.string.scanQty)+(DNScanModels.size()));
-//                    txtScanQty.setText(getString(R.string.scanQty)+(barCodeModels.size()+dndetailmodel.getSERIALS().size()));
-                }
+                chaeckBarcode(code);
                 return true;
             }
             return false;
@@ -154,128 +127,21 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         }
     }
 
-
-
-//    @Event(R.id.edt_Barcode)
-//    private void btnedtBarcodeClick(View view){
-//        try {
-//            final String code=edtBarcode.getText().toString().trim();
-//            if(TextUtils.isEmpty(code)){
-//                MessageBox.Show(context,getString(R.string.Msg_No_Barcode));
-//                CommonUtil.setEditFocus(edtBarcode);
-//                return;
-//            }
-//            BarCodeModel model = new BarCodeModel();
-//            model.setSerial_Number(code);
-//            model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
-//            ArrayList<BarCodeModel> barCodeModels = new ArrayList<>();
-//            barCodeModels.add(model);
-//            if (barCodeModels != null && barCodeModels.size() != 0) {
-//                MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
-//                txtItemNo.setText(materialModel.getMATNR());
-//                txtItemName.setText(materialModel.getMAKTX());
-//                txtScanQty.setText(getString(R.string.scanQty)+barCodeModels.size());
-//                ScanBarccode(barCodeModels);
-//            }
-//        } catch (Exception ex) {
-//            MessageBox.Show(context, ex.getMessage());
-//        }
-//
-//
-////        DNScanModel dnScanModel= new DNScanModel();
-////        //保存序列号
-////        dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-////        dnScanModel.setLINE_NO(dndetailmodel.getLINE_NO());
-////        dnScanModel.setITEM_NO( dndetailmodel.getITEM_NO());
-////        dnScanModel.setITEM_NAME( dndetailmodel.getITEM_NAME());
-////        dnScanModel.setSERIAL_NO(code);
-////        dnScanModel.setPACKING_DATE("");
-////        dnScanModel.setREGION("");
-////        dnScanModel.setCOUNTRY("");
-////        dnScanModel.setGOLFA_CODE(dndetailmodel.getGOLFA_CODE());
-////        dnScanModel.setITEM_STATUS("AC");
-////        dnScanModel.setDEAL_SALE_DATE(new Date());
-////        ArrayList<DNScanModel> scanmmodels= new ArrayList<DNScanModel>();
-////        scanmmodels.add(dnScanModel);
-////        if(DbDnInfo.getInstance().InsertDNScan(scanmmodels)){
-////            MessageBox.Show(context,getString(R.string.Msg_insert_success));
-////        }else{
-////            MessageBox.Show(context,getString(R.string.Msg_insert_failed));
-////        }
-//
-//    }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_close, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if(item.getItemId()==R.id.action_close){
-//            closeActiviry();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    /**
-     * 扫描条码
-     * @param barcode
-     * @return
-     */
-    private Boolean CheckScanBarcode(String barcode) {
-        if (TextUtils.isEmpty(barcode)) {
-            MessageBox.Show(context, getString(R.string.Msg_No_Barcode));
-            return true;
+    private void chaeckBarcode(String code) throws Exception {
+        BarCodeModel model = new BarCodeModel();
+        model.setSerial_Number(code);
+        model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
+        ArrayList<BarCodeModel> barCodeModels = new ArrayList<>();
+        barCodeModels.add(model);
+        if (barCodeModels != null && barCodeModels.size() != 0) {
+            int isErrorStatus=Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
+            txtScanQty.setText(getString(R.string.scanQty)+(DNScanModels.size()));
+            if (ShowErrMag(isErrorStatus)) return;
+            SaveScanInfo(isErrorStatus);
         }
-        try {
-            ArrayList<BarCodeModel> barCodeModels = AnalyticsBarCode.CheckBarcode(barcode);
-            if (barCodeModels != null && barCodeModels.size() != 0) {
-                MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
-                txtItemNo.setText(materialModel.getMATNR());
-                txtItemName.setText(materialModel.getMAKTX());
-                txtScanQty.setText(getString(R.string.scanQty)+barCodeModels.size());
-                return ScanBarccode(barCodeModels);
-
-            }
-        } catch (Exception ex) {
-            MessageBox.Show(context, ex.getMessage());
-        }
-        return true;
     }
 
 
-
-    /**
-     * 条码扫描（非自建方式）
-     * @param barCodeModels
-     * @return
-     * @throws Exception
-     */
-    private boolean ScanBarccode(ArrayList<BarCodeModel> barCodeModels) throws Exception {
-//        dnModel.resetDETAILS();
-        List<DNDetailModel> dnDetailModels = dnModel.getDETAILS();
-        int isErrorStatus=-1;//0:物料已扫描  1：数量已超出 2：物料不存在
-        DNDetailModel dnDetailModel = new DNDetailModel();
-        //判断物料是否存在
-        int index = getIndex(dnDetailModels, barCodeModels.get(0), dnDetailModel);
-        if (index == -1) {
-            isErrorStatus=2;
-        }else {
-            //判断扫描数量是否超过出库数量
-            String condition = dnDetailModel.getGOLFA_CODE() == null ? dnDetailModel.getITEM_NO() : dnDetailModel.getGOLFA_CODE();
-            DBReturnModel dbReturnModel = dnInfo.GetDNQty(dnModel.getAGENT_DN_NO(), condition);
-            if (dbReturnModel.getDNQTY() < dbReturnModel.getSCANQTY() + barCodeModels.size()) {
-                isErrorStatus = 1;
-            }else {
-                isErrorStatus = Checkbarcode(barCodeModels, dnDetailModels, index);
-            }
-        }
-        if (ShowErrMag(isErrorStatus)) return true;
-        return SaveScanInfo(isErrorStatus);
-    }
 
     /**
      * 保存数据库
@@ -315,89 +181,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         return false;
     }
 
-    /**
-     * 判断物料是否存在出库单中
-     * @param dnDetailModels
-     * @param barCodeModel
-     * @param dnDetailModel
-     * @return
-     */
-    private int getIndex(List<DNDetailModel> dnDetailModels, BarCodeModel barCodeModel, DNDetailModel dnDetailModel) {
-        dnDetailModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-        dnDetailModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
-        //判断是否存在物料
-        return dnDetailModels.indexOf(dnDetailModel);
-    }
 
-
-    /**
-     * 非自建单据扫描数量和重复检查
-     * @param barCodeModels
-     * @param dnDetailModels
-     * @param index
-     * @return
-     */
-    private int Checkbarcode(ArrayList<BarCodeModel> barCodeModels, List<DNDetailModel> dnDetailModels, int index) {
-        int isErrorStatus=-1;
-        for (BarCodeModel barCodeModel : barCodeModels) {
-            //判断条码是否存在
-            dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
-            List<DNScanModel> dnScanModels = dnDetailModels.get(index).getSERIALS();
-            DNScanModel dnScanModel = new DNScanModel();
-            dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
-            int barcodeIndex = dnScanModels.indexOf(dnScanModel);
-            if (barcodeIndex != -1) {
-                isErrorStatus = 0;
-                break;
-            }
-
-            index=findIndexByGolfaCode(dnDetailModels,barCodeModel.getGolfa_Code());
-            if(index==-1){
-                isErrorStatus = 1;
-                break;
-            }
-            //更新物料扫描数量
-            dnDetailModels.get(index).setSCAN_QTY(dnDetailModels.get(index).getSCAN_QTY() + 1);
-            //保存序列号
-            dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-            dnScanModel.setLINE_NO(dnDetailModels.get(index).getLINE_NO());
-            dnScanModel.setPACKING_DATE(barCodeModel.getPacking_Date());
-            dnScanModel.setREGION(barCodeModel.getPlace_Code());
-            dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());
-            dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
-            dnScanModel.setITEM_STATUS("AC");
-            dnScanModel.setITEM_NO(dnDetailModels.get(index).getITEM_NO());
-            dnScanModel.setITEM_NAME(dnDetailModels.get(index).getITEM_NAME());
-            dnScanModel.setDEAL_SALE_DATE(new Date());
-            dnScanModel.setMAT_TYPE(0);
-            dnDetailModels.get(index).setOPER_DATE(new Date());
-            dnDetailModels.get(index).getSERIALS().add(dnScanModel);
-            dnDetailModels.get(index).setDETAIL_STATUS("AC");
-            dnDetailModels.get(index).setSTATUS(0);
-        }
-        return isErrorStatus;
-    }
-
-
-    /**
-     * 查找可以出库行（GolfaCode相同，出库数量未完成）
-     * @param GolfaCode
-     * @return
-     */
-    private int findIndexByGolfaCode(List<DNDetailModel> dnDetailModels,String GolfaCode){
-        int index=-1;
-        int size=dnDetailModels.size();
-        for(int i=0;i<size;i++){
-            DNDetailModel dnDetailModel=dnDetailModels.get(i);
-            if(dnDetailModel.getGOLFA_CODE().equals(GolfaCode)){
-                if(dnDetailModel.getDN_QTY()>dnDetailModel.getSCAN_QTY()) {
-                    index = i;
-                    break;
-                }
-            }
-        }
-        return index;
-    }
 
 
 

@@ -1,10 +1,7 @@
 package com.xx.chinetek.mitsubshi;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -72,21 +69,21 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
-//        if(ModelInfo.myReceiver!=null)
-//            try {
-//                unregisterReceiver(ModelInfo.myReceiver); //取消MDM注册广播
-//            }catch (Exception ex){}
-//        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
-//            MessageBox.Show(context,getString(R.string.Msg_NotSupportModel));
-//            return;
-//        }
+        if(ModelInfo.myReceiver!=null)
+            try {
+                unregisterReceiver(ModelInfo.myReceiver); //取消MDM注册广播
 
+        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
+            MessageBox.Show(context,getString(R.string.Msg_NotSupportModel));
+            return;
+        }
+            }catch (Exception ex){}
         if (TextUtils.isEmpty(ParamaterModel.PartenerID)) {
             MessageBox.Show(context, getString(R.string.Msg_No_Partner));
             return;
         }
 
-        if (ParamaterModel.cusDnnoRule==null) {
+        if (ParamaterModel.baseparaModel.getCusDnnoRule()==null) {
             MessageBox.Show(context, getString(R.string.Msg_No_CusDnRule));
             return;
         }
@@ -112,29 +109,29 @@ public class Login extends BaseActivity {
     @Event(R.id.btnSetting)
     private void btnSettingClick(View view) {
 
-//        Intent intent = new Intent(context, Setting.class);
-//        startActivityLeft(intent);
+        Intent intent = new Intent(context, Setting.class);
+        startActivityLeft(intent);
 
-        final EditText et = new EditText(this);
-        et.setInputType(InputType.TYPE_CLASS_TEXT
-                | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        et.setTextColor(getResources().getColor(R.color.black));
-        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputPassword))
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setView(et)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String input = et.getText().toString();
-                        if(!ParamaterModel.SysPassword.equals(input)) {
-                            MessageBox.Show(context,getString(R.string.Msg_PasswordError));
-                            return;
-                        }
-                        Intent intent = new Intent(context, Setting.class);
-                        startActivityLeft(intent);
-                    }
-                })
-                .setNegativeButton("取消", null)
-                .show();
+//        final EditText et = new EditText(this);
+//        et.setInputType(InputType.TYPE_CLASS_TEXT
+//                | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+//        et.setTextColor(getResources().getColor(R.color.black));
+//        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputPassword))
+//                .setIcon(android.R.drawable.ic_dialog_info)
+//                .setView(et)
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        String input = et.getText().toString();
+//                        if(!ParamaterModel.SysPassword.equals(input)) {
+//                            MessageBox.Show(context,getString(R.string.Msg_PasswordError));
+//                            return;
+//                        }
+//                        Intent intent = new Intent(context, Setting.class);
+//                        startActivityLeft(intent);
+//                    }
+//                })
+//                .setNegativeButton("取消", null)
+//                .show();
     }
 
 

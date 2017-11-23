@@ -4,6 +4,7 @@
 
     <string name="login_login">登陆</string>
     <string name="login_setting">设置</string>
+    <string name="login_setting_BarcodeRule">设置-条码规则</string>
     <string name="login_operator">操作人</string>
     <string name="main">主界面</string>
     <string name="outputscan">出库</string>
@@ -48,6 +49,12 @@
     <string name="Setting_StartWords">起始字符：</string>
     <string name="Setting_BarcodeLength">条码长度：</string>
     <string name="Setting_IndexLength">序号长度：</string>
+    <string name="Setting_KeyStartIndex">比对项起始位：</string>
+    <string name="Setting_KeyEndIndex">比对项结束位：</string>
+    <string name="Setting_SerialStartIndex">序列号起始位：</string>
+    <string name="Setting_SerialEndIndex">序列号结束位：</string>
+    <string name="Setting_OtherStartIndex">其他项起始位：</string>
+    <string name="Setting_OtherEndIndex">其他项结束位：</string>
 
 
     <string name="sendType">发货方式：</string>
@@ -151,6 +158,7 @@
     <string name="Dia_UploadUSB">通过USB形式导出出库单...</string>
     <string name="Dia_SyncFTP">通过FTP形式导入出库单...</string>
     <string name="Dia_UploadFtp">通过FTP形式导出出库单...</string>
+    <string name="Dia_SyncDnDetail">通过MAPS形式获取出库单明细...</string>
     <string name="Dia_SyncSuccess">基础数据同步完成</string>
 
     <string name="Error_del_dnmodelbarcode">删除扫描明细失败！</string>

@@ -16,20 +16,25 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.adapter.DN.DeliveryListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
+import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
+import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -40,9 +45,11 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDnDetail;
 
 @ContentView(R.layout.activity_delivery_list)
 public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -67,6 +74,9 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             switch (msg.what) {
                 case RESULT_SyncDn:
                     SyncDN.AnalysisSyncMAPSDNJson((String) msg.obj);
+                    break;
+                case RESULT_SyncDnDetail:
+                    AnalysisSyncMAPSDNDetailJson((String) msg.obj);
                     break;
                 case RESULT_SyncUSB:
                     SyncDN.DNFromFiles();
@@ -93,7 +103,20 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         }
     }
 
-
+    private void AnalysisSyncMAPSDNDetailJson(String result) throws Exception {
+        LogUtil.WriteLog(SyncDN.class, TAG_SyncDnDetail, result);
+        ReturnMsgModelList<DNDetailModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNDetailModel>>() {
+        }.getType());
+        if (returnMsgModel.getHeaderStatus().equals("S")) {
+            ArrayList<DNDetailModel> dnDetailModels = returnMsgModel.getModelJson();
+            //插入数据
+            DbDnInfo.getInstance().InsertDNDetailDB(dnDetailModels);
+            DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnDetailModels.get(0).getAGENT_DN_NO(),1);
+            StartScan(dnModel);
+        } else {
+            MessageBox.Show(context, returnMsgModel.getMessage());
+        }
+    }
 
 
     @Override
@@ -149,12 +172,16 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         return super.onOptionsItemSelected(item);
     }
 
-
+    DNModel  dnModel;
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemClickListener.class)
     private void LsvDeliveryListonItemClick(AdapterView<?> parent, View view, int position, long id) {
-        DNModel  dnModel=(DNModel)deliveryListItemAdapter.getItem(position);
+         dnModel=(DNModel)deliveryListItemAdapter.getItem(position);
         ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
-        StartScan(dnModel);
+        if(dnModel.getDN_SOURCE()==0){
+            SyncDN.SyncMAPSDetail(dnModel.getAGENT_DN_NO(),mHandler);
+        }else {
+            StartScan(dnModel);
+        }
     }
 
 

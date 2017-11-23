@@ -8,8 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.model.Paramater;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
-import com.xx.chinetek.model.Base.CusBarcodeRule;
-import com.xx.chinetek.model.Base.CusDnnoRule;
+import com.xx.chinetek.model.Base.BaseparaModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
@@ -34,27 +33,23 @@ public class SharePreferUtil {
             Paramater.SOCKET_TIMEOUT=sharedPreferences.getInt("TimeOut", 20000);
             ParamaterModel.PartenerID=sharedPreferences.getString("PartenerNo","");
             ParamaterModel.SysPassword=sharedPreferences.getString("SysPassword","123456");
-            ParamaterModel.DNSaveTime=sharedPreferences.getInt("DNSaveTime",30);
-            ParamaterModel.IsUseRemark=sharedPreferences.getBoolean("IsUseRemark",false);
             Gson gson = new Gson();
-            Type type = new TypeToken<CusBarcodeRule>(){}.getType();
-            ParamaterModel.cusBarcodeRule= gson.fromJson(sharedPreferences.getString("cusBarcodeRule", ""), type);
-            Type typeDn = new TypeToken<CusDnnoRule>() {}.getType();
-            ParamaterModel.cusDnnoRule= gson.fromJson(sharedPreferences.getString("cusDnnoRule", ""), typeDn);
-            if(ParamaterModel.mailModel==null) ParamaterModel.mailModel=new MailModel();
-            ParamaterModel.mailModel.setAccount(sharedPreferences.getString("Account",""));
-            ParamaterModel.mailModel.setPassword(sharedPreferences.getString("Password",""));
-            ParamaterModel.mailModel.setMailServerPort(sharedPreferences.getString("StmpPort","25"));
-            ParamaterModel.mailModel.setMailServerHost(sharedPreferences.getString("Stmp",""));
-            ParamaterModel.mailModel.setMailClientHost(sharedPreferences.getString("IMAP",""));
-            if(ParamaterModel.ftpModel==null) ParamaterModel.ftpModel=new FtpModel();
-            ParamaterModel.ftpModel.setFtpHost(sharedPreferences.getString("FtpHost",""));
-            ParamaterModel.ftpModel.setFtpUserName(sharedPreferences.getString("FtpUserName","anonymous"));
-            ParamaterModel.ftpModel.setFtpPassword(sharedPreferences.getString("FtpPassword","12345"));
-            ParamaterModel.ftpModel.setFtpPort(sharedPreferences.getInt("FtpPort",21));
-            ParamaterModel.ftpModel.setFtpDownLoad(sharedPreferences.getString("FtpDownLoad","/website/down/"));
-            ParamaterModel.ftpModel.setFtpUpLoad(sharedPreferences.getString("FtpUpLoad","/website/up/"));
-        }
+            Type type = new TypeToken<BaseparaModel>(){}.getType();
+            ParamaterModel.baseparaModel= gson.fromJson(sharedPreferences.getString("BaseparaModel", ""), type);
+            if(ParamaterModel.baseparaModel==null) ParamaterModel.baseparaModel=new BaseparaModel();
+            if(ParamaterModel.baseparaModel.getFtpModel()==null){
+                ParamaterModel.baseparaModel.setFtpModel(new FtpModel());
+                ParamaterModel.baseparaModel.getFtpModel().setFtpPort(21);
+                ParamaterModel.baseparaModel.getFtpModel().setFtpDownLoad("/ftp/down/");
+                ParamaterModel.baseparaModel.getFtpModel().setFtpUpLoad("/ftp/up/");
+                ParamaterModel.baseparaModel.getFtpModel().setFtpUserName("anonymous");
+                ParamaterModel.baseparaModel.getFtpModel().setFtpPassword("anonymous");
+            }
+            if(ParamaterModel.baseparaModel.getMailModel()==null){
+                ParamaterModel.baseparaModel.setMailModel(new MailModel());
+                ParamaterModel.baseparaModel.getMailModel().setMailServerPort("25");
+            }
+          }
     }
 
     public static void SetShare(Context context){
@@ -65,30 +60,10 @@ public class SharePreferUtil {
         edit.putInt("TimeOut",Paramater.SOCKET_TIMEOUT);
         edit.putString("PartenerNo", ParamaterModel.PartenerID);
         edit.putString("SysPassword", ParamaterModel.SysPassword);
-        edit.putInt("DNSaveTime",ParamaterModel.DNSaveTime);
-        edit.putBoolean("IsUseRemark",ParamaterModel.IsUseRemark);
         Gson gson=new Gson();
-        Type type = new TypeToken<CusBarcodeRule>() {}.getType();
-        edit.putString("cusBarcodeRule",gson.toJson(ParamaterModel.cusBarcodeRule,type));
-        Type typeDn = new TypeToken<CusDnnoRule>() {}.getType();
-        edit.putString("cusDnnoRule",gson.toJson(ParamaterModel.cusDnnoRule,typeDn));
-        if(ParamaterModel.mailModel!=null){
-            edit.putString("Account", ParamaterModel.mailModel.getAccount());
-            edit.putString("Password", ParamaterModel.mailModel.getPassword());
-            edit.putString("StmpPort", ParamaterModel.mailModel.getMailServerPort());
-            edit.putString("Stmp", ParamaterModel.mailModel.getMailServerHost());
-            edit.putString("IMAP", ParamaterModel.mailModel.getMailClientHost());
-        }
-        if(ParamaterModel.ftpModel!=null){
-            edit.putString("FtpHost",ParamaterModel.ftpModel.getFtpHost());
-            edit.putString("FtpUserName",ParamaterModel.ftpModel.getFtpUserName());
-            edit.putString("FtpPassword",ParamaterModel.ftpModel.getFtpPassword());
-            edit.putInt("FtpPort",ParamaterModel.ftpModel.getFtpPort());
-            edit.putString("FtpDownLoad",ParamaterModel.ftpModel.getFtpDownLoad());
-            edit.putString("FtpUpLoad",ParamaterModel.ftpModel.getFtpUpLoad());
-        }
+        Type type = new TypeToken<BaseparaModel>() {}.getType();
+        edit.putString("BaseparaModel",gson.toJson(ParamaterModel.baseparaModel,type));
         edit.apply();
-
     }
 
     /**
