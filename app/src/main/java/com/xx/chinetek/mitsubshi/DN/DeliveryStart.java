@@ -23,7 +23,7 @@ import com.xx.chinetek.adapter.DN.PartnerItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
-import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
+import com.xx.chinetek.chineteklib.model.ReturnMsgModel;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
@@ -281,14 +281,16 @@ public class DeliveryStart extends BaseActivity {
     void AnalysisUploadCusJson(String result){
         LogUtil.WriteLog(DeliveryStart.class,TAG_UploadCus,result);
         try {
-            ReturnMsgModelList<CustomModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<CustomModel>>() {
+            ReturnMsgModel<CustomModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<CustomModel>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
-                ArrayList<CustomModel> customModel = returnMsgModel.getModelJson();
+                CustomModel customModel = returnMsgModel.getModelJson();
                 //插入数据
+                ArrayList<CustomModel> customModels=new ArrayList<>();
+                customModels.add(customModel);
                 DbBaseInfo.getInstance().InsertCustomDB(customModels);
                 BindData();
-                edtContentText.setText(customModel.get(0).getCUSTOMER());
+                edtContentText.setText(customModel.getCUSTOMER());
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
