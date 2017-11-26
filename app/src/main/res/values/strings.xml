@@ -48,6 +48,7 @@
     <string name="Setting_Second">秒</string>
     <string name="Setting_LogUpload">日志上报</string>
     <string name="Setting_Save">保存</string>
+    <string name="Setting_ParaUpload">参数上传</string>
     <string name="Setting_Clear">重置</string>
     <string name="Setting_StartWords">起始字符：</string>
     <string name="Setting_BarcodeLength">条码长度：</string>
@@ -159,6 +160,7 @@
     <string name="Dia_UploadCus">正在上传新增客户信息...</string>
     <string name="Dia_UploadDN">正在上传出库单...</string>
     <string name="Dia_SyncPara">正在同步参数设置...</string>
+    <string name="Dia_UploadPara">正在上传参数设置...</string>
     <string name="Dia_SyncDn">通过MAPS形式获取出库单...</string>
     <string name="Dia_SyncMail">通过邮件形式获取出库单...</string>
     <string name="Dia_UploadMail">通过邮件形式导出出库单...</string>
@@ -168,6 +170,7 @@
     <string name="Dia_UploadFtp">通过FTP形式导出出库单...</string>
     <string name="Dia_SyncDnDetail">通过MAPS形式获取出库单明细...</string>
     <string name="Dia_SyncSuccess">基础数据同步完成</string>
+    <string name="Dia_UploadSuccess">参数上传成功！</string>
 
     <string name="Error_del_dnmodelbarcode">删除扫描明细失败！</string>
     <string name="Error_del_dnmodeldetail">更新表体扫描数量失败！</string>

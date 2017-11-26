@@ -26,6 +26,7 @@ import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
 import com.xx.chinetek.mitsubshi.DN.DeliveryStart;
 import com.xx.chinetek.mitsubshi.Query.QueryList;
+import com.xx.chinetek.model.Base.BaseparaModel;
 import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -36,6 +37,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +125,7 @@ public class MainActivity extends BaseActivity {
             //获取同步时间
             SharePreferUtil.ReadSyncTimeShare(context);
             //同步物料
-            SyncBase.getInstance().SyncMaterial(mHandler);
+            SyncBase.getInstance().SyncPara(mHandler);
         }
 
     }
@@ -141,7 +143,7 @@ public class MainActivity extends BaseActivity {
                ArrayList<MaterialModel> materialModels = returnMsgModel.getModelJson();
                //插入数据
                 DbBaseInfo.getInstance().InsertMaterialDB(materialModels);
-                ParamaterModel.MaterialSyncTime="";
+                ParamaterModel.MaterialSyncTime=returnMsgModel.getMessage();
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare(context);
                //同步客户代理商
@@ -168,7 +170,7 @@ public class MainActivity extends BaseActivity {
                 ArrayList<CustomModel> customModels = returnMsgModel.getModelJson();
                 //插入数据
                 DbBaseInfo.getInstance().InsertCustomDB(customModels);
-                ParamaterModel.CustomSyncTime="";
+                ParamaterModel.CustomSyncTime=returnMsgModel.getMessage();;
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare(context);
                 //同步参数
@@ -194,7 +196,14 @@ public class MainActivity extends BaseActivity {
                 ArrayList<SyncParaModel> syncParaModels = returnMsgModel.getModelJson();
                 //插入数据
                 DbBaseInfo.getInstance().InsertParamaterDB(syncParaModels);
-                ParamaterModel.ParamaterSyncTime="";
+                ParamaterModel.ParamaterSyncTime=returnMsgModel.getMessage();
+                if(syncParaModels.size()!=0){
+                    String ParaString=syncParaModels.get(0).getValue().replace("!","\"")
+                            .replace("#","{").replace("?",":");
+                    Type type = new TypeToken<BaseparaModel>(){}.getType();
+                    ParamaterModel.baseparaModel=GsonUtil.parseJsonToModel(ParaString,type);
+                    SharePreferUtil.SetShare(context);
+                }
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare(context);
                 MessageBox.Show(context,getString(R.string.Dia_SyncSuccess));

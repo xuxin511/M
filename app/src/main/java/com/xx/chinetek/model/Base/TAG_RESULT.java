@@ -14,6 +14,7 @@ public class TAG_RESULT {
 
     public static  String  TAG_SyncPara="SyncPara";
     public static final int RESULT_SyncPara=103;
+    public static final int RESULT_UploadPara=110;
 
     public static  String  TAG_SyncDn="SyncDn";
     public static final int RESULT_SyncDn=104;
