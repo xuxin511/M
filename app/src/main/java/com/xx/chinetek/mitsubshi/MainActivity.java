@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity {
             //获取同步时间
             SharePreferUtil.ReadSyncTimeShare(context);
             //同步物料
-            SyncBase.getInstance().SyncPara(mHandler);
+            SyncBase.getInstance().SyncMaterial(mHandler);
         }
 
     }
