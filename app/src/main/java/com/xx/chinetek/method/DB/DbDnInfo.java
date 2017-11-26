@@ -479,5 +479,26 @@ public class DbDnInfo {
 
     }
 
+
+//    /**
+//     * 插入DN
+//     * @param dnModels
+//     * @throws Exception
+//     */
+//    public void InsertDNDBymh(ArrayList<DNModel> dnModels) throws Exception{
+//        if(dnModels!=null && dnModels.size()!=0) {
+//            dnModelDao.insertOrReplaceInTx(dnModels);
+//            dnModelDao.detachAll();
+//            for(DNModel  dnModel :dnModels){
+//                dnDetailModelDao.insertOrReplaceInTx(dnModel.getDETAILS());
+//                dnDetailModelDao.detachAll();
+//                for(DNDetailModel  dnDetailModel:dnModel.getDETAILS()){
+//                    dnScanModelDao.insertOrReplaceInTx(dnDetailModel.getSERIALS());
+//                    dnScanModelDao.detachAll();
+//                }
+//            }
+//        }
+//    }
+
 }
 
