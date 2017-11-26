@@ -195,7 +195,13 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
             if (Files.length > 0) {
                 switch (Index) {
                     case 0: //邮件
-                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
+                        if(ParamaterModel.baseparaModel.getMailModel()!=null &&
+                                ParamaterModel.baseparaModel.getMailModel().getToAddress()!=null
+                                && ParamaterModel.baseparaModel.getMailModel().getToAddress().size()==0) {
+                            MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
+                            break;
+                        }
+                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadMail);
                         dialog = new LoadingDialog(context);
                         dialog.show();
                         UploadFiles.UploadMail(Files, mHandler);

@@ -4,16 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.xx.chinetek.Setting">
 
+
+
     <item
-        android:id="@+id/action_filter"
-        android:title="@string/Setting_LogUpload"
+        android:id="@+id/action_upPara"
+        android:title="@string/Setting_ParaUpload"
         android:orderInCategory="80"
         app:showAsAction="ifRoom" />
-
 
     <item
         android:id="@+id/action_Save"
         android:title="@string/Setting_Save"
         android:orderInCategory="80"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_filter"
+        android:title="@string/Setting_LogUpload"
+        android:orderInCategory="80"
+        app:showAsAction="ifRoom" />
+
 </menu>

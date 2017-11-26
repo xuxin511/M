@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,12 @@ public class GsonUtil {
         Gson gson =new GsonBuilder().registerTypeAdapter(Date.class, new NetDateTimeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         T result = gson.fromJson(jsonData, new TypeToken<T>() {
         }.getType());
+        return result;
+    }
+
+    public static <T> T parseJsonToModel(String jsonData,Type type) {
+        Gson gson =new GsonBuilder().registerTypeAdapter(Date.class, new NetDateTimeAdapter()).setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        T result = gson.fromJson(jsonData, type);
         return result;
     }
 

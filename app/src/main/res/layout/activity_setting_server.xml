@@ -252,4 +252,30 @@
         app:layout_constraintBottom_toBottomOf="@+id/textView255"
         app:layout_constraintEnd_toStartOf="@+id/textView256"
         app:layout_constraintStart_toEndOf="@+id/textView255" />
+
+
+    <!-- 全圆角-->
+    <LinearLayout
+        style="@style/wrap_layout"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layoutTOMail"
+            style="@style/single_layout">
+
+            <TextView
+                style="@style/usertext"
+                android:text="@string/Setting_TOMAil" />
+
+            <TextView
+                style="@style/usertext"
+                android:layout_weight="1" />
+
+            <ImageView style="@style/img_arrow" />
+        </LinearLayout>
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

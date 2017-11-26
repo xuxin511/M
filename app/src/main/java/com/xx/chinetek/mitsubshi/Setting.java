@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,14 +17,21 @@ import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.model.Paramater;
+import com.xx.chinetek.chineteklib.model.ReturnMsgModel;
+import com.xx.chinetek.chineteklib.util.Network.NetworkError;
+import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
 import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.method.SharePreferUtil;
@@ -31,7 +39,10 @@ import com.xx.chinetek.model.Base.BaseparaModel;
 import com.xx.chinetek.model.Base.CusBarcodeRule;
 import com.xx.chinetek.model.Base.CusDnnoRule;
 import com.xx.chinetek.model.Base.ParamaterModel;
+import com.xx.chinetek.model.Base.SyncParaModel;
+import com.xx.chinetek.model.Base.URLModel;
 
+import org.json.JSONObject;
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
@@ -40,10 +51,17 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadPara;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMaterial;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncPara;
 
 @ContentView(R.layout.activity_setting)
 public class Setting extends BaseActivity {
@@ -90,12 +108,41 @@ public class Setting extends BaseActivity {
     @ViewInject(R.id.ckSelfBarcode)
     CheckBox ckSelfBarcode;
 
-    final  int LogUploadIndex=1;
+    final  int LogUploadIndex=2;
     String Password;//临时存放密码
 
     String startwordsCusDN;
     Integer indexLength=0;
     CusBarcodeRule cusBarcodeRule;
+    List<String> ToAdress;
+
+    @Override
+    public void onHandleMessage(Message msg) {
+        switch (msg.what) {
+            case RESULT_UploadPara:
+                AnalysisUploadParaJson((String) msg.obj);
+                break;
+            case NetworkError.NET_ERROR_CUSTOM:
+                ToastUtil.show("获取请求失败_____"+ msg.obj);
+                break;
+        }
+    }
+
+    void  AnalysisUploadParaJson(String result){
+        LogUtil.WriteLog(Setting.class,TAG_SyncMaterial,result);
+        try {
+            ReturnMsgModel<String> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<String>>() {
+            }.getType());
+            if (returnMsgModel.getHeaderStatus().equals("S")) {
+                MessageBox.Show(context,getString(R.string.Dia_UploadSuccess));
+            } else {
+                MessageBox.Show(context,returnMsgModel.getMessage());
+            }
+        }catch (Exception ex) {
+            MessageBox.Show(context,ex.getMessage());
+        }
+    }
+
 
     @Override
     protected void initViews() {
@@ -114,7 +161,7 @@ public class Setting extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
-        BaseApplication.DialogShowText = getString(R.string.Dia_UploadLogFile);
+
 
         if(ParamaterModel.baseparaModel==null) ParamaterModel.baseparaModel=new BaseparaModel();
         edtIPAdress.setText(Paramater.IPAdress);
@@ -134,6 +181,7 @@ public class Setting extends BaseActivity {
             edtMailSMTPort.setText(ParamaterModel.baseparaModel.getMailModel().getMailServerPort());
             edtMailSMTP.setText(ParamaterModel.baseparaModel.getMailModel().getMailServerHost());
             edtMailIMAP.setText(ParamaterModel.baseparaModel.getMailModel().getMailClientHost());
+            ToAdress=ParamaterModel.baseparaModel.getMailModel().getToAddress();
         }
         if(ParamaterModel.baseparaModel.getFtpModel()!=null){
             edtFtpHost.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpHost());
@@ -152,6 +200,9 @@ public class Setting extends BaseActivity {
         if(requestCode==1001  && resultCode==1){
             cusBarcodeRule=data.getParcelableExtra("cusBarcodeRule");
             ckSelfBarcode.setChecked(true);
+        }
+        if(requestCode==1002  && resultCode==1){
+            ToAdress=data.getStringArrayListExtra("ToAdress");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -211,6 +262,12 @@ public class Setting extends BaseActivity {
         }
         Intent intent=new Intent(context,Setting_CusBarcodeRule.class);
         startActivityForResult(intent,1001);
+    }
+
+ @Event(R.id.layoutTOMail)
+    private void layoutTOMailClick(View view){
+        Intent intent=new Intent(context,Setting_ToMailList.class);
+        startActivityForResult(intent,1002);
     }
 
     @Event(value = R.id.ckIsuserRemark,type = CompoundButton.OnCheckedChangeListener.class)
@@ -273,10 +330,28 @@ public class Setting extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         try {
             if (item.getItemId() == R.id.action_filter) {
+                BaseApplication.DialogShowText = getString(R.string.Dia_UploadLogFile);
                 UploadLog();
             }
             if (item.getItemId() == R.id.action_Save) {
                 SaveSetting();
+            }
+            if (item.getItemId() == R.id.action_upPara) {
+                savePara();
+                final Map<String, String> params = new HashMap<String, String>();
+                String basePara=GsonUtil.parseModelToJson(ParamaterModel.baseparaModel);
+                SyncParaModel syncParaModel=new SyncParaModel();
+                syncParaModel.setKey("cusPara");
+                syncParaModel.setValue(basePara.replace(":","?")
+                        .replace("{","#").replace("\"","!"));
+                ArrayList<SyncParaModel> syncParaModels=new ArrayList<>();
+                syncParaModels.add(syncParaModel);
+                params.put("Dist_Code", ParamaterModel.PartenerID);
+                params.put("CusSettingJS", GsonUtil.parseModelListToJsonArray(syncParaModels));
+                String para = (new JSONObject(params)).toString();
+                LogUtil.WriteLog(Setting.class, TAG_SyncPara, para);
+                RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncPara,
+                        context.getString(R.string.Dia_UploadPara), context, mHandler, RESULT_UploadPara, null,  URLModel.GetURL().UploadPara, params, null);
             }
         }catch (Exception ex){
             MessageBox.Show(context,ex.getMessage());
@@ -285,6 +360,17 @@ public class Setting extends BaseActivity {
     }
 
     void SaveSetting() {
+        savePara();
+        new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(getResources().getString(R.string.Msg_SaveSuccess)).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                closeActiviry();
+            }
+        }).show();
+
+    }
+
+    private void savePara() {
         Paramater.IPAdress = edtIPAdress.getText().toString().trim();
         Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
         Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
@@ -295,8 +381,8 @@ public class Setting extends BaseActivity {
         ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
         ParamaterModel.baseparaModel.getCusBarcodeRule().setUsed(ckSelfBarcode.isChecked());
         if(cusBarcodeRule==null)  cusBarcodeRule=new CusBarcodeRule();
-            cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
-            ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);
+        cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
+        ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);
 
         if(!TextUtils.isEmpty(startwordsCusDN) && indexLength!=0) {
             if (ParamaterModel.baseparaModel.getCusDnnoRule() == null) ParamaterModel.baseparaModel.setCusDnnoRule(new CusDnnoRule());
@@ -309,6 +395,7 @@ public class Setting extends BaseActivity {
         ParamaterModel.baseparaModel.getMailModel().setMailServerPort(edtMailSMTPort.getText().toString().trim());
         ParamaterModel.baseparaModel.getMailModel().setMailServerHost(edtMailSMTP.getText().toString().trim());
         ParamaterModel.baseparaModel.getMailModel().setMailClientHost(edtMailIMAP.getText().toString().trim());
+        ParamaterModel.baseparaModel.getMailModel().setToAddress(ToAdress);
         if(ParamaterModel.baseparaModel.getFtpModel()==null) ParamaterModel.baseparaModel.setFtpModel(new FtpModel());
         ParamaterModel.baseparaModel.getFtpModel().setFtpHost(edtFtpHost.getText().toString().trim());
         ParamaterModel.baseparaModel.getFtpModel().setFtpUserName(edtFtpUserName.getText().toString().trim());
@@ -318,13 +405,6 @@ public class Setting extends BaseActivity {
         ParamaterModel.baseparaModel.getFtpModel().setFtpUpLoad(edtFtpUp.getText().toString().trim());
 
         SharePreferUtil.SetShare(context);
-        new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(getResources().getString(R.string.Msg_SaveSuccess)).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                closeActiviry();
-            }
-        }).show();
-
     }
 
     void UploadLog(){
