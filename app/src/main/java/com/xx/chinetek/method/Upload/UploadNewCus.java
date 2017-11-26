@@ -3,10 +3,12 @@ package com.xx.chinetek.method.Upload;
 import com.android.volley.Request;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
 
 import org.json.JSONObject;
@@ -27,9 +29,12 @@ public class UploadNewCus {
     /**
      * 上传新增客户
      */
-    public static void AddNewCusToMaps(String CusName,MyHandler<BaseActivity> mHandler){
+    public static void AddNewCusToMaps(String CusName,String CustFunc,MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
-        params.put("Custom", CusName);
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("CustName", CusName);
+        params.put("CustFunc", CustFunc);
+        params.put("UserInfoJS", user);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_UploadCus, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadCus,

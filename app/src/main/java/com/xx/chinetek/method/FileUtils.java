@@ -64,12 +64,12 @@ public class FileUtils {
                                     +golfaCode+","+Serial+","+packingDate+","
                                     +region+","+country+","+dealSaleDate;
                             if(isCusBarcode){
-                                String type1=dnScanModel.getType1()==null?"":dnScanModel.getType1();
-                                String type2=dnScanModel.getType2()==null?"":dnScanModel.getType2();
-                                String type3=dnScanModel.getType3()==null?"":dnScanModel.getType3();
-                                String type4=dnScanModel.getType4()==null?"":dnScanModel.getType4();
-                                String type5=dnScanModel.getType5()==null?"":dnScanModel.getType5();
-                                String type6=dnScanModel.getType6()==null?"":dnScanModel.getType6();
+                                String type1=dnScanModel.getEXTEND_FIELD1()==null?"":dnScanModel.getEXTEND_FIELD1();
+                                String type2=dnScanModel.getEXTEND_FIELD2()==null?"":dnScanModel.getEXTEND_FIELD2();
+                                String type3=dnScanModel.getEXTEND_FIELD3()==null?"":dnScanModel.getEXTEND_FIELD3();
+                                String type4=dnScanModel.getEXTEND_FIELD4()==null?"":dnScanModel.getEXTEND_FIELD4();
+                                String type5=dnScanModel.getEXTEND_FIELD5()==null?"":dnScanModel.getEXTEND_FIELD5();
+                                String type6=dnScanModel.getEXTEND_FIELD6()==null?"":dnScanModel.getEXTEND_FIELD6();
                                 writeLine+=","+type1+","+type2+","+type3+","+type4+","+type5+","+type6;
                             }
                             bw.write(writeLine);

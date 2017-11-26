@@ -141,22 +141,22 @@ public class Scan {
             while(len<size){
                 switch (len){
                     case 0:
-                        dnScanModel.setType1(barCodeModel.getOtherCode().get(len));
+                        dnScanModel.setEXTEND_FIELD1(barCodeModel.getOtherCode().get(len));
                         break;
                     case 1:
-                        dnScanModel.setType2(barCodeModel.getOtherCode().get(len));
+                        dnScanModel.setEXTEND_FIELD2(barCodeModel.getOtherCode().get(len));
                         break;
                     case 2:
-                        dnScanModel.setType3(barCodeModel.getOtherCode().get(len));
+                        dnScanModel.setEXTEND_FIELD3(barCodeModel.getOtherCode().get(len));
                         break;
                     case 3:
-                        dnScanModel.setType4(barCodeModel.getOtherCode().get(len));
+                        dnScanModel.setEXTEND_FIELD4(barCodeModel.getOtherCode().get(len));
                         break;
                     case 4:
-                        dnScanModel.setType5(barCodeModel.getOtherCode().get(len));
+                        dnScanModel.setEXTEND_FIELD5(barCodeModel.getOtherCode().get(len));
                         break;
                     case 5:
-                        dnScanModel.setType6(barCodeModel.getOtherCode().get(len));
+                        dnScanModel.setEXTEND_FIELD6(barCodeModel.getOtherCode().get(len));
                         break;
                 }
                 len++;

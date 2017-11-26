@@ -131,7 +131,7 @@ public class DeliveryStart extends BaseActivity {
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            UploadNewCus.AddNewCusToMaps(code,mHandler);
+                            UploadNewCus.AddNewCusToMaps(code,"Z3",mHandler);
                         }
                     })
                     .setNegativeButton("取消",null)
@@ -287,9 +287,6 @@ public class DeliveryStart extends BaseActivity {
                 ArrayList<CustomModel> customModel = returnMsgModel.getModelJson();
                 //插入数据
                 DbBaseInfo.getInstance().InsertCustomDB(customModels);
-                ParamaterModel.CustomSyncTime="";
-                //保存同步时间
-                SharePreferUtil.SetSyncTimeShare(context);
                 BindData();
                 edtContentText.setText(customModel.get(0).getCUSTOMER());
             } else {
