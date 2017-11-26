@@ -1,5 +1,7 @@
 package com.xx.chinetek.model;
 
+import java.util.List;
+
 /**
  * Created by GHOST on 2017/11/9.
  */
@@ -35,8 +37,31 @@ public class BarCodeModel {
      * 原产国
      */
     private String  Country_Code;
+    /**
+     * 1三菱 0非三菱
+     */
+    private Integer MAT_TYPE;
+    /**
+     * 非三菱自定义条码解析内容
+     */
+    private List<String> OtherCode;
 
 
+    public Integer getMAT_TYPE() {
+        return MAT_TYPE;
+    }
+
+    public void setMAT_TYPE(Integer MAT_TYPE) {
+        this.MAT_TYPE = MAT_TYPE;
+    }
+
+    public List<String> getOtherCode() {
+        return OtherCode;
+    }
+
+    public void setOtherCode(List<String> otherCode) {
+        OtherCode = otherCode;
+    }
 
     public String getHeading_Code() {
         return Heading_Code;

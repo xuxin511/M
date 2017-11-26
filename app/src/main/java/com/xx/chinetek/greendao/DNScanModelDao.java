@@ -40,6 +40,12 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         public final static Property DEAL_SALE_DATE = new Property(10, java.util.Date.class, "DEAL_SALE_DATE", false, "DEAL__SALE__DATE");
         public final static Property ITEM_NAME = new Property(11, String.class, "ITEM_NAME", false, "ITEM__NAME");
         public final static Property MAT_TYPE = new Property(12, Integer.class, "MAT_TYPE", false, "MAT__TYPE");
+        public final static Property Type1 = new Property(13, String.class, "Type1", false, "TYPE1");
+        public final static Property Type2 = new Property(14, String.class, "Type2", false, "TYPE2");
+        public final static Property Type3 = new Property(15, String.class, "Type3", false, "TYPE3");
+        public final static Property Type4 = new Property(16, String.class, "Type4", false, "TYPE4");
+        public final static Property Type5 = new Property(17, String.class, "Type5", false, "TYPE5");
+        public final static Property Type6 = new Property(18, String.class, "Type6", false, "TYPE6");
     }
 
     private Query<DNScanModel> dNDetailModel_SERIALSQuery;
@@ -68,7 +74,13 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
                 "\"ITEM__STATUS\" TEXT," + // 9: ITEM_STATUS
                 "\"DEAL__SALE__DATE\" INTEGER," + // 10: DEAL_SALE_DATE
                 "\"ITEM__NAME\" TEXT," + // 11: ITEM_NAME
-                "\"MAT__TYPE\" INTEGER);"); // 12: MAT_TYPE
+                "\"MAT__TYPE\" INTEGER," + // 12: MAT_TYPE
+                "\"TYPE1\" TEXT," + // 13: Type1
+                "\"TYPE2\" TEXT," + // 14: Type2
+                "\"TYPE3\" TEXT," + // 15: Type3
+                "\"TYPE4\" TEXT," + // 16: Type4
+                "\"TYPE5\" TEXT," + // 17: Type5
+                "\"TYPE6\" TEXT);"); // 18: Type6
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_DNSCAN_MODEL_AGENT__DN__NO_LINE__NO_SERIAL__NO ON \"DNSCAN_MODEL\"" +
                 " (\"AGENT__DN__NO\" ASC,\"LINE__NO\" ASC,\"SERIAL__NO\" ASC);");
@@ -148,6 +160,36 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         if (MAT_TYPE != null) {
             stmt.bindLong(13, MAT_TYPE);
         }
+ 
+        String Type1 = entity.getType1();
+        if (Type1 != null) {
+            stmt.bindString(14, Type1);
+        }
+ 
+        String Type2 = entity.getType2();
+        if (Type2 != null) {
+            stmt.bindString(15, Type2);
+        }
+ 
+        String Type3 = entity.getType3();
+        if (Type3 != null) {
+            stmt.bindString(16, Type3);
+        }
+ 
+        String Type4 = entity.getType4();
+        if (Type4 != null) {
+            stmt.bindString(17, Type4);
+        }
+ 
+        String Type5 = entity.getType5();
+        if (Type5 != null) {
+            stmt.bindString(18, Type5);
+        }
+ 
+        String Type6 = entity.getType6();
+        if (Type6 != null) {
+            stmt.bindString(19, Type6);
+        }
     }
 
     @Override
@@ -218,6 +260,36 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         if (MAT_TYPE != null) {
             stmt.bindLong(13, MAT_TYPE);
         }
+ 
+        String Type1 = entity.getType1();
+        if (Type1 != null) {
+            stmt.bindString(14, Type1);
+        }
+ 
+        String Type2 = entity.getType2();
+        if (Type2 != null) {
+            stmt.bindString(15, Type2);
+        }
+ 
+        String Type3 = entity.getType3();
+        if (Type3 != null) {
+            stmt.bindString(16, Type3);
+        }
+ 
+        String Type4 = entity.getType4();
+        if (Type4 != null) {
+            stmt.bindString(17, Type4);
+        }
+ 
+        String Type5 = entity.getType5();
+        if (Type5 != null) {
+            stmt.bindString(18, Type5);
+        }
+ 
+        String Type6 = entity.getType6();
+        if (Type6 != null) {
+            stmt.bindString(19, Type6);
+        }
     }
 
     @Override
@@ -240,7 +312,13 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // ITEM_STATUS
             cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)), // DEAL_SALE_DATE
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // ITEM_NAME
-            cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12) // MAT_TYPE
+            cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12), // MAT_TYPE
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // Type1
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // Type2
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // Type3
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // Type4
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // Type5
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18) // Type6
         );
         return entity;
     }
@@ -260,6 +338,12 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         entity.setDEAL_SALE_DATE(cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)));
         entity.setITEM_NAME(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setMAT_TYPE(cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12));
+        entity.setType1(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setType2(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setType3(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setType4(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setType5(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setType6(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
      }
     
     @Override

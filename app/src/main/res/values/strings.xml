@@ -170,6 +170,7 @@
     <string name="Error_start_end">开始位不能大于结束位！</string>
     <string name="Error_over_length">结束位超过条码最大长度！</string>
     <string name="Error_barcodelengthnotEmpty">条码长度不能为空！</string>
+    <string name="Error_maxLength">自定义设置项超过设定长度：6！</string>
     <string name="Msg_del_success">删除成功！</string>
     <string name="Msg_insert_failed">扫描添加失败！</string>
     <string name="Msg_insert_success">扫描添加成功！</string>

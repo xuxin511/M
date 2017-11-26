@@ -139,8 +139,12 @@ public class Setting_CusBarcodeRule extends BaseActivity {
 
         if(cusBarcodeRule.getOtherColumn()==null)
             cusBarcodeRule.setOtherColumn(new ArrayList<String>());
-        cusBarcodeRule.getOtherColumn().add(edtotherStart.getText()+"-"+edtotherEnd.getText());
-        BindView();
+        if(cusBarcodeRule.getOtherColumn().size()<=6) {
+            cusBarcodeRule.getOtherColumn().add(edtotherStart.getText() + "-" + edtotherEnd.getText());
+            BindView();
+        }else{
+            MessageBox.Show(context,getString(R.string.Error_maxLength));
+        }
         edtotherStart.setText("");
         edtotherEnd.setText("");
         CommonUtil.setEditFocus(edtotherStart);

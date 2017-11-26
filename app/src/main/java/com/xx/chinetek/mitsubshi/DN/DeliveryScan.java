@@ -218,6 +218,7 @@ public class DeliveryScan extends BaseIntentActivity {
             }
         } catch (Exception ex) {
             MessageBox.Show(context, ex.getMessage());
+            CommonUtil.setEditFocus(edtBarcode);
         }
         return true;
     }
@@ -445,6 +446,8 @@ public class DeliveryScan extends BaseIntentActivity {
         dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
         dnScanModel.setITEM_STATUS("AC");
         dnScanModel.setDEAL_SALE_DATE(new Date());
+        dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
+        Scan.setOtherColumn(barCodeModel, dnScanModel);
 
         dnDetailModel.__setDaoSession(dnInfo.getDaoSession());
         if(dnDetailModel.getSERIALS()==null)
@@ -454,6 +457,8 @@ public class DeliveryScan extends BaseIntentActivity {
         //更新DN数据
 
     }
+
+
 
 
     /**
@@ -483,7 +488,9 @@ public class DeliveryScan extends BaseIntentActivity {
         dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
         dnScanModel.setITEM_STATUS("AC");
         dnScanModel.setDEAL_SALE_DATE(new Date());
+        dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
         dnDetailModels.get(index).getSERIALS().add(dnScanModel);
+        Scan.setOtherColumn(barCodeModel, dnScanModel);
 
         //更新物料扫码数量
         int qty = dnDetailModels.get(index).getDN_QTY() + 1;

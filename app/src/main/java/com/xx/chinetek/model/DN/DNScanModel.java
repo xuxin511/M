@@ -40,6 +40,13 @@ public class DNScanModel implements Parcelable{
      */
     private Integer MAT_TYPE;
 
+    private String Type1;
+    private String Type2;
+    private String Type3;
+    private String Type4;
+    private String Type5;
+    private String Type6;
+
     @Keep
     @Override
     public boolean equals(Object o) {
@@ -186,11 +193,12 @@ public class DNScanModel implements Parcelable{
     }
 
 
-    @Generated(hash = 1876084327)
+    @Generated(hash = 287994845)
     public DNScanModel(String AGENT_DN_NO, Integer LINE_NO, String SERIAL_NO,
             String PACKING_DATE, String REGION, String COUNTRY, String ITEM_NO,
             String GOLFA_CODE, String STATUS, String ITEM_STATUS, Date DEAL_SALE_DATE,
-            String ITEM_NAME, Integer MAT_TYPE) {
+            String ITEM_NAME, Integer MAT_TYPE, String Type1, String Type2, String Type3,
+            String Type4, String Type5, String Type6) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.LINE_NO = LINE_NO;
         this.SERIAL_NO = SERIAL_NO;
@@ -204,7 +212,14 @@ public class DNScanModel implements Parcelable{
         this.DEAL_SALE_DATE = DEAL_SALE_DATE;
         this.ITEM_NAME = ITEM_NAME;
         this.MAT_TYPE = MAT_TYPE;
+        this.Type1 = Type1;
+        this.Type2 = Type2;
+        this.Type3 = Type3;
+        this.Type4 = Type4;
+        this.Type5 = Type5;
+        this.Type6 = Type6;
     }
+
 
     @Override
     public int describeContents() {
@@ -226,6 +241,72 @@ public class DNScanModel implements Parcelable{
         dest.writeLong(this.DEAL_SALE_DATE != null ? this.DEAL_SALE_DATE.getTime() : -1);
         dest.writeString(this.ITEM_NAME);
         dest.writeValue(this.MAT_TYPE);
+        dest.writeString(this.Type1);
+        dest.writeString(this.Type2);
+        dest.writeString(this.Type3);
+        dest.writeString(this.Type4);
+        dest.writeString(this.Type5);
+        dest.writeString(this.Type6);
+    }
+
+
+    public String getType1() {
+        return this.Type1;
+    }
+
+
+    public void setType1(String Type1) {
+        this.Type1 = Type1;
+    }
+
+
+    public String getType2() {
+        return this.Type2;
+    }
+
+
+    public void setType2(String Type2) {
+        this.Type2 = Type2;
+    }
+
+
+    public String getType3() {
+        return this.Type3;
+    }
+
+
+    public void setType3(String Type3) {
+        this.Type3 = Type3;
+    }
+
+
+    public String getType4() {
+        return this.Type4;
+    }
+
+
+    public void setType4(String Type4) {
+        this.Type4 = Type4;
+    }
+
+
+    public String getType5() {
+        return this.Type5;
+    }
+
+
+    public void setType5(String Type5) {
+        this.Type5 = Type5;
+    }
+
+
+    public String getType6() {
+        return this.Type6;
+    }
+
+
+    public void setType6(String Type6) {
+        this.Type6 = Type6;
     }
 
     protected DNScanModel(Parcel in) {
@@ -243,6 +324,12 @@ public class DNScanModel implements Parcelable{
         this.DEAL_SALE_DATE = tmpDEAL_SALE_DATE == -1 ? null : new Date(tmpDEAL_SALE_DATE);
         this.ITEM_NAME = in.readString();
         this.MAT_TYPE = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.Type1 = in.readString();
+        this.Type2 = in.readString();
+        this.Type3 = in.readString();
+        this.Type4 = in.readString();
+        this.Type5 = in.readString();
+        this.Type6 = in.readString();
     }
 
     public static final Creator<DNScanModel> CREATOR = new Creator<DNScanModel>() {

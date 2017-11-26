@@ -123,8 +123,10 @@ public class Setting extends BaseActivity {
         txtPartner.setText(ParamaterModel.PartenerID);
         txtDNSaveTime.setText(ParamaterModel.baseparaModel.getDNSaveTime()+"");
         ckIsuserRemark.setChecked(ParamaterModel.baseparaModel.getUseRemark());
+
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null){
             ckSelfBarcode.setChecked(ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed());
+            cusBarcodeRule=ParamaterModel.baseparaModel.getCusBarcodeRule();
         }
         if(ParamaterModel.baseparaModel.getMailModel()!=null){
             edtMailAccount.setText(ParamaterModel.baseparaModel.getMailModel().getAccount());
@@ -292,10 +294,10 @@ public class Setting extends BaseActivity {
         ParamaterModel.SysPassword=Password;
         ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
         ParamaterModel.baseparaModel.getCusBarcodeRule().setUsed(ckSelfBarcode.isChecked());
-        if(cusBarcodeRule!=null) {
+        if(cusBarcodeRule==null)  cusBarcodeRule=new CusBarcodeRule();
             cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
             ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);
-        }
+
         if(!TextUtils.isEmpty(startwordsCusDN) && indexLength!=0) {
             if (ParamaterModel.baseparaModel.getCusDnnoRule() == null) ParamaterModel.baseparaModel.setCusDnnoRule(new CusDnnoRule());
             ParamaterModel.baseparaModel.getCusDnnoRule().setStartWords(startwordsCusDN==null?"":startwordsCusDN);

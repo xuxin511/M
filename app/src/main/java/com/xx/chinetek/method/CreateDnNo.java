@@ -21,6 +21,7 @@ public class CreateDnNo {
     public static void GetDnNo(Context context,DNModel dnModel){
         String startWord= ParamaterModel.baseparaModel.getCusDnnoRule().getStartWords();
         int len= ParamaterModel.baseparaModel.getCusDnnoRule().getIndexLength();
+        ParamaterModel.SerialNo= ParamaterModel.SerialNo==null?"0000000":ParamaterModel.SerialNo;
         int SerialLen=ParamaterModel.SerialNo.length();
         String serial= SerialLen>7?
                     ParamaterModel.SerialNo.substring(SerialLen-7):ParamaterModel.SerialNo;

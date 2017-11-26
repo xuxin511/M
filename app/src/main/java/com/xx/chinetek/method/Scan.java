@@ -98,7 +98,9 @@ public class Scan {
             dnScanModel.setITEM_NO(dnDetailModels.get(index).getITEM_NO());
             dnScanModel.setITEM_NAME(dnDetailModels.get(index).getITEM_NAME());
             dnScanModel.setDEAL_SALE_DATE(new Date());
-            dnScanModel.setMAT_TYPE(0);
+            dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
+            setOtherColumn(barCodeModel, dnScanModel);
+
             dnDetailModels.get(index).setOPER_DATE(new Date());
             dnDetailModels.get(index).getSERIALS().add(dnScanModel);
             dnDetailModels.get(index).setDETAIL_STATUS("AC");
@@ -125,6 +127,41 @@ public class Scan {
             }
         }
         return index;
+    }
+
+    /**
+     * 设置非三菱条码解析项
+     * @param barCodeModel
+     * @param dnScanModel
+     */
+    public static void setOtherColumn(BarCodeModel barCodeModel, DNScanModel dnScanModel) {
+        if(barCodeModel.getMAT_TYPE()==0){
+            int size=barCodeModel.getOtherCode().size();
+            int len=0;
+            while(len<size){
+                switch (len){
+                    case 0:
+                        dnScanModel.setType1(barCodeModel.getOtherCode().get(len));
+                        break;
+                    case 1:
+                        dnScanModel.setType2(barCodeModel.getOtherCode().get(len));
+                        break;
+                    case 2:
+                        dnScanModel.setType3(barCodeModel.getOtherCode().get(len));
+                        break;
+                    case 3:
+                        dnScanModel.setType4(barCodeModel.getOtherCode().get(len));
+                        break;
+                    case 4:
+                        dnScanModel.setType5(barCodeModel.getOtherCode().get(len));
+                        break;
+                    case 5:
+                        dnScanModel.setType6(barCodeModel.getOtherCode().get(len));
+                        break;
+                }
+                len++;
+            }
+        }
     }
 
 }
