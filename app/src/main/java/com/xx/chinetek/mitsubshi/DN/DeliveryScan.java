@@ -450,6 +450,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnScanModel.setITEM_STATUS("AC");
         dnScanModel.setDEAL_SALE_DATE(new Date());
         dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
+        dnScanModel.setSTATUS("0");
         Scan.setOtherColumn(barCodeModel, dnScanModel);
 
         dnDetailModel.__setDaoSession(dnInfo.getDaoSession());
@@ -492,6 +493,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnScanModel.setITEM_STATUS("AC");
         dnScanModel.setDEAL_SALE_DATE(new Date());
         dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
+        dnScanModel.setSTATUS("0");
         dnDetailModels.get(index).getSERIALS().add(dnScanModel);
         Scan.setOtherColumn(barCodeModel, dnScanModel);
 

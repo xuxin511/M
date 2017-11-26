@@ -99,6 +99,7 @@ public class Scan {
             dnScanModel.setITEM_NAME(dnDetailModels.get(index).getITEM_NAME());
             dnScanModel.setDEAL_SALE_DATE(new Date());
             dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
+            dnScanModel.setSTATUS("0");
             setOtherColumn(barCodeModel, dnScanModel);
 
             dnDetailModels.get(index).setOPER_DATE(new Date());
