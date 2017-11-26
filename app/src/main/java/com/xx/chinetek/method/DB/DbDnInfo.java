@@ -290,6 +290,16 @@ public class DbDnInfo {
         return DNScanModels.size();
     }
 
+    /**
+     * 判断是否存在非三菱条码
+     * @param Dnno
+     * @return
+     */
+    public long HasCusBarcode(String Dnno){
+       return dnScanModelDao.queryBuilder().where(DNScanModelDao.Properties.AGENT_DN_NO.eq(Dnno),
+                DNScanModelDao.Properties.MAT_TYPE.eq(0)).distinct().count();
+    }
+
 
     //非自建单据更新数据
     /**

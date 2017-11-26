@@ -48,7 +48,6 @@ public class UploadFiles {
             public void run() {
                 try {
                     ParamaterModel.baseparaModel.getMailModel().setFromAddress( ParamaterModel.baseparaModel.getMailModel().getAccount());
-                    ParamaterModel.baseparaModel.getMailModel().setToAddress(ParamaterModel.baseparaModel.getMailModel().getAccount());
                     ParamaterModel.baseparaModel.getMailModel().setSubject("DN_"+ CommonUtil.DateToString(new Date(),null));
                     ParamaterModel.baseparaModel.getMailModel().setContent("QR");
                     MailUtil.SendMail(ParamaterModel.baseparaModel.getMailModel(), list,mHandler);

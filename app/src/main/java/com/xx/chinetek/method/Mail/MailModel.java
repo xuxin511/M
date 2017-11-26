@@ -1,5 +1,6 @@
 package com.xx.chinetek.method.Mail;
 
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -28,7 +29,7 @@ public class MailModel {
     /**
      * 邮件接受者的地址
      */
-    private String toAddress;
+    private List<String> toAddress;
     /**
      * 是否需要身份验证
      */
@@ -91,11 +92,11 @@ public class MailModel {
         this.fromAddress = fromAddress;
     }
 
-    public String getToAddress() {
+    public List<String> getToAddress() {
         return toAddress;
     }
 
-    public void setToAddress(String toAddress) {
+    public void setToAddress(List<String> toAddress) {
         this.toAddress = toAddress;
     }
 

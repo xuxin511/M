@@ -156,7 +156,7 @@ public class SendOneMail {
             //设置邮件消息的发送者
             message.setFrom(from);
             //创建邮件的接受者地址，并设置到邮件消息中
-            Address to = new InternetAddress(info.getToAddress());
+            Address to = new InternetAddress(info.getToAddress().get(0));
             //设置邮件消息的接受者, Message.RecipientType.TO属性表示接收者的类型为TO
             message.setRecipient(Message.RecipientType.TO, to);
             //邮件标题
@@ -231,9 +231,14 @@ public class SendOneMail {
             //设置邮件消息的发送者
             message.setFrom(from);
             //创建邮件的接受者地址，并设置到邮件消息中
-            Address to = new InternetAddress(info.getToAddress());
+            Address[] addresses=new Address[info.getToAddress().size()];
+            for(int i=0;i< info.getToAddress().size();i++){
+                Address to = new InternetAddress(info.getToAddress().get(i));
+                addresses[i]=to;
+            }
             //设置邮件消息的接受者, Message.RecipientType.TO属性表示接收者的类型为TO
-            message.setRecipient(Message.RecipientType.TO, to);
+            message.setRecipients(Message.RecipientType.TO, addresses);
+
             //邮件标题
             message.setSubject(info.getSubject());
 
@@ -280,7 +285,7 @@ public class SendOneMail {
             //设置邮件消息的发送者
             mailMessage.setFrom(from);
             //创建邮件的接受者地址，并设置到邮件消息中
-            Address to = new InternetAddress(info.getToAddress());
+            Address to = new InternetAddress(info.getToAddress().get(0));
             //设置邮件消息的接受者, Message.RecipientType.TO属性表示接收者的类型为TO
             mailMessage.setRecipient(Message.RecipientType.TO, to);
             //邮件标题
@@ -325,7 +330,7 @@ public class SendOneMail {
             //设置邮件消息的发送者
             mailMessage.setFrom(from);
             //创建邮件的接受者地址，并设置到邮件消息中
-            Address to = new InternetAddress(info.getToAddress());
+            Address to = new InternetAddress(info.getToAddress().get(0));
             //设置邮件消息的接受者, Message.RecipientType.TO属性表示接收者的类型为TO
             mailMessage.setRecipient(Message.RecipientType.TO, to);
             //设置邮件标题

@@ -96,6 +96,7 @@ public class Setting extends BaseActivity {
     String startwordsCusDN;
     Integer indexLength=0;
     CusBarcodeRule cusBarcodeRule;
+    List<String> ToAdress;
 
     @Override
     protected void initViews() {
@@ -134,6 +135,7 @@ public class Setting extends BaseActivity {
             edtMailSMTPort.setText(ParamaterModel.baseparaModel.getMailModel().getMailServerPort());
             edtMailSMTP.setText(ParamaterModel.baseparaModel.getMailModel().getMailServerHost());
             edtMailIMAP.setText(ParamaterModel.baseparaModel.getMailModel().getMailClientHost());
+            ToAdress=ParamaterModel.baseparaModel.getMailModel().getToAddress();
         }
         if(ParamaterModel.baseparaModel.getFtpModel()!=null){
             edtFtpHost.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpHost());
@@ -152,6 +154,9 @@ public class Setting extends BaseActivity {
         if(requestCode==1001  && resultCode==1){
             cusBarcodeRule=data.getParcelableExtra("cusBarcodeRule");
             ckSelfBarcode.setChecked(true);
+        }
+        if(requestCode==1002  && resultCode==1){
+            ToAdress=data.getStringArrayListExtra("ToAdress");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -211,6 +216,12 @@ public class Setting extends BaseActivity {
         }
         Intent intent=new Intent(context,Setting_CusBarcodeRule.class);
         startActivityForResult(intent,1001);
+    }
+
+ @Event(R.id.layoutTOMail)
+    private void layoutTOMailClick(View view){
+        Intent intent=new Intent(context,Setting_ToMailList.class);
+        startActivityForResult(intent,1002);
     }
 
     @Event(value = R.id.ckIsuserRemark,type = CompoundButton.OnCheckedChangeListener.class)
@@ -309,6 +320,7 @@ public class Setting extends BaseActivity {
         ParamaterModel.baseparaModel.getMailModel().setMailServerPort(edtMailSMTPort.getText().toString().trim());
         ParamaterModel.baseparaModel.getMailModel().setMailServerHost(edtMailSMTP.getText().toString().trim());
         ParamaterModel.baseparaModel.getMailModel().setMailClientHost(edtMailIMAP.getText().toString().trim());
+        ParamaterModel.baseparaModel.getMailModel().setToAddress(ToAdress);
         if(ParamaterModel.baseparaModel.getFtpModel()==null) ParamaterModel.baseparaModel.setFtpModel(new FtpModel());
         ParamaterModel.baseparaModel.getFtpModel().setFtpHost(edtFtpHost.getText().toString().trim());
         ParamaterModel.baseparaModel.getFtpModel().setFtpUserName(edtFtpUserName.getText().toString().trim());
