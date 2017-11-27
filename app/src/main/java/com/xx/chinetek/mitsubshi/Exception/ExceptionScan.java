@@ -29,6 +29,8 @@ import org.xutils.x;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
+
 @ContentView(R.layout.activity_exception_scan)
 public class ExceptionScan extends BaseActivity {
 
@@ -93,7 +95,7 @@ public class ExceptionScan extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    private int clickposition=-1;
+
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent=new Intent(context,ExceptionBarcodelist.class);
@@ -104,111 +106,69 @@ public class ExceptionScan extends BaseActivity {
         intent.putExtras(bundle);
         startActivityLeft(intent);
 
-//        clickposition=position;
-//        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("请选择操作" )
-//                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
-//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            // TODO 自动生成的方法
-//                            //删除扫描记录，改变明细数量
-//                            if(clickposition==-1){
-//                                MessageBox.Show(context,"请先选择操作的行！");
-//                                return;
-//                            }
-//                            DNDetailModel Model= (DNDetailModel)exceptionScanItemAdapter.getItem(clickposition);
-//                            if(DbDnInfo.getInstance().DELscanbyagentdetail(Model,"")){
-////                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyGOLFACODE(Model,"");
-//                                //判断剩余的扫描数量
-//                                Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE());
-//                                DbDnInfo.getInstance().UpdateDetailNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),lastNum);
-//                                if(lastNum==0){
-//                                    //需要改变主表状态
-//                                    DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"3","");
-//                                }
-//                                MessageBox.Show(context,"删除成功！");
-//                                GetDeliveryOrderScanList();
-//                            }else{
-//                                MessageBox.Show(context,"删除失败！");
-//                            }
-//                        }
-//                    }).setNegativeButton("取消", null).show();
-//
-//                    }
-//                }).setNegativeButton("查看", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                if(clickposition==-1){
-//                    MessageBox.Show(context,"请先选择操作的行！");
-//                    return;
-//                }
-//                Intent intent=new Intent(context,ExceptionBarcodelist.class);
-//                Bundle bundle=new Bundle();
-//                DNDetailModel DNdetailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(clickposition);
-//                bundle.putParcelable("DNdetailModel",DNdetailModel);
-//                bundle.putParcelable("DNModel",dnModel);
-//                intent.putExtras(bundle);
-//                startActivityLeft(intent);
-//            }
-//        }).show();
-
     }
 
 
 
 
-    private int clickpositionlong=-1;
+//    private int clickpositionlong=-1;
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemLongClickListener.class)
     private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-        try{
-            clickpositionlong=i;
-            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // TODO 自动生成的方法
-                            //删除扫描记录，改变明细数量
-                            if(clickpositionlong==-1){
-                                MessageBox.Show(context,"请先选择操作的行！");
-                                return;
-                            }
-                            DNDetailModel Model= (DNDetailModel)exceptionScanItemAdapter.getItem(clickpositionlong);
-                            if(DbDnInfo.getInstance().DELscanbyagentdetail(Model,"")){
-//                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyGOLFACODE(Model,"");
-                                //判断剩余的扫描数量
-                                Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO());
-                                if(DbDnInfo.getInstance().UpdateDetailNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
-                                    if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(Model.getAGENT_DN_NO())==0){
-                                        //需要改变主表状态
-//                                        DNModel modeldn=dnModel;
-//                                        modeldn.setSTATUS(1);
-                                        if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
+//        try{
+//            clickpositionlong=i;
+//            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
+//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            // TODO 自动生成的方法
+//                            //删除扫描记录，改变明细数量
+//                            if(clickpositionlong==-1){
+//                                MessageBox.Show(context,"请先选择操作的行！");
+//                                return;
+//                            }
+//                            DNDetailModel Model= (DNDetailModel)exceptionScanItemAdapter.getItem(clickpositionlong);
+//                            if(DbDnInfo.getInstance().DELscanbyagentdetail(Model,"")){
+////                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyGOLFACODE(Model,"");
+//                                //判断剩余的扫描数量
+//                                Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO());
+//                                if(DbDnInfo.getInstance().UpdateDetailNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
+//                                    if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(Model.getAGENT_DN_NO())==0){
+//                                        //需要改变主表状态
+////                                        DNModel modeldn=dnModel;
+////                                        modeldn.setSTATUS(1);
+//                                        if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
+//
+//                                        }else{
+//                                            MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
+//                                            return;
+//                                        }
+//                                    }
+//                                    GetDeliveryOrderScanList();
+//                                    MessageBox.Show(context,getString(R.string.Msg_del_success));
+//
+//                                }else{
+//                                    MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
+//                                    return;
+//                                }
+//
+//                            }else{
+//                                MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
+//                            }
+//                        }
+//                    }).setNegativeButton("取消", null).show();
+//
+//        }catch(Exception ex){
+//            MessageBox.Show(context,ex.toString());
+//        }
+//        return true;
 
-                                        }else{
-                                            MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
-                                            return;
-                                        }
-                                    }
-                                    GetDeliveryOrderScanList();
-                                    MessageBox.Show(context,getString(R.string.Msg_del_success));
-
-                                }else{
-                                    MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
-                                    return;
-                                }
-
-                            }else{
-                                MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
-                            }
-                        }
-                    }).setNegativeButton("取消", null).show();
-
-        }catch(Exception ex){
-            MessageBox.Show(context,ex.toString());
+        if (i < 0) {
+            MessageBox.Show(context, "请先选择操作的行！");
+            return false;
         }
+        DNDetailModel detailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(i);
+        DelDNDetailmodel(detailModel,dnModel);
+        GetDeliveryOrderScanList();
         return true;
 
     }

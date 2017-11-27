@@ -89,13 +89,14 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     @Override
     protected void initData() {
         super.initData();
+        img_Remark.setVisibility(View.GONE);
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         dndetailmodel=getIntent().getParcelableExtra("DNdetailModel");
 //        Flag=getIntent().getStringExtra("Flag");
         //初始化数据
         txtDnNo.setText(dnModel.getAGENT_DN_NO().toString());
-        txtItemName.setText("物料名称："+dndetailmodel.getGOLFA_CODE());
+        txtItemName.setText("物料名称："+dndetailmodel.getITEM_NAME());
         txtItemNo.setText("物料编码："+dndetailmodel.getGOLFA_CODE());
         txtKUQty.setText("出库数量："+dndetailmodel.getDN_QTY());
         txtScanQty.setText("扫描数量："+dndetailmodel.getSCAN_QTY());
