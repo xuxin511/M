@@ -59,7 +59,7 @@ public class SyncDN {
     public static void SyncMAPS(MyHandler<BaseActivity> mHandler){
         //MAPS获取单据
         final Map<String, String> params = new HashMap<String, String>();
-        ParamaterModel.DNSyncTime= ParamaterModel.DNSyncTime==null?"2012-01-01 00:00:00":ParamaterModel.DNSyncTime;
+        ParamaterModel.DNSyncTime= ParamaterModel.DNSyncTime==null?"":ParamaterModel.DNSyncTime;
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
         params.put("DateString", ParamaterModel.DNSyncTime);
         params.put("UserInfoJS", user);
@@ -135,7 +135,7 @@ public class SyncDN {
            ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
            //插入数据
            DbDnInfo.getInstance().InsertDNDB(dnModels);
-           ParamaterModel.DNSyncTime = returnMsgModel.getMessage();;
+           ParamaterModel.DNSyncTime = returnMsgModel.getMessage();
            //保存同步时间
            SharePreferUtil.SetSyncTimeShare(context);
        } else {

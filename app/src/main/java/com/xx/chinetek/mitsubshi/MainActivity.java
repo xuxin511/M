@@ -224,15 +224,15 @@ public class MainActivity extends BaseActivity {
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
         ArrayList<Integer>  itemIconList=new ArrayList<>();
         ArrayList<String>  itemNamesList=new ArrayList<>();
-        itemIconList.add(R.drawable.ico);
+        itemIconList.add(R.drawable.delivery);
         itemNamesList.add(getString(R.string.outputscan));
-        itemIconList.add(R.drawable.ico);
+        itemIconList.add(R.drawable.exception);
         itemNamesList.add(getString(R.string.exceptionList));
-        itemIconList.add(R.drawable.ico);
+        itemIconList.add(R.drawable.query);
         itemNamesList.add(getString(R.string.Query));
-        itemIconList.add(R.drawable.ico);
+        itemIconList.add(R.drawable.upload);
         itemNamesList.add(getString(R.string.Bulkupload));
-        itemIconList.add(R.drawable.ico);
+        itemIconList.add(R.drawable.sync);
         itemNamesList.add(getString(R.string.sync));
 
             //cion和iconName的长度是相同的，这里任选其一都可以
