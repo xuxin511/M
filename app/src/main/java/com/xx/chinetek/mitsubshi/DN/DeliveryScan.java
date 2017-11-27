@@ -67,7 +67,7 @@ public class DeliveryScan extends BaseIntentActivity {
     @ViewInject(R.id.txt_ScanQty)
     TextView txtScanQty;
     @ViewInject(R.id.txt_DnNo)
-    TextView txtDnNo;
+    EditText txtDnNo;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
 
@@ -196,7 +196,14 @@ public class DeliveryScan extends BaseIntentActivity {
             MessageBox.Show(context, getString(R.string.Msg_No_Barcode));
             return true;
         }
+        DNModel model = DbDnInfo.getInstance().GetLoaclDN(txtDnNo.getText().toString());
+        if (model!=null) {
+            MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
+            return true;
+        }
         try {
+            txtDnNo.setFocusable(false);
+            dnModel.setAGENT_DN_NO(txtDnNo.getText().toString());
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
