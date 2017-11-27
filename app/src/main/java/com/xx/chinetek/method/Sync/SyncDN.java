@@ -136,11 +136,13 @@ public class SyncDN {
            int size=dnModels.size();
            for(int i=0;i<size;i++) {
                DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(dnModels.get(i).getAGENT_DN_NO());
-               dnModels.get(i).setSTATUS(dnModel.getSTATUS());
-               dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-               dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-               dnModels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
-               dnModels.get(i).setREMARK(dnModel.getREMARK());
+               if(dnModel!=null) {
+                   dnModels.get(i).setSTATUS(dnModel.getSTATUS());
+                   dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+                   dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+                   dnModels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
+                   dnModels.get(i).setREMARK(dnModel.getREMARK());
+               }
            }
            //插入数据
            DbDnInfo.getInstance().InsertDNDB(dnModels);
@@ -223,6 +225,7 @@ public class SyncDN {
                    dnDetailModels.add(dnDetailModel);
                }
                dnModel.setOPER_DATE(new Date());
+               dnModel.setDN_DATE(new Date());
                dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
                dnModel.setDETAILS(dnDetailModels);
                dnModel.setDN_QTY(Qty);

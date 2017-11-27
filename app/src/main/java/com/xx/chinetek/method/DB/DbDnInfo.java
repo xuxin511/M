@@ -110,7 +110,8 @@ public class DbDnInfo {
         ArrayList<DNModel> dnModels=new ArrayList<>();
         dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
                 .whereOr(DNModelDao.Properties.STATUS.eq(DNStatusEnum.ready),
-                        DNModelDao.Properties.STATUS.eq(DNStatusEnum.download)).list();
+                        DNModelDao.Properties.STATUS.eq(DNStatusEnum.download))
+                .orderDesc(DNModelDao.Properties.DN_DATE).list();
         return dnModels;
     }
 
@@ -172,6 +173,9 @@ public class DbDnInfo {
     public ArrayList<DNDetailModel> GetDNDetailByDNNo(String DNNo){
         ArrayList<DNDetailModel> dnDetailModels=new ArrayList<>();
         dnDetailModels =( ArrayList<DNDetailModel>)dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo)).list();
+        for(int i=0;i<dnDetailModels.size();i++){
+            dnDetailModels.get(i).getSERIALS();
+        }
         return dnDetailModels;
     }
 

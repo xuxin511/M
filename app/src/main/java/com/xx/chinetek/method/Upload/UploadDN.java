@@ -18,6 +18,7 @@ import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -102,7 +103,9 @@ public class UploadDN {
     public static void UploadDNToMaps(DNModel dnModel, MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
         String dnModelJson= GsonUtil.parseModelToJson(dnModel);
-        params.put("DNMODEL", dnModelJson);
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("UserInfoJS", user);
+        params.put("DNJS", dnModelJson);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_UploadDN, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadDN,

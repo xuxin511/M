@@ -23,7 +23,7 @@ public class URLModel {
     public String SyncMaterial = GetWCFAdress()+"GetMatrials"; //同步物料基础数据
     public String SyncCus = GetWCFAdress()+"GetCustomers"; //同步代理商和客户基础数据
     public String UploadCus = GetWCFAdress()+"AddNewCustomer"; //上传新增客户
-    public String UploadNDN = GetWCFAdress()+"UploadNDN"; //上传出库单
+    public String UploadNDN = GetWCFAdress()+"UploadDN"; //上传出库单
     public String SyncPara = GetWCFAdress()+"GetCustomerSettings"; //同步参数配置
     public String UploadPara = GetWCFAdress()+"SetCustomerSettings"; //同步参数配置
     public String SyncDn = GetWCFAdress()+"GetDNHeaders"; //同步DN表头

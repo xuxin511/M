@@ -285,11 +285,6 @@ public class DeliveryScan extends BaseIntentActivity {
 
     }
 
-
-
-
-
-
     /**
      * 显示错误信息
      * @param isErrorStatus
@@ -360,7 +355,6 @@ public class DeliveryScan extends BaseIntentActivity {
             }
         }
         dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
-        dnModel.getDETAILS().addAll(dnDetailModels);
         return SaveScanInfo();
     }
 
