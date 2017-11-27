@@ -103,17 +103,21 @@ public class DeliveryStart extends BaseActivity {
         BindSpinner();
         BindData();
         InitForm();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null){
             spinsendType.setSelection(dnTypeModel.getDNType());
             spinCustom.setSelection(dnTypeModel.getDNCusType());
-
         }
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null){
+//            spinsendType.setSelection(dnTypeModel.getDNType());
+//            spinCustom.setSelection(dnTypeModel.getDNCusType());
+//
+//        }
+//    }
 
     @Event(R.id.btn_StartOutPut)
     private void btnStartOutPutClick(View view){

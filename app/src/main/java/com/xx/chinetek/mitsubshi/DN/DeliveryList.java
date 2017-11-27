@@ -1,6 +1,8 @@
 package com.xx.chinetek.mitsubshi.DN;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -193,60 +195,31 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemLongClickListener.class)
     private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//        try{
-//            final int clickpositionlong=i;
-//            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
-//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            // TODO 自动生成的方法
-//                            //删除扫描记录，改变表头状态，改变明细数量
-//                            if(clickpositionlong==-1){
-//                                MessageBox.Show(context,"请先选择操作的行！");
-//                                return;
-//                            }
-//                            DNModel Model= (DNModel)deliveryListItemAdapter.getItem(clickpositionlong);
-//                            if(DbDnInfo.getInstance().DELscanbyagent(Model.getAGENT_DN_NO(),"")){
-////                                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyDN(Model.getAGENT_DN_NO(),"");
-////                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"2","");
-//                                //判断剩余的扫描数量
-//                                if(DbDnInfo.getInstance().UpdateDetailAllNum(Model.getAGENT_DN_NO(),0,Model.getDN_SOURCE())){
-//                                    //需要改变主表状态
-////                                    DNModel modeldn=Model;
-////                                    modeldn.setSTATUS(1);
-//                                    if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",Model.getDN_SOURCE())){
-//                                        MessageBox.Show(context,getString(R.string.Msg_del_success));
-//                                        DNModels= DbDnInfo.getInstance().GetLoaclDN();
-//                                        BindListView();
-//                                    }else{
-//                                        MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
-//                                        return;
-//                                    }
-//
-//                                }else{
-//                                    MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
-//                                    return;
-//                                }
-//                            }else{
-//                                MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
-//                            }
-//
-//                        }
-//                    }).setNegativeButton("取消", null).show();
-//
-//        }catch(Exception ex){
-//            MessageBox.Show(context,ex.toString());
+//        if (i < 0) {
+//            MessageBox.Show(context, "请先选择操作的行！");
+//            return false;
 //        }
+//        DNModel Model = (DNModel) deliveryListItemAdapter.getItem(i);
+//        DelDNmodel(Model);
+//        DNModels = DbDnInfo.getInstance().GetLoaclDN();
+//        BindListView();
+//        return true;
         if (i < 0) {
             MessageBox.Show(context, "请先选择操作的行！");
             return false;
         }
-        DNModel Model = (DNModel) deliveryListItemAdapter.getItem(i);
-        DelDNmodel(Model);
-        DNModels = DbDnInfo.getInstance().GetLoaclDN();
-        BindListView();
-        return true;
+        final DNModel Model = (DNModel) deliveryListItemAdapter.getItem(i);
+        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO 自动生成的方法
+                        DelDNmodel(Model);
+                        BindListView();
 
+                    }
+                }).setNegativeButton("取消", null).show();
+        return true;
     }
 
 
