@@ -332,7 +332,12 @@ public class DeliveryScan extends BaseIntentActivity {
 //        }catch(Exception ex){
 //            MessageBox.Show(context,ex.toString());
 //        }
-        DelDNDetailmodel(deliveryScanItemAdapter,i,dnModel);
+        if (i < 0) {
+            MessageBox.Show(context, "请先选择操作的行！");
+            return false;
+        }
+        DNDetailModel detailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(i);
+        DelDNDetailmodel(detailModel,dnModel);
         GetDeliveryOrderScanList();
         return true;
 

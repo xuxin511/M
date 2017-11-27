@@ -42,6 +42,7 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
+import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
@@ -236,7 +237,12 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 //        }catch(Exception ex){
 //            MessageBox.Show(context,ex.toString());
 //        }
-        DelDNmodel(deliveryListItemAdapter,i);
+        if (i < 0) {
+            MessageBox.Show(context, "请先选择操作的行！");
+            return false;
+        }
+        DNModel Model = (DNModel) deliveryListItemAdapter.getItem(i);
+        DelDNmodel(Model);
         DNModels = DbDnInfo.getInstance().GetLoaclDN();
         BindListView();
         return true;
