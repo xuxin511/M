@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_Barcode">
+        app:layout_constraintTop_toBottomOf="@+id/txt_Remark">
 
         <TextView
             android:id="@+id/txt_ItemName"
@@ -72,36 +72,6 @@
             android:textSize="16dp" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/edt_Barcode"
-        style="@style/EditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="28dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:ems="600"
-        android:hint="请扫描条码"
-        android:inputType="textPersonName"
-        android:textSize="24sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/textView5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline5" />
-
-    <TextView
-        android:id="@+id/textView5"
-        style="@style/TextViewComminStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/barcode"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_Remark" />
-
     <TextView
         android:id="@+id/txt_DnNo"
         style="@style/TextViewComminStyle"
@@ -139,13 +109,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/txt_DnNo"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/remark" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.20" />
 
 
 </android.support.constraint.ConstraintLayout>

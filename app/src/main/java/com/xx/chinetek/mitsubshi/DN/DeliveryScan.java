@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +22,6 @@ import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
-import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
@@ -56,8 +54,8 @@ public class DeliveryScan extends BaseIntentActivity {
 
     Context context=DeliveryScan.this;
 
-    @ViewInject(R.id.edt_Barcode)
-    EditText edtBarcode;
+//    @ViewInject(R.id.edt_Barcode)
+//    EditText edtBarcode;
     @ViewInject(R.id.img_Remark)
     ImageView imgRemark;
     @ViewInject(R.id.txt_ItemNo)
@@ -104,7 +102,6 @@ public class DeliveryScan extends BaseIntentActivity {
         //显示备注栏
         int visable=ParamaterModel.baseparaModel.getUseRemark()?View.VISIBLE:View.GONE;
         imgRemark.setVisibility(visable);
-
     }
 
     @Override
@@ -178,16 +175,16 @@ public class DeliveryScan extends BaseIntentActivity {
                     .show();
     }
 
-    @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
-    private boolean edtBarcodeOnkeyUp(View v, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            if (event.getAction() == KeyEvent.ACTION_UP) {
-                String Barcode = edtBarcode.getText().toString();
-                return  CheckScanBarcode(Barcode);
-            }
-        }
-        return false;
-    }
+//    @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
+//    private boolean edtBarcodeOnkeyUp(View v, int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//            if (event.getAction() == KeyEvent.ACTION_UP) {
+//                String Barcode = edtBarcode.getText().toString();
+//                return  CheckScanBarcode(Barcode);
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * 扫描条码
@@ -219,7 +216,7 @@ public class DeliveryScan extends BaseIntentActivity {
             }
         } catch (Exception ex) {
             MessageBox.Show(context, ex.getMessage());
-            CommonUtil.setEditFocus(edtBarcode);
+          //  CommonUtil.setEditFocus(edtBarcode);
         }
         return true;
     }
@@ -227,14 +224,6 @@ public class DeliveryScan extends BaseIntentActivity {
 
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Intent intent=new Intent(context,bulkuploadBarcodeDetail.class);
-//        Bundle bundle=new Bundle();
-//        DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(position);
-//        bundle.putParcelable("DNdetailModel",DNdetailModel);
-//        bundle.putParcelable("DNModel",dnModel);
-//        intent.putExtras(bundle);
-//        startActivityLeft(intent);
-
         Intent intent=new Intent(context,ExceptionBarcodelist.class);
         Bundle bundle=new Bundle();
         DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(position);
@@ -253,8 +242,8 @@ public class DeliveryScan extends BaseIntentActivity {
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
-        edtBarcode.setText("");
-        CommonUtil.setEditFocus(edtBarcode);
+      //  edtBarcode.setText("");
+      //  CommonUtil.setEditFocus(edtBarcode);
     }
 
 
@@ -276,62 +265,15 @@ public class DeliveryScan extends BaseIntentActivity {
     }
 
     private  void ShowRemark(){
-        if(dnModel.getREMARK()!=null){
+        if(dnModel.getREMARK()!=null && !TextUtils.isEmpty(dnModel.getREMARK())){
             txtRemark.setVisibility(View.VISIBLE);
             txtRemark.setText(dnModel.getREMARK());
         }
     }
 
 
-//    private int clickpositionlong=-1;
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemLongClickListener.class)
     private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//        try{
-//            final int clickpositionlong=i;
-//            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
-//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            // TODO 自动生成的方法
-//                            //删除扫描记录，改变明细数量
-//                            if(clickpositionlong==-1){
-//                                MessageBox.Show(context,"请先选择操作的行！");
-//                                return;
-//                            }
-//                            DNDetailModel Model= (DNDetailModel)deliveryScanItemAdapter.getItem(clickpositionlong);
-//                            if(DbDnInfo.getInstance().DELscanbyagentdetail(Model,"")){
-////                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyGOLFACODE(Model,"");
-//                                //判断剩余的扫描数量
-//                                Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO());
-//                                if(DbDnInfo.getInstance().UpdateDetailNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
-//                                    if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(Model.getAGENT_DN_NO())==0){
-//                                        //需要改变主表状态
-////                                        DNModel modeldn=dnModel;
-////                                        modeldn.setSTATUS(1);
-//                                        if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
-//
-//                                        }else{
-//                                            MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
-//                                            return;
-//                                        }
-//                                    }
-//                                    GetDeliveryOrderScanList();
-//                                    MessageBox.Show(context,getString(R.string.Msg_del_success));
-//
-//                                }else{
-//                                    MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
-//                                    return;
-//                                }
-//
-//                            }else{
-//                                MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
-//                            }
-//                        }
-//                    }).setNegativeButton("取消", null).show();
-//
-//        }catch(Exception ex){
-//            MessageBox.Show(context,ex.toString());
-//        }
         if (i < 0) {
             MessageBox.Show(context, "请先选择操作的行！");
             return false;
@@ -354,7 +296,7 @@ public class DeliveryScan extends BaseIntentActivity {
      * @return
      */
     private boolean ShowErrMag(int isErrorStatus) {
-        edtBarcode.setText("");
+        //edtBarcode.setText("");
         if(isErrorStatus==0) {
             MessageBox.Show(context, getString(R.string.Msg_Serial_Scaned));
             return true;

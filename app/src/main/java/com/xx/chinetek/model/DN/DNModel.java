@@ -16,7 +16,6 @@ import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -122,31 +121,6 @@ public class DNModel implements Parcelable {
 
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.AGENT_DN_NO);
-        dest.writeLong(this.DN_DATE != null ? this.DN_DATE.getTime() : -1);
-        dest.writeString(this.DN_STATUS);
-        dest.writeString(this.LEVEL_1_AGENT_NO);
-        dest.writeString(this.LEVEL_1_AGENT_NAME);
-        dest.writeString(this.LEVEL_2_AGENT_NO);
-        dest.writeString(this.LEVEL_2_AGENT_NAME);
-        dest.writeString(this.CUSTOM_NO);
-        dest.writeString(this.CUSTOM_NAME);
-        dest.writeValue(this.DN_QTY);
-        dest.writeLong(this.OPER_DATE != null ? this.OPER_DATE.getTime() : -1);
-        dest.writeValue(this.DN_SOURCE);
-        dest.writeInt(this.STATUS);
-        dest.writeString(this.CUS_DN_NO);
-        dest.writeString(this.REMARK);
-        dest.writeList(this.DETAILS);
-    }
 
     public void setDETAILS(List<DNDetailModel> DETAILS) {
         this.DETAILS = DETAILS;
@@ -382,28 +356,6 @@ public class DNModel implements Parcelable {
     public DNModel() {
     }
 
-    protected DNModel(Parcel in) {
-        this.AGENT_DN_NO = in.readString();
-        long tmpDN_DATE = in.readLong();
-        this.DN_DATE = tmpDN_DATE == -1 ? null : new Date(tmpDN_DATE);
-        this.DN_STATUS = in.readString();
-        this.LEVEL_1_AGENT_NO = in.readString();
-        this.LEVEL_1_AGENT_NAME = in.readString();
-        this.LEVEL_2_AGENT_NO = in.readString();
-        this.LEVEL_2_AGENT_NAME = in.readString();
-        this.CUSTOM_NO = in.readString();
-        this.CUSTOM_NAME = in.readString();
-        this.DN_QTY = (Integer) in.readValue(Integer.class.getClassLoader());
-        long tmpOPER_DATE = in.readLong();
-        this.OPER_DATE = tmpOPER_DATE == -1 ? null : new Date(tmpOPER_DATE);
-        this.DN_SOURCE = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.STATUS = in.readInt();
-        this.CUS_DN_NO = in.readString();
-        this.REMARK = in.readString();
-        this.DETAILS = new ArrayList<DNDetailModel>();
-        in.readList(this.DETAILS, DNDetailModel.class.getClassLoader());
-    }
-
 
     @Generated(hash = 1075540711)
     public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS,
@@ -428,6 +380,61 @@ public class DNModel implements Parcelable {
         this.REMARK = REMARK;
     }
 
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 718579950)
+    private transient DNModelDao myDao;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.AGENT_DN_NO);
+        dest.writeLong(this.DN_DATE != null ? this.DN_DATE.getTime() : -1);
+        dest.writeString(this.DN_STATUS);
+        dest.writeString(this.LEVEL_1_AGENT_NO);
+        dest.writeString(this.LEVEL_1_AGENT_NAME);
+        dest.writeString(this.LEVEL_2_AGENT_NO);
+        dest.writeString(this.LEVEL_2_AGENT_NAME);
+        dest.writeString(this.CUSTOM_NO);
+        dest.writeString(this.CUSTOM_NAME);
+        dest.writeValue(this.DN_QTY);
+        dest.writeLong(this.OPER_DATE != null ? this.OPER_DATE.getTime() : -1);
+        dest.writeValue(this.DN_SOURCE);
+        dest.writeInt(this.STATUS);
+        dest.writeString(this.CUS_DN_NO);
+        dest.writeString(this.REMARK);
+        dest.writeString(this.Flag);
+        dest.writeTypedList(this.DETAILS);
+    }
+
+    protected DNModel(Parcel in) {
+        this.AGENT_DN_NO = in.readString();
+        long tmpDN_DATE = in.readLong();
+        this.DN_DATE = tmpDN_DATE == -1 ? null : new Date(tmpDN_DATE);
+        this.DN_STATUS = in.readString();
+        this.LEVEL_1_AGENT_NO = in.readString();
+        this.LEVEL_1_AGENT_NAME = in.readString();
+        this.LEVEL_2_AGENT_NO = in.readString();
+        this.LEVEL_2_AGENT_NAME = in.readString();
+        this.CUSTOM_NO = in.readString();
+        this.CUSTOM_NAME = in.readString();
+        this.DN_QTY = (Integer) in.readValue(Integer.class.getClassLoader());
+        long tmpOPER_DATE = in.readLong();
+        this.OPER_DATE = tmpOPER_DATE == -1 ? null : new Date(tmpOPER_DATE);
+        this.DN_SOURCE = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.STATUS = in.readInt();
+        this.CUS_DN_NO = in.readString();
+        this.REMARK = in.readString();
+        this.Flag = in.readString();
+        this.DETAILS = in.createTypedArrayList(DNDetailModel.CREATOR);
+    }
+
     public static final Creator<DNModel> CREATOR = new Creator<DNModel>() {
         @Override
         public DNModel createFromParcel(Parcel source) {
@@ -439,10 +446,4 @@ public class DNModel implements Parcelable {
             return new DNModel[size];
         }
     };
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 718579950)
-    private transient DNModelDao myDao;
 }

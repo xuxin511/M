@@ -18,11 +18,14 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
+import com.xx.chinetek.model.Base.MaterialModel;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
@@ -92,6 +95,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         img_Remark.setVisibility(View.GONE);
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
+        dnModel.__setDaoSession(dnInfo.getDaoSession());
         dndetailmodel=getIntent().getParcelableExtra("DNdetailModel");
 //        Flag=getIntent().getStringExtra("Flag");
         //初始化数据
@@ -116,29 +120,36 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                 if(TextUtils.isEmpty(code)){
                     MessageBox.Show(context,getString(R.string.Msg_No_Barcode));
                     CommonUtil.setEditFocus(edtBarcode);
-                    return false;
+                    return true;
                 }
                 chaeckBarcode(code);
                 return true;
             }
-            return false;
         }catch(Exception ex){
             MessageBox.Show(context, ex.getMessage());
-            return false;
+            CommonUtil.setEditFocus(edtBarcode);
+            return true;
         }
+        return false;
     }
 
     private void chaeckBarcode(String code) throws Exception {
         BarCodeModel model = new BarCodeModel();
         model.setSerial_Number(code);
         model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
+        if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()) {
+            MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(dndetailmodel.getGOLFA_CODE());
+            model.setMAT_TYPE(materialModel == null?0:1);//物料没有记录，非三菱条码
+        }
         ArrayList<BarCodeModel> barCodeModels = new ArrayList<>();
         barCodeModels.add(model);
         if (barCodeModels != null && barCodeModels.size() != 0) {
             int isErrorStatus=Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
             txtScanQty.setText(getString(R.string.scanQty)+(DNScanModels.size()));
             if (ShowErrMag(isErrorStatus)) return;
-            SaveScanInfo(isErrorStatus);
+            if(SaveScanInfo(isErrorStatus))
+                edtBarcode.setText("");
+            CommonUtil.setEditFocus(edtBarcode);
         }
     }
 

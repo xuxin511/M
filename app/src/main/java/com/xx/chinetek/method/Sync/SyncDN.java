@@ -133,6 +133,15 @@ public class SyncDN {
        }.getType());
        if (returnMsgModel.getHeaderStatus().equals("S")) {
            ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
+           int size=dnModels.size();
+           for(int i=0;i<size;i++) {
+               DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(dnModels.get(i).getAGENT_DN_NO());
+               dnModels.get(i).setSTATUS(dnModel.getSTATUS());
+               dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+               dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+               dnModels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
+               dnModels.get(i).setREMARK(dnModel.getREMARK());
+           }
            //插入数据
            DbDnInfo.getInstance().InsertDNDB(dnModels);
            ParamaterModel.DNSyncTime = returnMsgModel.getMessage();
