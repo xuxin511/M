@@ -29,6 +29,7 @@ import org.xutils.x;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
 
 @ContentView(R.layout.activity_exception_scan)
@@ -166,9 +167,17 @@ public class ExceptionScan extends BaseActivity {
             MessageBox.Show(context, "请先选择操作的行！");
             return false;
         }
-        DNDetailModel detailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(i);
-        DelDNDetailmodel(detailModel,dnModel);
-        GetDeliveryOrderScanList();
+        final DNDetailModel detailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(i);
+        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO 自动生成的方法
+                        DelDNDetailmodel(detailModel,dnModel);
+                        GetDeliveryOrderScanList();
+
+                    }
+                }).setNegativeButton("取消", null).show();
         return true;
 
     }
