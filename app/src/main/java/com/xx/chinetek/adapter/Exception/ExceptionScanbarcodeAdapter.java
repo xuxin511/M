@@ -73,7 +73,7 @@ public class ExceptionScanbarcodeAdapter extends BaseAdapter {
         DNScanModel dnScanModel = DNScanModels.get(selectID);
         listItemView.txtbarcode.setText(dnScanModel.getSERIAL_NO());
         listItemView.txtnumber.setText("数量：1");
-        listItemView.txtreason.setText(convertView.getResources().getString(R.string.Reason)+ dnScanModel.getSTATUS()=="0"?"正常":dnScanModel.getSTATUS()=="1"?"序列号重复":"数量超出");
+        listItemView.txtreason.setText((dnScanModel.getSTATUS().equals("0")?"正常":dnScanModel.getSTATUS().equals("1")?"序列号重复":"数量超出"));
         return convertView;
     }
 
