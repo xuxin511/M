@@ -30,7 +30,6 @@ import java.util.List;
 @ContentView(R.layout.activity_login)
 public class Login extends BaseActivity {
 
-
     Context context = Login.this;
     @ViewInject(R.id.txt_Partner)
     TextView txtPartner;

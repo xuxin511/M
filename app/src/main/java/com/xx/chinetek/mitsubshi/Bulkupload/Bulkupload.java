@@ -4,8 +4,10 @@ package com.xx.chinetek.mitsubshi.Bulkupload;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -15,12 +17,13 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import android.support.v4.widget.SwipeRefreshLayout;
 import com.xx.chinetek.adapter.bulkupload.BulkuploadListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
+import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.R;
@@ -32,6 +35,8 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
 
 @ContentView(R.layout.activity_exception_list)
 public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -47,6 +52,24 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     ArrayList<DNModel> DNModels;
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
 
+    int uploadIndex=0;
+    String UploadDNno="";
+
+    @Override
+    public void onHandleMessage(Message msg) {
+        switch (msg.what) {
+            case RESULT_UploadDN:
+                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,UploadDNno);
+                uploadIndex--;
+                if(uploadIndex==0)
+                    GetbulkuploadList();
+                break;
+            case NetworkError.NET_ERROR_CUSTOM:
+                ToastUtil.show("获取请求失败_____" + msg.obj);
+                break;
+        }
+
+    }
 
     @Override
     protected void initViews() {
@@ -159,16 +182,22 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_Export){
+            String DnNo="";
             for(int i=0;i<DNModels.size();i++){
+                UploadDNno="";
                 if(DNModels.get(i).getFlag()=="1"){
                     DNModel postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
                     if(postmodel==null){
-                        MessageBox.Show(context,"出库单号【"+DNModels.get(i).getAGENT_DN_NO()+"】提交失败！");
+                        DnNo+=DNModels.get(i).getAGENT_DN_NO()+"\n";
                     }else{
+                        uploadIndex++;
+                        UploadDNno=DNModels.get(i).getAGENT_DN_NO();
                         UploadDN.SumbitDN(context,postmodel,mHandler);
                     }
                 }
             }
+            if(!TextUtils.isEmpty(DnNo))
+                MessageBox.Show(context,"出库单号\n"+DnNo+"提交失败！");
         }
         return super.onOptionsItemSelected(item);
     }

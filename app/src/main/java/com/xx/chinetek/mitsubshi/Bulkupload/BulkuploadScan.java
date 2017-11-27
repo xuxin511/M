@@ -58,7 +58,7 @@ public class BulkuploadScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(getIntent().getStringExtra("DNNo"));
-
+        dnModel.__setDaoSession(dnInfo.getDaoSession());
         GetDeliveryOrderScanList();
         if (dnModel.getDETAILS() == null)
             dnModel.setDETAILS(new ArrayList<DNDetailModel>());

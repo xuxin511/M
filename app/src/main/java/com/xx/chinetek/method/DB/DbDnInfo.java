@@ -258,6 +258,9 @@ public class DbDnInfo {
         ArrayList<DNDetailModel> dnModeldetails=new ArrayList<>();
         dnModeldetails=(ArrayList<DNDetailModel>) dnDetailModelDao.queryBuilder().distinct()
                 .where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo)).list();
+        for(int i=0;i<dnModeldetails.size();i++){
+            dnModeldetails.get(i).getSERIALS();
+        }
         return dnModeldetails;
     }
 
