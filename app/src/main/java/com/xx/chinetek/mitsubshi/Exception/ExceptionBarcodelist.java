@@ -38,6 +38,10 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
+import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
+import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
+import static com.xx.chinetek.method.Delscan.Delscan.DelScanmodel;
+
 @ContentView(R.layout.activity_exception_scanlist)
 public class ExceptionBarcodelist extends BaseIntentActivity {
 
@@ -197,63 +201,31 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
 
 
 
-    private int clickposition=-1;
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
-        clickposition=position;
+        if(position<0){
+            MessageBox.Show(context,"请先选择操作的行！");
+            return;
+        }
+        final DNScanModel Model= (DNScanModel)exceptionScanbarcodeAdapter.getItem(position);
         new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
-                        //删除扫描记录，改变明细数量
-                        if(clickposition==-1){
-                            MessageBox.Show(context,"请先选择操作的行！");
-                            return;
+                        DelScanmodel(Model,dndetailmodel,dnModel);
+
+                        ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
+                        int index = dnDetailModels.indexOf(dndetailmodel);
+                        if(index>0){
+                            dndetailmodel=dnDetailModels.get(index);
+                            txtScanQty.setText("扫描数量："+dndetailmodel.getSCAN_QTY());
                         }
-                        DNScanModel Model= (DNScanModel)exceptionScanbarcodeAdapter.getItem(clickposition);
-                        if(DbDnInfo.getInstance().DELscanbyserial(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),Model.getSERIAL_NO(),"")){
-                            //判断剩余的扫描数量
-                            Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
-                            if(DbDnInfo.getInstance().UpdateDetailNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
-                                if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(dndetailmodel.getAGENT_DN_NO())==0){
-                                    //需要改变主表状态
-//                                    DNModel modeldn=dnModel;
-//                                    modeldn.setSTATUS(1);
-                                    if(DbDnInfo.getInstance().UpdateDNmodelState(dndetailmodel.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
-
-                                    }else{
-                                        MessageBox.Show(context,getString(R.string.Error_del_dnmodel));
-                                        return;
-                                    }
-                                }
-                                MessageBox.Show(context,getString(R.string.Msg_del_success));
-                                for(int j=0;j<dnModel.getDETAILS().size();j++){
-                                    boolean flag=false;
-                                    for(int i=0;i<dnModel.getDETAILS().get(j).getSERIALS().size();i++){
-                                        if(dnModel.getDETAILS().get(j).getSERIALS().get(i).getSERIAL_NO().equals(Model.getSERIAL_NO())){
-                                            dnModel.getDETAILS().get(j).getSERIALS().remove(i);
-                                            flag=true;
-                                        }
-                                    }
-                                    if(flag){
-                                        dnModel.getDETAILS().get(j).setSCAN_QTY(dnModel.getDETAILS().get(j).getSCAN_QTY()-1);
-                                        break;
-                                    }
-                                }
-
-                                txtScanQty.setText("扫描数量："+(dndetailmodel.getSCAN_QTY()-1));
-                                GetDeliveryOrderScanList();
-
-                            }else{
-                                MessageBox.Show(context,getString(R.string.Error_del_dnmodeldetail));
-                                return;
-                            }
-                        }else{
-                            MessageBox.Show(context,getString(R.string.Error_del_dnmodelbarcode));
-                        }
+                        GetDeliveryOrderScanList();
                     }
                 }).setNegativeButton("取消", null).show();
+
+
     }
 
     void GetDeliveryOrderScanList(){
