@@ -158,7 +158,6 @@ public class DeliveryScan extends BaseIntentActivity {
                                     MessageBox.Show(context,ex.getMessage());
                                 }
                             }
-
                         }
                     })
                     .setNegativeButton("取消", null)
@@ -183,7 +182,7 @@ public class DeliveryScan extends BaseIntentActivity {
         }
         try {
             txtDnNo.setFocusable(false);
-            dnModel.setAGENT_DN_NO(txtDnNo.getText().toString());
+            dnModel.setCUS_DN_NO(txtDnNo.getText().toString().trim());
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
@@ -228,6 +227,7 @@ public class DeliveryScan extends BaseIntentActivity {
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         dnModel.setDETAILS(dnDetailModels);
+        txtDnNo.setFocusable(dnDetailModels.size()==0?true:false);
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
     }
