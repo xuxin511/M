@@ -164,7 +164,7 @@ public class DbDnInfo {
     public Boolean CheckDNInDB(String Dnno){
           long count=dnModelDao.queryBuilder().where(DNModelDao.Properties.AGENT_DN_NO.eq(Dnno),
                   DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().count();
-          return count==0;
+          return  count==0;
     }
 
     /**

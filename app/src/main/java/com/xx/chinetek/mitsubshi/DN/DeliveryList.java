@@ -121,13 +121,13 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             ArrayList<DNModel> SelectdnModels=new ArrayList<>();
             int size=dnModels.size();
             for(int i=0;i<size;i++){
-                if(DbDnInfo.getInstance().CheckDNInDB(dnModels.get(i).getAGENT_DN_NO()));
+                if(DbDnInfo.getInstance().CheckDNInDB(dnModels.get(i).getAGENT_DN_NO()))
                     SelectdnModels.add(dnModels.get(i));
             }
             if(SelectdnModels.size()!=0) {
                 Intent intent = new Intent(context, DNsync.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("DNModels", dnModels);
+                bundle.putParcelableArrayList("DNModels", SelectdnModels);
                 intent.putExtras(bundle);
                 startActivityLeft(intent);
             }
@@ -209,6 +209,9 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             bundle.putParcelable("DNModel",dnModel);
             intent.putExtras(bundle);
             startActivityLeft(intent);
+        }
+        if(item.getItemId()==R.id.action_sync){
+            ImportDelivery();
         }
         return super.onOptionsItemSelected(item);
     }

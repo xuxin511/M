@@ -6,10 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 
-import com.xx.chinetek.adapter.bulkupload.BulkuploadListItemAdapter;
+import com.xx.chinetek.adapter.DN.SyncListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
@@ -30,13 +29,11 @@ import java.util.ArrayList;
 public class FTPsync extends BaseActivity{
 
     Context context = FTPsync.this;
-    @ViewInject(R.id.edt_DNNoFuilter)
-    EditText edtDNNoFuilter;
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
 
     ArrayList<DNModel> DNModels;
-    BulkuploadListItemAdapter bulkuploadListItemAdapter;
+    SyncListItemAdapter syncListItemAdapter;
 
 
 
@@ -56,13 +53,7 @@ public class FTPsync extends BaseActivity{
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
     private void LsvItemClick(AdapterView<?> parent, View view, int position, long id) {
         try{
-            DNModel  dnModel=(DNModel)bulkuploadListItemAdapter.getItem(position);
-                if(dnModel.getFlag()==null||dnModel.getFlag().equals("0")){
-                    dnModel.setFlag("1");
-                }else{
-                    dnModel.setFlag("0");
-                }
-            bulkuploadListItemAdapter.notifyDataSetInvalidated();
+            syncListItemAdapter.modifyStates(position);
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
@@ -83,8 +74,8 @@ public class FTPsync extends BaseActivity{
             try{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
                 for(int i=0;i<DNModels.size();i++){
-                    if(DNModels.get(i).getFlag()=="1"){
-                        Tempdnmodels.add(DNModels.get(i));
+                    if (syncListItemAdapter.getStates(i)) {
+                        Tempdnmodels.add(0, DNModels.get(i));
                     }
                 }
                 if(Tempdnmodels==null||Tempdnmodels.size()==0){
@@ -106,6 +97,7 @@ public class FTPsync extends BaseActivity{
                 //插入数据
                 DbDnInfo.getInstance().InsertDNDB(Tempdnmodels) ;
                 closeActiviry();
+
             }catch(Exception ex){
                 MessageBox.Show(context,ex.toString());
             }
@@ -114,13 +106,13 @@ public class FTPsync extends BaseActivity{
     }
 
 
-    void GetFTPloadList(){
-        try{
-           ArrayList<DNModel>dnModels= SyncDN.DNFromFiles();
-            bulkuploadListItemAdapter=new BulkuploadListItemAdapter(context, dnModels);
-            LsvExceptionList.setAdapter(bulkuploadListItemAdapter);
-        }catch(Exception ex){
-            MessageBox.Show(context,ex.toString());
+    void GetFTPloadList() {
+        try {
+            ArrayList<DNModel> dnModels = SyncDN.DNFromFiles();
+            syncListItemAdapter = new SyncListItemAdapter(context, dnModels);
+            LsvExceptionList.setAdapter(syncListItemAdapter);
+        } catch (Exception ex) {
+            MessageBox.Show(context, ex.toString());
         }
 
     }

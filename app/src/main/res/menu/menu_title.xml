@@ -21,7 +21,7 @@
 
     <item
         android:id="@+id/action_sync"
-        android:icon="@drawable/export"
+        android:icon="@drawable/down"
         android:orderInCategory="80"
         android:title=""
         app:showAsAction="ifRoom" />

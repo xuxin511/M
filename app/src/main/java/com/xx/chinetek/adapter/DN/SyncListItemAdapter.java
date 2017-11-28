@@ -9,7 +9,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
 
@@ -84,9 +83,8 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
         ListItemView listItemView = null;
         if (convertView == null) {
             listItemView = new ListItemView();
-
             // 获取list_item布局文件的视图
-            convertView = listContainer.inflate(R.layout.item_sync_list,null);
+            convertView = listContainer.inflate(R.layout.item_synclist,null);
             listItemView.txtDeliveryNo = (TextView) convertView.findViewById(R.id.item_DeliveryNo);
             listItemView.txtStatus = (TextView) convertView.findViewById(R.id.item_Status);
             convertView.setTag(listItemView);
