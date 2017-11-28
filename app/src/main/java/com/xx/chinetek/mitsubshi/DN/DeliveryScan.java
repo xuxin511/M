@@ -54,8 +54,6 @@ public class DeliveryScan extends BaseIntentActivity {
 
     Context context=DeliveryScan.this;
 
-//    @ViewInject(R.id.edt_Barcode)
-//    EditText edtBarcode;
     @ViewInject(R.id.img_Remark)
     ImageView imgRemark;
     @ViewInject(R.id.txt_ItemNo)
@@ -112,11 +110,6 @@ public class DeliveryScan extends BaseIntentActivity {
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
         ShowRemark();
         dnModel.__setDaoSession(dnInfo.getDaoSession());
-//        GetDeliveryOrderScanList();
-//        if (dnModel.getDETAILS() == null)
-//            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-//
-//        dnModel.getDETAILS().addAll(dnDetailModels);
     }
 
     @Override
@@ -138,9 +131,6 @@ public class DeliveryScan extends BaseIntentActivity {
     protected void onResume() {
         super.onResume();
         GetDeliveryOrderScanList();
-        if (dnModel.getDETAILS() == null)
-            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-       // dnModel.getDETAILS().addAll(dnDetailModels);
     }
 
     /**
@@ -175,16 +165,6 @@ public class DeliveryScan extends BaseIntentActivity {
                     .show();
     }
 
-//    @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
-//    private boolean edtBarcodeOnkeyUp(View v, int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-//            if (event.getAction() == KeyEvent.ACTION_UP) {
-//                String Barcode = edtBarcode.getText().toString();
-//                return  CheckScanBarcode(Barcode);
-//            }
-//        }
-//        return false;
-//    }
 
     /**
      * 扫描条码
@@ -203,10 +183,7 @@ public class DeliveryScan extends BaseIntentActivity {
         }
         try {
             txtDnNo.setFocusable(false);
-            dnModel.setAGENT_DN_NO(txtDnNo.getText().toString().trim());
-            for(int i=0;i<dnModel.getDETAILS().size();i++){
-                dnModel.getDETAILS().get(i).setAGENT_DN_NO(txtDnNo.getText().toString().trim());
-            }
+            dnModel.setAGENT_DN_NO(txtDnNo.getText().toString());
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
@@ -250,11 +227,9 @@ public class DeliveryScan extends BaseIntentActivity {
      */
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
+        dnModel.setDETAILS(dnDetailModels);
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
-        txtDnNo.setFocusable(dnDetailModels.size()==0?true:false);
-      //  edtBarcode.setText("");
-      //  CommonUtil.setEditFocus(edtBarcode);
     }
 
 

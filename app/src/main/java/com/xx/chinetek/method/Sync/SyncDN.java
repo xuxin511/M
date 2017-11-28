@@ -62,7 +62,7 @@ public class SyncDN {
     public static void SyncMAPS(MyHandler<BaseActivity> mHandler){
         //MAPS获取单据
         final Map<String, String> params = new HashMap<String, String>();
-        ParamaterModel.DNSyncTime= ParamaterModel.DNSyncTime==null?"":ParamaterModel.DNSyncTime;
+       // ParamaterModel.DNSyncTime= ParamaterModel.DNSyncTime==null?"":ParamaterModel.DNSyncTime;
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
         params.put("DateString", "");
         params.put("UserInfoJS", user);

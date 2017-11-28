@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNDetailModel;
-import com.xx.chinetek.model.DN.DNModel;
 
 import java.util.ArrayList;
 
@@ -81,7 +80,8 @@ public class ExceptionScanItemAdapter extends BaseAdapter {
         listItemView.txtRowNo.setText( (dnDetailModel.getSTATUS()==0?"正常":dnDetailModel.getSTATUS()==1?"序列号重复":dnDetailModel.getSTATUS()==2?"数量超出":"序列号重复+数量超出"));
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());
         listItemView.txtDNQty.setText(dnsource==3?"":(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY().toString()));
-        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+dnDetailModel.getSCAN_QTY().toString());
+        String scanQty=dnDetailModel.getSCAN_QTY()==null?"0":dnDetailModel.getSCAN_QTY().toString();
+        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+scanQty);
         return convertView;
     }
 

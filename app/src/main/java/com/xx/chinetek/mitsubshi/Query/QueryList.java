@@ -62,6 +62,7 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
     ArrayList<DNModel> SelectDnModels;//选择导出DN
     LoadingDialog dialog;
 
+    int position;
     @Override
     public void onHandleMessage(Message msg) {
             switch (msg.what) {
@@ -94,7 +95,6 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
         super.initData();
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
-//        BindListView();
     }
 
     @Override
@@ -151,7 +151,6 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemLongClickListener.class)
     private boolean LsvDeliveryListonItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         deliveryListItemAdapter.modifyStates(position);
-        deliveryListItemAdapter.notifyDataSetInvalidated();
         return true;
     }
 
@@ -233,6 +232,9 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
             LsvDeliveryList.setAdapter(deliveryListItemAdapter);
         }
     }
+
+
+
 
     /**
      * 文本变化事件

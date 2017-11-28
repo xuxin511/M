@@ -61,8 +61,10 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
             case RESULT_UploadDN:
                 UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,UploadDNno);
                 uploadIndex--;
-                if(uploadIndex==0)
+                if(uploadIndex==0) {
+                    MessageBox.Show(context,getString(R.string.Msg_DNUploadSuccess));
                     GetbulkuploadList();
+                }
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
                 ToastUtil.show("获取请求失败_____" + msg.obj);
