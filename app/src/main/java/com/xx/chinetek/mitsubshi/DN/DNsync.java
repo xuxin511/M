@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.xx.chinetek.adapter.DN.SyncListItemAdapter;
 import com.xx.chinetek.adapter.bulkupload.BulkuploadListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -35,7 +36,7 @@ public class DNsync extends BaseActivity{
     ListView LsvExceptionList;
 
     ArrayList<DNModel> DNModels;
-    BulkuploadListItemAdapter bulkuploadListItemAdapter;
+    SyncListItemAdapter syncListItemAdapter;
 
 
 
@@ -56,13 +57,7 @@ public class DNsync extends BaseActivity{
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
     private void LsvItemClick(AdapterView<?> parent, View view, int position, long id) {
         try{
-            DNModel  dnModel=(DNModel)bulkuploadListItemAdapter.getItem(position);
-                if(dnModel.getFlag()==null||dnModel.getFlag().equals("0")){
-                    dnModel.setFlag("1");
-                }else{
-                    dnModel.setFlag("0");
-                }
-            bulkuploadListItemAdapter.notifyDataSetInvalidated();
+            syncListItemAdapter.modifyStates(position);
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
@@ -83,8 +78,8 @@ public class DNsync extends BaseActivity{
             try{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
                 for(int i=0;i<DNModels.size();i++){
-                    if(DNModels.get(i).getFlag()=="1"){
-                        Tempdnmodels.add(DNModels.get(i));
+                    if (syncListItemAdapter.getStates(i)) {
+                        Tempdnmodels.add(0, DNModels.get(i));
                     }
                 }
                 if(Tempdnmodels==null||Tempdnmodels.size()==0){
@@ -117,8 +112,8 @@ public class DNsync extends BaseActivity{
 
     void GetbulkuploadList(){
         try{
-            bulkuploadListItemAdapter=new BulkuploadListItemAdapter(context, DNModels);
-            LsvExceptionList.setAdapter(bulkuploadListItemAdapter);
+            syncListItemAdapter=new SyncListItemAdapter(context, DNModels);
+            LsvExceptionList.setAdapter(syncListItemAdapter);
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
