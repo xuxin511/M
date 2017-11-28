@@ -121,38 +121,39 @@ public class DeliveryStart extends BaseActivity {
 
     @Event(R.id.btn_StartOutPut)
     private void btnStartOutPutClick(View view){
-       final String code=edtContentText.getText().toString().trim();
-        if(TextUtils.isEmpty(code)){
-            MessageBox.Show(context,getString(R.string.Msg_No_CusCode));
-            CommonUtil.setEditFocus(edtContentText);
-            return;
-        }
-        //新增客户
-        if(partnerItemAdapter.getCount()==0) {
-            new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_New_Custom))// 设置对话框标题
-                    .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
-                    .setMessage(code)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            UploadNewCus.AddNewCusToMaps(code,"Z3",mHandler);
-                        }
-                    })
-                    .setNegativeButton("取消",null)
-                    .show();
-            CommonUtil.setEditFocus(edtContentText);
-            return;
-        }
+        if(dnTypeModel.getDNType()==3) { //自建方式需要确认发货客户
+            final String code = edtContentText.getText().toString().trim();
+            if (TextUtils.isEmpty(code)) {
+                MessageBox.Show(context, getString(R.string.Msg_No_CusCode));
+                CommonUtil.setEditFocus(edtContentText);
+                return;
+            }
+            //新增客户
+            if (partnerItemAdapter.getCount() == 0) {
+                new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_New_Custom))// 设置对话框标题
+                        .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
+                        .setMessage(code)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+                CommonUtil.setEditFocus(edtContentText);
+                return;
+            }
 
-        if(customModel ==null && partnerItemAdapter.getCount()==1){
-            customModel =(CustomModel) partnerItemAdapter.getItem(0);
+            if (customModel == null && partnerItemAdapter.getCount() == 1) {
+                customModel = (CustomModel) partnerItemAdapter.getItem(0);
+            }
+            if (customModel == null) {
+                MessageBox.Show(context, getString(R.string.Msg_NoSelect_CusCode));
+                CommonUtil.setEditFocus(edtContentText);
+                return;
+            }
         }
-        if(customModel ==null){
-            MessageBox.Show(context,getString(R.string.Msg_NoSelect_CusCode));
-            CommonUtil.setEditFocus(edtContentText);
-            return;
-        }
-
         dnTypeModel.setCustomModel(customModel);
         dnTypeModel.setDNCusType(customModel.getPARTNER_FUNCTION().equals("Z3")?1:0);
         CommonUtil.setEditFocus(edtContentText);

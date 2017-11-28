@@ -12,7 +12,7 @@ import com.xx.chinetek.greendao.DaoSession;
 
 public class DbManager {
 
-    private static final String DB_NAME = "mitsubshi.db";
+    public static String DB_NAME = "mitsubshi.db";
     private static DbManager mDbManager;
     private static DaoMaster.DevOpenHelper mDevOpenHelper;
     private static DaoMaster mDaoMaster;

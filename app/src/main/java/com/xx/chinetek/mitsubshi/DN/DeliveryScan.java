@@ -140,7 +140,7 @@ public class DeliveryScan extends BaseIntentActivity {
         GetDeliveryOrderScanList();
         if (dnModel.getDETAILS() == null)
             dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-        dnModel.getDETAILS().addAll(dnDetailModels);
+       // dnModel.getDETAILS().addAll(dnDetailModels);
     }
 
     /**

@@ -38,8 +38,6 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
-import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
-import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
 import static com.xx.chinetek.method.Delscan.Delscan.DelScanmodel;
 
 @ContentView(R.layout.activity_exception_scanlist)
@@ -141,6 +139,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         BarCodeModel model = new BarCodeModel();
         model.setSerial_Number(code);
         model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
+        model.setMAT_TYPE(1); //默认三菱条码
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()) {
             MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(dndetailmodel.getGOLFA_CODE());
             model.setMAT_TYPE(materialModel == null?0:1);//物料没有记录，非三菱条码

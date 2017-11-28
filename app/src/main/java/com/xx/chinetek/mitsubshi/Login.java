@@ -56,8 +56,7 @@ public class Login extends BaseActivity {
         if(ParamaterModel.SerialNo!=null) {
             txtSerialNo.setText(ParamaterModel.SerialNo);
         }
-        //删除超过保存日期的DN单据
-        DbDnInfo.getInstance().DeleteDnBySaveTime();
+
     }
 
     @Override
@@ -92,12 +91,19 @@ public class Login extends BaseActivity {
             SharePreferUtil.SetUserShare(context);
         }
 
+//        //设置数据库名称
+//        DbManager.DB_NAME=ParamaterModel.PartenerID+".db";
+
         UserInfoModel userInfoModel=new UserInfoModel();
         userInfoModel.setAGENT_NO(ParamaterModel.PartenerID);
         userInfoModel.setPDA_CODE(ParamaterModel.SerialNo);
         userInfoModel.setUSER_CODE(ParamaterModel.Operater);
         ParamaterModel.userInfoModel=userInfoModel;
         CommonUtil.setEditFocus(edtOperater);
+
+        //删除超过保存日期的DN单据
+        DbDnInfo.getInstance().DeleteDnBySaveTime();
+
         LogUtil.WriteLog(Login.class,"btnLoginClick",ParamaterModel.Operater);
         Intent intent = new Intent(context, MainActivity.class);
         startActivityLeft(intent);
