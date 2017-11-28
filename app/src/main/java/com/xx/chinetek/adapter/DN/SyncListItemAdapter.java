@@ -31,6 +31,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
     public final class ListItemView { // 自定义控件集合
 
         public TextView txtDeliveryNo;
+        public TextView txtStatus;
     }
 
     public SyncListItemAdapter(Context context, ArrayList<DNModel> DNModels) {
@@ -87,11 +88,13 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_sync_list,null);
             listItemView.txtDeliveryNo = (TextView) convertView.findViewById(R.id.item_DeliveryNo);
+            listItemView.txtStatus = (TextView) convertView.findViewById(R.id.item_Status);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
         }
         DNModel DNModel = DNModels.get(selectID);
+        listItemView.txtStatus.setText((position+1) + ":");
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);
