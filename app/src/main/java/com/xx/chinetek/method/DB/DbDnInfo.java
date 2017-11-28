@@ -157,6 +157,17 @@ public class DbDnInfo {
     }
 
     /**
+     * 查询DN单据是否存在，且状态不是未下载
+     * @param Dnno
+     * @return
+     */
+    public Boolean CheckDNInDB(String Dnno){
+          long count=dnModelDao.queryBuilder().where(DNModelDao.Properties.AGENT_DN_NO.eq(Dnno),
+                  DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().count();
+          return count==0;
+    }
+
+    /**
      * 根据单号、行号获取DN明细
      * @return
      */

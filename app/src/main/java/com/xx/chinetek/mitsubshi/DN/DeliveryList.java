@@ -66,9 +66,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
     DeliveryListItemAdapter deliveryListItemAdapter;
     ArrayList<DNModel> DNModels; //所有未完成出库单
-
     LoadingDialog dialog;
-
 
     @Override
     public void onHandleMessage(Message msg) {
@@ -81,12 +79,15 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     AnalysisSyncMAPSDNDetailJson((String) msg.obj);
                     break;
                 case RESULT_SyncUSB:
-                    SyncDN.DNFromFiles();
+                    ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
+                    DbDnInfo.getInstance().InsertDNDB(dnModels);
                     break;
                 case RESULT_SyncMail:
                 case RESULT_SyncFTP:
                     if ((int) msg.obj > 0) {
-                        SyncDN.DNFromFiles();
+                        Intent intent = new Intent(context, FTPsync.class);
+                        startActivityLeft(intent);
+
                     }
                     break;
                 case TAG_SCAN:
@@ -96,12 +97,14 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     ToastUtil.show("获取请求失败_____" + msg.obj);
                     break;
             }
-            dialog.dismiss();
+            if(dialog!=null)
+                dialog.dismiss();
             DNModels= DbDnInfo.getInstance().GetLoaclDN();
             BindListView();
         } catch (Exception ex) {
             MessageBox.Show(context,ex.getMessage());
-            dialog.dismiss();
+            if(dialog!=null)
+                dialog.dismiss();
         }
     }
 
@@ -115,12 +118,19 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         }.getType());
         if (returnMsgModel.getHeaderStatus().equals("S")) {
             ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
-            Intent intent=new Intent(context, DNsync.class);
-            Bundle bundle=new Bundle();
-            bundle.putParcelableArrayList("DNModels",dnModels);
-            intent.putExtras(bundle);
-            startActivityLeft(intent);
-
+            ArrayList<DNModel> SelectdnModels=new ArrayList<>();
+            int size=dnModels.size();
+            for(int i=0;i<size;i++){
+                if(DbDnInfo.getInstance().CheckDNInDB(dnModels.get(i).getAGENT_DN_NO()));
+                    SelectdnModels.add(dnModels.get(i));
+            }
+            if(SelectdnModels.size()!=0) {
+                Intent intent = new Intent(context, DNsync.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("DNModels", dnModels);
+                intent.putExtras(bundle);
+                startActivityLeft(intent);
+            }
         } else {
             MessageBox.Show(context, returnMsgModel.getMessage());
         }
@@ -172,7 +182,8 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     @Override
     protected void onResume() {
         super.onResume();
-        ImportDelivery();
+        DNModels= DbDnInfo.getInstance().GetLoaclDN();
+        BindListView();
     }
 
     @Override
@@ -183,14 +194,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.action_sync){
-            if(ParamaterModel.DnTypeModel.getDNType()==0){
-                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
-                dialog =new LoadingDialog(context);
-                dialog.show();
-                SyncDN.SyncMAPS(mHandler);
-            }
-        }
         if(item.getItemId()==R.id.action_QR){
             Intent intent=new Intent(context,QRScan.class);
             ParamaterModel.DnTypeModel.setDNType(5);
@@ -225,15 +228,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemLongClickListener.class)
     private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//        if (i < 0) {
-//            MessageBox.Show(context, "请先选择操作的行！");
-//            return false;
-//        }
-//        DNModel Model = (DNModel) deliveryListItemAdapter.getItem(i);
-//        DelDNmodel(Model);
-//        DNModels = DbDnInfo.getInstance().GetLoaclDN();
-//        BindListView();
-//        return true;
         if (i < 0) {
             MessageBox.Show(context, "请先选择操作的行！");
             return false;
@@ -252,18 +246,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         return true;
     }
 
-
-//    @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemLongClickListener.class)
-//    private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//        DNModel  dnModel=(DNModel)deliveryListItemAdapter.getItem(i);
-//        new AlertDialog.Builder(context)
-//                .setTitle("提示")
-//                .setCancelable(false)
-//                .setMessage(getString(R.string.Msg_Delete_DN)+dnModel.getAGENT_DN_NO())
-//                .setPositiveButton("确定", null).show();
-//
-//        return false;
-//    }
 
     private void StartScan(DNModel dnModel) {
         Intent intent=new Intent(context,DeliveryScan.class);
@@ -328,12 +310,10 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
         switch (ParamaterModel.DnTypeModel.getDNType()){
             case 0://MAPS
-//                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
-//                dialog =new LoadingDialog(context);
-//                dialog.show();
-//                SyncDN.SyncMAPS(mHandler);
-                DNModels= DbDnInfo.getInstance().GetLoaclDN();
-                BindListView();
+                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
+                dialog =new LoadingDialog(context);
+                dialog.show();
+                SyncDN.SyncMAPS(mHandler);
                 break;
             case 1://邮件
                 BaseApplication.DialogShowText = getString(R.string.Dia_SyncMail);

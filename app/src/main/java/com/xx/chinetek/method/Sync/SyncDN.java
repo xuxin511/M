@@ -129,7 +129,7 @@ public class SyncDN {
      * @return
      * @throws Exception
      */
-   public static void DNFromFiles() throws Exception{
+   public static  ArrayList<DNModel> DNFromFiles() throws Exception{
        File[] DNfiles=new File(ParamaterModel.DownDirectory).listFiles();
        ArrayList<DNModel> dnModels=new ArrayList<>();
        for(int i=0;i<DNfiles.length;i++) {
@@ -203,7 +203,8 @@ public class SyncDN {
        for(int i=0;i<DNfiles.length;i++) {
            DNfiles[i].delete();
        }
-       DbDnInfo.getInstance().InsertDNDB(dnModels);
+       return dnModels;
+      // DbDnInfo.getInstance().InsertDNDB(dnModels);
    }
 
 

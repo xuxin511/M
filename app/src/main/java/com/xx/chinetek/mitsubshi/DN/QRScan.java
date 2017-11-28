@@ -24,6 +24,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 @ContentView(R.layout.activity_qrscan)
 public class QRScan extends BaseIntentActivity {
@@ -58,7 +59,8 @@ public class QRScan extends BaseIntentActivity {
                     BufferedWriter bw = new BufferedWriter(writerStream);
                     bw.write(Barcode);
                     bw.close();
-                    SyncDN.DNFromFiles();
+                   ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
+                   DbDnInfo.getInstance().InsertDNDB(dnModels);
                     DNno = cloumns[0].toString();
                     isFormartCongif=true;
                 }

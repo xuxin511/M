@@ -175,13 +175,16 @@ public class DeliveryScan extends BaseIntentActivity {
             MessageBox.Show(context, getString(R.string.Msg_No_Barcode));
             return true;
         }
-        DNModel model = DbDnInfo.getInstance().GetLoaclDN(txtDnNo.getText().toString());
-        if (model!=null) {
-            MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
-            return true;
-        }
+
         try {
-            txtDnNo.setFocusable(false);
+            if(ParamaterModel.DnTypeModel.getDNType() == 3) {
+                DNModel model = DbDnInfo.getInstance().GetLoaclDN(txtDnNo.getText().toString());
+                if (model != null) {
+                    MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
+                    return true;
+                }
+                txtDnNo.setFocusable(false);
+            }
             dnModel.setCUS_DN_NO(txtDnNo.getText().toString().trim());
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {

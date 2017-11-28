@@ -22,6 +22,7 @@
         <activity android:name=".DN.DeliveryList" />
         <activity android:name=".DN.DeliveryScan" />
         <activity android:name=".DN.DNsync" />
+        <activity android:name=".DN.FTPsync" />
         <activity android:name=".Exception.ExceptionScan" />
         <activity android:name=".Exception.ExceptionBarcodelist" />
         <activity android:name=".Bulkupload.Bulkupload" />

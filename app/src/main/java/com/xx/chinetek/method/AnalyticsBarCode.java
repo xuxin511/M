@@ -29,7 +29,7 @@ public class AnalyticsBarCode {
                 if(materialModel==null) {//物料没有记录，非三菱条码
                     isMitsubshiCode=false;
                     BarCodeModel barCodeModel=new BarCodeModel();
-                    barCodeModel.setGolfa_Code(KeyCode);
+                    barCodeModel.setGolfa_Code(KeyCode.trim());
                     barCodeModel.setMAT_TYPE(0); //非三菱
                     SetNotMitSubshiCode(Barcode, barCodeModel);
                     barCodeModels.add(barCodeModel);
@@ -74,22 +74,22 @@ public class AnalyticsBarCode {
         barCodeModel.setMAT_TYPE(1);//三菱
         switch (headCode){
             case "1":
-                barCodeModel.setGolfa_Code(Barcode.substring(1,7));
-                barCodeModel.setSerial_Number(Barcode.substring(7,24));
-                barCodeModel.setPacking_Date(Barcode.substring(24,32));
+                barCodeModel.setGolfa_Code(Barcode.substring(1,7).trim());
+                barCodeModel.setSerial_Number(Barcode.substring(7,24).trim());
+                barCodeModel.setPacking_Date(Barcode.substring(24,32).trim());
                 break;
             case "2":
-                barCodeModel.setGolfa_Code(Barcode.substring(1,14));
-                barCodeModel.setSerial_Number(Barcode.substring(14,31));
-                barCodeModel.setPacking_Date(Barcode.substring(31,39));
+                barCodeModel.setGolfa_Code(Barcode.substring(1,14).trim());
+                barCodeModel.setSerial_Number(Barcode.substring(14,31).trim());
+                barCodeModel.setPacking_Date(Barcode.substring(31,39).trim());
                 break;
             case "3":
             case "4":
-                barCodeModel.setGolfa_Code(Barcode.substring(1,19));
-                barCodeModel.setSerial_Number(Barcode.substring(19,36));
-                barCodeModel.setPacking_Date(Barcode.substring(36,44));
-                barCodeModel.setPlace_Code(Barcode.substring(44,47));
-                barCodeModel.setCountry_Code(Barcode.substring(47,49));
+                barCodeModel.setGolfa_Code(Barcode.substring(1,19).trim());
+                barCodeModel.setSerial_Number(Barcode.substring(19,36).trim());
+                barCodeModel.setPacking_Date(Barcode.substring(36,44).trim());
+                barCodeModel.setPlace_Code(Barcode.substring(44,47).trim());
+                barCodeModel.setCountry_Code(Barcode.substring(47,49).trim());
                 break;
         }
         barCodeModels.add(barCodeModel);
@@ -105,8 +105,8 @@ public class AnalyticsBarCode {
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         String temp_data = Barcode.substring(48);
         String[] data = temp_data.split(" ");
-        String Golfa_Code=Barcode.substring(8,14);
-        String Packing_Date=Barcode.substring(14,22);
+        String Golfa_Code=Barcode.substring(8,14).trim();
+        String Packing_Date=Barcode.substring(14,22).trim();
         for (int j = 0; j < data.length; j++)
         {
             BarCodeModel barCodeModel=new BarCodeModel();
@@ -115,7 +115,7 @@ public class AnalyticsBarCode {
             barCodeModel.setPacking_Date(Packing_Date);
             if(data[j].trim().length()!=7)
                 break;
-            barCodeModel.setSerial_Number(data[j].trim());
+            barCodeModel.setSerial_Number(data[j].trim().trim());
             barCodeModels.add(barCodeModel);
         }
         return  barCodeModels;
