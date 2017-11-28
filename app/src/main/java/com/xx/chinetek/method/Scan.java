@@ -136,7 +136,7 @@ public class Scan {
      * @param dnScanModel
      */
     public static void setOtherColumn(BarCodeModel barCodeModel, DNScanModel dnScanModel) {
-        if(barCodeModel.getMAT_TYPE()==0){
+        if(barCodeModel.getMAT_TYPE()==0 && barCodeModel.getOtherCode()!=null){
             int size=barCodeModel.getOtherCode().size();
             int len=0;
             while(len<size){

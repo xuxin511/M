@@ -1,10 +1,5 @@
 package com.xx.chinetek.method.Delscan;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-
-import com.xx.chinetek.adapter.DN.DeliveryListItemAdapter;
-import com.xx.chinetek.adapter.DN.DeliveryScanItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.method.DB.DbDnInfo;
@@ -94,8 +89,6 @@ public class Delscan {
             if(DbDnInfo.getInstance().UpdateDetailNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
                 if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(dndetailmodel.getAGENT_DN_NO())==0){
                     //需要改变主表状态
-//                                    DNModel modeldn=dnModel;
-//                                    modeldn.setSTATUS(1);
                     if(DbDnInfo.getInstance().UpdateDNmodelState(dndetailmodel.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
 
                     }else{

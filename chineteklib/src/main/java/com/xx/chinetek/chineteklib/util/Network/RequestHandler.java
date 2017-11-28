@@ -70,6 +70,10 @@ public class RequestHandler {
     }
 
     private static void onVolleyResponse(String response, Handler handler, int what, Bundle bundle) {
+       if(!response.contains("HeaderStatus")) {
+           response=response.replace("\"","");
+           response = "{\"HeaderStatus\":\"E\",\"Message\":\"" + response + "\",\"MaterialDoc\":null,\"TaskNo\":null,\"ModelJson\":[]}";
+       }
         Message msg = handler.obtainMessage(what, response);
         msg.setData(bundle);
         handler.sendMessage(msg);

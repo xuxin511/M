@@ -31,18 +31,7 @@ public class AnalyticsBarCode {
                     BarCodeModel barCodeModel=new BarCodeModel();
                     barCodeModel.setGolfa_Code(KeyCode);
                     barCodeModel.setMAT_TYPE(0); //非三菱
-                    String serialNo=Barcode.substring(ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialStartIndex()-1,
-                            ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialEndIndex());
-                    barCodeModel.setSerial_Number(serialNo);
-                    barCodeModel.setOtherCode(new ArrayList<String>());
-                    int otherSize=ParamaterModel.baseparaModel.getCusBarcodeRule().getOtherColumn().size();
-                    for(int i=0;i<otherSize;i++){
-                       String[] indexs=ParamaterModel.baseparaModel.getCusBarcodeRule().getOtherColumn().get(i).split("-");
-                       int start=Integer.parseInt(indexs[0].toString())-1;
-                       int end=Integer.parseInt(indexs[1].toString());
-                       String column=Barcode.substring(start,end);
-                        barCodeModel.getOtherCode().add(column);
-                    }
+                    SetNotMitSubshiCode(Barcode, barCodeModel);
                     barCodeModels.add(barCodeModel);
                 }
             }
@@ -55,6 +44,21 @@ public class AnalyticsBarCode {
 
         }
         return  barCodeModels;
+    }
+
+    private static void SetNotMitSubshiCode(String Barcode, BarCodeModel barCodeModel) {
+        String serialNo=Barcode.substring(ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialStartIndex()-1,
+                ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialEndIndex());
+        barCodeModel.setSerial_Number(serialNo);
+        barCodeModel.setOtherCode(new ArrayList<String>());
+        int otherSize=ParamaterModel.baseparaModel.getCusBarcodeRule().getOtherColumn().size();
+        for(int i=0;i<otherSize;i++){
+           String[] indexs=ParamaterModel.baseparaModel.getCusBarcodeRule().getOtherColumn().get(i).split("-");
+           int start=Integer.parseInt(indexs[0].toString())-1;
+           int end=Integer.parseInt(indexs[1].toString());
+           String column=Barcode.substring(start,end);
+            barCodeModel.getOtherCode().add(column);
+        }
     }
 
     /**

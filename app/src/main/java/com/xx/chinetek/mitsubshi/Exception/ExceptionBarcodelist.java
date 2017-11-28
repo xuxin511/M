@@ -105,11 +105,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         txtItemName.setText("物料名称："+dndetailmodel.getITEM_NAME());
         txtItemNo.setText("物料编码："+dndetailmodel.getGOLFA_CODE());
         txtKUQty.setText("出库数量："+dndetailmodel.getDN_QTY());
-        txtScanQty.setText("扫描数量："+dndetailmodel.getSCAN_QTY());
-
         GetDeliveryOrderScanList();
-        if (dnModel.getDETAILS()== null)
-            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
 
     }
 
@@ -155,8 +151,6 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             CommonUtil.setEditFocus(edtBarcode);
         }
     }
-
-
 
     /**
      * 保存数据库
@@ -231,8 +225,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         DNScanModels= DbDnInfo.getInstance().GetLoaclDNScanModelDN(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
         exceptionScanbarcodeAdapter=new ExceptionScanbarcodeAdapter(context, DNScanModels);
         lsvDeliveryScan.setAdapter(exceptionScanbarcodeAdapter);
-//        edtBarcode.setText("");
-//        CommonUtil.setEditFocus(edtBarcode);
+        txtScanQty.setText("扫描数量："+DNScanModels.size());
     }
 
 

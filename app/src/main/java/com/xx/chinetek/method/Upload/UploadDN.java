@@ -92,6 +92,13 @@ public class UploadDN {
             if (returnMsgModel.getHeaderStatus().equals("S")) {
                 DNModel dnModel = returnMsgModel.getModelJson();
                 if(dnModel!=null) {
+                    //保留原有数据
+                    DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
+                    if(tempdnModel!=null) {
+                        dnModel.setOPER_DATE(dnModel.getOPER_DATE());
+                        dnModel.setCUS_DN_NO(dnModel.getCUS_DN_NO());
+                        dnModel.setREMARK(dnModel.getREMARK());
+                    }
                     ArrayList<DNModel> dnModels = new ArrayList<>();
                     dnModels.add(dnModel);
                     //插入数据
@@ -103,6 +110,7 @@ public class UploadDN {
                     //更新出库单状态
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.Sumbit);
                 }
+                return true;
             } else {
 
                 MessageBox.Show(context, returnMsgModel.getMessage());

@@ -396,7 +396,9 @@ public class DbDnInfo {
      */
     public boolean DELscanbyserial(String DNNo,String Material,Integer lineno,String serialno,String condition){
         try{
-            String deletesql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ DNNo +"' and LINE__NO='"+ lineno +"' and GOLFA__CODE='"+ Material +"'and SERIAL__NO='"+ serialno+"'";
+            String deletesql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ DNNo
+                    +"' and LINE__NO='"+ lineno +"' and GOLFA__CODE='"+ Material
+                    +"'and SERIAL__NO='"+ serialno+"' and status<>'0'";
             daoSession.getDatabase().execSQL(deletesql);
             return true;
         }catch(Exception ex){

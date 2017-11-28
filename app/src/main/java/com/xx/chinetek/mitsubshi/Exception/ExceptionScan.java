@@ -124,7 +124,6 @@ public class ExceptionScan extends BaseActivity {
 //    private int clickpositionlong=-1;
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemLongClickListener.class)
     private boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-
         if (i < 0) {
             MessageBox.Show(context, "请先选择操作的行！");
             return false;
@@ -141,12 +140,17 @@ public class ExceptionScan extends BaseActivity {
                     }
                 }).setNegativeButton("取消", null).show();
         return true;
-
     }
 
 
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
+        int size=dnDetailModels.size();
+        for(int i=0;i<size;i++){
+            int scanQTY=DbDnInfo.getInstance().GetScanQtyInDNScanModel(dnDetailModels.get(i).getAGENT_DN_NO()
+                    ,dnDetailModels.get(i).getGOLFA_CODE(),dnDetailModels.get(i).getLINE_NO());
+            dnDetailModels.get(i).setSCAN_QTY(scanQTY);
+        }
         dnModel.setDETAILS(dnDetailModels);
         exceptionScanItemAdapter=new ExceptionScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(exceptionScanItemAdapter);
