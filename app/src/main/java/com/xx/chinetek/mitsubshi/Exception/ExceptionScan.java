@@ -5,16 +5,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
 import com.xx.chinetek.adapter.Exception.ExceptionScanItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
+import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.R;
@@ -27,10 +31,9 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
 
 @ContentView(R.layout.activity_exception_scan)
 public class ExceptionScan extends BaseActivity {
@@ -45,6 +48,18 @@ public class ExceptionScan extends BaseActivity {
     DbDnInfo dnInfo;
 
     @Override
+    public void onHandleMessage(Message msg) {
+        switch (msg.what) {
+            case RESULT_UploadDN:
+                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,dnModel.getAGENT_DN_NO());
+                break;
+            case NetworkError.NET_ERROR_CUSTOM:
+                ToastUtil.show("获取请求失败_____" + msg.obj);
+                break;
+        }
+    }
+
+    @Override
     protected void initViews() {
        super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.ScanDetails),true);
@@ -56,21 +71,13 @@ public class ExceptionScan extends BaseActivity {
         super.initData();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
-        GetDeliveryOrderScanList();
-        if (dnModel.getDETAILS() == null)
-            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-        dnModel.setDETAILS(dnDetailModels);
+        dnModel.__setDaoSession(dnInfo.getDaoSession());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        dnInfo=DbDnInfo.getInstance();
-        dnModel=getIntent().getParcelableExtra("DNModel");
         GetDeliveryOrderScanList();
-        if (dnModel.getDETAILS() == null)
-            dnModel.setDETAILS(new ArrayList<DNDetailModel>());
-        dnModel.setDETAILS(dnDetailModels);
     }
 
     @Override
@@ -138,6 +145,7 @@ public class ExceptionScan extends BaseActivity {
 
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
+        dnModel.setDETAILS(dnDetailModels);
         exceptionScanItemAdapter=new ExceptionScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(exceptionScanItemAdapter);
     }

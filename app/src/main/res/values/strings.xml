@@ -145,12 +145,12 @@
     <string name="Msg_NoSelect_CusCode">请选择客户或代理商</string>
     <string name="Msg_No_CusCode">请输入代理商或客户编号！</string>
     <string name="Msg_No_Barcode">请扫描条码！</string>
-    <string name="Msg_Dn_Finished">出库单关闭,不能重复提交！</string>
+    <string name="Msg_Dn_Finished">出库单已关闭,不能提交数据！</string>
     <string name="Msg_Export_Type">请选择导出方式</string>
     <string name="Msg_New_Custom">新增客户</string>
     <string name="Msg_No_ExportDn">请选择需要导出的出库单</string>
     <string name="Msg_No_DirExportDn">不存在需要导出的出库单单据！</string>
-    <string name="Msg_Upload_DN">出库单未完成，确定上传?</string>
+    <string name="Msg_Upload_DN">出库单存在未完成项，是否提交之后关闭单据?</string>
     <string name="Msg_ToMailExit">收件人邮箱已设置！</string>
     <string name="Msg_ToMailNotSet">收件人邮箱未设置！</string>
     <string name="Msg_HaveSameDN">该出库单号已存在！</string>

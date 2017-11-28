@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @Entity(
         indexes = {
-        @Index(value = "AGENT_DN_NO,LINE_NO,SERIAL_NO", unique = true)
+        @Index(value = "AGENT_DN_NO,LINE_NO,SERIAL_NO,STATUS" ,unique = true)
 }
 )
 public class DNScanModel implements Parcelable{

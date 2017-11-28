@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import com.android.volley.Request;
 import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
-import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
+import com.xx.chinetek.chineteklib.model.ReturnMsgModel;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
@@ -51,22 +51,27 @@ public class UploadDN {
                 }
             }
             if(!isFinished){
+                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
                 new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
                         .setMessage(context.getResources().getString(R.string.Msg_Upload_DN))
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("提交关闭", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
-                                UploadDN.UploadDNToMaps(dnModel,mHandler);
+                                UploadDN.UploadDNToMaps(dnModel,"F",mHandler);
                             }
                         })
-                        .setNegativeButton("取消",null)
+                        .setNegativeButton("提交", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                UploadDN.UploadDNToMaps(dnModel,"N",mHandler);
+                            }
+                        })
                         .show();
             }else{
                 //提交成功修改单据状态
                 DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
-                UploadDN.UploadDNToMaps(dnModel,mHandler);
+                UploadDN.UploadDNToMaps(dnModel,"F",mHandler);
             }
 
         }else{
@@ -82,15 +87,24 @@ public class UploadDN {
     public static boolean AnalysisUploadDNToMapsJson(Context context,String result,String Dnno) {
         try {
             LogUtil.WriteLog(SyncDN.class, TAG_UploadDN, result);
-            ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
+            ReturnMsgModel<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<DNModel>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
-                //更新出库单状态
-                DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.Sumbit);
+                DNModel dnModel = returnMsgModel.getModelJson();
+                if(dnModel!=null) {
+                    ArrayList<DNModel> dnModels = new ArrayList<>();
+                    dnModels.add(dnModel);
+                    //插入数据
+                    DbDnInfo.getInstance().InsertDNDB(dnModels);
+                    //更新出库单状态(异常)
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.exeption);
+                }
+                if(returnMsgModel.getMaterialDoc()!=null && returnMsgModel.getMaterialDoc().equals("F")) {
+                    //更新出库单状态
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.Sumbit);
+                }
             } else {
-                ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
-                //插入数据
-                DbDnInfo.getInstance().InsertDNDB(dnModels);
+
                 MessageBox.Show(context, returnMsgModel.getMessage());
             }
             return false;
@@ -100,12 +114,13 @@ public class UploadDN {
         return false;
     }
 
-    public static void UploadDNToMaps(DNModel dnModel, MyHandler<BaseActivity> mHandler){
+    public static void UploadDNToMaps(DNModel dnModel,String isCloseDN, MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
         String dnModelJson= GsonUtil.parseModelToJson(dnModel);
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
         params.put("UserInfoJS", user);
         params.put("DNJS", dnModelJson);
+        params.put("isCloseDN", isCloseDN); //F.关闭 N:不关闭
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_UploadDN, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadDN,
