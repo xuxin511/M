@@ -54,8 +54,6 @@ public class DeliveryScan extends BaseIntentActivity {
 
     Context context=DeliveryScan.this;
 
-//    @ViewInject(R.id.edt_Barcode)
-//    EditText edtBarcode;
     @ViewInject(R.id.img_Remark)
     ImageView imgRemark;
     @ViewInject(R.id.txt_ItemNo)

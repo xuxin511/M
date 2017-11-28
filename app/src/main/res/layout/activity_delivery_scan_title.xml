@@ -80,6 +80,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="1234567890"
+        android:background="@color/colorPrimary"
         android:textAlignment="center"
         android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/img_Remark"
