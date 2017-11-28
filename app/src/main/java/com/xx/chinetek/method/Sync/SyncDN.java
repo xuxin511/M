@@ -1,17 +1,12 @@
 package com.xx.chinetek.method.Sync;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
-import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
-import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
-import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
@@ -20,8 +15,6 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailUtil;
-import com.xx.chinetek.method.SharePreferUtil;
-import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;

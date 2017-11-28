@@ -32,7 +32,6 @@ import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
-import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
@@ -45,7 +44,6 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
-import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
@@ -117,11 +115,9 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         }.getType());
         if (returnMsgModel.getHeaderStatus().equals("S")) {
             ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
-
             Intent intent=new Intent(context, DNsync.class);
             Bundle bundle=new Bundle();
             bundle.putParcelableArrayList("DNModels",dnModels);
-            bundle.putString("Message",returnMsgModel.getMessage());
             intent.putExtras(bundle);
             startActivityLeft(intent);
 

@@ -2,14 +2,6 @@ package com.xx.chinetek.mitsubshi.DN;
 
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +13,9 @@ import com.xx.chinetek.adapter.bulkupload.BulkuploadListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
-import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
-import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
-import com.xx.chinetek.method.SharePreferUtil;
-import com.xx.chinetek.method.Upload.UploadDN;
-import com.xx.chinetek.mitsubshi.Bulkupload.BulkuploadScan;
 import com.xx.chinetek.mitsubshi.R;
-import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -38,9 +24,6 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
-
-import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
-import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
 
 @ContentView(R.layout.activity_dnsync_list)
 public class DNsync extends BaseActivity{
@@ -52,25 +35,9 @@ public class DNsync extends BaseActivity{
     ListView LsvExceptionList;
 
     ArrayList<DNModel> DNModels;
-    String StrMessage;
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
 
 
-    @Override
-    public void onHandleMessage(Message msg) {
-        switch (msg.what) {
-//            case RESULT_UploadDN:
-//                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,UploadDNno);
-//                uploadIndex--;
-//                if(uploadIndex==0)
-//                    GetbulkuploadList();
-//                break;
-            case NetworkError.NET_ERROR_CUSTOM:
-                ToastUtil.show("获取请求失败_____" + msg.obj);
-                break;
-        }
-
-    }
 
     @Override
     protected void initViews() {
@@ -83,23 +50,11 @@ public class DNsync extends BaseActivity{
     protected void initData() {
         super.initData();
         DNModels=getIntent().getParcelableArrayListExtra("DNModels");
-        StrMessage = getIntent().getStringExtra("Message");
         GetbulkuploadList();
-//        edtDNNoFuilter.addTextChangedListener(bululoadTextWatcher);
-//        mSwipeLayout.setOnRefreshListener(this); //下拉刷新
     }
 
-//    @Override
-//    public void onRefresh() {
-////        ImportDelivery();
-//        mSwipeLayout.setRefreshing(false);
-//    }
-
-
-
-
-    @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
-    private boolean LsvItemlongClick(AdapterView<?> parent, View view, int position, long id) {
+    @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
+    private void LsvItemClick(AdapterView<?> parent, View view, int position, long id) {
         try{
             DNModel  dnModel=(DNModel)bulkuploadListItemAdapter.getItem(position);
                 if(dnModel.getFlag()==null||dnModel.getFlag().equals("0")){
@@ -111,7 +66,6 @@ public class DNsync extends BaseActivity{
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
-        return true;
     }
 
 
@@ -151,11 +105,6 @@ public class DNsync extends BaseActivity{
                 }
                 //插入数据
                 DbDnInfo.getInstance().InsertDNDB(Tempdnmodels) ;
-                ParamaterModel.DNSyncTime = StrMessage;
-                //保存同步时间
-                SharePreferUtil.SetSyncTimeShare(context);
-
-                MessageBox.Show(context,"同步成功！");
                 closeActiviry();
 
             }catch(Exception ex){
