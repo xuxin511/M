@@ -15,11 +15,12 @@
     <string name="sync">基础数据同步</string>
     <string name="deliveryScan">出库扫描</string>
     <string name="startOutput">开始出库扫描</string>
-    <string name="outputlist">出库单据列表</string>
+    <string name="outputlist">单据列表</string>
     <string name="barcodeDetail">条码明细</string>
     <string name="sumbit">提交</string>
     <string name="close">完毕</string>
     <string name="Bulkupload">批量上报</string>
+    <string name="DNsync">MAPS单据同步</string>
     <string name="Reason">异常原因：</string>
     <string name="ExceptionScan">异常扫描</string>
     <string name="BarcodeScan">异常扫描</string>

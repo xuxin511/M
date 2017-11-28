@@ -203,7 +203,10 @@ public class DeliveryScan extends BaseIntentActivity {
         }
         try {
             txtDnNo.setFocusable(false);
-            dnModel.setAGENT_DN_NO(txtDnNo.getText().toString());
+            dnModel.setAGENT_DN_NO(txtDnNo.getText().toString().trim());
+            for(int i=0;i<dnModel.getDETAILS().size();i++){
+                dnModel.getDETAILS().get(i).setAGENT_DN_NO(txtDnNo.getText().toString().trim());
+            }
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode);
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
@@ -249,6 +252,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
+        txtDnNo.setFocusable(dnDetailModels.size()==0?true:false);
       //  edtBarcode.setText("");
       //  CommonUtil.setEditFocus(edtBarcode);
     }

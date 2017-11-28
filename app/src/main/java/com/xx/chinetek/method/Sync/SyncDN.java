@@ -1,5 +1,7 @@
 package com.xx.chinetek.method.Sync;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -19,6 +21,7 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailUtil;
 import com.xx.chinetek.method.SharePreferUtil;
+import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -61,7 +64,7 @@ public class SyncDN {
         final Map<String, String> params = new HashMap<String, String>();
         ParamaterModel.DNSyncTime= ParamaterModel.DNSyncTime==null?"":ParamaterModel.DNSyncTime;
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
-        params.put("DateString", ParamaterModel.DNSyncTime);
+        params.put("DateString", "");
         params.put("UserInfoJS", user);
         //params.put("Synctime", ParamaterModel.DNSyncTime);
         String para = (new JSONObject(params)).toString();
@@ -123,36 +126,7 @@ public class SyncDN {
 
 
 
-    /**
-     * MAPS同步出库单
-     * @param result
-     */
-   public static void AnalysisSyncMAPSDNJson(String result) throws Exception {
-       LogUtil.WriteLog(SyncDN.class, TAG_SyncDn, result);
-       ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
-       }.getType());
-       if (returnMsgModel.getHeaderStatus().equals("S")) {
-           ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
-           int size=dnModels.size();
-           for(int i=0;i<size;i++) {
-               DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(dnModels.get(i).getAGENT_DN_NO());
-               if(dnModel!=null) {
-                   dnModels.get(i).setSTATUS(dnModel.getSTATUS());
-                   dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-                   dnModels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-                   dnModels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
-                   dnModels.get(i).setREMARK(dnModel.getREMARK());
-               }
-           }
-           //插入数据
-           DbDnInfo.getInstance().InsertDNDB(dnModels);
-           ParamaterModel.DNSyncTime = returnMsgModel.getMessage();
-           //保存同步时间
-           SharePreferUtil.SetSyncTimeShare(context);
-       } else {
-           MessageBox.Show(context, returnMsgModel.getMessage());
-       }
-   }
+
 
 
 

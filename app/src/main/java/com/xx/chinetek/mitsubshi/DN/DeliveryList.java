@@ -32,6 +32,7 @@ import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
+import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
@@ -51,6 +52,7 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDnDetail;
 
 @ContentView(R.layout.activity_delivery_list)
@@ -75,7 +77,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         try {
             switch (msg.what) {
                 case RESULT_SyncDn:
-                    SyncDN.AnalysisSyncMAPSDNJson((String) msg.obj);
+                    AnalysisSyncMAPSDNJson((String) msg.obj);
                     break;
                 case RESULT_SyncDnDetail:
                     AnalysisSyncMAPSDNDetailJson((String) msg.obj);
@@ -104,6 +106,30 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             dialog.dismiss();
         }
     }
+
+    /**
+     * MAPS同步出库单
+     * @param result
+     */
+    public void AnalysisSyncMAPSDNJson(String result) throws Exception {
+        LogUtil.WriteLog(SyncDN.class, TAG_SyncDn, result);
+        ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
+        }.getType());
+        if (returnMsgModel.getHeaderStatus().equals("S")) {
+            ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
+
+            Intent intent=new Intent(context, DNsync.class);
+            Bundle bundle=new Bundle();
+            bundle.putParcelableArrayList("DNModels",dnModels);
+            bundle.putString("Message",returnMsgModel.getMessage());
+            intent.putExtras(bundle);
+            startActivityLeft(intent);
+
+        } else {
+            MessageBox.Show(context, returnMsgModel.getMessage());
+        }
+    }
+
 
     private void AnalysisSyncMAPSDNDetailJson(String result) throws Exception {
         LogUtil.WriteLog(SyncDN.class, TAG_SyncDnDetail, result);
@@ -161,6 +187,14 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.action_sync){
+            if(ParamaterModel.DnTypeModel.getDNType()==0){
+                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
+                dialog =new LoadingDialog(context);
+                dialog.show();
+                SyncDN.SyncMAPS(mHandler);
+            }
+        }
         if(item.getItemId()==R.id.action_QR){
             Intent intent=new Intent(context,QRScan.class);
             ParamaterModel.DnTypeModel.setDNType(5);
@@ -298,10 +332,12 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
         switch (ParamaterModel.DnTypeModel.getDNType()){
             case 0://MAPS
-                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
-                dialog =new LoadingDialog(context);
-                dialog.show();
-                SyncDN.SyncMAPS(mHandler);
+//                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
+//                dialog =new LoadingDialog(context);
+//                dialog.show();
+//                SyncDN.SyncMAPS(mHandler);
+                DNModels= DbDnInfo.getInstance().GetLoaclDN();
+                BindListView();
                 break;
             case 1://邮件
                 BaseApplication.DialogShowText = getString(R.string.Dia_SyncMail);
