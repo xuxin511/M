@@ -100,7 +100,7 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
             listItemView = (ListItemView) convertView.getTag();
         }
         DNModel DNModel = DNModels.get(selectID);
-        listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
+        listItemView.txtDeliveryNo.setText(DNModel.getDN_SOURCE()==3?DNModel.getCUS_DN_NO():DNModel.getAGENT_DN_NO());
         listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME()==null?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
         listItemView.txtCreateTime.setText(convertView.getResources().getString(R.string.createtime)+ CommonUtil.DateToString(DNModel.getDN_DATE(),null));

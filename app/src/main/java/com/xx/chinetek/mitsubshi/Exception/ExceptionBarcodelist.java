@@ -101,7 +101,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         dndetailmodel=getIntent().getParcelableExtra("DNdetailModel");
 //        Flag=getIntent().getStringExtra("Flag");
         //初始化数据
-        txtDnNo.setText(dnModel.getAGENT_DN_NO().toString());
+        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO().toString():dnModel.getAGENT_DN_NO().toString());
         txtItemName.setText("物料名称："+dndetailmodel.getITEM_NAME());
         txtItemNo.setText("物料编码："+dndetailmodel.getGOLFA_CODE());
         txtKUQty.setText("出库数量："+dndetailmodel.getDN_QTY());
