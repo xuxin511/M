@@ -148,11 +148,11 @@ public class DeliveryStart extends BaseActivity {
             if (customModel == null && partnerItemAdapter.getCount() == 1) {
                 customModel = (CustomModel) partnerItemAdapter.getItem(0);
             }
-            if (customModel == null) {
-                MessageBox.Show(context, getString(R.string.Msg_NoSelect_CusCode));
-                CommonUtil.setEditFocus(edtContentText);
-                return;
-            }
+//            if (customModel == null) {
+//                MessageBox.Show(context, getString(R.string.Msg_NoSelect_CusCode));
+//                CommonUtil.setEditFocus(edtContentText);
+//                return;
+//            }
         }
         dnTypeModel.setCustomModel(customModel);
         dnTypeModel.setDNCusType(customModel.getPARTNER_FUNCTION().equals("Z3")?1:0);
