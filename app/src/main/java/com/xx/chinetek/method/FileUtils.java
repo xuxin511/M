@@ -47,7 +47,8 @@ public class FileUtils {
     public static void ExportDNFile(ArrayList<DNModel> selectDnModels,Integer IsMaps) throws Exception{
         String Notmaps="DDN_NO,LINE_NO,Tnd_Dealer,Tnd_Dealer,End_User,End_User,SAP_MAT,MAKTX,Golfa_Code,Serial_No," +
                 "Packing_Date,Region,Country,Deal_Sale_Date";
-        String Maps="";
+        String Maps="DDN_NO,LINE_NO,Tnd_Dealer,End_User,SAP_MAL,Golfa_Code,Serial_No," +
+                "Pack_Date,Region,Country,Deal_Sale_Date";
         String Title=IsMaps==0?Maps:Notmaps;
         Boolean isCusBarcode=false;
         for (DNModel dnModel:selectDnModels ) {
@@ -82,8 +83,13 @@ public class FileUtils {
                             String packingDate=dnScanModel.getPACKING_DATE()==null?"":dnScanModel.getPACKING_DATE();
                             String region=dnScanModel.getREGION()==null?"":dnScanModel.getREGION();
                             String country=dnScanModel.getCOUNTRY()==null?"":dnScanModel.getCOUNTRY();
-                            String dealSaleDate= CommonUtil.DateToString(dnScanModel.getDEAL_SALE_DATE(),"yyyy-MM-dd HH:mm:ss");
-                            String writeLine=DnNo+","+lineNo+","+level2No+","+level2Name
+                            String dealSaleDate= CommonUtil.DateToString(dnScanModel.getDEAL_SALE_DATE(),"yyyy/MM/dd");
+                            String writeLine=IsMaps==0? DnNo+","+lineNo+","+level2No
+                                    +","+custom+","+sapMaterial+","
+                                    +golfaCode+","+Serial+","+packingDate+","
+                                    +region+","+country+","+dealSaleDate
+                                    :
+                                    DnNo+","+lineNo+","+level2No+","+level2Name
                                     +","+custom+","+customName+","+sapMaterial+","+maktx+","
                                     +golfaCode+","+Serial+","+packingDate+","
                                     +region+","+country+","+dealSaleDate;

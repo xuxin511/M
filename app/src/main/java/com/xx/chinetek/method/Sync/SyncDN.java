@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
+import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
@@ -126,6 +127,7 @@ public class SyncDN {
        File[] DNfiles=new File(ParamaterModel.DownDirectory).listFiles();
        ArrayList<DNModel> dnModels=new ArrayList<>();
        Boolean isSelfDN=true;//判断单据是否为登陆代理商所有
+       String ErrorDN="";
        for(int i=0;i<DNfiles.length;i++) {
            DNModel dnModel = new DNModel();
            File file = DNfiles[i];
@@ -153,7 +155,11 @@ public class SyncDN {
                        dnModel.setAGENT_DN_NO(DNNo);
                        String cusNo = DbBaseInfo.getInstance().GetCustomName(lines[2].trim());
                        //判断代理商导入文件是否属于该代理商所有
-                       if(!cusNo.equals(ParamaterModel.PartenerID)) isSelfDN=false;
+                       if(!cusNo.equals(ParamaterModel.PartenerID)) {
+                           isSelfDN = false;
+                           ErrorDN+=file.getName()+"\r\n";
+                           continue;
+                       }
                        dnModel.setLEVEL_2_AGENT_NO(cusNo);
                        dnModel.setLEVEL_2_AGENT_NAME(lines[2].trim());
                        cusNo = DbBaseInfo.getInstance().GetCustomName(lines[3].trim());
@@ -202,8 +208,10 @@ public class SyncDN {
        for(int i=0;i<DNfiles.length;i++) {
            DNfiles[i].delete();
        }
-        
 
+        if(!isSelfDN){
+            MessageBox.Show(context,context.getString(R.string.Msg_ImportDNError));
+        }
        return dnModels;
       // DbDnInfo.getInstance().InsertDNDB(dnModels);
    }
