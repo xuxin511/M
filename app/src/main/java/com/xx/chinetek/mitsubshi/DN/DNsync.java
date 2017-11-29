@@ -65,7 +65,7 @@ public class DNsync extends BaseActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_scan_title, menu);
+        getMenuInflater().inflate(R.menu.menu_down, menu);
         return true;
     }
 
