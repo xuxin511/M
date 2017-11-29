@@ -243,14 +243,16 @@ public class ReciveOneMail {
                     if (fileName.toLowerCase().indexOf("gb18030") != -1) {
                         fileName = MimeUtility.decodeText(fileName);
                     }
-                    saveFile(fileName, mpart.getInputStream());
+                    if(fileName.contains("csv"))
+                        saveFile(fileName, mpart.getInputStream());
                 } else if (mpart.isMimeType("multipart/*")) {
                     saveAttachMent(mpart);
                 } else {
                     fileName = mpart.getFileName();
                     if (fileName != null) {
                         fileName = MimeUtility.decodeText(fileName);
-                        saveFile(fileName, mpart.getInputStream());
+                        if(fileName.contains("csv"))
+                            saveFile(fileName, mpart.getInputStream());
                     }
                 }
             }

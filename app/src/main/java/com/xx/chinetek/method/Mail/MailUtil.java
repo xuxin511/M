@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -46,10 +45,10 @@ public class MailUtil {
             ReciveOneMail pmm = null;
             for (int i = 0; i < messages.length; i++) {
                 pmm = new ReciveOneMail((MimeMessage) messages[i]);
-                Flags flags = messages[i].getFlags();
-                if (flags.contains(Flags.Flag.SEEN)) { //已读
-                    continue;
-                }
+//                Flags flags = messages[i].getFlags();
+//                if (flags.contains(Flags.Flag.SEEN)) { //已读
+//                    continue;
+//                }
                 if(!pmm.isContainAttach((Part) messages[i])){ //没有附件
                     continue;
                 }
