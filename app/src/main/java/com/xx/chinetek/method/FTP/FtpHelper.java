@@ -378,6 +378,26 @@ public class FtpHelper {
     }
 
     /**
+     * 复制文件至备份文件夹
+     * @param moveFile
+     * @return
+     * @throws IOException
+     */
+    public boolean MoveFile(String remotePath,String moveFile,String bakPath) throws IOException {
+        boolean flag=false;
+        try {
+            createFolder(bakPath);
+            String from = remotePath + moveFile;
+            String to = bakPath + moveFile;
+            flag = ftpClient.rename(from, to);
+            flag=ftpClient.deleteFile(from);
+        }catch (Exception  e){
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    /**
      * 创建文件夹
      *
      * @param path 文件夹名

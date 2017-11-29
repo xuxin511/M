@@ -117,13 +117,6 @@ public class SyncDN {
     }
 
 
-
-
-
-
-
-
-
     /**
      * 读取目录下文件获取出库单
      * @return
@@ -196,6 +189,9 @@ public class SyncDN {
                dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
                dnModel.setDETAILS(dnDetailModels);
                dnModel.setDN_QTY(Qty);
+               if(ParamaterModel.DnTypeModel.getDNType()==2){ //同步方式为FTP，记录文件名
+                dnModel.setFtpFileName(file.getName());
+               }
            }
            reader.close();
            dnModels.add(dnModel);

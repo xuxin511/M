@@ -34,6 +34,24 @@ public class FtpUtil {
         mHandler.sendMessage(msg);
     }
 
+    public static void FtpMoveFile(FtpModel ftpModel,String[] moveFiles){
+        try {
+            if (ftp == null) {
+                ftp = new FtpHelper(ftpModel);
+            }
+            ftp.openConnect();
+            for (String moveFile:moveFiles){
+                ftp.MoveFile(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad(),moveFile,"/BAK/");
+            }
+            if (ftp.isConnect()) {
+                ftp.closeConnect();
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void FtpUploadDN(FtpModel ftpModel,File[] files, MyHandler<BaseActivity> mHandler ) {
         try {
             int total = 0;

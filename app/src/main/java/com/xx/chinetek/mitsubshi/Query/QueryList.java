@@ -24,6 +24,7 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.FileUtils;
 import com.xx.chinetek.method.Upload.UploadFiles;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
@@ -68,6 +69,16 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
             switch (msg.what) {
                 case RESULT_SyncMail:
                 case RESULT_SyncFTP:
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            String [] MoveFiles=new String[SelectDnModels.size()];
+                            for(int i=0;i<SelectDnModels.size();i++){
+                                MoveFiles[i]=SelectDnModels.get(i).getFtpFileName();
+                            }
+                            FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(),MoveFiles);
+                        }
+                    }.start();
                     MessageBox.Show(context,(String)msg.obj);
                     break;
                 case RESULT_SyncUSB:
@@ -168,9 +179,7 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                 intent.putExtras(bundle);
                 startActivityLeft(intent);
                 break;
-            case 1:
-            case 2:
-            case 3:
+            default:
                 intent=new Intent(context,DeliveryScan.class);
                 bundle.putParcelable("DNModel",dnModel);
                 intent.putExtras(bundle);
@@ -187,6 +196,7 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
      * @throws Exception
      */
     void ExportDN(ArrayList<DNModel> selectDnModels, int Index) throws Exception{
+        FileUtils.DeleteFiles();
         FileUtils.ExportDNFile(selectDnModels); //导出文件只本地目录
         File dirFile=new File(ParamaterModel.UpDirectory);
         if(dirFile.isDirectory()) {

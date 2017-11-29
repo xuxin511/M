@@ -20,6 +20,26 @@ import java.util.ArrayList;
 public class FileUtils {
 
     /**
+     * 删除文件夹内文件
+     */
+    public static void DeleteFiles(){
+        try {
+            File dirFile = new File(ParamaterModel.UpDirectory);
+            if (dirFile.isDirectory()) {
+                File[] Files = dirFile.listFiles();
+                for (int i = 0; i < Files.length; i++) {
+                    File f = Files[i];
+                    f.delete();
+                }
+            }
+
+        }catch (Exception ex){
+
+        }
+    }
+
+
+    /**
      * 导出文件至本地
      * @param selectDnModels
      * @throws Exception

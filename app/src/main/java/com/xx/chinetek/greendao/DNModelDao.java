@@ -39,6 +39,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         public final static Property STATUS = new Property(12, int.class, "STATUS", false, "STATUS");
         public final static Property CUS_DN_NO = new Property(13, String.class, "CUS_DN_NO", false, "CUS__DN__NO");
         public final static Property REMARK = new Property(14, String.class, "REMARK", false, "REMARK");
+        public final static Property FtpFileName = new Property(15, String.class, "FtpFileName", false, "FTP_FILE_NAME");
     }
 
     private DaoSession daoSession;
@@ -71,7 +72,8 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
                 "\"DN__SOURCE\" INTEGER," + // 11: DN_SOURCE
                 "\"STATUS\" INTEGER NOT NULL ," + // 12: STATUS
                 "\"CUS__DN__NO\" TEXT," + // 13: CUS_DN_NO
-                "\"REMARK\" TEXT);"); // 14: REMARK
+                "\"REMARK\" TEXT," + // 14: REMARK
+                "\"FTP_FILE_NAME\" TEXT);"); // 15: FtpFileName
     }
 
     /** Drops the underlying database table. */
@@ -154,6 +156,11 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         if (REMARK != null) {
             stmt.bindString(15, REMARK);
         }
+ 
+        String FtpFileName = entity.getFtpFileName();
+        if (FtpFileName != null) {
+            stmt.bindString(16, FtpFileName);
+        }
     }
 
     @Override
@@ -230,6 +237,11 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         if (REMARK != null) {
             stmt.bindString(15, REMARK);
         }
+ 
+        String FtpFileName = entity.getFtpFileName();
+        if (FtpFileName != null) {
+            stmt.bindString(16, FtpFileName);
+        }
     }
 
     @Override
@@ -260,7 +272,8 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
             cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // DN_SOURCE
             cursor.getInt(offset + 12), // STATUS
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // CUS_DN_NO
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // REMARK
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // REMARK
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // FtpFileName
         );
         return entity;
     }
@@ -282,6 +295,7 @@ public class DNModelDao extends AbstractDao<DNModel, Void> {
         entity.setSTATUS(cursor.getInt(offset + 12));
         entity.setCUS_DN_NO(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setREMARK(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setFtpFileName(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
      }
     
     @Override
