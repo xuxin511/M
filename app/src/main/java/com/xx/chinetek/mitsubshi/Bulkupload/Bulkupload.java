@@ -213,7 +213,6 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
-
     }
 
     ArrayList<DNModel> ImportbulkuploadList(){

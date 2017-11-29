@@ -2,13 +2,10 @@ package com.xx.chinetek.mitsubshi.DN;
 
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.xx.chinetek.adapter.DN.SyncListItemAdapter;
@@ -31,8 +28,6 @@ import java.util.ArrayList;
 public class DNsync extends BaseActivity{
 
     Context context = DNsync.this;
-    @ViewInject(R.id.edt_DNNoFuilter)
-    EditText edtDNNoFuilter;
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
 
@@ -46,8 +41,6 @@ public class DNsync extends BaseActivity{
         super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.DNsync),true);
         x.view().inject(this);
-        edtDNNoFuilter.addTextChangedListener(syncdnNoTextWatcher);
-        edtDNNoFuilter.setVisibility(View.GONE);
     }
 
     @Override
@@ -67,27 +60,6 @@ public class DNsync extends BaseActivity{
     }
 
 
-    /**
-     * 文本变化事件
-     */
-    TextWatcher syncdnNoTextWatcher=new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String filterContent=edtDNNoFuilter.getText().toString();
-            if(!filterContent.equals(""))
-                syncListItemAdapter.getFilter().filter(filterContent);
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
 
 
 
