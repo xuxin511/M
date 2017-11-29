@@ -32,7 +32,7 @@ public class FTPsync extends BaseActivity{
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
 
-    ArrayList<DNModel> DNModels;
+    ArrayList<DNModel> dnModels;
     SyncListItemAdapter syncListItemAdapter;
 
 
@@ -73,9 +73,9 @@ public class FTPsync extends BaseActivity{
         if(item.getItemId()==R.id.action_submit){
             try{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
-                for(int i=0;i<DNModels.size();i++){
+                for(int i=0;i<dnModels.size();i++){
                     if (syncListItemAdapter.getStates(i)) {
-                        Tempdnmodels.add(0, DNModels.get(i));
+                        Tempdnmodels.add(0, dnModels.get(i));
                     }
                 }
                 if(Tempdnmodels==null||Tempdnmodels.size()==0){
@@ -108,7 +108,7 @@ public class FTPsync extends BaseActivity{
 
     void GetFTPloadList() {
         try {
-            ArrayList<DNModel> dnModels = SyncDN.DNFromFiles();
+            dnModels = SyncDN.DNFromFiles();
             syncListItemAdapter = new SyncListItemAdapter(context, dnModels);
             LsvExceptionList.setAdapter(syncListItemAdapter);
         } catch (Exception ex) {

@@ -1,5 +1,7 @@
 package com.xx.chinetek.method.DB;
 
+import android.text.TextUtils;
+
 import com.xx.chinetek.greendao.CustomModelDao;
 import com.xx.chinetek.greendao.DaoSession;
 import com.xx.chinetek.greendao.MaterialModelDao;
@@ -116,6 +118,7 @@ public class DbBaseInfo {
      * @return
      */
     public MaterialModel GetItemName(String condition){
+        if(TextUtils.isEmpty(condition)) return null;
         MaterialModel  materialModel = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.MATNR.eq(condition),
                 MaterialModelDao.Properties.BISMT.eq(condition)).unique();
         return materialModel;

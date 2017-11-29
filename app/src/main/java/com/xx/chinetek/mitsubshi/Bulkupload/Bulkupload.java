@@ -53,13 +53,14 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
 
     int uploadIndex=0;
-    String UploadDNno="";
+    DNModel postmodel;
+   // String UploadDNno="";
 
     @Override
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case RESULT_UploadDN:
-                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,UploadDNno);
+                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,postmodel);
                 uploadIndex--;
                 if(uploadIndex==0) {
                     MessageBox.Show(context,getString(R.string.Msg_DNUploadSuccess));
@@ -186,14 +187,12 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
         if(item.getItemId()==R.id.action_Export){
             String DnNo="";
             for(int i=0;i<DNModels.size();i++){
-                UploadDNno="";
                 if(DNModels.get(i).getFlag()=="1"){
-                    DNModel postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
+                    postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
                     if(postmodel==null){
                         DnNo+=DNModels.get(i).getAGENT_DN_NO()+"\n";
                     }else{
                         uploadIndex++;
-                        UploadDNno=DNModels.get(i).getAGENT_DN_NO();
                         UploadDN.UploadDNToMaps(postmodel,"N",mHandler);
                     }
                 }

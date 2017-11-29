@@ -14,6 +14,7 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.R;
@@ -90,12 +91,20 @@ public class UploadDN {
      * 上传出库单到MAPS
      * @param result
      */
-    public static boolean AnalysisUploadDNToMapsJson(Context context,String result,String Dnno) {
+    public static boolean AnalysisUploadDNToMapsJson(Context context,String result,final  DNModel subdnModel) {
         try {
             LogUtil.WriteLog(SyncDN.class, TAG_UploadDN, result);
             ReturnMsgModel<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<DNModel>>() {
             }.getType());
             if (!returnMsgModel.getHeaderStatus().equals("E")) {
+                if(subdnModel.getDN_SOURCE()==2){//ftp需要移动文件之BAK
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(),new String[]{subdnModel.getFtpFileName()});
+                        }
+                    }.start();
+                }
                 DNModel dnModel = returnMsgModel.getModelJson();
                 if(dnModel!=null) {
                     //保留原有数据
@@ -110,11 +119,11 @@ public class UploadDN {
                     //插入数据
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)
-                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.exeption);
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.exeption);
                 }
                 if(returnMsgModel.getHeaderStatus().equals("F")) {
                     //更新出库单状态
-                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.Sumbit);
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
                 }
                 return true;
             } else {
@@ -128,6 +137,7 @@ public class UploadDN {
     }
 
     public static void UploadDNToMaps(DNModel dnModel,String isCloseDN, MyHandler<BaseActivity> mHandler){
+
         final Map<String, String> params = new HashMap<String, String>();
         String dnModelJson= GsonUtil.parseModelToJson(dnModel);
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);

@@ -92,6 +92,11 @@ public class DNModel implements Parcelable {
     private String REMARK;
 
     /**
+     * 记录FTP文件名
+     */
+    private String FtpFileName;
+
+    /**
      * Falg
      */
     @Transient
@@ -357,12 +362,11 @@ public class DNModel implements Parcelable {
     }
 
 
-    @Generated(hash = 1075540711)
-    public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS,
-                   String LEVEL_1_AGENT_NO, String LEVEL_1_AGENT_NAME,
-                   String LEVEL_2_AGENT_NO, String LEVEL_2_AGENT_NAME, String CUSTOM_NO,
-                   String CUSTOM_NAME, Integer DN_QTY, Date OPER_DATE, Integer DN_SOURCE,
-                   int STATUS, String CUS_DN_NO, String REMARK) {
+    @Generated(hash = 1223170972)
+    public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS, String LEVEL_1_AGENT_NO,
+            String LEVEL_1_AGENT_NAME, String LEVEL_2_AGENT_NO, String LEVEL_2_AGENT_NAME,
+            String CUSTOM_NO, String CUSTOM_NAME, Integer DN_QTY, Date OPER_DATE, Integer DN_SOURCE,
+            int STATUS, String CUS_DN_NO, String REMARK, String FtpFileName) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.DN_DATE = DN_DATE;
         this.DN_STATUS = DN_STATUS;
@@ -378,6 +382,7 @@ public class DNModel implements Parcelable {
         this.STATUS = STATUS;
         this.CUS_DN_NO = CUS_DN_NO;
         this.REMARK = REMARK;
+        this.FtpFileName = FtpFileName;
     }
 
     /** Used to resolve relations */
@@ -409,8 +414,17 @@ public class DNModel implements Parcelable {
         dest.writeInt(this.STATUS);
         dest.writeString(this.CUS_DN_NO);
         dest.writeString(this.REMARK);
+        dest.writeString(this.FtpFileName);
         dest.writeString(this.Flag);
         dest.writeTypedList(this.DETAILS);
+    }
+
+    public String getFtpFileName() {
+        return this.FtpFileName;
+    }
+
+    public void setFtpFileName(String FtpFileName) {
+        this.FtpFileName = FtpFileName;
     }
 
     protected DNModel(Parcel in) {
@@ -431,6 +445,7 @@ public class DNModel implements Parcelable {
         this.STATUS = in.readInt();
         this.CUS_DN_NO = in.readString();
         this.REMARK = in.readString();
+        this.FtpFileName = in.readString();
         this.Flag = in.readString();
         this.DETAILS = in.createTypedArrayList(DNDetailModel.CREATOR);
     }

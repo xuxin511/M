@@ -51,7 +51,7 @@ public class ExceptionScan extends BaseActivity {
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case RESULT_UploadDN:
-                if(UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,dnModel.getAGENT_DN_NO())){
+                if(UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,dnModel)){
                     closeActiviry();
                 }
                 break;
