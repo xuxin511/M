@@ -405,11 +405,11 @@ public class DbDnInfo {
      * @param serialno
      * @param condition
      */
-    public boolean DELscanbyserial(String DNNo,String Material,Integer lineno,String serialno,String condition){
+    public boolean DELscanbyserial(String DNNo,String Material,Integer lineno,String serialno,String condition,String status){
         try{
             String deletesql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ DNNo
                     +"' and LINE__NO='"+ lineno +"' and GOLFA__CODE='"+ Material
-                    +"'and SERIAL__NO='"+ serialno+"' and status<>'0'";
+                    +"'and SERIAL__NO='"+ serialno+"' and status='"+status+"'";
             daoSession.getDatabase().execSQL(deletesql);
             return true;
         }catch(Exception ex){
@@ -477,6 +477,16 @@ public class DbDnInfo {
         }
     }
 
+
+    /**
+     * 检查提交的数据
+     * @param model
+     */
+    public boolean CheckPostDate(DNModel model){
+        long count=dnScanModelDao.queryBuilder().where(DNScanModelDao.Properties.AGENT_DN_NO.eq(model.getAGENT_DN_NO()),
+                DNScanModelDao.Properties.STATUS.notEq(0)).distinct().count();
+        return  count==0;
+    }
 
 
     /**

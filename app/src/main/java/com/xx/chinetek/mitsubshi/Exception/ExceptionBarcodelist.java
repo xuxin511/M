@@ -201,7 +201,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             return;
         }
         final DNScanModel Model= (DNScanModel)exceptionScanbarcodeAdapter.getItem(position);
-        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("是否删除扫描记录？\n")
+        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage(Model.getSTATUS().equals("0")?"扫描记录正常，是否删除扫描记录？\n":"是否删除扫描记录？\n")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
