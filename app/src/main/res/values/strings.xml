@@ -140,6 +140,7 @@
     <string name="Msg_UploadSuccess">DN导出成功!\n导出文件数：</string>
     <string name="Msg_DNUploadSuccess">出库单提交成功!</string>
     <string name="Msg_UploadFailue">DN导出失败!\n失败原因：</string>
+    <string name="Msg_ImportDNError">DN导入失败!\n非代理商单据\n</string>
     <string name="Msg_QRScanFormatr">QR扫描单据格式不正确！</string>
     <string name="Msg_NotSupportModel">设备型号不支持！</string>
     <string name="Msg_No_Sync">无基础资料信息，请先同步！</string>
