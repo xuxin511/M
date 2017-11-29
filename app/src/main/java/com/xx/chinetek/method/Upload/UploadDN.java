@@ -40,6 +40,12 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadDN;
 public class UploadDN {
 
 
+    /**
+     * 单个单据提交
+     * @param context
+     * @param dnModel
+     * @param mHandler
+     */
     public static void SumbitDN(final Context context,final DNModel  dnModel,final MyHandler<BaseActivity> mHandler) {
         if(dnModel.getSTATUS()!=3) {
             //判断出库单是否完成
@@ -89,7 +95,7 @@ public class UploadDN {
             LogUtil.WriteLog(SyncDN.class, TAG_UploadDN, result);
             ReturnMsgModel<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<DNModel>>() {
             }.getType());
-            if (returnMsgModel.getHeaderStatus().equals("S")) {
+            if (!returnMsgModel.getHeaderStatus().equals("E")) {
                 DNModel dnModel = returnMsgModel.getModelJson();
                 if(dnModel!=null) {
                     //保留原有数据
@@ -106,7 +112,7 @@ public class UploadDN {
                     //更新出库单状态(异常)
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.exeption);
                 }
-                if(returnMsgModel.getMaterialDoc()!=null && returnMsgModel.getMaterialDoc().equals("F")) {
+                if(returnMsgModel.getHeaderStatus().equals("F")) {
                     //更新出库单状态
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(Dnno, DNStatusEnum.Sumbit);
                 }
@@ -128,11 +134,13 @@ public class UploadDN {
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
         params.put("UserInfoJS", user);
         params.put("DNJS", dnModelJson);
-        params.put("isCloseDN", isCloseDN); //F.关闭 N:不关闭
+        params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_UploadDN, para);
+        String method=dnModel.getSTATUS()==-1?URLModel.GetURL().ExceptionDN:URLModel.GetURL().UploadNDN;
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadDN,
-                context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_UploadDN, null,  URLModel.GetURL().UploadNDN, params, null);
+                context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_UploadDN, null,
+                method, params, null);
 
     }
 }

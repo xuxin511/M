@@ -194,7 +194,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     }else{
                         uploadIndex++;
                         UploadDNno=DNModels.get(i).getAGENT_DN_NO();
-                        UploadDN.SumbitDN(context,postmodel,mHandler);
+                        UploadDN.UploadDNToMaps(postmodel,"N",mHandler);
                     }
                 }
             }
