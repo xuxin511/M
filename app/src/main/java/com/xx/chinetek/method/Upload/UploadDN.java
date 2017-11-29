@@ -57,7 +57,7 @@ public class UploadDN {
                 }
             }
             if(!isFinished){
-                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
+//                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
                 new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
                         .setMessage(context.getResources().getString(R.string.Msg_Upload_DN))
@@ -118,7 +118,6 @@ public class UploadDN {
                 }
                 return true;
             } else {
-
                 MessageBox.Show(context, returnMsgModel.getMessage());
             }
             return false;

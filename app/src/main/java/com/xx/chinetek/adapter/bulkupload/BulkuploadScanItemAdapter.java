@@ -75,6 +75,7 @@ public class BulkuploadScanItemAdapter extends BaseAdapter {
             listItemView = (ListItemView) convertView.getTag();
         }
         DNDetailModel dnDetailModel = dnDetailModels.get(selectID);
+        dnDetailModel.setSCAN_QTY(dnDetailModel.getSCAN_QTY()==null?0:dnDetailModel.getSCAN_QTY());
         listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
         listItemView.txtRowNo.setText(convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO());
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());

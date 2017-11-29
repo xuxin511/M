@@ -94,6 +94,10 @@ public class ExceptionScan extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_submit){
+            if(!DbDnInfo.getInstance().CheckPostDate(dnModel)){
+                MessageBox.Show(context,"提交的扫描数据存在异常状态！");
+                return false;
+            }
            DNModel postmodel = DbDnInfo.getInstance().AllPostDate(dnModel);
             if(postmodel==null){
                 MessageBox.Show(context,"提交失败！");
