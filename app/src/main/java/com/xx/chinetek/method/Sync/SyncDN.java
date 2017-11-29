@@ -125,6 +125,7 @@ public class SyncDN {
    public static  ArrayList<DNModel> DNFromFiles() throws Exception{
        File[] DNfiles=new File(ParamaterModel.DownDirectory).listFiles();
        ArrayList<DNModel> dnModels=new ArrayList<>();
+       Boolean isSelfDN=true;//判断单据是否为登陆代理商所有
        for(int i=0;i<DNfiles.length;i++) {
            DNModel dnModel = new DNModel();
            File file = DNfiles[i];
@@ -151,6 +152,8 @@ public class SyncDN {
 
                        dnModel.setAGENT_DN_NO(DNNo);
                        String cusNo = DbBaseInfo.getInstance().GetCustomName(lines[2].trim());
+                       //判断代理商导入文件是否属于该代理商所有
+                       if(!cusNo.equals(ParamaterModel.PartenerID)) isSelfDN=false;
                        dnModel.setLEVEL_2_AGENT_NO(cusNo);
                        dnModel.setLEVEL_2_AGENT_NAME(lines[2].trim());
                        cusNo = DbBaseInfo.getInstance().GetCustomName(lines[3].trim());
@@ -199,6 +202,8 @@ public class SyncDN {
        for(int i=0;i<DNfiles.length;i++) {
            DNfiles[i].delete();
        }
+        
+
        return dnModels;
       // DbDnInfo.getInstance().InsertDNDB(dnModels);
    }

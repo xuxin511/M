@@ -44,16 +44,20 @@ public class FileUtils {
      * @param selectDnModels
      * @throws Exception
      */
-    public static void ExportDNFile(ArrayList<DNModel> selectDnModels) throws Exception{
-        String Title="DDN_NO,LINE_NO,Tnd_Dealer,Tnd_Dealer,End_User,End_User,SAP_MAT,MAKTX,Golfa_Code,Serial_No," +
+    public static void ExportDNFile(ArrayList<DNModel> selectDnModels,Integer IsMaps) throws Exception{
+        String Notmaps="DDN_NO,LINE_NO,Tnd_Dealer,Tnd_Dealer,End_User,End_User,SAP_MAT,MAKTX,Golfa_Code,Serial_No," +
                 "Packing_Date,Region,Country,Deal_Sale_Date";
+        String Maps="";
+        String Title=IsMaps==0?Maps:Notmaps;
         Boolean isCusBarcode=false;
         for (DNModel dnModel:selectDnModels ) {
             String DnNo=dnModel.getAGENT_DN_NO();
-            Long size= DbDnInfo.getInstance().HasCusBarcode(DnNo);
-            if(Integer.parseInt(size.toString())!=0) {
-                Title += ",TYPE1,TYPE2,TYPE3,TYPE4,TYPE5,TYPE6";
-                isCusBarcode=true;
+            if(IsMaps!=0) {
+                Long size = DbDnInfo.getInstance().HasCusBarcode(DnNo);
+                if (Integer.parseInt(size.toString()) != 0) {
+                    Title += ",TYPE1,TYPE2,TYPE3,TYPE4,TYPE5,TYPE6";
+                    isCusBarcode = true;
+                }
             }
             String level2No=dnModel.getLEVEL_2_AGENT_NO()==null?"":dnModel.getLEVEL_2_AGENT_NO();
             String level2Name=dnModel.getLEVEL_2_AGENT_NAME()==null?"":dnModel.getLEVEL_2_AGENT_NAME();

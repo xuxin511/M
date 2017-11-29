@@ -28,7 +28,6 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
-import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
@@ -199,17 +198,17 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             ParamaterModel.DnTypeModel.setDNType(5);
             startActivityLeft(intent);
         }
-        if(item.getItemId()==R.id.action_New){
-            Intent intent=new Intent(context,DeliveryScan.class);
-            ParamaterModel.DnTypeModel.setDNType(3);
-            Bundle bundle=new Bundle();
-            DNModel dnModel=new DNModel();
-            CreateDnNo.GetDnNo(context,dnModel);
-            dnModel.setDN_QTY(0);
-            bundle.putParcelable("DNModel",dnModel);
-            intent.putExtras(bundle);
-            startActivityLeft(intent);
-        }
+//        if(item.getItemId()==R.id.action_New){
+//            Intent intent=new Intent(context,DeliveryScan.class);
+//            ParamaterModel.DnTypeModel.setDNType(3);
+//            Bundle bundle=new Bundle();
+//            DNModel dnModel=new DNModel();
+//            CreateDnNo.GetDnNo(context,dnModel);
+//            dnModel.setDN_QTY(0);
+//            bundle.putParcelable("DNModel",dnModel);
+//            intent.putExtras(bundle);
+//            startActivityLeft(intent);
+//        }
         if(item.getItemId()==R.id.action_sync){
             ImportDelivery();
         }

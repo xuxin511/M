@@ -12,12 +12,12 @@
         android:title=""
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_New"
-        android:icon="@drawable/addpo"
-        android:orderInCategory="80"
-        android:title=""
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/action_New"-->
+        <!--android:icon="@drawable/addpo"-->
+        <!--android:orderInCategory="80"-->
+        <!--android:title=""-->
+        <!--app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/action_sync"

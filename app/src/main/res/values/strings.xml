@@ -21,7 +21,7 @@
     <string name="close">完毕</string>
     <string name="Bulkupload">批量上报</string>
     <string name="DNsync">MAPS单据同步</string>
-    <string name="FTPDNChoice">FTP单据选择</string>
+    <string name="FTPDNChoice">单据选择</string>
     <string name="Reason">异常原因：</string>
     <string name="ExceptionScan">异常扫描</string>
     <string name="BarcodeScan">异常扫描</string>
@@ -94,6 +94,10 @@
         <item>FTP</item>
         <item>USB</item>
     </string-array>
+    <string-array name="ExportFormatList">
+        <item>MAPS</item>
+        <item>非MAPS</item>
+    </string-array>
     <string-array name="DNStatus">
         <item>异常</item>
         <item>未下载</item>
@@ -150,6 +154,7 @@
     <string name="Msg_No_Barcode">请扫描条码！</string>
     <string name="Msg_Dn_Finished">出库单已关闭,不能提交数据！</string>
     <string name="Msg_Export_Type">请选择导出方式</string>
+    <string name="Msg_Export_Format">请选择文件格式</string>
     <string name="Msg_New_Custom">新增客户</string>
     <string name="Msg_No_ExportDn">请选择需要导出的出库单</string>
     <string name="Msg_No_DirExportDn">不存在需要导出的出库单单据！</string>
