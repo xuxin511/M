@@ -112,13 +112,26 @@ public class ExceptionScan extends BaseActivity {
 
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent=new Intent(context,ExceptionBarcodelist.class);
-        Bundle bundle=new Bundle();
-        DNDetailModel DNdetailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(position);
-        bundle.putParcelable("DNdetailModel",DNdetailModel);
-        bundle.putParcelable("DNModel",dnModel);
-        intent.putExtras(bundle);
-        startActivityLeft(intent);
+        final int flagposition=position;
+        if (flagposition < 0) {
+            MessageBox.Show(context, "请先选择操作的行！");
+            return;
+        }
+        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认进入序列号扫描界面？\n")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO 自动生成的方法
+                        Intent intent=new Intent(context,ExceptionBarcodelist.class);
+                        Bundle bundle=new Bundle();
+                        DNDetailModel DNdetailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(flagposition);
+                        bundle.putParcelable("DNdetailModel",DNdetailModel);
+                        bundle.putParcelable("DNModel",dnModel);
+                        intent.putExtras(bundle);
+                        startActivityLeft(intent);
+
+                    }
+                }).setNegativeButton("取消", null).show();
 
     }
 

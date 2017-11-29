@@ -26,7 +26,7 @@
     <string name="Reason">异常原因：</string>
     <string name="ExceptionScan">异常扫描</string>
     <string name="BarcodeScan">异常扫描</string>
-    <string name="ScanDetails">扫描明细</string>
+    <string name="ScanDetails">序列号扫描</string>
 
     <string name="Setting_QRTitle">QR服务器设置</string>
     <string name="Setting_MAilTitle">邮件服务器设置</string>
@@ -153,6 +153,7 @@
     <string name="Msg_NoSelect_CusCode">请选择客户或代理商</string>
     <string name="Msg_No_CusCode">请输入代理商或客户编号！</string>
     <string name="Msg_No_Barcode">请扫描条码！</string>
+    <string name="Msg_out_Barcode">扫描内容超出序列号范围！</string>
     <string name="Msg_Dn_Finished">出库单已关闭,不能提交数据！</string>
     <string name="Msg_Export_Type">请选择导出方式</string>
     <string name="Msg_Export_Format">请选择文件格式</string>
