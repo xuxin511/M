@@ -8,7 +8,7 @@
     <item
         android:id="@+id/action_submit"
         android:orderInCategory="80"
-        android:title="@string/sumbit"
+        android:title="@string/dowm"
         app:showAsAction="ifRoom" />
 
 </menu>
