@@ -114,28 +114,23 @@ public class SharePreferUtil {
 
     /**
      * 数据同步时间
-     * @param context
      * @return
      */
-    public static void ReadSyncTimeShare(Context context) {
+    public static void ReadSyncTimeShare() {
         List<SyncParaModel> syncParaModels = DbBaseInfo.getInstance().GetSysPara();
-        if(syncParaModels==null){
-            ParamaterModel.MaterialSyncTime="";
-            ParamaterModel.CustomSyncTime="";
-            ParamaterModel.ParamaterSyncTime="";
-            return;
-        }
-        for(int i=0;i<syncParaModels.size();i++){
-            switch (syncParaModels.get(i).getKey()){
-                case "MaterialSyncTime":
-                    ParamaterModel.MaterialSyncTime=syncParaModels.get(i).getValue();
-                    break;
-                case "CustomSyncTime":
-                    ParamaterModel.CustomSyncTime=syncParaModels.get(i).getValue();
-                    break;
-                case "ParamaterSyncTime":
-                    ParamaterModel.ParamaterSyncTime=syncParaModels.get(i).getValue();
-                    break;
+        if(syncParaModels!=null) {
+            for (int i = 0; i < syncParaModels.size(); i++) {
+                switch (syncParaModels.get(i).getKey()) {
+                    case "MaterialSyncTime":
+                        ParamaterModel.MaterialSyncTime = syncParaModels.get(i).getValue();
+                        break;
+                    case "CustomSyncTime":
+                        ParamaterModel.CustomSyncTime = syncParaModels.get(i).getValue();
+                        break;
+                    case "ParamaterSyncTime":
+                        ParamaterModel.ParamaterSyncTime = syncParaModels.get(i).getValue();
+                        break;
+                }
             }
         }
     }

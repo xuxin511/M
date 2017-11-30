@@ -83,7 +83,7 @@ public class DbBaseInfo {
      * @param syncParaModel
      */
     public void UpdateSysPara(SyncParaModel syncParaModel){
-        syncParaModelDao.updateInTx(syncParaModel);
+        syncParaModelDao.insertOrReplace(syncParaModel);
     }
 
     /**
