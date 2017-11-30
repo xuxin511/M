@@ -117,7 +117,6 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final String[] items=getResources().getStringArray(R.array.ExportTypeList);
-        final String[] formats=getResources().getStringArray(R.array.ExportFormatList);
         if(item.getItemId()==R.id.action_Export){
            SelectDnModels=new ArrayList<>();
             for (int i = 0; i < DNModels.size(); i++) {
@@ -133,21 +132,11 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                         .setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                            final int typeWhich=which;
-                                new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_Export_Format))// 设置对话框标题
-                                        .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
-                                        .setItems(formats, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int Formatwhich) {
-                                                // TODO 自动生成的方法存根
-                                                try {
-                                                    ExportDN(SelectDnModels, typeWhich,Formatwhich);
-                                                }catch (Exception  ex){
-                                                    dialog.dismiss();
-                                                }
-                                            }
-                                        }).show();
-                                // TODO 自动生成的方法存根
+                                try {
+                                    ExportDN(SelectDnModels, which);
+                                }catch (Exception  ex){
+                                    dialog.dismiss();
+                                }
                             }
                         }).show();
             }else{
@@ -205,18 +194,18 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
      * @param Index
      * @throws Exception
      */
-    void ExportDN(ArrayList<DNModel> selectDnModels, int Index,int FormatIndex) throws Exception{
+    void ExportDN(ArrayList<DNModel> selectDnModels, int Index) throws Exception{
         FileUtils.DeleteFiles();
-        FileUtils.ExportDNFile(selectDnModels,FormatIndex); //导出文件只本地目录
+        FileUtils.ExportDNFile(selectDnModels); //导出文件至本地目录
         File dirFile=new File(ParamaterModel.UpDirectory);
         if(dirFile.isDirectory()) {
             File[] Files = dirFile.listFiles();
             if (Files.length > 0) {
                 switch (Index) {
                     case 0: //邮件
-                        if(ParamaterModel.baseparaModel.getMailModel()!=null &&
-                                ParamaterModel.baseparaModel.getMailModel().getToAddress()!=null
-                                && ParamaterModel.baseparaModel.getMailModel().getToAddress().size()==0) {
+                        if(ParamaterModel.baseparaModel.getMailModel()!=null &&(
+                                ParamaterModel.baseparaModel.getMailModel().getToAddress()==null
+                                || ParamaterModel.baseparaModel.getMailModel().getToAddress().size()==0)) {
                             MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
                             break;
                         }

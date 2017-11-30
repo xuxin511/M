@@ -95,10 +95,6 @@
         <item>FTP</item>
         <item>USB</item>
     </string-array>
-    <string-array name="ExportFormatList">
-        <item>MAPS</item>
-        <item>非MAPS</item>
-    </string-array>
     <string-array name="DNStatus">
         <item>异常</item>
         <item>未下载</item>

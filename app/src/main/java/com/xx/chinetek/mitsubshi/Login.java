@@ -14,6 +14,7 @@ import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.method.ModelInfo;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -91,8 +92,11 @@ public class Login extends BaseActivity {
             SharePreferUtil.SetUserShare(context);
         }
 
-//        //设置数据库名称
-//        DbManager.DB_NAME=ParamaterModel.PartenerID+".db";
+        //设置数据库名称
+        DbDnInfo.mSyncDn=null;
+        DbManager.mDaoSession=null;
+        DbManager.mDaoMaster=null;
+        DbManager.DB_NAME=ParamaterModel.PartenerID+".db";
 
         UserInfoModel userInfoModel=new UserInfoModel();
         userInfoModel.setAGENT_NO(ParamaterModel.PartenerID);

@@ -15,8 +15,8 @@ public class DbManager {
     public static String DB_NAME = "mitsubshi.db";
     private static DbManager mDbManager;
     private static DaoMaster.DevOpenHelper mDevOpenHelper;
-    private static DaoMaster mDaoMaster;
-    private static DaoSession mDaoSession;
+    public static DaoMaster mDaoMaster;
+    public static DaoSession mDaoSession;
 
     private Context mContext;
 

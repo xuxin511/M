@@ -23,7 +23,7 @@ import java.util.List;
 
 public class DbDnInfo {
 
-    private static DbDnInfo mSyncDn;
+    public static DbDnInfo mSyncDn;
     private DaoSession daoSession=null;
     private DNModelDao dnModelDao;
     private DNDetailModelDao dnDetailModelDao;

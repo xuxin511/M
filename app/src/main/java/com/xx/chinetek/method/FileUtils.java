@@ -1,5 +1,13 @@
 package com.xx.chinetek.method;
 
+import android.content.Context;
+import android.content.Intent;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+
+import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -44,33 +52,37 @@ public class FileUtils {
      * @param selectDnModels
      * @throws Exception
      */
-    public static void ExportDNFile(ArrayList<DNModel> selectDnModels,Integer IsMaps) throws Exception{
+    public static void ExportDNFile(ArrayList<DNModel> selectDnModels) throws Exception{
         String Notmaps="DDN_NO,LINE_NO,Tnd_Dealer,Tnd_Dealer,End_User,End_User,SAP_MAT,MAKTX,Golfa_Code,Serial_No," +
                 "Packing_Date,Region,Country,Deal_Sale_Date";
-        String Maps="DDN_NO,LINE_NO,Tnd_Dealer,End_User,SAP_MAL,Golfa_Code,Serial_No," +
-                "Pack_Date,Region,Country,Deal_Sale_Date";
-        String Title=IsMaps==0?Maps:Notmaps;
+        String Maps="DDN_NO\tLINE_NO\tTnd_Dealer\tEnd_User\tSAP_MAL\tGolfa_Code\tSerial_No\t" +
+                "Pack_Date\tRegion\tCountry\tDeal_Sale_Date";
         Boolean isCusBarcode=false;
         for (DNModel dnModel:selectDnModels ) {
             String DnNo=dnModel.getAGENT_DN_NO();
-            if(IsMaps!=0) {
                 Long size = DbDnInfo.getInstance().HasCusBarcode(DnNo);
                 if (Integer.parseInt(size.toString()) != 0) {
-                    Title += ",TYPE1,TYPE2,TYPE3,TYPE4,TYPE5,TYPE6";
+                    Notmaps += ",TYPE1,TYPE2,TYPE3,TYPE4,TYPE5,TYPE6";
                     isCusBarcode = true;
                 }
-            }
+
             String level2No=dnModel.getLEVEL_2_AGENT_NO()==null?"":dnModel.getLEVEL_2_AGENT_NO();
             String level2Name=dnModel.getLEVEL_2_AGENT_NAME()==null?"":dnModel.getLEVEL_2_AGENT_NAME();
             String custom=dnModel.getCUSTOM_NO()==null?"":dnModel.getCUSTOM_NO();
             String customName=dnModel.getCUSTOM_NAME()==null?"":dnModel.getCUSTOM_NAME();
             String fileName="DDN"+DnNo+"_QR.csv";
+            String fileNameMaps="DDN"+DnNo+"_QR.txt";
             File file = new File(ParamaterModel.UpDirectory+File.separator+fileName);
+            File fileMaps = new File(ParamaterModel.UpDirectory+File.separator+fileNameMaps);
             //第二个参数意义是说是否以append方式添加内容
             OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(file),"GBK");
+            OutputStreamWriter writerStreamMaps = new OutputStreamWriter(new FileOutputStream(fileMaps),"GBK");
             BufferedWriter bw = new BufferedWriter(writerStream);
-            bw.write(Title);
-            bw.newLine();
+            BufferedWriter bwMaps = new BufferedWriter(writerStreamMaps);
+            bw.write(Notmaps);
+            bwMaps.write(Maps);
+            bw.write("\r\n");
+            bwMaps.write("\r\n");
             if(dnModel.getDETAILS()!=null && dnModel.getDETAILS().size()!=0){
                 for (DNDetailModel dnDetailModel:dnModel.getDETAILS()) {
                     String sapMaterial=dnDetailModel.getITEM_NO();
@@ -84,15 +96,14 @@ public class FileUtils {
                             String region=dnScanModel.getREGION()==null?"":dnScanModel.getREGION();
                             String country=dnScanModel.getCOUNTRY()==null?"":dnScanModel.getCOUNTRY();
                             String dealSaleDate= CommonUtil.DateToString(dnScanModel.getDEAL_SALE_DATE(),"yyyy/MM/dd");
-                            String writeLine=IsMaps==0? DnNo+","+lineNo+","+level2No
-                                    +","+custom+","+sapMaterial+","
-                                    +golfaCode+","+Serial+","+packingDate+","
-                                    +region+","+country+","+dealSaleDate
-                                    :
-                                    DnNo+","+lineNo+","+level2No+","+level2Name
+                            String writeLine=DnNo+","+lineNo+","+level2No+","+level2Name
                                     +","+custom+","+customName+","+sapMaterial+","+maktx+","
                                     +golfaCode+","+Serial+","+packingDate+","
                                     +region+","+country+","+dealSaleDate;
+                            String writeLineMaps= DnNo+"\t"+lineNo+"\t"+level2No
+                                    +"\t"+(custom.equals("")?customName:custom)+"\t"+sapMaterial+"\t"
+                                    +golfaCode+"\t"+Serial+"\t"+packingDate+"\t"
+                                    +region+"\t"+country+"\t"+dealSaleDate;
                             if(isCusBarcode){
                                 String type1=dnScanModel.getEXTEND_FIELD1()==null?"":dnScanModel.getEXTEND_FIELD1();
                                 String type2=dnScanModel.getEXTEND_FIELD2()==null?"":dnScanModel.getEXTEND_FIELD2();
@@ -103,13 +114,37 @@ public class FileUtils {
                                 writeLine+=","+type1+","+type2+","+type3+","+type4+","+type5+","+type6;
                             }
                             bw.write(writeLine);
-                            bw.newLine();
+                            bwMaps.write(writeLineMaps);
+                            bw.write("\r\n");
+                            bwMaps.write("\r\n");
                             bw.flush();
+                            bwMaps.flush();
                         }
                     }
                 }
             }
             bw.close();
+            bwMaps.close();
+            UpdateMediaDirectory(BaseApplication.context,file);
+            UpdateMediaDirectory(BaseApplication.context,fileMaps);
+        }
+    }
+
+   static void UpdateMediaDirectory(Context mContext, File file){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { // 判断SDK版本是不是4.4或者高于4.4
+            String[] paths = new String[]{file.getAbsolutePath()};
+            MediaScannerConnection.scanFile(mContext, paths, null, null);
+        } else {
+            final Intent intent;
+            if (file.isDirectory()) {
+                intent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
+                intent.setClassName("com.android.providers.media", "com.android.providers.media.MediaScannerReceiver");
+                intent.setData(Uri.fromFile(Environment.getExternalStorageDirectory()));
+            } else {
+                intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                intent.setData(Uri.fromFile(file));
+            }
+            mContext.sendBroadcast(intent);
         }
     }
 }
