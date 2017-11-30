@@ -62,7 +62,7 @@ public class UploadDN {
                 new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
                         .setMessage(context.getResources().getString(R.string.Msg_Upload_DN))
-                        .setPositiveButton("提交关闭", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("提交并关闭", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 UploadDN.UploadDNToMaps(dnModel,"F",mHandler);
