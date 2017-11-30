@@ -32,7 +32,7 @@ public class DNScanModel implements Parcelable{
     /**
      * 扫描时间
      */
-    private Date DEAL_SALE_DATE;
+    private String DEAL_SALE_DATE;
 
     private String ITEM_NAME;
     /**
@@ -77,7 +77,7 @@ public class DNScanModel implements Parcelable{
         dest.writeString(this.GOLFA_CODE);
         dest.writeString(this.STATUS);
         dest.writeString(this.ITEM_STATUS);
-        dest.writeLong(this.DEAL_SALE_DATE != null ? this.DEAL_SALE_DATE.getTime() : -1);
+        dest.writeString(this.DEAL_SALE_DATE);
         dest.writeString(this.ITEM_NAME);
         dest.writeValue(this.MAT_TYPE);
         dest.writeString(this.EXTEND_FIELD1);
@@ -189,12 +189,12 @@ public class DNScanModel implements Parcelable{
     }
 
 
-    public Date getDEAL_SALE_DATE() {
+    public String getDEAL_SALE_DATE() {
         return this.DEAL_SALE_DATE;
     }
 
 
-    public void setDEAL_SALE_DATE(Date DEAL_SALE_DATE) {
+    public void setDEAL_SALE_DATE(String DEAL_SALE_DATE) {
         this.DEAL_SALE_DATE = DEAL_SALE_DATE;
     }
 
@@ -292,8 +292,7 @@ public class DNScanModel implements Parcelable{
         this.GOLFA_CODE = in.readString();
         this.STATUS = in.readString();
         this.ITEM_STATUS = in.readString();
-        long tmpDEAL_SALE_DATE = in.readLong();
-        this.DEAL_SALE_DATE = tmpDEAL_SALE_DATE == -1 ? null : new Date(tmpDEAL_SALE_DATE);
+        this.DEAL_SALE_DATE = in.readString();
         this.ITEM_NAME = in.readString();
         this.MAT_TYPE = (Integer) in.readValue(Integer.class.getClassLoader());
         this.EXTEND_FIELD1 = in.readString();
@@ -305,13 +304,13 @@ public class DNScanModel implements Parcelable{
     }
 
 
-    @Generated(hash = 53127396)
+    @Generated(hash = 192327553)
     public DNScanModel(String AGENT_DN_NO, Integer LINE_NO, String SERIAL_NO,
             String PACKING_DATE, String REGION, String COUNTRY, String ITEM_NO,
-            String GOLFA_CODE, String STATUS, String ITEM_STATUS, Date DEAL_SALE_DATE,
-            String ITEM_NAME, Integer MAT_TYPE, String EXTEND_FIELD1, String EXTEND_FIELD2,
-            String EXTEND_FIELD3, String EXTEND_FIELD4, String EXTEND_FIELD5,
-            String EXTEND_FIELD6) {
+            String GOLFA_CODE, String STATUS, String ITEM_STATUS,
+            String DEAL_SALE_DATE, String ITEM_NAME, Integer MAT_TYPE,
+            String EXTEND_FIELD1, String EXTEND_FIELD2, String EXTEND_FIELD3,
+            String EXTEND_FIELD4, String EXTEND_FIELD5, String EXTEND_FIELD6) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.LINE_NO = LINE_NO;
         this.SERIAL_NO = SERIAL_NO;

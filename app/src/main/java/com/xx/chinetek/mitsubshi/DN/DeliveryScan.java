@@ -22,6 +22,7 @@ import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
+import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
@@ -400,7 +401,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());
         dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
         dnScanModel.setITEM_STATUS("AC");
-        dnScanModel.setDEAL_SALE_DATE(new Date());
+        dnScanModel.setDEAL_SALE_DATE(CommonUtil.DateToString(new Date(),"yyyy/MM/dd"));
         dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
         dnScanModel.setSTATUS("0");
         Scan.setOtherColumn(barCodeModel, dnScanModel);
@@ -443,7 +444,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnScanModel.setCOUNTRY(barCodeModel.getCountry_Code());
         dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
         dnScanModel.setITEM_STATUS("AC");
-        dnScanModel.setDEAL_SALE_DATE(new Date());
+        dnScanModel.setDEAL_SALE_DATE(CommonUtil.DateToString(new Date(),"yyyy/MM/dd"));
         dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
         dnScanModel.setSTATUS("0");
         dnDetailModels.get(index).getSERIALS().add(dnScanModel);

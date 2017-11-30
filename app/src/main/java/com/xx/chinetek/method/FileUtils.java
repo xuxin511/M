@@ -95,7 +95,7 @@ public class FileUtils {
                             String packingDate=dnScanModel.getPACKING_DATE()==null?"":dnScanModel.getPACKING_DATE();
                             String region=dnScanModel.getREGION()==null?"":dnScanModel.getREGION();
                             String country=dnScanModel.getCOUNTRY()==null?"":dnScanModel.getCOUNTRY();
-                            String dealSaleDate= CommonUtil.DateToString(dnScanModel.getDEAL_SALE_DATE(),"yyyy/MM/dd");
+                            String dealSaleDate= dnScanModel.getDEAL_SALE_DATE();
                             String writeLine=DnNo+","+lineNo+","+level2No+","+level2Name
                                     +","+custom+","+customName+","+sapMaterial+","+maktx+","
                                     +golfaCode+","+Serial+","+packingDate+","

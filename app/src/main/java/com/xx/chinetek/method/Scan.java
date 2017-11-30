@@ -1,5 +1,6 @@
 package com.xx.chinetek.method;
 
+import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.DBReturnModel;
@@ -97,7 +98,7 @@ public class Scan {
             dnScanModel.setITEM_STATUS("AC");
             dnScanModel.setITEM_NO(dnDetailModels.get(index).getITEM_NO());
             dnScanModel.setITEM_NAME(dnDetailModels.get(index).getITEM_NAME());
-            dnScanModel.setDEAL_SALE_DATE(new Date());
+            dnScanModel.setDEAL_SALE_DATE(CommonUtil.DateToString(new Date(),"yyyy/MM/dd"));
             dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
             dnScanModel.setSTATUS("0");
             setOtherColumn(barCodeModel, dnScanModel);

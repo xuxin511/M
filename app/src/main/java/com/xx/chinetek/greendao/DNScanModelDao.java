@@ -37,7 +37,7 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         public final static Property GOLFA_CODE = new Property(7, String.class, "GOLFA_CODE", false, "GOLFA__CODE");
         public final static Property STATUS = new Property(8, String.class, "STATUS", false, "STATUS");
         public final static Property ITEM_STATUS = new Property(9, String.class, "ITEM_STATUS", false, "ITEM__STATUS");
-        public final static Property DEAL_SALE_DATE = new Property(10, java.util.Date.class, "DEAL_SALE_DATE", false, "DEAL__SALE__DATE");
+        public final static Property DEAL_SALE_DATE = new Property(10, String.class, "DEAL_SALE_DATE", false, "DEAL__SALE__DATE");
         public final static Property ITEM_NAME = new Property(11, String.class, "ITEM_NAME", false, "ITEM__NAME");
         public final static Property MAT_TYPE = new Property(12, Integer.class, "MAT_TYPE", false, "MAT__TYPE");
         public final static Property EXTEND_FIELD1 = new Property(13, String.class, "EXTEND_FIELD1", false, "EXTEND__FIELD1");
@@ -72,7 +72,7 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
                 "\"GOLFA__CODE\" TEXT," + // 7: GOLFA_CODE
                 "\"STATUS\" TEXT," + // 8: STATUS
                 "\"ITEM__STATUS\" TEXT," + // 9: ITEM_STATUS
-                "\"DEAL__SALE__DATE\" INTEGER," + // 10: DEAL_SALE_DATE
+                "\"DEAL__SALE__DATE\" TEXT," + // 10: DEAL_SALE_DATE
                 "\"ITEM__NAME\" TEXT," + // 11: ITEM_NAME
                 "\"MAT__TYPE\" INTEGER," + // 12: MAT_TYPE
                 "\"EXTEND__FIELD1\" TEXT," + // 13: EXTEND_FIELD1
@@ -146,9 +146,9 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
             stmt.bindString(10, ITEM_STATUS);
         }
  
-        java.util.Date DEAL_SALE_DATE = entity.getDEAL_SALE_DATE();
+        String DEAL_SALE_DATE = entity.getDEAL_SALE_DATE();
         if (DEAL_SALE_DATE != null) {
-            stmt.bindLong(11, DEAL_SALE_DATE.getTime());
+            stmt.bindString(11, DEAL_SALE_DATE);
         }
  
         String ITEM_NAME = entity.getITEM_NAME();
@@ -246,9 +246,9 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
             stmt.bindString(10, ITEM_STATUS);
         }
  
-        java.util.Date DEAL_SALE_DATE = entity.getDEAL_SALE_DATE();
+        String DEAL_SALE_DATE = entity.getDEAL_SALE_DATE();
         if (DEAL_SALE_DATE != null) {
-            stmt.bindLong(11, DEAL_SALE_DATE.getTime());
+            stmt.bindString(11, DEAL_SALE_DATE);
         }
  
         String ITEM_NAME = entity.getITEM_NAME();
@@ -310,7 +310,7 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // GOLFA_CODE
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // STATUS
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // ITEM_STATUS
-            cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)), // DEAL_SALE_DATE
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // DEAL_SALE_DATE
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // ITEM_NAME
             cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12), // MAT_TYPE
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // EXTEND_FIELD1
@@ -335,7 +335,7 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         entity.setGOLFA_CODE(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setSTATUS(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setITEM_STATUS(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setDEAL_SALE_DATE(cursor.isNull(offset + 10) ? null : new java.util.Date(cursor.getLong(offset + 10)));
+        entity.setDEAL_SALE_DATE(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setITEM_NAME(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setMAT_TYPE(cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12));
         entity.setEXTEND_FIELD1(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
