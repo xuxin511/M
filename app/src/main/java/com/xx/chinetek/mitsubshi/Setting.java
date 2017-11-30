@@ -116,6 +116,8 @@ public class Setting extends BaseActivity {
     CusBarcodeRule cusBarcodeRule;
     List<String> ToAdress;
 
+    Integer MaxLength=0;
+
     @Override
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
@@ -170,6 +172,7 @@ public class Setting extends BaseActivity {
         txtPartner.setText(ParamaterModel.PartenerID);
         txtDNSaveTime.setText(ParamaterModel.baseparaModel.getDNSaveTime()+"");
         ckIsuserRemark.setChecked(ParamaterModel.baseparaModel.getUseRemark());
+        MaxLength=ParamaterModel.baseparaModel.getSerialMaxLength();
 
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null){
             ckSelfBarcode.setChecked(ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed());
@@ -281,6 +284,38 @@ public class Setting extends BaseActivity {
 //    }
 
 
+    @Event(R.id.serialnomaxlength)
+    private void serialnomaxlengthClick(View view){
+        final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_serialnomaxlength, null);
+        final EditText edt_maxlength=(EditText) textEntryView.findViewById(R.id.edt_maxlength);
+        edt_maxlength.setText(MaxLength.toString());
+        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_maxlength))
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(textEntryView)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String length=edt_maxlength.getText().toString().trim();
+                        if(!CommonUtil.isNumeric(length)){
+                            MessageBox.Show(context,getString(R.string.Msg_inputNumic));
+                            return;
+                        }
+                        if(TextUtils.isEmpty(length)){
+                            MessageBox.Show(context,getString(R.string.Msg_notEmpty));
+                            return;
+                        }
+                        int len=Integer.parseInt(length);
+                        if(len<0){
+                            MessageBox.Show(context,getString(R.string.Msg_notLess));
+                            return;
+                        }
+                        MaxLength=len;
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+
 
     @Event(R.id.layoutCusDnNo)
     private void layoutCusDnNoClick(View view){
@@ -380,6 +415,7 @@ public class Setting extends BaseActivity {
         ParamaterModel.SysPassword=Password;
         ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
         ParamaterModel.baseparaModel.getCusBarcodeRule().setUsed(ckSelfBarcode.isChecked());
+        ParamaterModel.baseparaModel.setSerialMaxLength(MaxLength);
         if(cusBarcodeRule==null)  cusBarcodeRule=new CusBarcodeRule();
         cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
         ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);

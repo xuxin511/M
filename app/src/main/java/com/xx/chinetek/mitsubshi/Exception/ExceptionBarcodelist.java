@@ -120,7 +120,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                     CommonUtil.setEditFocus(edtBarcode);
                     return true;
                 }
-                if(code.length()>50){
+                if(code.length()>ParamaterModel.baseparaModel.getSerialMaxLength()){
                     MessageBox.Show(context,getString(R.string.Msg_out_Barcode));
                     CommonUtil.setEditFocus(edtBarcode);
                     return true;
