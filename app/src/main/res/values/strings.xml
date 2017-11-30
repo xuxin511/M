@@ -46,6 +46,7 @@
     <string name="Setting_SaveTime">出库单保存时间</string>
     <string name="Setting_SysPassword">修改管理员密码</string>
     <string name="Setting_DNRule">自定义出库单规则</string>
+    <string name="Setting_serialnoaxlength">设置序列号最大长度</string>
     <string name="Setting_Port">端口：</string>
     <string name="Setting_TimeOut">超时时间：</string>
     <string name="Setting_Second">秒</string>
@@ -54,6 +55,7 @@
     <string name="Setting_ParaUpload">参数上传</string>
     <string name="Setting_Clear">重置</string>
     <string name="Setting_StartWords">起始字符：</string>
+    <string name="Setting_serialnomax">最大序列号长度：</string>
     <string name="Setting_BarcodeLength">条码长度：</string>
     <string name="Setting_IndexLength">序号长度：</string>
     <string name="Setting_KeyStartIndex">比对项起始位：</string>
@@ -126,10 +128,12 @@
     <string name="Msg_SaveSuccess">保存成功！</string>
     <string name="Msg_inputNumic">请输入数字！</string>
     <string name="Msg_notEmpty">输入数据不能为空！</string>
+    <string name="Msg_notLess">输入数字不能小于0！</string>
     <string name="Msg_lenMax">起始字符长度+序号长度不能超过12位！</string>
     <string name="Msg_BarcodeNotmatch">条码不匹配！</string>
     <string name="Msg_InputPassword">请输入管理员密码</string>
     <string name="Msg_SetbarcodeRule">请设置条码规则</string>
+    <string name="Msg_maxlength">请设置序列号最大长度</string>
     <string name="Msg_InputCustom">请输入代理商编号</string>
     <string name="Msg_ChoiceSaveTime">请选择保存时间（天）</string>
     <string name="Msg_PasswordError">管理员密码错误!</string>

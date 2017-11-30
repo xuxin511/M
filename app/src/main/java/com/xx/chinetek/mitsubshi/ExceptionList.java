@@ -124,7 +124,6 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
 //                                            }else{
 //                                                MessageBox.Show(context,"删除失败！");
 //                                            }
-//
 //                                        }
 //                                    }).setNegativeButton("取消", null).show();
 //                        }
@@ -144,7 +143,6 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
 //
 //                }
 //            }).show();
-
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
