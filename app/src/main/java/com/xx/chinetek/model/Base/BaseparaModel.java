@@ -14,6 +14,11 @@ public class BaseparaModel {
     private int DNSaveTime=30;
 
     /**
+     * 序列号最大长度
+     */
+    private int SerialMaxLength=50;
+
+    /**
      * 是否启用备注栏
      */
     private Boolean IsUseRemark=false;
@@ -39,6 +44,13 @@ public class BaseparaModel {
      */
     private FtpModel ftpModel;
 
+    public int getSerialMaxLength() {
+        return SerialMaxLength;
+    }
+
+    public void setSerialMaxLength(int serialMaxLength) {
+        SerialMaxLength = serialMaxLength;
+    }
 
     public int getDNSaveTime() {
         return DNSaveTime;

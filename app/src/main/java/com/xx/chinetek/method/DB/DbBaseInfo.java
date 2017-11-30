@@ -57,8 +57,6 @@ public class DbBaseInfo {
         }
     }
 
-
-
     /**
      * 插入客户代理商
      * @param customModels
@@ -69,6 +67,23 @@ public class DbBaseInfo {
             customModelDao.insertOrReplaceInTx(customModels);
             customModelDao.detachAll();
         }
+    }
+
+    /**
+     * 获取系统参数
+     * @return
+     * @throws Exception
+     */
+    public List<SyncParaModel> GetSysPara(){
+        return syncParaModelDao.queryBuilder().distinct().list();
+    }
+
+    /**
+     * 更新系统参数
+     * @param syncParaModel
+     */
+    public void UpdateSysPara(SyncParaModel syncParaModel){
+        syncParaModelDao.updateInTx(syncParaModel);
     }
 
     /**

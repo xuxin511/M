@@ -6,13 +6,16 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.model.Paramater;
+import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.model.Base.BaseparaModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
+import com.xx.chinetek.model.Base.SyncParaModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 
 /**
@@ -114,24 +117,35 @@ public class SharePreferUtil {
      * @param context
      * @return
      */
-    public static void ReadSyncTimeShare(Context context){
-        SharedPreferences sharedPreferences=context.getSharedPreferences("SyncTime", Context.MODE_PRIVATE);
-        if(sharedPreferences!=null) {
-            ParamaterModel.MaterialSyncTime= sharedPreferences.getString("MaterialSyncTime","");
-            ParamaterModel.CustomSyncTime= sharedPreferences.getString("CustomSyncTime","");
-            ParamaterModel.ParamaterSyncTime= sharedPreferences.getString("ParamaterSyncTime","");
-            ParamaterModel.DNSyncTime= sharedPreferences.getString("DNSyncTime","");
+    public static void ReadSyncTimeShare(Context context) {
+        List<SyncParaModel> syncParaModels = DbBaseInfo.getInstance().GetSysPara();
+        if(syncParaModels==null){
+            ParamaterModel.MaterialSyncTime="";
+            ParamaterModel.CustomSyncTime="";
+            ParamaterModel.ParamaterSyncTime="";
+            return;
+        }
+        for(int i=0;i<syncParaModels.size();i++){
+            switch (syncParaModels.get(i).getKey()){
+                case "MaterialSyncTime":
+                    ParamaterModel.MaterialSyncTime=syncParaModels.get(i).getValue();
+                    break;
+                case "CustomSyncTime":
+                    ParamaterModel.CustomSyncTime=syncParaModels.get(i).getValue();
+                    break;
+                case "ParamaterSyncTime":
+                    ParamaterModel.ParamaterSyncTime=syncParaModels.get(i).getValue();
+                    break;
+            }
         }
     }
 
-    public static void SetSyncTimeShare(Context context){
-        SharedPreferences sharedPreferences=context.getSharedPreferences("SyncTime", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit=sharedPreferences.edit();
-        edit.putString("MaterialSyncTime",ParamaterModel.MaterialSyncTime);
-        edit.putString("CustomSyncTime",ParamaterModel.CustomSyncTime);
-        edit.putString("ParamaterSyncTime",ParamaterModel.ParamaterSyncTime);
-        edit.putString("DNSyncTime",ParamaterModel.DNSyncTime);
-        edit.apply();
+    public static void SetSyncTimeShare(String Key,String Value){
+        SyncParaModel syncParaModel=new SyncParaModel();
+        syncParaModel.setKey(Key);
+        syncParaModel.setValue(Value);
+        DbBaseInfo.getInstance().UpdateSysPara(syncParaModel);
+
     }
 
 

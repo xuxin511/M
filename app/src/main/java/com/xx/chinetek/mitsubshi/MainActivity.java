@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity {
                 DbBaseInfo.getInstance().InsertMaterialDB(materialModels);
                 ParamaterModel.MaterialSyncTime=returnMsgModel.getMessage();
                 //保存同步时间
-                SharePreferUtil.SetSyncTimeShare(context);
+                SharePreferUtil.SetSyncTimeShare("MaterialSyncTime",ParamaterModel.MaterialSyncTime);
                //同步客户代理商
                 SyncBase.getInstance().SyncCus(mHandler);
             } else {
@@ -172,7 +172,7 @@ public class MainActivity extends BaseActivity {
                 DbBaseInfo.getInstance().InsertCustomDB(customModels);
                 ParamaterModel.CustomSyncTime=returnMsgModel.getMessage();;
                 //保存同步时间
-                SharePreferUtil.SetSyncTimeShare(context);
+                SharePreferUtil.SetSyncTimeShare("CustomSyncTime",ParamaterModel.CustomSyncTime);
                 //同步参数
                 SyncBase.getInstance().SyncPara(mHandler);
             } else {
@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity {
                     SharePreferUtil.SetShare(context);
                 }
                 //保存同步时间
-                SharePreferUtil.SetSyncTimeShare(context);
+                SharePreferUtil.SetSyncTimeShare("ParamaterSyncTime",ParamaterModel.ParamaterSyncTime);
                 MessageBox.Show(context,getString(R.string.Dia_SyncSuccess));
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());

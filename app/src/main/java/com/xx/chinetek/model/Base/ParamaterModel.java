@@ -69,11 +69,6 @@ public class ParamaterModel {
     public static String ParamaterSyncTime;
 
     /**
-     * 出库单据同步时间
-     */
-    public static String DNSyncTime;
-
-    /**
      *   文件存放目录
      */
     public static String Directory="/sdcard/mitsubshi";
