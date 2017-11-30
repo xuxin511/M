@@ -15,7 +15,6 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="状态"
         android:textAlignment="center"
         android:textColor="@color/indianred"
@@ -40,11 +39,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/item_Status" />
 
+    <TextView
+        android:id="@+id/item_customer"
+        style="@style/TextViewComminStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="客户名称"
+        android:textAlignment="textEnd"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_DeliveryNo" />
+
     <android.support.constraint.Guideline
         android:id="@+id/guideline14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.3" />
 
 </android.support.constraint.ConstraintLayout>

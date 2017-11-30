@@ -33,4 +33,9 @@ public class TAG_RESULT {
 
     public static  String  TAG_UploadDN="UploadDN";
     public static final int RESULT_UploadDN=109;
+
+
+    public static  String  TAG_SyncException="SyncDn";
+    public static final int RESULT_SyncException=110;
+
 }

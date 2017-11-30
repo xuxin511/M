@@ -39,14 +39,33 @@ import java.util.Map;
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncException;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDnDetail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncException;
 
 /**
  * Created by GHOST on 2017/11/2.
  */
 
 public class SyncDN {
+    /**
+     * 获取异常单据
+     * @param mHandler
+     * @return
+     */
+    public static void SyncException(MyHandler<BaseActivity> mHandler){
+        //MAPS获取单据
+        final Map<String, String> params = new HashMap<String, String>();
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("DateString", "");
+        params.put("UserInfoJS", user);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_SyncException, para);
+        RequestHandler.addRequest(Request.Method.POST, TAG_SyncException, mHandler, RESULT_SyncException, null,  URLModel.GetURL().SyncException, params, null);
+    }
+
+
 
     /**
      * 获取MAPS单据

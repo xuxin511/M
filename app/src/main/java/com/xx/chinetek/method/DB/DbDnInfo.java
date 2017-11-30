@@ -233,6 +233,7 @@ public class DbDnInfo {
         return qty;
     }
 
+
     /**
      *更新单据状态
      * @param DnNo
@@ -296,6 +297,36 @@ public class DbDnInfo {
                 .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.LINE_NO.eq(lineno)).list();
         return DNScanModels.size();
     }
+
+    /**
+     * 获取本地数据表体
+     * @return
+     */
+    public  DNDetailModel GetLoaclDNDetailStatus(String DNNo,String Material,Integer lineno){
+        ArrayList<DNDetailModel> DNDetailModels=new ArrayList<>();
+        DNDetailModels=(ArrayList<DNDetailModel>) dnDetailModelDao.queryBuilder().distinct()
+                .where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNDetailModelDao.Properties.GOLFA_CODE.eq(Material),DNDetailModelDao.Properties.LINE_NO.eq(lineno)).list();
+        return DNDetailModels.get(0);
+    }
+
+    /**
+     * 查询扫描表是否重复
+     * @param DNNo
+     * @param Material
+     * @param lineno
+     * @return
+     */
+    public boolean GetDNScanOKModel(String DNNo,String Material,Integer lineno){
+        String sql="select count(SERIAL__NO) from DNSCAN_MODEL where AGENT__DN__NO='"+DNNo+"' and GOLFA__CODE='"+Material+"' and LINE__NO='"+ lineno +"' group by SERIAL__NO HAVING count(SERIAL__NO)>1";
+        Cursor cursor= dnDetailModelDao.getDatabase().rawQuery(sql,null);
+        cursor.close();
+        if(cursor!=null){
+            return false;
+        }
+       return  true;
+    }
+
+
 
     /**
      * 获取本地数据单据下是否拥有扫描数据
@@ -441,6 +472,21 @@ public class DbDnInfo {
         }
     }
 
+    /**
+     * 修改扫描记录的状态
+     * @param DNNo
+     *  @param Material
+     * @param lineno
+     */
+    public boolean UpdateDNScanState(String DNNo,String Material,Integer lineno){
+        try{
+            String sql = "update DNSCAN_MODEL set status='0' where AGENT__DN__NO='"+DNNo+"' and GOLFA__CODE='"+Material+"' and LINE__NO='"+lineno+"'";
+            dnScanModelDao.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+    }
 
     /**
      * 修改主表的状态异常出库表

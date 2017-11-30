@@ -29,6 +29,8 @@ public class URLModel {
     public String UploadPara = GetWCFAdress()+"SetCustomerSettings"; //同步参数配置
     public String SyncDn = GetWCFAdress()+"GetDNHeaders"; //同步DN表头
     public String SyncDnDetail = GetWCFAdress()+"GetDNDetails"; //同步DN表体
+    public String SyncException = GetWCFAdress()+"GetDNHeadersException"; //同步DN异常的单子
+
 
 
 }

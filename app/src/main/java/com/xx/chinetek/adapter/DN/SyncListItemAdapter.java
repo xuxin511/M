@@ -31,6 +31,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
 
         public TextView txtDeliveryNo;
         public TextView txtStatus;
+        public TextView txtcustomer;
     }
 
     public SyncListItemAdapter(Context context, ArrayList<DNModel> DNModels) {
@@ -87,6 +88,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
             convertView = listContainer.inflate(R.layout.item_synclist,null);
             listItemView.txtDeliveryNo = (TextView) convertView.findViewById(R.id.item_DeliveryNo);
             listItemView.txtStatus = (TextView) convertView.findViewById(R.id.item_Status);
+            listItemView.txtcustomer= (TextView) convertView.findViewById(R.id.item_customer);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
@@ -94,6 +96,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtStatus.setText((position+1) + ":");
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
+        listItemView.txtcustomer.setText(DNModel.getCUSTOM_NAME());
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);
         } else {

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,13 +16,22 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 
+import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.adapter.DN.DeliveryListItemAdapter;
 import com.xx.chinetek.adapter.ExceptionListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
+import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
+import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.Sync.SyncDN;
+import com.xx.chinetek.mitsubshi.DN.DNsync;
+import com.xx.chinetek.mitsubshi.DN.FTPsync;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.model.DN.DNModel;
 
@@ -34,6 +44,14 @@ import java.util.ArrayList;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncException;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncException;
 
 @ContentView(R.layout.activity_exception_list)
 public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener{
@@ -59,7 +77,7 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     @Override
     protected void initData() {
         super.initData();
-        GetExceptionList();
+//        GetExceptionList();
         edtDNNoFuilter.addTextChangedListener(ExceptionTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
     }
@@ -67,6 +85,7 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
 //        ImportDelivery();
+        SyncDN.SyncException(mHandler);
         mSwipeLayout.setRefreshing(false);
     }
 
@@ -75,6 +94,53 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
         super.onResume();
         GetExceptionList();
     }
+
+
+    @Override
+    public void onHandleMessage(Message msg) {
+        try {
+            switch (msg.what) {
+                case RESULT_SyncException:
+                    AnalysisSyncExceptionDNJson((String) msg.obj);
+                    break;
+                case NetworkError.NET_ERROR_CUSTOM:
+                    ToastUtil.show("获取请求失败_____" + msg.obj);
+                    break;
+            }
+        } catch (Exception ex) {
+            MessageBox.Show(context,ex.getMessage());
+        }
+    }
+
+
+    /**
+     * 异常同步出库单
+     * @param result
+     */
+    public void AnalysisSyncExceptionDNJson(String result) throws Exception {
+        LogUtil.WriteLog(SyncDN.class, TAG_SyncException, result);
+        ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
+        }.getType());
+        if (returnMsgModel.getHeaderStatus().equals("S")) {
+            ArrayList<DNModel> dnModels = returnMsgModel.getModelJson();
+//            ArrayList<DNModel> SelectdnModels=new ArrayList<>();
+//            int size=dnModels.size();
+//            for(int i=0;i<size;i++){
+//                if(DbDnInfo.getInstance().CheckDNInDB(dnModels.get(i).getAGENT_DN_NO()))
+//                    SelectdnModels.add(dnModels.get(i));
+//            }
+            if(dnModels.size()!=0) {
+                Intent intent = new Intent(context, DNsync.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("DNModels", dnModels);
+                intent.putExtras(bundle);
+                startActivityLeft(intent);
+            }
+        } else {
+            MessageBox.Show(context, returnMsgModel.getMessage());
+        }
+    }
+
 
     @Event(value = R.id.edt_DNNoFuilter, type = View.OnKeyListener.class)
     private boolean edtDNNoFuilterOnkeyUp(View v, int keyCode, KeyEvent event) {
