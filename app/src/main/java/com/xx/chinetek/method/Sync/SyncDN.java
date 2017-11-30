@@ -172,7 +172,7 @@ public class SyncDN {
                        dnModel.setAGENT_DN_NO(DNNo);
                        String cusNo = DbBaseInfo.getInstance().GetCustomName(lines[2].trim());
                        //判断代理商导入文件是否属于该代理商所有
-                       if(!cusNo.equals(ParamaterModel.PartenerID)) {
+                       if(cusNo==null  || !cusNo.equals(ParamaterModel.PartenerID)) {
                            isSelfDN = false;
                            dnModel=null;
                            ErrorDN+=file.getName()+"\n";

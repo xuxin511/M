@@ -60,6 +60,9 @@ public class QRScan extends BaseIntentActivity {
                     bw.write(Barcode);
                     bw.close();
                    ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
+                   if(dnModels.size()==0){
+                       return;
+                   }
                    DbDnInfo.getInstance().InsertDNDB(dnModels);
                     DNno = cloumns[0].toString();
                     isFormartCongif=true;

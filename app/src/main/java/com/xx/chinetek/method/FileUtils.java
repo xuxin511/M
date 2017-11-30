@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Environment;
 
 import com.xx.chinetek.chineteklib.base.BaseApplication;
-import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
@@ -59,7 +58,7 @@ public class FileUtils {
                 "Pack_Date\tRegion\tCountry\tDeal_Sale_Date";
         Boolean isCusBarcode=false;
         for (DNModel dnModel:selectDnModels ) {
-            String DnNo=dnModel.getAGENT_DN_NO();
+            String DnNo=dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO();
                 Long size = DbDnInfo.getInstance().HasCusBarcode(DnNo);
                 if (Integer.parseInt(size.toString()) != 0) {
                     Notmaps += ",TYPE1,TYPE2,TYPE3,TYPE4,TYPE5,TYPE6";

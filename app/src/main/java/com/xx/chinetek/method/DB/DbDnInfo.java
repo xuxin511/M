@@ -15,6 +15,7 @@ import com.xx.chinetek.model.DN.DNScanModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -102,6 +103,13 @@ public class DbDnInfo {
         }
     }
 
+    public void UpdateOperaterData(DNModel  dnModel) {
+        dnModel.setOPER_DATE(new Date());
+        dnModelDao.insertOrReplace(dnModel);
+//        String sql="update DNMODEL set OPER__DATE='"+new Date()+"' where AGENT__DN__NO='"+dnModel.getAGENT_DN_NO()+"'";
+//        dnModelDao.getDatabase().execSQL(sql);
+    }
+
     /**
      * 获取本地数据所有未处理完成单据
      * @return
@@ -186,6 +194,7 @@ public class DbDnInfo {
         dnDetailModels =( ArrayList<DNDetailModel>)dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo)).list();
         for(int i=0;i<dnDetailModels.size();i++){
             dnDetailModels.get(i).getSERIALS();
+            dnDetailModels.get(i).setSCAN_QTY(dnDetailModels.get(i).getSERIALS().size());
         }
         return dnDetailModels;
     }

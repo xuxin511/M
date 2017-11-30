@@ -32,7 +32,6 @@ import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
-import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
@@ -123,7 +122,9 @@ public class DeliveryScan extends BaseIntentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_submit){
-            DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
+//            if(dnModel.getSTATUS()!=3) { //不是提交状态，修改单据为已完成
+//                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
+//            }
            UploadDN.SumbitDN(context,dnModel,mHandler);
         }
         return super.onOptionsItemSelected(item);

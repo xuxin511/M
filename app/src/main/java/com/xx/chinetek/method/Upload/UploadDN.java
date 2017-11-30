@@ -80,7 +80,7 @@ public class UploadDN {
                 DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
                 UploadDN.UploadDNToMaps(dnModel,"F",mHandler);
             }
-
+            DbDnInfo.getInstance().UpdateOperaterData(dnModel);
         }else{
             MessageBox.Show(context,context.getString(R.string.Msg_Dn_Finished));
         }
@@ -106,6 +106,7 @@ public class UploadDN {
                     }.start();
                 }
                 DNModel dnModel = returnMsgModel.getModelJson();
+                DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
                 if(dnModel!=null) {
                     //保留原有数据
                     DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());

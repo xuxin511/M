@@ -47,6 +47,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadCus;
@@ -165,9 +166,8 @@ public class DeliveryStart extends BaseActivity {
         switch (dnTypeModel.getDNType()){
             case 3:
                 CreateDnNo.GetDnNo(context,dnModel);
-               // dnModel.setAGENT_DN_NO(Dnno);
                 dnModel.setDN_QTY(0);
-               // intent.putExtra("DNNo",Dnno);
+                dnModel.setOPER_DATE(new Date());
                 jumpClass=DeliveryScan.class;
                 break;
             case 5:
