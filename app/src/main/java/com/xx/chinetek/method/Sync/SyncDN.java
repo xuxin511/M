@@ -124,9 +124,9 @@ public class SyncDN {
    public static  ArrayList<DNModel> DNFromFiles() throws Exception{
        File[] DNfiles=new File(ParamaterModel.DownDirectory).listFiles();
        ArrayList<DNModel> dnModels=new ArrayList<>();
-       Boolean isSelfDN=true;//判断单据是否为登陆代理商所有
        String ErrorDN="";
        for(int i=0;i<DNfiles.length;i++) {
+           Boolean isSelfDN=true;//判断单据是否为登陆代理商所有
            DNModel dnModel = new DNModel();
            File file = DNfiles[i];
            String charSetName= FileUtil.GetCharSetName(file);
@@ -155,8 +155,9 @@ public class SyncDN {
                        //判断代理商导入文件是否属于该代理商所有
                        if(!cusNo.equals(ParamaterModel.PartenerID)) {
                            isSelfDN = false;
-                           ErrorDN+=file.getName()+"\r\n";
-                           continue;
+                           dnModel=null;
+                           ErrorDN+=file.getName()+"\n";
+                           break;
                        }
                        dnModel.setLEVEL_2_AGENT_NO(cusNo);
                        dnModel.setLEVEL_2_AGENT_NAME(lines[2].trim());
@@ -164,51 +165,56 @@ public class SyncDN {
                        dnModel.setCUSTOM_NO(cusNo);
                        dnModel.setCUSTOM_NAME(lines[3].trim());
                    }
-                   int lineno=Integer.parseInt(lines[1].trim());
-                   DNDetailModel dnDetailModel =DbDnInfo.getInstance().GetLoaclDNDetail(DNNo,lineno);
-                   if(dnDetailModel==null) {
-                       dnDetailModel = new DNDetailModel();
-                       dnDetailModel.setDETAIL_STATUS("1");
-                       dnDetailModel.setSTATUS(0);
-                   }
-                   dnDetailModel.setAGENT_DN_NO(DNNo);
-                   dnDetailModel.setLINE_NO(lineno);
-                   dnDetailModel.setITEM_NO(lines[4].trim());
-                   dnDetailModel.setGOLFA_CODE(lines[6].trim());
-                   if(TextUtils.isEmpty(lines[5].trim())) {
-                       String condition = dnDetailModel.getGOLFA_CODE() == null || TextUtils.isEmpty(dnDetailModel.getGOLFA_CODE()) ?
-                               dnDetailModel.getITEM_NO() : dnDetailModel.getGOLFA_CODE();
-                       MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(condition);
-                       dnDetailModel.setITEM_NAME(materialModel==null?"":materialModel.getMAKTX());
-                   }else {
-                       dnDetailModel.setITEM_NAME(lines[5].trim());
-                   }
-                   int dnQty = Integer.parseInt(lines[7].trim());
-                   Qty += dnQty;
-                   dnDetailModel.setDN_QTY(dnQty);
-                   dnDetailModel.setOPER_DATE(new Date());
-                   int scanQTY=DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo,lines[6].trim(),lineno);
-                   dnDetailModel.setSCAN_QTY(scanQTY);
-                   dnDetailModels.add(dnDetailModel);
+
+                       int lineno = Integer.parseInt(lines[1].trim());
+                       DNDetailModel dnDetailModel = DbDnInfo.getInstance().GetLoaclDNDetail(DNNo, lineno);
+                       if (dnDetailModel == null) {
+                           dnDetailModel = new DNDetailModel();
+                           dnDetailModel.setDETAIL_STATUS("1");
+                           dnDetailModel.setSTATUS(0);
+                       }
+                       dnDetailModel.setAGENT_DN_NO(DNNo);
+                       dnDetailModel.setLINE_NO(lineno);
+                       dnDetailModel.setITEM_NO(lines[4].trim());
+                       dnDetailModel.setGOLFA_CODE(lines[6].trim());
+                       if (TextUtils.isEmpty(lines[5].trim())) {
+                           String condition = dnDetailModel.getGOLFA_CODE() == null || TextUtils.isEmpty(dnDetailModel.getGOLFA_CODE()) ?
+                                   dnDetailModel.getITEM_NO() : dnDetailModel.getGOLFA_CODE();
+                           MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(condition);
+                           dnDetailModel.setITEM_NAME(materialModel == null ? "" : materialModel.getMAKTX());
+                       } else {
+                           dnDetailModel.setITEM_NAME(lines[5].trim());
+                       }
+                       int dnQty = Integer.parseInt(lines[7].trim());
+                       Qty += dnQty;
+                       dnDetailModel.setDN_QTY(dnQty);
+                       dnDetailModel.setOPER_DATE(new Date());
+                       int scanQTY = DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo, lines[6].trim(), lineno);
+                       dnDetailModel.setSCAN_QTY(scanQTY);
+                       dnDetailModels.add(dnDetailModel);
+
                }
-               dnModel.setOPER_DATE(new Date());
-               dnModel.setDN_DATE(new Date());
-               dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
-               dnModel.setDETAILS(dnDetailModels);
-               dnModel.setDN_QTY(Qty);
-               if(ParamaterModel.DnTypeModel.getDNType()==2){ //同步方式为FTP，记录文件名
-                dnModel.setFtpFileName(file.getName());
+               if(isSelfDN) {
+                   dnModel.setOPER_DATE(new Date());
+                   dnModel.setDN_DATE(new Date());
+                   dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
+                   dnModel.setDETAILS(dnDetailModels);
+                   dnModel.setDN_QTY(Qty);
+                   if (ParamaterModel.DnTypeModel.getDNType() == 2) { //同步方式为FTP，记录文件名
+                       dnModel.setFtpFileName(file.getName());
+                   }
                }
            }
            reader.close();
-           dnModels.add(dnModel);
+           if(dnModel!=null)
+               dnModels.add(dnModel);
        }
        for(int i=0;i<DNfiles.length;i++) {
            DNfiles[i].delete();
        }
 
-        if(!isSelfDN){
-            MessageBox.Show(context,context.getString(R.string.Msg_ImportDNError));
+        if(!ErrorDN.equals("")){
+            MessageBox.Show(context,context.getString(R.string.Msg_ImportDNError)+ErrorDN);
         }
        return dnModels;
       // DbDnInfo.getInstance().InsertDNDB(dnModels);
