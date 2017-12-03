@@ -140,6 +140,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         BarCodeModel model = new BarCodeModel();
         model.setSerial_Number(code);
         model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
+        model.setLINE_NO(dndetailmodel.getLINE_NO());
         model.setMAT_TYPE(1); //默认三菱条码
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()) {
             MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(dndetailmodel.getGOLFA_CODE());
@@ -230,6 +231,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         DNScanModels= DbDnInfo.getInstance().GetLoaclDNScanModelDN(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
         exceptionScanbarcodeAdapter=new ExceptionScanbarcodeAdapter(context, DNScanModels);
         lsvDeliveryScan.setAdapter(exceptionScanbarcodeAdapter);
+      //  dndetailmodel.setSCAN_QTY(DNScanModels.size());
         txtScanQty.setText("扫描数量："+DNScanModels.size());
     }
 

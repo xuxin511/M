@@ -22,7 +22,7 @@
     <string name="close">完毕</string>
     <string name="Bulkupload">批量上报</string>
     <string name="DNsync">MAPS单据同步</string>
-    <string name="FTPDNChoice">单据选择</string>
+    <string name="FTPDNChoice">单据下载</string>
     <string name="Reason">异常原因：</string>
     <string name="ExceptionScan">异常扫描</string>
     <string name="BarcodeScan">异常扫描</string>
@@ -131,6 +131,7 @@
     <string name="Msg_notLess">输入数字不能小于0！</string>
     <string name="Msg_lenMax">起始字符长度+序号长度不能超过12位！</string>
     <string name="Msg_BarcodeNotmatch">条码不匹配！</string>
+    <string name="Msg_ExceptionDN">出库单存在异常\n请至异常模块处理！</string>
     <string name="Msg_InputPassword">请输入管理员密码</string>
     <string name="Msg_SetbarcodeRule">请设置条码规则</string>
     <string name="Msg_maxlength">请设置序列号最大长度</string>

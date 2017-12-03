@@ -15,8 +15,6 @@ import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
-import com.xx.chinetek.method.Sync.SyncBase;
-import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -28,10 +26,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_ExceptionDNList;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ExceptionDNList;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadDN;
 
 /**
@@ -51,10 +52,14 @@ public class UploadDN {
         if(dnModel.getSTATUS()!=3) {
             //判断出库单是否完成
             boolean isFinished=true;
-            for(DNDetailModel dnDetailModel:dnModel.getDETAILS()){
-                if(dnDetailModel.getSCAN_QTY()!=dnDetailModel.getDN_QTY()){
-                    isFinished=false;
-                    break;
+            if(dnModel.getDETAILS().size()==0){
+                isFinished=false;
+            }else {
+                for (DNDetailModel dnDetailModel : dnModel.getDETAILS()) {
+                    if (dnDetailModel.getSCAN_QTY() != dnDetailModel.getDN_QTY()) {
+                        isFinished = false;
+                        break;
+                    }
                 }
             }
             if(!isFinished){
@@ -91,9 +96,9 @@ public class UploadDN {
      * 上传出库单到MAPS
      * @param result
      */
-    public static boolean AnalysisUploadDNToMapsJson(Context context,String result,final  DNModel subdnModel) {
+    public static int AnalysisUploadDNToMapsJson(Context context,String result,final  DNModel subdnModel) {
         try {
-            LogUtil.WriteLog(SyncDN.class, TAG_UploadDN, result);
+            LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, result);
             ReturnMsgModel<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<DNModel>>() {
             }.getType());
             if (!returnMsgModel.getHeaderStatus().equals("E")) {
@@ -111,9 +116,9 @@ public class UploadDN {
                     //保留原有数据
                     DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
                     if(tempdnModel!=null) {
-                        dnModel.setOPER_DATE(dnModel.getOPER_DATE());
-                        dnModel.setCUS_DN_NO(dnModel.getCUS_DN_NO());
-                        dnModel.setREMARK(dnModel.getREMARK());
+                        dnModel.setOPER_DATE(tempdnModel.getOPER_DATE());
+                        dnModel.setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
+                        dnModel.setREMARK(tempdnModel.getREMARK());
                     }
                     ArrayList<DNModel> dnModels = new ArrayList<>();
                     dnModels.add(dnModel);
@@ -121,20 +126,22 @@ public class UploadDN {
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.exeption);
+                    return 2;
                 }
                 if(returnMsgModel.getHeaderStatus().equals("F")) {
                     //更新出库单状态
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
                 }
-                return true;
+                return 1;
             } else {
                 MessageBox.Show(context, returnMsgModel.getMessage());
             }
-            return false;
+            return -1;
         }catch (Exception ex){
             MessageBox.Show(context, ex.getMessage());
+            return -1;
         }
-        return false;
+
     }
 
     public static void UploadDNToMaps(DNModel dnModel,String isCloseDN, MyHandler<BaseActivity> mHandler){
@@ -146,11 +153,26 @@ public class UploadDN {
         params.put("DNJS", dnModelJson);
         params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
         String para = (new JSONObject(params)).toString();
-        LogUtil.WriteLog(SyncBase.class, TAG_UploadDN, para);
+        LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, para);
         String method=dnModel.getSTATUS()==-1?URLModel.GetURL().ExceptionDN:URLModel.GetURL().UploadNDN;
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadDN,
                 context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_UploadDN, null,
                 method, params, null);
+
+    }
+
+    public static void UploadDNListToMaps(List<DNModel> dnModels,MyHandler<BaseActivity> mHandler){
+
+        final Map<String, String> params = new HashMap<String, String>();
+        String dnModelJson= GsonUtil.parseModelToJson(dnModels);
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("UserInfoJS", user);
+        params.put("DNListJS", dnModelJson);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(UploadDN.class, TAG_ExceptionDNList, para);
+        RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_ExceptionDNList,
+                context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_ExceptionDNList, null,
+                URLModel.GetURL().ExceptionDNList, params, null);
 
     }
 }

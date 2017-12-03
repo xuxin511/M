@@ -51,9 +51,9 @@ public class ExceptionScan extends BaseActivity {
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case RESULT_UploadDN:
-                if(UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,dnModel)){
-                    closeActiviry();
-                }
+                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,dnModel);
+                closeActiviry();
+
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
                 ToastUtil.show("获取请求失败_____" + msg.obj);
@@ -64,7 +64,7 @@ public class ExceptionScan extends BaseActivity {
     @Override
     protected void initViews() {
        super.initViews();
-        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.ScanDetails),true);
+        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.BarcodeScan),true);
         x.view().inject(this);
     }
 

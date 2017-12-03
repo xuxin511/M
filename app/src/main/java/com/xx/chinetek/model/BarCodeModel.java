@@ -46,6 +46,15 @@ public class BarCodeModel {
      */
     private List<String> OtherCode;
 
+    private Integer  LINE_NO;
+
+    public Integer getLINE_NO() {
+        return LINE_NO;
+    }
+
+    public void setLINE_NO(Integer LINE_NO) {
+        this.LINE_NO = LINE_NO;
+    }
 
     public Integer getMAT_TYPE() {
         return MAT_TYPE;

@@ -38,7 +38,7 @@ public class GsonUtil {
     }
 
     public static <T> String parseModelToJson(T TModel) {
-        Gson gson = new Gson();
+        Gson gson = new Gson(); //new GsonBuilder().setDateFormat("yyyy/MM/dd HH:mm:ss").create();
         String result = gson.toJson(TModel, new TypeToken<T>() {
         }.getType());
         return result;
@@ -52,7 +52,7 @@ public class GsonUtil {
     }
 
     public static <T> String parseModelListToJsonArray(List<T> TModelList) {
-        Gson gson = new Gson();
+        Gson gson =new Gson();//  new GsonBuilder().setDateFormat("yyyy/MM/dd HH:mm:ss").create();
         String result = gson.toJson(TModelList, new TypeToken<List<T>>() {
         }.getType());
         return result;

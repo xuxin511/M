@@ -19,7 +19,7 @@ import java.util.List;
 
 public class DbBaseInfo {
 
-    private static DbBaseInfo mSyncDB;
+    public static DbBaseInfo mSyncDB;
     private DaoSession daoSession=null;
     private MaterialModelDao materialModelDao;
     private CustomModelDao customModelDao;
@@ -123,7 +123,10 @@ public class DbBaseInfo {
      * @return
      */
     public String GetCustomName(String CusName){
-      CustomModel customModel=customModelDao.queryBuilder().where(CustomModelDao.Properties.NAME.eq(CusName)).unique();
+        List<CustomModel> customModels=customModelDao.queryBuilder().where(CustomModelDao.Properties.NAME.eq(CusName)).distinct().list();
+        CustomModel customModel=null;
+        if(customModels!=null && customModels.size()>0)
+            customModel=customModels.get(0);
       return customModel==null?null:customModel.getCUSTOMER();
     }
 

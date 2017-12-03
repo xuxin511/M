@@ -67,7 +67,10 @@ public class ParamaterModel {
      * 参数同步时间
      */
     public static String ParamaterSyncTime;
-
+    /**
+     * 是否已注册 1：注册
+     */
+    public static String Register;
     /**
      *   文件存放目录
      */

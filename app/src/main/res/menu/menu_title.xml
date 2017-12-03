@@ -9,7 +9,7 @@
         android:id="@+id/action_QR"
         android:icon="@drawable/qr"
         android:orderInCategory="80"
-        android:title=""
+        android:title="QR出库单扫描"
         app:showAsAction="ifRoom" />
 
     <!--<item-->
@@ -23,7 +23,7 @@
         android:id="@+id/action_sync"
         android:icon="@drawable/down"
         android:orderInCategory="80"
-        android:title=""
+        android:title="下载出库单"
         app:showAsAction="ifRoom" />
 
 

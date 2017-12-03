@@ -14,7 +14,7 @@ public class TAG_RESULT {
 
     public static  String  TAG_SyncPara="SyncPara";
     public static final int RESULT_SyncPara=103;
-    public static final int RESULT_UploadPara=110;
+    public static final int RESULT_UploadPara=112;
 
     public static  String  TAG_SyncDn="SyncDn";
     public static final int RESULT_SyncDn=104;
@@ -33,9 +33,14 @@ public class TAG_RESULT {
 
     public static  String  TAG_UploadDN="UploadDN";
     public static final int RESULT_UploadDN=109;
+    public static  String  TAG_ExceptionDNList="ExceptionDNList";
+    public static final int RESULT_ExceptionDNList=114;
 
 
-    public static  String  TAG_SyncException="SyncDn";
-    public static final int RESULT_SyncException=110;
+    public static  String  TAG_SyncException="SyncException";
+    public static final int RESULT_SyncException=111;
+
+    public static  String  TAG_Login="Login";
+    public static final int RESULT_Login=113;
 
 }

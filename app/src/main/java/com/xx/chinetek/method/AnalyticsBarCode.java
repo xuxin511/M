@@ -31,6 +31,7 @@ public class AnalyticsBarCode {
                     BarCodeModel barCodeModel=new BarCodeModel();
                     barCodeModel.setGolfa_Code(KeyCode.trim());
                     barCodeModel.setMAT_TYPE(0); //非三菱
+                    barCodeModel.setLINE_NO(null);
                     SetNotMitSubshiCode(Barcode, barCodeModel);
                     barCodeModels.add(barCodeModel);
                 }

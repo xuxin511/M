@@ -78,8 +78,22 @@ public class DeliveryScan extends BaseIntentActivity {
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case RESULT_UploadDN:
-                if(UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel)){
-                    closeActiviry();
+                int ret=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
+                if(ret!=-1){
+                    if(ret==2){
+                        new AlertDialog.Builder(this).setTitle("提示")
+                                .setIcon(android.R.drawable.ic_dialog_info)
+                                .setMessage(R.string.Msg_ExceptionDN)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        closeActiviry();
+                                    }
+                                })
+                                .show();
+                    }
+                    else{
+                        closeActiviry();
+                    }
                 }
                 break;
             case TAG_SCAN:

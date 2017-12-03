@@ -35,7 +35,7 @@ public class Scan {
         }else {
             //判断扫描数量是否超过出库数量
             String condition = dnDetailModel.getGOLFA_CODE() == null ? dnDetailModel.getITEM_NO() : dnDetailModel.getGOLFA_CODE();
-            DBReturnModel dbReturnModel = dnInfo.GetDNQty(dnModel.getAGENT_DN_NO(), condition);
+            DBReturnModel dbReturnModel = dnInfo.GetDNQty(dnModel.getAGENT_DN_NO(), condition,dnDetailModel.getLINE_NO());
             if (dbReturnModel.getDNQTY() < dbReturnModel.getSCANQTY() + barCodeModels.size()) {
                 isErrorStatus = 1;
             }else {
@@ -56,6 +56,7 @@ public class Scan {
     public static int getIndex(DNModel dnModel, List<DNDetailModel> dnDetailModels, BarCodeModel barCodeModel, DNDetailModel dnDetailModel) {
         dnDetailModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
         dnDetailModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
+        dnDetailModel.setLINE_NO(barCodeModel.getLINE_NO());
         //判断是否存在物料
         return dnDetailModels.indexOf(dnDetailModel);
     }
@@ -81,11 +82,14 @@ public class Scan {
                 break;
             }
 
-            index=findIndexByGolfaCode(dnDetailModels,barCodeModel.getGolfa_Code());
-            if(index==-1){
-                isErrorStatus = 1;
-                break;
+            if(barCodeModel.getLINE_NO()==null) {
+                index = findIndexByGolfaCode(dnDetailModels, barCodeModel.getGolfa_Code());
+                if (index == -1) {
+                    isErrorStatus = 1;
+                    break;
+                }
             }
+            if(dnDetailModels.get(index).getSCAN_QTY()==null) dnDetailModels.get(index).setSCAN_QTY(0);
             //更新物料扫描数量
             dnDetailModels.get(index).setSCAN_QTY(dnDetailModels.get(index).getSCAN_QTY() + 1);
             //保存序列号
@@ -122,6 +126,7 @@ public class Scan {
         for(int i=0;i<size;i++){
             DNDetailModel dnDetailModel=dnDetailModels.get(i);
             if(dnDetailModel.getGOLFA_CODE().equals(GolfaCode)){
+                if(dnDetailModel.getSCAN_QTY()==null) dnDetailModel.setSCAN_QTY(0);
                 if(dnDetailModel.getDN_QTY()>dnDetailModel.getSCAN_QTY()) {
                     index = i;
                     break;

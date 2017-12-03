@@ -122,8 +122,7 @@ public class MainActivity extends BaseActivity {
             startActivityLeft(intent);
         }
         else if (textView.getText().toString().equals(getString(R.string.sync))) {
-            //获取同步时间
-            SharePreferUtil.ReadSyncTimeShare();
+
             //同步物料
             SyncBase.getInstance().SyncMaterial(mHandler);
         }

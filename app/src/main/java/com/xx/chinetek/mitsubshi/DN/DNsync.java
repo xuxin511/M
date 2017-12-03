@@ -39,7 +39,7 @@ public class DNsync extends BaseActivity{
     @Override
     protected void initViews() {
         super.initViews();
-        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.DNsync),true);
+        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.FTPDNChoice),true);
         x.view().inject(this);
     }
 
@@ -58,9 +58,6 @@ public class DNsync extends BaseActivity{
             MessageBox.Show(context,ex.toString());
         }
     }
-
-
-
 
 
     @Override
@@ -88,11 +85,17 @@ public class DNsync extends BaseActivity{
                 for(int i=0;i<size;i++) {
                     DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(Tempdnmodels.get(i).getAGENT_DN_NO());
                     if(dnModel!=null) {
-                        Tempdnmodels.get(i).setSTATUS(dnModel.getSTATUS());
+                        Tempdnmodels.get(i).setSTATUS( Tempdnmodels.get(i).getSTATUS()==-1?Tempdnmodels.get(i).getSTATUS():dnModel.getSTATUS());
                         Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
                         Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
                         Tempdnmodels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
                         Tempdnmodels.get(i).setREMARK(dnModel.getREMARK());
+                        if(Tempdnmodels.get(i).getDETAILS()!=null) {
+                            for (int j = 0; j < Tempdnmodels.get(i).getDETAILS().size(); j++) {
+                                int scanQty = Tempdnmodels.get(i).getDETAILS().get(j).getSERIALS().size();
+                                Tempdnmodels.get(i).getDETAILS().get(j).setSCAN_QTY(scanQty);
+                            }
+                        }
                     }
                 }
                 //插入数据

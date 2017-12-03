@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.widget.TextView;
 
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
@@ -17,7 +16,6 @@ import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 
 import org.xutils.view.annotation.ContentView;
-import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.BufferedWriter;
@@ -30,11 +28,6 @@ import java.util.ArrayList;
 public class QRScan extends BaseIntentActivity {
 
    Context context=QRScan.this;
-    DNModel dnModel;
-
-
-    @ViewInject(R.id.txt_DnNo)
-    TextView txtDnNo;
 
     @Override
     public void onHandleMessage(Message msg) {

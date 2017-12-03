@@ -118,6 +118,10 @@ public class SharePreferUtil {
      */
     public static void ReadSyncTimeShare() {
         List<SyncParaModel> syncParaModels = DbBaseInfo.getInstance().GetSysPara();
+        ParamaterModel.Register=null;
+        ParamaterModel.MaterialSyncTime="";
+        ParamaterModel.CustomSyncTime="";
+        ParamaterModel.ParamaterSyncTime="";
         if(syncParaModels!=null) {
             for (int i = 0; i < syncParaModels.size(); i++) {
                 switch (syncParaModels.get(i).getKey()) {
@@ -130,6 +134,9 @@ public class SharePreferUtil {
                     case "ParamaterSyncTime":
                         ParamaterModel.ParamaterSyncTime = syncParaModels.get(i).getValue();
                         break;
+                    case "Register":
+                        ParamaterModel.Register=syncParaModels.get(i).getValue();
+                            break;
                 }
             }
         }

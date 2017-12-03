@@ -17,17 +17,23 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.adapter.bulkupload.BulkuploadListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
+import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.MultipleDN;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -35,8 +41,10 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_ExceptionDNList;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ExceptionDNList;
 
 @ContentView(R.layout.activity_exception_list)
 public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -52,26 +60,72 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     ArrayList<DNModel> DNModels;
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
 
-    int uploadIndex=0;
-    DNModel postmodel;
+
    // String UploadDNno="";
 
     @Override
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
-            case RESULT_UploadDN:
-                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,postmodel);
-                uploadIndex--;
-                if(uploadIndex==0) {
-                    MessageBox.Show(context,getString(R.string.Msg_DNUploadSuccess));
-                    GetbulkuploadList();
-                }
+            case RESULT_ExceptionDNList:
+                AnalysisExceptionDNListJson((String) msg.obj);
+
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
                 ToastUtil.show("获取请求失败_____" + msg.obj);
                 break;
         }
 
+    }
+
+
+    void  AnalysisExceptionDNListJson(String result){
+
+        try {
+            LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, result);
+            ReturnMsgModelList<MultipleDN> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<MultipleDN>>() {
+            }.getType());
+            if (returnMsgModel.getHeaderStatus().equals("S")) {
+               ArrayList<MultipleDN> multipleDNS = returnMsgModel.getModelJson();
+               String dnno="";
+                for (MultipleDN mulitdn:multipleDNS) {
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.complete);
+                    if(mulitdn.getStatus().equals("F")){
+                        DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.Sumbit);
+                    }
+                    if(mulitdn.getStatus().equals("S")){
+                        if(mulitdn.getDN()!=null) {
+                            //保留原有数据
+                            DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(mulitdn.getDN().getAGENT_DN_NO());
+                            if(tempdnModel!=null) {
+                                mulitdn.getDN().setOPER_DATE(tempdnModel.getOPER_DATE());
+                                mulitdn.getDN().setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
+                                mulitdn.getDN().setREMARK(tempdnModel.getREMARK());
+                            }
+                            ArrayList<DNModel> dnModels = new ArrayList<>();
+                            dnModels.add(mulitdn.getDN());
+                            //插入数据
+                            DbDnInfo.getInstance().InsertDNDB(dnModels);
+                            //更新出库单状态(异常)
+                            DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.exeption);
+                        }
+                    }
+                    if(mulitdn.getStatus().equals("E")){
+                        dnno+=mulitdn.getDN().getAGENT_DN_NO()+"\n";
+                    }
+                }
+
+                if(!TextUtils.isEmpty(dnno)){
+                    MessageBox.Show(context, "提交失败！失败出库单号：\n"+dnno);
+                }
+
+            } else {
+                MessageBox.Show(context, returnMsgModel.getMessage());
+            }
+
+        }catch (Exception ex){
+            MessageBox.Show(context, ex.getMessage());
+        }
+        GetbulkuploadList();
     }
 
     @Override
@@ -184,21 +238,23 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.action_Export){
-            String DnNo="";
-            for(int i=0;i<DNModels.size();i++){
-                if(DNModels.get(i).getFlag()=="1"){
-                    postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
-                    if(postmodel==null){
-                        DnNo+=DNModels.get(i).getAGENT_DN_NO()+"\n";
-                    }else{
-                        uploadIndex++;
-                        UploadDN.UploadDNToMaps(postmodel,"N",mHandler);
+        if(item.getItemId()==R.id.action_Export) {
+            List<DNModel> postmodels=new ArrayList<>();
+            boolean isUpload=true;
+            for (int i = 0; i < DNModels.size(); i++) {
+                if (DNModels.get(i).getFlag() == "1") {
+                   DNModel postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
+                    if (postmodel == null) {
+                        MessageBox.Show(context, "出库单上报错误！\n" + DNModels.get(i).getAGENT_DN_NO());
+                        isUpload=false;
+                        break;
                     }
+                    postmodels.add(postmodel);
                 }
             }
-            if(!TextUtils.isEmpty(DnNo))
-                MessageBox.Show(context,"出库单号\n"+DnNo+"提交失败！");
+            if(isUpload && postmodels.size()!=0){
+                UploadDN.UploadDNListToMaps(postmodels, mHandler);
+            }
         }
         return super.onOptionsItemSelected(item);
     }

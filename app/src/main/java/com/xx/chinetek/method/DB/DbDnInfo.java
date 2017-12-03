@@ -152,7 +152,8 @@ public class DbDnInfo {
     public  ArrayList<DNModel> GetLoaclDNbyCondition(){
         ArrayList<DNModel> dnModels=new ArrayList<>();
         dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder()
-                .where(DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().list();
+                .where(DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready))
+                .orderAsc(DNModelDao.Properties.DN_SOURCE).distinct().list();
         return dnModels;
     }
 
@@ -204,9 +205,11 @@ public class DbDnInfo {
      * @param DNNo
      * @param condition
      */
-    public DBReturnModel  GetDNQty(String DNNo,String condition){
+    public DBReturnModel  GetDNQty(String DNNo,String condition,Integer Line_NO){
         String sql="select sum(DN__QTY) as DNQTY,sum(SCAN__QTY) as SCANQTY from DNDETAIL_MODEL " +
                 "where AGENT__DN__NO='"+DNNo+"' and  (ITEM__NO='"+condition+"' or GOLFA__CODE='"+condition+"')";
+        if(Line_NO!=null)
+            sql+= " and LINE__NO="+Line_NO;
         DBReturnModel dbReturnModel=new DBReturnModel();
         Cursor cursor= dnDetailModelDao.getDatabase().rawQuery(sql,null);
         if(cursor!=null){
@@ -241,7 +244,6 @@ public class DbDnInfo {
         cursor.close();
         return qty;
     }
-
 
     /**
      *更新单据状态
