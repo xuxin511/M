@@ -121,9 +121,12 @@
             <TextView
                 style="@style/usertext"
                 android:text="@string/Setting_serialnoaxlength" />
+
             <TextView
+                android:id="@+id/txt_maxlength"
                 style="@style/usertext"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:textAlignment="textEnd" />
 
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
