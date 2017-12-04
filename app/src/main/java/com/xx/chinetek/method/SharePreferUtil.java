@@ -32,7 +32,7 @@ public class SharePreferUtil {
         SharedPreferences sharedPreferences=context.getSharedPreferences("Setting", Context.MODE_PRIVATE);
         if(sharedPreferences!=null) {
             Paramater.IPAdress=sharedPreferences.getString("IPAdress", "");
-            Paramater.Port=sharedPreferences.getInt("Port", 9000);
+            Paramater.Port=sharedPreferences.getInt("Port", 80);
             Paramater.SOCKET_TIMEOUT=sharedPreferences.getInt("TimeOut", 20000);
             ParamaterModel.PartenerID=sharedPreferences.getString("PartenerNo","");
             ParamaterModel.SysPassword=sharedPreferences.getString("SysPassword","123456");

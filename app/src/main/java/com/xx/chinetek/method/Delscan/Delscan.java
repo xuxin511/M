@@ -19,7 +19,7 @@ public class Delscan {
     public static void DelDNmodel(DNModel Model){
         try {
                 //删除扫描记录，改变表头状态，改变明细数量
-                if (DbDnInfo.getInstance().DELscanbyagent(Model.getAGENT_DN_NO(), "")) {
+                if (DbDnInfo.getInstance().DELscanbyagent(Model.getAGENT_DN_NO())) {
 //                                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyDN(Model.getAGENT_DN_NO(),"");
 //                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"2","");
                     //判断剩余的扫描数量

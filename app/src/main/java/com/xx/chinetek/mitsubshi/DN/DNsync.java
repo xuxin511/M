@@ -82,7 +82,9 @@ public class DNsync extends BaseActivity{
                 }
 
                 int size=Tempdnmodels.size();
+                DbDnInfo dnInfo=DbDnInfo.getInstance();
                 for(int i=0;i<size;i++) {
+                    Tempdnmodels.get(i).__setDaoSession(dnInfo.getDaoSession());
                     DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(Tempdnmodels.get(i).getAGENT_DN_NO());
                     if(dnModel!=null) {
                         Tempdnmodels.get(i).setSTATUS( Tempdnmodels.get(i).getSTATUS()==-1?Tempdnmodels.get(i).getSTATUS():dnModel.getSTATUS());

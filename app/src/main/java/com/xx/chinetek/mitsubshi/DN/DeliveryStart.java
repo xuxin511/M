@@ -156,7 +156,8 @@ public class DeliveryStart extends BaseActivity {
 //            }
         }
         dnTypeModel.setCustomModel(customModel);
-        dnTypeModel.setDNCusType(customModel.getPARTNER_FUNCTION().equals("Z3")?1:0);
+        if(customModel!=null)
+            dnTypeModel.setDNCusType(customModel.getPARTNER_FUNCTION().equals("Z3")?1:0);
         CommonUtil.setEditFocus(edtContentText);
         SharePreferUtil.SetDNTypeShare(context,dnTypeModel);
         ParamaterModel.DnTypeModel=dnTypeModel;

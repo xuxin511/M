@@ -3,6 +3,7 @@
     <string name="activity_login_company">chinetek 上海辰达 @2017</string>
 
     <string name="login_login">登陆</string>
+    <string name="login_ver">版本：</string>
     <string name="login_setting">设置</string>
     <string name="login_setting_BarcodeRule">设置-条码规则</string>
     <string name="login_setting_ToMail">设置-收件人</string>
@@ -172,6 +173,7 @@
     <string name="Dia_SyncCus">正在同步客户和代理商...</string>
     <string name="Dia_UploadCus">正在上传新增客户信息...</string>
     <string name="Dia_UploadDN">正在上传出库单...</string>
+    <string name="Dia_GetDNDetailItems">获取已关闭出库单...</string>
     <string name="Dia_SyncPara">正在同步参数设置...</string>
     <string name="Dia_UploadPara">正在上传参数设置...</string>
     <string name="Dia_SyncDn">通过MAPS形式获取出库单...</string>

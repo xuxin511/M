@@ -27,6 +27,7 @@ public class URLModel {
     public String UploadNDN = GetWCFAdress()+"UploadDN";//"UploadDN"; //上传出库单
     public String ExceptionDN = GetWCFAdress()+"ExceptionDN"; //上传异常出库单
     public String ExceptionDNList = GetWCFAdress()+"UploadMultipleDNs"; //上传异常出库单
+    public String GetDNDetailItems = GetWCFAdress()+"GetDNDetailItems"; //获取出库单完整数据
     public String SyncPara = GetWCFAdress()+"GetCustomerSettings"; //同步参数配置
     public String UploadPara = GetWCFAdress()+"SetCustomerSettings"; //同步参数配置
     public String SyncDn = GetWCFAdress()+"GetDNHeaders"; //同步DN表头

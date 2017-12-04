@@ -56,6 +56,8 @@ public class Login extends BaseActivity {
     TextView txtPartner;
     @ViewInject(R.id.txt_SerialNo)
     TextView txtSerialNo;
+    @ViewInject(R.id.txtVer)
+    TextView txtVer;
     @ViewInject(R.id.edt_Operater)
     EditText  edtOperater;
 
@@ -104,6 +106,7 @@ public class Login extends BaseActivity {
         SharePreferUtil.ReadShare(context);
         SharePreferUtil.ReadUserShare(context);
         edtOperater.setText(ParamaterModel.Operater);
+        txtVer.setText(getString(R.string.login_ver)+(updateVersionService.getVersionCode(context)));
         if(ParamaterModel.SerialNo!=null) {
             txtSerialNo.setText(ParamaterModel.SerialNo);
         }
@@ -164,6 +167,9 @@ public class Login extends BaseActivity {
 
         LogUtil.WriteLog(Login.class,"btnLoginClick",ParamaterModel.Operater);
 
+//        Intent intent = new Intent(context, MainActivity.class);
+//        startActivityLeft(intent);
+
         if(ParamaterModel.Register!=null &&  ParamaterModel.Register.equals("1")) {
                 Intent intent = new Intent(context, MainActivity.class);
                 startActivityLeft(intent);
@@ -186,27 +192,30 @@ public class Login extends BaseActivity {
 
 //        Intent intent = new Intent(context, Setting.class);
 //        startActivityLeft(intent);
-
-        final EditText et = new EditText(this);
-        et.setInputType(InputType.TYPE_CLASS_TEXT
-                | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        et.setTextColor(getResources().getColor(R.color.black));
-        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputPassword))
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setView(et)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String input = et.getText().toString();
-                        if(!ParamaterModel.SysPassword.equals(input)) {
-                            MessageBox.Show(context,getString(R.string.Msg_PasswordError));
-                            return;
+        try {
+            final EditText et = new EditText(this);
+            et.setInputType(InputType.TYPE_CLASS_TEXT
+                    | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            et.setTextColor(getResources().getColor(R.color.black));
+            new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputPassword))
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setView(et)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            String input = et.getText().toString();
+                            if (!ParamaterModel.SysPassword.equals(input)) {
+                                MessageBox.Show(context, getString(R.string.Msg_PasswordError));
+                                return;
+                            }
+                            Intent intent = new Intent(context, Setting.class);
+                            startActivityLeft(intent);
                         }
-                        Intent intent = new Intent(context, Setting.class);
-                        startActivityLeft(intent);
-                    }
-                })
-                .setNegativeButton("取消", null)
-                .show();
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
+        } catch (Exception ex) {
+            MessageBox.Show(context, ex.getMessage());
+        }
     }
 
 

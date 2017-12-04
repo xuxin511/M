@@ -79,7 +79,7 @@ public class DeliveryScan extends BaseIntentActivity {
         switch (msg.what) {
             case RESULT_UploadDN:
                 int ret=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
-                if(ret!=-1){
+                    if(ret!=-1){
                     if(ret==2){
                         new AlertDialog.Builder(this).setTitle("提示")
                                 .setIcon(android.R.drawable.ic_dialog_info)
