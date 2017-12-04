@@ -104,12 +104,13 @@ public class Login extends BaseActivity {
             txtSerialNo.setText(ParamaterModel.SerialNo);
         }
 
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        txtPartner.setText(ParamaterModel.PartenerID);
+            txtPartner.setText( ParamaterModel.PartenerID);
     }
 
     @Event(R.id.btn_Login)
@@ -159,6 +160,8 @@ public class Login extends BaseActivity {
         DbDnInfo.getInstance().DeleteDnBySaveTime();
         //获取参数
         SharePreferUtil.ReadSyncTimeShare();
+
+        ParamaterModel.PartenerName = DbBaseInfo.getInstance().GetCustomNameById(ParamaterModel.PartenerID);
 
         LogUtil.WriteLog(Login.class,"btnLoginClick",ParamaterModel.Operater);
 

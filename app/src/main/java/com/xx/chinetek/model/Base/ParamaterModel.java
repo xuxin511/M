@@ -40,6 +40,7 @@ public class ParamaterModel {
      * 代理商编号
      */
     public static  String  PartenerID="";
+    public static  String  PartenerName="";
 
     /**
      * 发货方式，发货方

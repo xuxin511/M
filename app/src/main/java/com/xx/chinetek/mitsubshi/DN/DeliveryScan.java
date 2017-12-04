@@ -371,11 +371,10 @@ public class DeliveryScan extends BaseIntentActivity {
         if (ShowErrMag(isErrorStatus)) return true;
         dnModel.setDN_STATUS("AC");
         dnModel.setSTATUS(1);
+        dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.PartenerID);
+        dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.PartenerName);
         if(ParamaterModel.DnTypeModel.getDNCusType()!=null) {
-            if (ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z2")) {
-                dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
-                dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
-            } else if (ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z3")) {
+            if (ParamaterModel.DnTypeModel.getCustomModel().getPARTNER_FUNCTION().equals("Z3")) {
                 dnModel.setCUSTOM_NO(ParamaterModel.DnTypeModel.getCustomModel().getCUSTOMER());
                 dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
             }

@@ -130,6 +130,14 @@ public class DbBaseInfo {
       return customModel==null?null:customModel.getCUSTOMER();
     }
 
+    public String GetCustomNameById(String CusID){
+        List<CustomModel> customModels=customModelDao.queryBuilder().where(CustomModelDao.Properties.CUSTOMER.eq(CusID)).distinct().list();
+        CustomModel customModel=null;
+        if(customModels!=null && customModels.size()>0)
+            customModel=customModels.get(0);
+        return customModel==null?null:customModel.getNAME();
+    }
+
     /**
      * 根据SAP编号或GolfaCode查名称
      * @param condition
