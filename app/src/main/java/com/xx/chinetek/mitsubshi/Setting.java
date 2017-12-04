@@ -103,6 +103,8 @@ public class Setting extends BaseActivity {
     TextView txtPartner;
     @ViewInject(R.id.txt_DNSaveTime)
     TextView txtDNSaveTime;
+    @ViewInject(R.id.txt_maxlength)
+    TextView txtmaxlength;
     @ViewInject(R.id.ckIsuserRemark)
     CheckBox ckIsuserRemark;
     @ViewInject(R.id.ckSelfBarcode)
@@ -171,6 +173,7 @@ public class Setting extends BaseActivity {
         edtTimeOut.setText(Paramater.SOCKET_TIMEOUT/1000+"");
         txtPartner.setText(ParamaterModel.PartenerID);
         txtDNSaveTime.setText(ParamaterModel.baseparaModel.getDNSaveTime()+"");
+        txtmaxlength.setText(ParamaterModel.baseparaModel.getSerialMaxLength()+"");
         ckIsuserRemark.setChecked(ParamaterModel.baseparaModel.getUseRemark());
         MaxLength=ParamaterModel.baseparaModel.getSerialMaxLength();
 
@@ -309,6 +312,7 @@ public class Setting extends BaseActivity {
                             return;
                         }
                         MaxLength=len;
+                        txtmaxlength.setText(MaxLength+"");
                     }
                 })
                 .setNegativeButton("取消", null)
