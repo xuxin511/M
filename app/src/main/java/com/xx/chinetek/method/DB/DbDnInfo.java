@@ -411,9 +411,8 @@ public class DbDnInfo {
     /**
      * 删除扫描记录根据主表主键
      * @param DNNo
-     * @param condition
      */
-    public boolean DELscanbyagent(String DNNo,String condition){
+    public boolean DELscanbyagent(String DNNo){
         try{
             String deletesql="delete from DNSCAN_MODEL " +
                     "where AGENT__DN__NO='"+DNNo+"'";

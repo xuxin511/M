@@ -86,7 +86,7 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txtVer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -109,7 +109,7 @@
         android:text="@string/login_setting"
         android:textColor="@color/black"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/txtVer"
         tools:ignore="RtlHardcoded" />
 
     <ImageView
@@ -122,7 +122,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/txtVer"
         app:srcCompat="@drawable/logo"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" />

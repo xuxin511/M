@@ -112,7 +112,7 @@ public class UploadDN {
                 }
                 DNModel dnModel = returnMsgModel.getModelJson();
                 DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
-                if(dnModel!=null) {
+                if(returnMsgModel.getHeaderStatus().equals("S") && dnModel!=null) { //有异常
                     //保留原有数据
                     DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
                     if(tempdnModel!=null) {
@@ -126,13 +126,28 @@ public class UploadDN {
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.exeption);
-                    return 2;
+                    return 2; //有异常
+                }
+                if(returnMsgModel.getHeaderStatus().equals("K") && dnModel!=null){ //后台单据已关闭
+                    MessageBox.Show(context, returnMsgModel.getMessage());
+                    subdnModel.setDETAILS(dnModel.getDETAILS());
+                    DbDnInfo.getInstance().DELscanbyagent(subdnModel.getAGENT_DN_NO());
+                    ArrayList<DNModel> dnModels = new ArrayList<>();
+                    dnModels.add(subdnModel);
+                    //插入数据
+                    DbDnInfo.getInstance().InsertDNDB(dnModels);
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
+                    return  -1;
+                }
+                if(returnMsgModel.getHeaderStatus().equals("Z") ) { //后台单据有异常
+                    MessageBox.Show(context, returnMsgModel.getMessage());
+                    return  -1;
                 }
                 if(returnMsgModel.getHeaderStatus().equals("F")) {
                     //更新出库单状态
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
                 }
-                return 1;
+                return 1; //正常结束
             } else {
                 MessageBox.Show(context, returnMsgModel.getMessage());
             }
@@ -144,7 +159,10 @@ public class UploadDN {
 
     }
 
-    public static void UploadDNToMaps(DNModel dnModel,String isCloseDN, MyHandler<BaseActivity> mHandler){
+
+
+
+        public static void UploadDNToMaps(DNModel dnModel,String isCloseDN, MyHandler<BaseActivity> mHandler){
 
         final Map<String, String> params = new HashMap<String, String>();
         String dnModelJson= GsonUtil.parseModelToJson(dnModel);
@@ -175,4 +193,6 @@ public class UploadDN {
                 URLModel.GetURL().ExceptionDNList, params, null);
 
     }
+
+
 }
