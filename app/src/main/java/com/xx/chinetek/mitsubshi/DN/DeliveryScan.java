@@ -32,6 +32,7 @@ import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
+import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
@@ -195,7 +196,12 @@ public class DeliveryScan extends BaseIntentActivity {
         }
 
         try {
-            if(ParamaterModel.DnTypeModel.getDNType() == 3) {
+            if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+                MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
+                return true;
+            }
+
+                if(ParamaterModel.DnTypeModel.getDNType() == 3) {
                 DNModel model = DbDnInfo.getInstance().GetLoaclDN(txtDnNo.getText().toString());
                 if (model != null) {
                     MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
@@ -297,6 +303,10 @@ public class DeliveryScan extends BaseIntentActivity {
         if (i < 0) {
             MessageBox.Show(context, "请先选择操作的行！");
             return false;
+        }
+        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+            MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
+            return true;
         }
         final DNDetailModel detailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(i);
         new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")

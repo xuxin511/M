@@ -24,6 +24,7 @@ import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
+import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
@@ -120,6 +121,10 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                     CommonUtil.setEditFocus(edtBarcode);
                     return true;
                 }
+                if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+                    MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
+                    return true;
+                }
                 if(code.length()>ParamaterModel.baseparaModel.getSerialMaxLength()){
                     MessageBox.Show(context,getString(R.string.Msg_out_Barcode));
                     CommonUtil.setEditFocus(edtBarcode);
@@ -180,7 +185,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
      * @return
      */
     private boolean ShowErrMag(int isErrorStatus) {
-//        edtBarcode.setText("");
+        CommonUtil.setEditFocus(edtBarcode);
         if(isErrorStatus==0) {
             MessageBox.Show(context, getString(R.string.Msg_Serial_Scaned));
             return true;
@@ -204,6 +209,10 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
         if(position<0){
             MessageBox.Show(context,"请先选择操作的行！");
+            return;
+        }
+        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+            MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
             return;
         }
         final DNScanModel Model= (DNScanModel)exceptionScanbarcodeAdapter.getItem(position);

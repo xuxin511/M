@@ -1,6 +1,7 @@
 package com.xx.chinetek.method;
 
 import com.xx.chinetek.chineteklib.base.BaseApplication;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
@@ -8,6 +9,8 @@ import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import java.util.ArrayList;
+
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
 
 /**
  * Created by GHOST on 2017/11/9.
@@ -17,6 +20,7 @@ public class AnalyticsBarCode {
 
 
     public static ArrayList<BarCodeModel> CheckBarcode(String Barcode) throws Exception{
+        LogUtil.WriteLog(AnalyticsBarCode.class, TAG_ScanBarcode, Barcode);
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         //判断是否启用非三菱条码
         Boolean isMitsubshiCode=true;

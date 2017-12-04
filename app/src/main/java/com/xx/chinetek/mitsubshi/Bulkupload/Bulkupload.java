@@ -109,13 +109,25 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                             DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.exeption);
                         }
                     }
+                    if(mulitdn.getStatus().equals("K") && mulitdn.getDN()!=null){ //后台单据已关闭
+                        dnno+="关闭出库单："+mulitdn.getDN().getAGENT_DN_NO()+"\n";
+                        DbDnInfo.getInstance().DELscanbyagent(mulitdn.getDN().getAGENT_DN_NO());
+                        ArrayList<DNModel> dnModels = new ArrayList<>();
+                        dnModels.add( mulitdn.getDN());
+                        //插入数据
+                        DbDnInfo.getInstance().InsertDNDB(dnModels);
+                        DbDnInfo.getInstance().ChangeDNStatusByDnNo( mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.Sumbit);
+                    }
+                    if(mulitdn.getStatus().equals("Z") ) { //后台单据有异常
+                        dnno+="后台异常出库单："+mulitdn.getDN().getAGENT_DN_NO()+"\n";
+                    }
                     if(mulitdn.getStatus().equals("E")){
-                        dnno+=mulitdn.getDN().getAGENT_DN_NO()+"\n";
+                        dnno+="失败出库单："+mulitdn.getDN().getAGENT_DN_NO()+"\n";
                     }
                 }
 
                 if(!TextUtils.isEmpty(dnno)){
-                    MessageBox.Show(context, "提交失败！失败出库单号：\n"+dnno);
+                    MessageBox.Show(context, "提交说明！\n"+dnno);
                 }
 
             } else {

@@ -112,7 +112,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
      * @param result
      */
     public void AnalysisSyncMAPSDNJson(String result) throws Exception {
-        LogUtil.WriteLog(SyncDN.class, TAG_SyncDn, result);
+        LogUtil.WriteLog(DeliveryList.class, TAG_SyncDn, result);
         ReturnMsgModelList<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNModel>>() {
         }.getType());
         if (returnMsgModel.getHeaderStatus().equals("S")) {
@@ -137,7 +137,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
 
     private void AnalysisSyncMAPSDNDetailJson(String result) throws Exception {
-        LogUtil.WriteLog(SyncDN.class, TAG_SyncDnDetail, result);
+        LogUtil.WriteLog(DeliveryList.class, TAG_SyncDnDetail, result);
         ReturnMsgModelList<DNDetailModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNDetailModel>>() {
         }.getType());
         if (returnMsgModel.getHeaderStatus().equals("S")) {
