@@ -168,6 +168,7 @@
     <string name="Msg_ToMailExit">收件人邮箱已设置！</string>
     <string name="Msg_ToMailNotSet">收件人邮箱未设置！</string>
     <string name="Msg_HaveSameDN">该出库单号已存在！</string>
+    <string name="Msg_ScnaQtyError">物料扫码数量不能大于出库数量！</string>
 
     <string name="Dia_UploadLogFile">日志文件上传中...</string>
     <string name="Dia_SyncMaterial">正在同步物料数据...</string>

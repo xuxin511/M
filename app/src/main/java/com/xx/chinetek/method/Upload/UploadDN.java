@@ -19,6 +19,7 @@ import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
+import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 
@@ -96,11 +97,14 @@ public class UploadDN {
      * 上传出库单到MAPS
      * @param result
      */
-    public static int AnalysisUploadDNToMapsJson(Context context,String result,final  DNModel subdnModel) {
+    public static DBReturnModel AnalysisUploadDNToMapsJson(Context context, String result, final  DNModel subdnModel) {
+        DBReturnModel dbReturnModel=new DBReturnModel();
+        dbReturnModel.setReturnCode(1);
         try {
             LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, result);
             ReturnMsgModel<DNModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<DNModel>>() {
             }.getType());
+
             if (!returnMsgModel.getHeaderStatus().equals("E")) {
                 if(subdnModel.getDN_SOURCE()==2){//ftp需要移动文件之BAK
                     new Thread(){
@@ -126,10 +130,10 @@ public class UploadDN {
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.exeption);
-                    return 2; //有异常
+                    dbReturnModel.setReturnCode(-1);
+                    dbReturnModel.setReturnMsg(context.getString(R.string.Msg_ExceptionDN));
                 }
                 if(returnMsgModel.getHeaderStatus().equals("K") && dnModel!=null){ //后台单据已关闭
-                    MessageBox.Show(context, returnMsgModel.getMessage());
                     subdnModel.setDETAILS(dnModel.getDETAILS());
                     DbDnInfo.getInstance().DELscanbyagent(subdnModel.getAGENT_DN_NO());
                     ArrayList<DNModel> dnModels = new ArrayList<>();
@@ -137,26 +141,27 @@ public class UploadDN {
                     //插入数据
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
-                    return  -1;
+                    dbReturnModel.setReturnCode(-1);
+                    dbReturnModel.setReturnMsg(returnMsgModel.getMessage());
                 }
                 if(returnMsgModel.getHeaderStatus().equals("Z") ) { //后台单据有异常
-                    MessageBox.Show(context, returnMsgModel.getMessage());
-                    return  -1;
+                    dbReturnModel.setReturnCode(-1);
+                    dbReturnModel.setReturnMsg(returnMsgModel.getMessage());
                 }
                 if(returnMsgModel.getHeaderStatus().equals("F")) {
                     //更新出库单状态
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
                 }
-                return 1; //正常结束
             } else {
-                MessageBox.Show(context, returnMsgModel.getMessage());
+                dbReturnModel.setReturnCode(-1);
+                dbReturnModel.setReturnMsg(returnMsgModel.getMessage());
             }
-            return -1;
-        }catch (Exception ex){
-            MessageBox.Show(context, ex.getMessage());
-            return -1;
-        }
 
+        }catch (Exception ex){
+            dbReturnModel.setReturnCode(-1);
+            dbReturnModel.setReturnMsg(ex.getMessage());
+        }
+        return dbReturnModel;
     }
 
 

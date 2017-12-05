@@ -2,9 +2,7 @@ package com.xx.chinetek.method;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -69,8 +67,8 @@ public class FileUtils {
             String level2Name=dnModel.getLEVEL_2_AGENT_NAME()==null?"":dnModel.getLEVEL_2_AGENT_NAME();
             String custom=dnModel.getCUSTOM_NO()==null?"":dnModel.getCUSTOM_NO();
             String customName=dnModel.getCUSTOM_NAME()==null?"":dnModel.getCUSTOM_NAME();
-            String fileName="DDN"+DnNo+"_QR.csv";
-            String fileNameMaps="DDN"+DnNo+"_QR.txt";
+            String fileName="DDN_"+DnNo+"_QR.csv";
+            String fileNameMaps="DDN_"+DnNo+"_QR.txt";
             File file = new File(ParamaterModel.UpDirectory+File.separator+fileName);
             File fileMaps = new File(ParamaterModel.UpDirectory+File.separator+fileNameMaps);
             //第二个参数意义是说是否以append方式添加内容
@@ -130,10 +128,10 @@ public class FileUtils {
     }
 
    static void UpdateMediaDirectory(Context mContext, File file){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { // 判断SDK版本是不是4.4或者高于4.4
-            String[] paths = new String[]{file.getAbsolutePath()};
-            MediaScannerConnection.scanFile(mContext, paths, null, null);
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { // 判断SDK版本是不是4.4或者高于4.4
+//            String[] paths = new String[]{file.getAbsolutePath()};
+//            MediaScannerConnection.scanFile(mContext, paths, null, null);
+//        } else {
             final Intent intent;
             if (file.isDirectory()) {
                 intent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
@@ -144,6 +142,6 @@ public class FileUtils {
                 intent.setData(Uri.fromFile(file));
             }
             mContext.sendBroadcast(intent);
-        }
+       // }
     }
 }

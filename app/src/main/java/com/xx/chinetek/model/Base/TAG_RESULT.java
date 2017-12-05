@@ -41,6 +41,8 @@ public class TAG_RESULT {
     public static final int RESULT_SyncException=111;
 
     public static  String  TAG_Login="Login";
+    public static  String  TAG_DNtype="DNtype";
+    public static  String  TAG_Para="Para";
     public static  String  TAG_ScanBarcode="ScanBarcode";
     public static final int RESULT_Login=113;
 

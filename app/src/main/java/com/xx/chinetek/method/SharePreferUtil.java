@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.model.Paramater;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.Mail.MailModel;
@@ -16,6 +17,9 @@ import com.xx.chinetek.model.DN.DNTypeModel;
 
 import java.lang.reflect.Type;
 import java.util.List;
+
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_DNtype;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_Para;
 
 
 /**
@@ -65,8 +69,10 @@ public class SharePreferUtil {
         edit.putString("SysPassword", ParamaterModel.SysPassword);
         Gson gson=new Gson();
         Type type = new TypeToken<BaseparaModel>() {}.getType();
-        edit.putString("BaseparaModel",gson.toJson(ParamaterModel.baseparaModel,type));
+        String para=gson.toJson(ParamaterModel.baseparaModel,type);
+        edit.putString("BaseparaModel",para);
         edit.apply();
+        LogUtil.WriteLog(SharePreferUtil.class,TAG_Para,para);
     }
 
     /**
@@ -108,8 +114,10 @@ public class SharePreferUtil {
         SharedPreferences.Editor edit=sharedPreferences.edit();
         Gson gson=new Gson();
         Type type = new TypeToken<DNTypeModel>() {}.getType();
-        edit.putString("DNType",gson.toJson(dnTypeModel,type));
+        String dntype=gson.toJson(dnTypeModel,type);
+        edit.putString("DNType",dntype);
         edit.apply();
+        LogUtil.WriteLog(SharePreferUtil.class,TAG_DNtype,dntype);
     }
 
     /**

@@ -76,12 +76,24 @@ public class ExceptionScanItemAdapter extends BaseAdapter {
             listItemView = (ListItemView) convertView.getTag();
         }
         DNDetailModel dnDetailModel = dnDetailModels.get(selectID);
+        if(dnDetailModel.getSCAN_QTY()==null)
+            dnDetailModel.setSCAN_QTY(0);
         listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
         listItemView.txtRowNo.setText( (dnDetailModel.getSTATUS()==0?"正常":dnDetailModel.getSTATUS()==1?"序列号重复":dnDetailModel.getSTATUS()==2?"数量超出":"序列号重复+数量超出"));
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());
         listItemView.txtDNQty.setText(dnsource==3?"":(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY().toString()));
-        String scanQty=dnDetailModel.getSCAN_QTY()==null?"0":dnDetailModel.getSCAN_QTY().toString();
-        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+scanQty);
+        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+dnDetailModel.getSCAN_QTY());
+        if(dnDetailModel.getDN_QTY()==dnDetailModel.getSCAN_QTY()){
+            convertView.setBackgroundResource(R.color.mediumaquamarine);
+        }else if(dnDetailModel.getDN_QTY()>dnDetailModel.getSCAN_QTY() && dnDetailModel.getSCAN_QTY()!=0){
+            convertView.setBackgroundResource(R.color.antiquewhite);
+        }
+        else if(dnDetailModel.getDN_QTY()<dnDetailModel.getSCAN_QTY()){
+            convertView.setBackgroundResource(R.color.peachpuff);
+        }
+        else {
+            convertView.setBackgroundResource(R.color.trans);
+        }
         return convertView;
     }
 

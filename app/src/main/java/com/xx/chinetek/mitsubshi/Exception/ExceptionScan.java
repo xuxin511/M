@@ -22,6 +22,7 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 
@@ -51,9 +52,21 @@ public class ExceptionScan extends BaseActivity {
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case RESULT_UploadDN:
-                UploadDN.AnalysisUploadDNToMapsJson(context, (String) msg.obj,dnModel);
-                closeActiviry();
-
+                final DBReturnModel dbReturnModel=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
+                if(dbReturnModel.getReturnCode()==-1){
+                    new AlertDialog.Builder(this).setTitle("提示")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setMessage(dbReturnModel.getReturnMsg())
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    closeActiviry();
+                                }
+                            })
+                            .show();
+                }
+                else{
+                    closeActiviry();
+                }
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
                 ToastUtil.show("获取请求失败_____" + msg.obj);
@@ -98,12 +111,26 @@ public class ExceptionScan extends BaseActivity {
                 MessageBox.Show(context,"提交的扫描数据存在异常状态！");
                 return false;
             }
-           DNModel postmodel = DbDnInfo.getInstance().AllPostDate(dnModel);
-            if(postmodel==null){
-                MessageBox.Show(context,"提交失败！");
-            }else{
-                UploadDN.SumbitDN(context,postmodel,mHandler);
+            boolean canUpload=true;
+            for(int i=0;i<dnDetailModels.size();i++){
+                if(dnDetailModels.get(i).getSCAN_QTY()!=null &&
+                        dnDetailModels.get(i).getDN_QTY()<dnDetailModels.get(i).getSCAN_QTY()){
+                    canUpload=false;
+                    break;
+                }
             }
+
+            if(!canUpload) {
+                MessageBox.Show(context,getString(R.string.Msg_ScnaQtyError));
+                return false;
+            }
+                DNModel postmodel = DbDnInfo.getInstance().AllPostDate(dnModel);
+                if (postmodel == null) {
+                    MessageBox.Show(context, "提交失败！");
+                } else {
+                    UploadDN.SumbitDN(context, postmodel, mHandler);
+                }
+
 
         }
         return super.onOptionsItemSelected(item);

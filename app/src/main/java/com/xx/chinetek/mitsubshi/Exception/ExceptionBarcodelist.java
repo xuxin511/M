@@ -18,6 +18,7 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Scan;
@@ -40,6 +41,7 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelScanmodel;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
 
 @ContentView(R.layout.activity_exception_scanlist)
 public class ExceptionBarcodelist extends BaseIntentActivity {
@@ -83,6 +85,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         switch (msg.what) {
             case TAG_SCAN:
                 try {
+                    LogUtil.WriteLog(ExceptionBarcodelist.class, TAG_ScanBarcode, (String) msg.obj);
                     chaeckBarcode((String) msg.obj);
                 }catch (Exception ex){
                     MessageBox.Show(context,ex.getMessage());
@@ -107,7 +110,6 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         txtItemNo.setText("物料编码："+dndetailmodel.getGOLFA_CODE());
         txtKUQty.setText("出库数量："+dndetailmodel.getDN_QTY());
         GetDeliveryOrderScanList();
-
     }
 
     @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
@@ -116,6 +118,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP)// 如果为Enter键
             {
                 final String code=edtBarcode.getText().toString().trim();
+                LogUtil.WriteLog(ExceptionBarcodelist.class, TAG_ScanBarcode, code);
                 if(TextUtils.isEmpty(code)){
                     MessageBox.Show(context,getString(R.string.Msg_No_Barcode));
                     CommonUtil.setEditFocus(edtBarcode);

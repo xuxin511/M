@@ -23,6 +23,7 @@ import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
@@ -35,6 +36,7 @@ import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
+import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
@@ -50,6 +52,7 @@ import java.util.List;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
 
 @ContentView(R.layout.activity_delivery_scan)
 public class DeliveryScan extends BaseIntentActivity {
@@ -79,12 +82,11 @@ public class DeliveryScan extends BaseIntentActivity {
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case RESULT_UploadDN:
-                int ret=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
-                    if(ret!=-1){
-                    if(ret==2){
+               final DBReturnModel dbReturnModel=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
+                    if(dbReturnModel.getReturnCode()==-1){
                         new AlertDialog.Builder(this).setTitle("提示")
                                 .setIcon(android.R.drawable.ic_dialog_info)
-                                .setMessage(R.string.Msg_ExceptionDN)
+                                .setMessage(dbReturnModel.getReturnMsg())
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         closeActiviry();
@@ -95,9 +97,9 @@ public class DeliveryScan extends BaseIntentActivity {
                     else{
                         closeActiviry();
                     }
-                }
                 break;
             case TAG_SCAN:
+                LogUtil.WriteLog(DeliveryScan.class, TAG_ScanBarcode, (String) msg.obj);
                 CheckScanBarcode((String) msg.obj);
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
@@ -140,6 +142,19 @@ public class DeliveryScan extends BaseIntentActivity {
 //            if(dnModel.getSTATUS()!=3) { //不是提交状态，修改单据为已完成
 //                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
 //            }
+            boolean canUpload=true;
+            for(int i=0;i<dnDetailModels.size();i++){
+                if(dnDetailModels.get(i).getSCAN_QTY()!=null &&
+                        dnDetailModels.get(i).getDN_QTY()<dnDetailModels.get(i).getSCAN_QTY()){
+                    canUpload=false;
+                    break;
+                }
+            }
+
+            if(!canUpload) {
+                MessageBox.Show(context,getString(R.string.Msg_ScnaQtyError));
+                return false;
+            }
            UploadDN.SumbitDN(context,dnModel,mHandler);
         }
         return super.onOptionsItemSelected(item);

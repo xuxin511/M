@@ -20,7 +20,7 @@ public class AnalyticsBarCode {
 
 
     public static ArrayList<BarCodeModel> CheckBarcode(String Barcode) throws Exception{
-        LogUtil.WriteLog(AnalyticsBarCode.class, TAG_ScanBarcode, Barcode);
+
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         //判断是否启用非三菱条码
         Boolean isMitsubshiCode=true;
