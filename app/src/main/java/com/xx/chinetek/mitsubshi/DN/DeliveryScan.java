@@ -103,7 +103,11 @@ public class DeliveryScan extends BaseIntentActivity {
                 CheckScanBarcode((String) msg.obj);
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
-                ToastUtil.show("获取请求失败_____" + msg.obj);
+                String result=(String)msg.obj;
+                if(result.contains("NETERROR")) {
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
+                }
+                ToastUtil.show("获取请求失败_____" + result);
                 break;
         }
     }
@@ -395,6 +399,7 @@ public class DeliveryScan extends BaseIntentActivity {
             }
         }
         dnModel.setOPER_DATE(new Date());
+        dnModel.setDN_DATE(new Date());
         //添加客户
         if(ParamaterModel.DnTypeModel.getDNCusType()!=null) {
             if (ParamaterModel.DnTypeModel.getDNCusType() == 0) {

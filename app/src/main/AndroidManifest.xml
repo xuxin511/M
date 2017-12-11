@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xx.chinetek.mitsubshi">
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
     <application
         android:name="com.xx.chinetek.chineteklib.base.BaseApplication"
         android:allowBackup="true"

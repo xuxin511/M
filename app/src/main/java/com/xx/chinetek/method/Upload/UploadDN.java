@@ -120,6 +120,7 @@ public class UploadDN {
                     //保留原有数据
                     DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
                     if(tempdnModel!=null) {
+                        dnModel.setAGENT_DN_NO(tempdnModel.getAGENT_DN_NO()); //自建单据保留原始系统单号
                         dnModel.setOPER_DATE(tempdnModel.getOPER_DATE());
                         dnModel.setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
                         dnModel.setREMARK(tempdnModel.getREMARK());

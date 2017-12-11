@@ -200,6 +200,8 @@ public class DeliveryStart extends BaseActivity {
 //         dnTypeModel.setDNCusType(position);
         if(!isFirstRun) {
             edtContentText.setText("");
+            if(dnTypeModel==null) dnTypeModel=new DNTypeModel();
+            customModel =null;
             BindData();
         }else isFirstRun=false;
         CommonUtil.setEditFocus(edtContentText);

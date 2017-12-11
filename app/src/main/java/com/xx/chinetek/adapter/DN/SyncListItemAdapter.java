@@ -94,7 +94,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
             listItemView = (ListItemView) convertView.getTag();
         }
         DNModel DNModel = DNModels.get(selectID);
-        listItemView.txtStatus.setText((position+1) + ":");
+        listItemView.txtStatus.setText((position+1)+"");
         listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
         listItemView.txtcustomer.setText(DNModel.getCUSTOM_NAME());
         if (getListselected().get(position)) {

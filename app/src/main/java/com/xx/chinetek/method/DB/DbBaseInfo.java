@@ -138,6 +138,7 @@ public class DbBaseInfo {
         return customModel==null?null:customModel.getNAME();
     }
 
+
     /**
      * 根据SAP编号或GolfaCode查名称
      * @param condition

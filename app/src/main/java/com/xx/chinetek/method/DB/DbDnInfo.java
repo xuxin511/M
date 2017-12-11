@@ -162,7 +162,7 @@ public class DbDnInfo {
      * @return
      */
     public  DNModel GetLoaclDN(String Dnno){
-        return dnModelDao.queryBuilder().where(DNModelDao.Properties.AGENT_DN_NO.eq(Dnno)).unique();
+        return dnModelDao.queryBuilder().where(DNModelDao.Properties.CUS_DN_NO.eq(Dnno)).unique();
     }
 
     /**
@@ -260,6 +260,17 @@ public class DbDnInfo {
         }
     }
 
+    /**
+     * 自建单据，根据自定义单号查询系统单号
+     * @param CusNo
+     */
+    public String GetAgentNoByCusDnNO(String CusNo){
+        DNModel dnModel=dnModelDao.queryBuilder().where(DNModelDao.Properties.CUS_DN_NO.eq(CusNo)).unique();
+        if(dnModel!=null){
+            return  dnModel.getAGENT_DN_NO();
+        }
+        return "";
+    }
 
     //ymh
     /**

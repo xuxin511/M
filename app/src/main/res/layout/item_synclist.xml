@@ -9,18 +9,15 @@
     <TextView
         android:id="@+id/item_Status"
         style="@style/TextViewComminStyle"
-        android:layout_width="0dp"
+        android:layout_width="57dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:text="状态"
-        android:textAlignment="textStart"
+        android:textAlignment="textEnd"
         android:textColor="@color/indianred"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline14"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_DeliveryNo"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/item_DeliveryNo"
@@ -29,13 +26,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="出库单号"
         android:textAlignment="textStart"
         android:textColor="@color/blueviolet"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_Status"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/item_Status" />
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/item_Status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/item_customer"
@@ -46,8 +44,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:text="客户名称"
-        android:textAlignment="textEnd"
-        android:textColor="@color/black"
+        android:textAlignment="viewStart"
+        android:textColor="@color/seagreen"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

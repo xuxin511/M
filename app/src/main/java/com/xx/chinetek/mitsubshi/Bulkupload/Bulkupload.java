@@ -88,6 +88,11 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                ArrayList<MultipleDN> multipleDNS = returnMsgModel.getModelJson();
                String dnno="";
                 for (MultipleDN mulitdn:multipleDNS) {
+                    if(mulitdn.getDN().getDN_SOURCE()==3){ //自建单据,修改系统单号
+                        String AgentNo=DbDnInfo.getInstance().GetAgentNoByCusDnNO(mulitdn.getDN().getCUS_DN_NO());
+                        mulitdn.getDN().setAGENT_DN_NO(AgentNo);
+                    }
+
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.complete);
                     if(mulitdn.getStatus().equals("F")){
                         DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.Sumbit);
