@@ -220,7 +220,7 @@ public class DeliveryScan extends BaseIntentActivity {
                 return true;
             }
 
-                if(ParamaterModel.DnTypeModel.getDNType() == 3) {
+            if(ParamaterModel.DnTypeModel.getDNType() == 3 && dnModel.getDN_SOURCE()==null) {
                 DNModel model = DbDnInfo.getInstance().GetLoaclDN(txtDnNo.getText().toString());
                 if (model != null) {
                     MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
@@ -424,7 +424,11 @@ public class DeliveryScan extends BaseIntentActivity {
     private void NewSerialByMaterialNo(List<DNDetailModel> dnDetailModels,
                                        BarCodeModel barCodeModel, DNDetailModel dnDetailModel,MaterialModel materialModel) {
         //保存物料信息
-        dnDetailModel.setLINE_NO(dnModel.getDETAILS().size()+1);//行号
+        int Line_no=1;
+        if(dnModel.getDETAILS()!=null && dnModel.getDETAILS().size()!=0){
+            Line_no=dnModel.getDETAILS().get(dnModel.getDETAILS().size()-1).getLINE_NO()+1;
+        }
+        dnDetailModel.setLINE_NO(Line_no);//行号
         dnDetailModel.setDN_QTY(1);
         dnDetailModel.setSCAN_QTY(1);
         dnDetailModel.setDETAIL_STATUS("AC");
@@ -453,7 +457,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnDetailModel.__setDaoSession(dnInfo.getDaoSession());
         if(dnDetailModel.getSERIALS()==null)
             dnDetailModel.setSERIALS(new ArrayList<DNScanModel>());
-        dnDetailModel.getSERIALS().add(dnScanModel);
+        dnDetailModel.getSERIALS().add(0,dnScanModel);
         dnDetailModels.add(dnDetailModel);
         //更新DN数据
 
@@ -491,7 +495,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnScanModel.setDEAL_SALE_DATE(CommonUtil.DateToString(new Date(),"yyyy/MM/dd"));
         dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
         dnScanModel.setSTATUS("0");
-        dnDetailModels.get(index).getSERIALS().add(dnScanModel);
+        dnDetailModels.get(index).getSERIALS().add(0,dnScanModel);
         Scan.setOtherColumn(barCodeModel, dnScanModel);
 
         //更新物料扫码数量

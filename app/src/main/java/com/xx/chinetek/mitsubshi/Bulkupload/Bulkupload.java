@@ -1,7 +1,9 @@
 package com.xx.chinetek.mitsubshi.Bulkupload;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -270,7 +272,23 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 }
             }
             if(isUpload && postmodels.size()!=0){
-                UploadDN.UploadDNListToMaps(postmodels, mHandler);
+                final List<DNModel> uploadModels= postmodels;
+                new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
+                        .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
+                        .setMessage(context.getResources().getString(R.string.Msg_Upload_DN))
+                        .setPositiveButton("提交并关闭", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                UploadDN.UploadDNListToMaps(uploadModels,"F", mHandler);
+                            }
+                        })
+                        .setNegativeButton("提交", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                UploadDN.UploadDNListToMaps(uploadModels,"N", mHandler);
+                            }
+                        })
+                        .show();
             }
         }
         return super.onOptionsItemSelected(item);

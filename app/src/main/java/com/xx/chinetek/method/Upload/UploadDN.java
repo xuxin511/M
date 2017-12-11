@@ -185,13 +185,14 @@ public class UploadDN {
 
     }
 
-    public static void UploadDNListToMaps(List<DNModel> dnModels,MyHandler<BaseActivity> mHandler){
+    public static void UploadDNListToMaps(List<DNModel> dnModels,String isCloseDN,MyHandler<BaseActivity> mHandler){
 
         final Map<String, String> params = new HashMap<String, String>();
         String dnModelJson= GsonUtil.parseModelToJson(dnModels);
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
         params.put("UserInfoJS", user);
         params.put("DNListJS", dnModelJson);
+        params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(UploadDN.class, TAG_ExceptionDNList, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_ExceptionDNList,
