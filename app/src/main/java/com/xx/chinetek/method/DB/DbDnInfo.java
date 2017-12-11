@@ -201,6 +201,13 @@ public class DbDnInfo {
         return dnDetailModels;
     }
 
+
+    public void DeleteDN(DNModel dnModel){
+        DELscanbyagent(dnModel.getAGENT_DN_NO());
+        DelDetailAllNum(dnModel.getAGENT_DN_NO());
+        DelDNmodels(dnModel.getAGENT_DN_NO());
+    }
+
     /**
      * 查询DN单中扫描数量和出库数量
      * @param DNNo

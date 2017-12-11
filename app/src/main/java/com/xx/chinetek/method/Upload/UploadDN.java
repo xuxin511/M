@@ -141,7 +141,7 @@ public class UploadDN {
                     //插入数据
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)
-                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.exeption);
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.exeption);
                     dbReturnModel.setReturnCode(-1);
                     dbReturnModel.setReturnMsg(context.getString(R.string.Msg_ExceptionDN));
                 }
