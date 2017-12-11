@@ -429,7 +429,7 @@ public class DeliveryScan extends BaseIntentActivity {
             Line_no=dnModel.getDETAILS().get(dnModel.getDETAILS().size()-1).getLINE_NO()+1;
         }
         dnDetailModel.setLINE_NO(Line_no);//行号
-        dnDetailModel.setDN_QTY(1);
+        dnDetailModel.setDN_QTY(9999);
         dnDetailModel.setSCAN_QTY(1);
         dnDetailModel.setDETAIL_STATUS("AC");
         dnDetailModel.setSTATUS(0);

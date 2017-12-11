@@ -162,7 +162,7 @@ public class DbDnInfo {
      * @return
      */
     public  DNModel GetLoaclDN(String Dnno){
-        return dnModelDao.queryBuilder().where(DNModelDao.Properties.CUS_DN_NO.eq(Dnno)).unique();
+        return dnModelDao.queryBuilder().whereOr(DNModelDao.Properties.CUS_DN_NO.eq(Dnno),DNModelDao.Properties.AGENT_DN_NO.eq(Dnno)).unique();
     }
 
     /**
@@ -192,7 +192,8 @@ public class DbDnInfo {
      */
     public ArrayList<DNDetailModel> GetDNDetailByDNNo(String DNNo){
         ArrayList<DNDetailModel> dnDetailModels=new ArrayList<>();
-        dnDetailModels =( ArrayList<DNDetailModel>)dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo)).list();
+        dnDetailModels =( ArrayList<DNDetailModel>)dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo))
+               .list();
         for(int i=0;i<dnDetailModels.size();i++){
             dnDetailModels.get(i).getSERIALS();
             dnDetailModels.get(i).setSCAN_QTY(dnDetailModels.get(i).getSERIALS().size());

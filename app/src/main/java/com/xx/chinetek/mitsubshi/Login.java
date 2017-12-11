@@ -295,6 +295,8 @@ public class Login extends BaseActivity {
         Paths.add(ParamaterModel.DBDirectory);
         Paths.add(ParamaterModel.DownDirectory);
         Paths.add(ParamaterModel.UpDirectory);
+        Paths.add(ParamaterModel.MailDirectory);
+        Paths.add(ParamaterModel.FTPDirectory);
         FileUtil.CreateFile(Paths);
 
     }

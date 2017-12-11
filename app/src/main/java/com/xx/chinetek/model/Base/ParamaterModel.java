@@ -92,6 +92,8 @@ public class ParamaterModel {
      *    上传文件存放目录
      */
     public static String UpDirectory=Directory+ File.separator+"Up";
+    public static String MailDirectory=Directory+ File.separator+"Mail";
+    public static String FTPDirectory=Directory+ File.separator+"FTP";
 
 
 }

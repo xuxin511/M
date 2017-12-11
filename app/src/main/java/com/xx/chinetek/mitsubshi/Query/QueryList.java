@@ -195,9 +195,9 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
      * @throws Exception
      */
     void ExportDN(ArrayList<DNModel> selectDnModels, int Index) throws Exception{
-        FileUtils.DeleteFiles();
-        FileUtils.ExportDNFile(selectDnModels); //导出文件至本地目录
-        File dirFile=new File(ParamaterModel.UpDirectory);
+        FileUtils.DeleteFiles(Index);
+        FileUtils.ExportDNFile(selectDnModels,Index); //导出文件至本地目录
+        File dirFile=new File(FileUtils.GetDirectory(Index));
         if(dirFile.isDirectory()) {
             File[] Files = dirFile.listFiles();
             if (Files.length > 0) {

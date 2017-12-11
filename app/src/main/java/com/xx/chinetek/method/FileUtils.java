@@ -27,14 +27,15 @@ public class FileUtils {
     /**
      * 删除文件夹内文件
      */
-    public static void DeleteFiles(){
+    public static void DeleteFiles(int index){
         try {
-            File dirFile = new File(ParamaterModel.UpDirectory);
+            File dirFile = new File(GetDirectory(index));
             if (dirFile.isDirectory()) {
                 File[] Files = dirFile.listFiles();
                 for (int i = 0; i < Files.length; i++) {
                     File f = Files[i];
                     f.delete();
+                    UpdateMediaDirectory(BaseApplication.context,f);
                 }
             }
 
@@ -49,7 +50,7 @@ public class FileUtils {
      * @param selectDnModels
      * @throws Exception
      */
-    public static void ExportDNFile(ArrayList<DNModel> selectDnModels) throws Exception{
+    public static void ExportDNFile(ArrayList<DNModel> selectDnModels,int index) throws Exception{
         String Notmaps="DDN_NO,LINE_NO,Tnd_Dealer,Tnd_Dealer,End_User,End_User,SAP_MAT,MAKTX,Golfa_Code,Serial_No," +
                 "Packing_Date,Region,Country,Deal_Sale_Date";
         String Maps="DDN_NO\tLINE_NO\tTnd_Dealer\tEnd_User\tSAP_MAL\tGolfa_Code\tSerial_No\t" +
@@ -69,8 +70,9 @@ public class FileUtils {
             String customName=dnModel.getCUSTOM_NAME()==null?"":dnModel.getCUSTOM_NAME();
             String fileName="DDN_"+DnNo+"_QR.csv";
             String fileNameMaps="DDN_"+DnNo+"_QR.txt";
-            File file = new File(ParamaterModel.UpDirectory+File.separator+fileName);
-            File fileMaps = new File(ParamaterModel.UpDirectory+File.separator+fileNameMaps);
+            String dir=GetDirectory(index);
+            File file = new File(dir+File.separator+fileName);
+            File fileMaps = new File(dir+File.separator+fileNameMaps);
             //第二个参数意义是说是否以append方式添加内容
             OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(file),"GBK");
             OutputStreamWriter writerStreamMaps = new OutputStreamWriter(new FileOutputStream(fileMaps),"GBK");
@@ -143,5 +145,18 @@ public class FileUtils {
             }
             mContext.sendBroadcast(intent);
        // }
+    }
+
+    public static String GetDirectory(int index){
+       String dir= ParamaterModel.MailDirectory;
+       switch (index){
+           case 0:
+               dir= ParamaterModel.MailDirectory;
+               break;
+           case 1:
+               dir= ParamaterModel.FTPDirectory;
+               break;
+       }
+       return dir;
     }
 }

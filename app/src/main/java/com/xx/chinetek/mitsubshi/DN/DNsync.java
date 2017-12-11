@@ -16,6 +16,7 @@ import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.DNScanModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -23,6 +24,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @ContentView(R.layout.activity_dnsync_list)
 public class DNsync extends BaseActivity{
@@ -85,9 +87,11 @@ public class DNsync extends BaseActivity{
                 DbDnInfo dnInfo=DbDnInfo.getInstance();
                 for(int i=0;i<size;i++) {
                     Tempdnmodels.get(i).__setDaoSession(dnInfo.getDaoSession());
-                    DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(Tempdnmodels.get(i).getAGENT_DN_NO());
+                    String dnNo=Tempdnmodels.get(i).getDN_SOURCE()==3?Tempdnmodels.get(i).getCUS_DN_NO():Tempdnmodels.get(i).getAGENT_DN_NO();
+                    DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(dnNo);
                     if(dnModel!=null) {
                         Tempdnmodels.get(i).setSTATUS( Tempdnmodels.get(i).getSTATUS()==-1?Tempdnmodels.get(i).getSTATUS():dnModel.getSTATUS());
+                        Tempdnmodels.get(i).setAGENT_DN_NO(dnModel.getAGENT_DN_NO()); //自建单据保留原始系统单号
                         Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
                         Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
                         Tempdnmodels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
@@ -96,6 +100,13 @@ public class DNsync extends BaseActivity{
                             for (int j = 0; j < Tempdnmodels.get(i).getDETAILS().size(); j++) {
                                 int scanQty = Tempdnmodels.get(i).getDETAILS().get(j).getSERIALS().size();
                                 Tempdnmodels.get(i).getDETAILS().get(j).setSCAN_QTY(scanQty);
+                                if(Tempdnmodels.get(i).getDN_SOURCE()==3) {
+                                    Tempdnmodels.get(i).getDETAILS().get(j).setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
+                                    List<DNScanModel> dnScanModels = Tempdnmodels.get(i).getDETAILS().get(j).getSERIALS();
+                                    for (DNScanModel dnscanmodel : dnScanModels) {
+                                        dnscanmodel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
+                                    }
+                                }
                             }
                         }
                     }

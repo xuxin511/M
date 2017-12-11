@@ -75,12 +75,15 @@ public class FtpUtil {
             if (ftp.isConnect()) {
                 ftp.closeConnect();
             }
-
-            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadSuccess)+total);
-            mHandler.sendMessage(msg);
-        }catch (Exception ex){
-            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadFailue)+ex.getMessage());
-            mHandler.sendMessage(msg);
+            if (mHandler != null) {
+                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadSuccess) + total);
+                mHandler.sendMessage(msg);
+            }
+        } catch (Exception ex) {
+            if (mHandler != null) {
+                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadFailue) + ex.getMessage());
+                mHandler.sendMessage(msg);
+            }
         }
     }
 

@@ -95,7 +95,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
         }
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtStatus.setText((position+1)+"");
-        listItemView.txtDeliveryNo.setText(DNModel.getAGENT_DN_NO());
+        listItemView.txtDeliveryNo.setText(DNModel.getDN_SOURCE()==3?DNModel.getCUS_DN_NO():DNModel.getAGENT_DN_NO());
         listItemView.txtcustomer.setText(DNModel.getCUSTOM_NAME());
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);

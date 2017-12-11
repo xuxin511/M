@@ -34,7 +34,9 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
+import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.DNScanModel;
 import com.xx.chinetek.model.DN.MultipleDN;
 
 import org.xutils.view.annotation.ContentView;
@@ -93,6 +95,12 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     if(mulitdn.getDN().getDN_SOURCE()==3){ //自建单据,修改系统单号
                         String AgentNo=DbDnInfo.getInstance().GetAgentNoByCusDnNO(mulitdn.getDN().getCUS_DN_NO());
                         mulitdn.getDN().setAGENT_DN_NO(AgentNo);
+                        for (DNDetailModel dneatail:mulitdn.getDN().getDETAILS()) {
+                            dneatail.setAGENT_DN_NO(AgentNo);
+                            for (DNScanModel dnscanmodel:dneatail.getSERIALS()) {
+                                dnscanmodel.setAGENT_DN_NO(AgentNo);
+                            }
+                        }
                     }
 
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.complete);
