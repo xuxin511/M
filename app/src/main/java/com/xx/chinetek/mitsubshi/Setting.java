@@ -166,7 +166,6 @@ public class Setting extends BaseActivity {
     protected void initData() {
         super.initData();
 
-
         if(ParamaterModel.baseparaModel==null) ParamaterModel.baseparaModel=new BaseparaModel();
         edtIPAdress.setText(Paramater.IPAdress);
         edtPort.setText(Paramater.Port+"");
@@ -196,7 +195,6 @@ public class Setting extends BaseActivity {
             edtFtpPort.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpPort()+"");
             edtFtpDown.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad());
             edtFtpUp.setText(ParamaterModel.baseparaModel.getFtpModel().getFtpUpLoad());
-
         }
 
     }

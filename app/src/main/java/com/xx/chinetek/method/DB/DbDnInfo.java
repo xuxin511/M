@@ -495,6 +495,21 @@ public class DbDnInfo {
     }
 
     /**
+     * 删除主表
+     * @param DNNo
+     */
+    public boolean DelDNmodels(String DNNo){
+        try{
+            String sql="";
+            sql="delete from DNMODEL where AGENT__DN__NO='"+ DNNo+"'";
+            daoSession.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
+    /**
      * 修改扫描记录的状态
      * @param DNNo
      *  @param Material

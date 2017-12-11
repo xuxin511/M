@@ -241,6 +241,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
                         DelDNmodel(Model);
+                        DNModels= DbDnInfo.getInstance().GetLoaclDN();
                         BindListView();
 
                     }

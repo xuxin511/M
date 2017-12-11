@@ -25,7 +25,8 @@ public class Delscan {
                     //判断剩余的扫描数量
                     if (DbDnInfo.getInstance().UpdateDetailAllNum(Model.getAGENT_DN_NO(), 0, Model.getDN_SOURCE())) {
                         //需要改变主表状态
-                        if (DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(), "1", "", Model.getDN_SOURCE())) {
+//                        if (DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(), "1", "", Model.getDN_SOURCE())) {
+                            if (DbDnInfo.getInstance().DelDNmodels(Model.getAGENT_DN_NO())) {
                             MessageBox.Show(context, BaseApplication.context.getString(R.string.Msg_del_success));
 
                         } else {
