@@ -419,6 +419,11 @@ public class DbDnInfo {
 
     }
 
+    public void DeleteDN(DNModel dnModel){
+        DELscanbyagent(dnModel.getAGENT_DN_NO());
+        DelDNmodels(dnModel.getAGENT_DN_NO());
+    }
+
 
     /**
      * 删除扫描记录根据主表主键
