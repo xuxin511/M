@@ -419,9 +419,20 @@ public class DbDnInfo {
 
     }
 
-    public void DeleteDN(DNModel dnModel){
-        DELscanbyagent(dnModel.getAGENT_DN_NO());
-        DelDNmodels(dnModel.getAGENT_DN_NO());
+    /**
+     * 修改主表明细行的扫描数据
+     * @param DNNo
+     */
+    public boolean DelDetailAllNum(String DNNo){
+        try{
+            String sql="";
+            sql="delete from DNDETAIL_MODEL where AGENT__DN__NO='"+DNNo+"'";
+            daoSession.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
     }
 
 

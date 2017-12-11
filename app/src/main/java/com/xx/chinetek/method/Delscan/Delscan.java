@@ -23,7 +23,8 @@ public class Delscan {
 //                                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyDN(Model.getAGENT_DN_NO(),"");
 //                                                DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"2","");
                     //判断剩余的扫描数量
-                    if (DbDnInfo.getInstance().UpdateDetailAllNum(Model.getAGENT_DN_NO(), 0, Model.getDN_SOURCE())) {
+//                    if (DbDnInfo.getInstance().UpdateDetailAllNum(Model.getAGENT_DN_NO(), 0, Model.getDN_SOURCE())) {
+                    if (DbDnInfo.getInstance().DelDetailAllNum(Model.getAGENT_DN_NO())) {
                         //需要改变主表状态
 //                        if (DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(), "1", "", Model.getDN_SOURCE())) {
                             if (DbDnInfo.getInstance().DelDNmodels(Model.getAGENT_DN_NO())) {
