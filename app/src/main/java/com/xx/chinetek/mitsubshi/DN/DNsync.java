@@ -36,13 +36,12 @@ public class DNsync extends BaseActivity{
     ArrayList<DNModel> DNModels;
     SyncListItemAdapter syncListItemAdapter;
 
-
-
     @Override
     protected void initViews() {
         super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.FTPDNChoice),true);
         x.view().inject(this);
+
     }
 
     @Override
@@ -52,10 +51,33 @@ public class DNsync extends BaseActivity{
         GetbulkuploadList();
     }
 
+    // 双击事件记录最近一次点击的ID
+    private String  lastClickId;
+
+    // 双击事件记录最近一次点击的时间
+    private long lastClickTime;
+
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
     private void LsvItemClick(AdapterView<?> parent, View view, int position, long id) {
         try{
-            syncListItemAdapter.modifyStates(position);
+            DNModel dnModel=(DNModel) syncListItemAdapter.getItem(position);
+            if(dnModel.getAGENT_DN_NO().equals(lastClickId)
+                    && (Math.abs(lastClickTime-System.currentTimeMillis()) < 1000)){
+                lastClickId = null;
+                lastClickTime = 0;
+                ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
+
+                Tempdnmodels.add(dnModel);
+                DownDN(Tempdnmodels);
+            }else{
+                lastClickId = dnModel.getAGENT_DN_NO();
+                lastClickTime = System.currentTimeMillis();
+                syncListItemAdapter.modifyStates(position);
+            }
+
+
+
+
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
@@ -78,48 +100,53 @@ public class DNsync extends BaseActivity{
                         Tempdnmodels.add(0, DNModels.get(i));
                     }
                 }
-                if(Tempdnmodels==null||Tempdnmodels.size()==0){
-                    MessageBox.Show(context,"请先选择需要同步的单据！");
-                    return false;
-                }
-
-                int size=Tempdnmodels.size();
-                DbDnInfo dnInfo=DbDnInfo.getInstance();
-                for(int i=0;i<size;i++) {
-                    Tempdnmodels.get(i).__setDaoSession(dnInfo.getDaoSession());
-                    String dnNo=Tempdnmodels.get(i).getDN_SOURCE()==3?Tempdnmodels.get(i).getCUS_DN_NO():Tempdnmodels.get(i).getAGENT_DN_NO();
-                    DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(dnNo);
-                    if(dnModel!=null) {
-                        Tempdnmodels.get(i).setSTATUS( Tempdnmodels.get(i).getSTATUS()==-1?Tempdnmodels.get(i).getSTATUS():dnModel.getSTATUS());
-                        Tempdnmodels.get(i).setAGENT_DN_NO(dnModel.getAGENT_DN_NO()); //自建单据保留原始系统单号
-                        Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-                        Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-                        Tempdnmodels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
-                        Tempdnmodels.get(i).setREMARK(dnModel.getREMARK());
-                        if(Tempdnmodels.get(i).getDETAILS()!=null) {
-                            for (int j = 0; j < Tempdnmodels.get(i).getDETAILS().size(); j++) {
-                                int scanQty = Tempdnmodels.get(i).getDETAILS().get(j).getSERIALS().size();
-                                Tempdnmodels.get(i).getDETAILS().get(j).setSCAN_QTY(scanQty);
-                                if(Tempdnmodels.get(i).getDN_SOURCE()==3) {
-                                    Tempdnmodels.get(i).getDETAILS().get(j).setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-                                    List<DNScanModel> dnScanModels = Tempdnmodels.get(i).getDETAILS().get(j).getSERIALS();
-                                    for (DNScanModel dnscanmodel : dnScanModels) {
-                                        dnscanmodel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                //插入数据
-                DbDnInfo.getInstance().InsertDNDB(Tempdnmodels) ;
-                closeActiviry();
+                if (DownDN(Tempdnmodels)) return false;
 
             }catch(Exception ex){
                 MessageBox.Show(context,ex.toString());
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean DownDN(ArrayList<DNModel> tempdnmodels) throws Exception {
+        if(tempdnmodels ==null|| tempdnmodels.size()==0){
+            MessageBox.Show(context,"请先选择需要同步的单据！");
+            return true;
+        }
+
+        int size= tempdnmodels.size();
+        DbDnInfo dnInfo=DbDnInfo.getInstance();
+        for(int i=0;i<size;i++) {
+            tempdnmodels.get(i).__setDaoSession(dnInfo.getDaoSession());
+            String dnNo= tempdnmodels.get(i).getDN_SOURCE()==3? tempdnmodels.get(i).getCUS_DN_NO(): tempdnmodels.get(i).getAGENT_DN_NO();
+            DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(dnNo);
+            if(dnModel!=null) {
+                tempdnmodels.get(i).setSTATUS( tempdnmodels.get(i).getSTATUS()==-1? tempdnmodels.get(i).getSTATUS():dnModel.getSTATUS());
+                tempdnmodels.get(i).setAGENT_DN_NO(dnModel.getAGENT_DN_NO()); //自建单据保留原始系统单号
+                tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+                tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+                tempdnmodels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
+                tempdnmodels.get(i).setREMARK(dnModel.getREMARK());
+                if(tempdnmodels.get(i).getDETAILS()!=null) {
+                    for (int j = 0; j < tempdnmodels.get(i).getDETAILS().size(); j++) {
+                        int scanQty = tempdnmodels.get(i).getDETAILS().get(j).getSERIALS().size();
+                        tempdnmodels.get(i).getDETAILS().get(j).setSCAN_QTY(scanQty);
+                        if(tempdnmodels.get(i).getDN_SOURCE()==3) {
+                            tempdnmodels.get(i).getDETAILS().get(j).setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
+                            List<DNScanModel> dnScanModels = tempdnmodels.get(i).getDETAILS().get(j).getSERIALS();
+                            for (DNScanModel dnscanmodel : dnScanModels) {
+                                dnscanmodel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //插入数据
+        DbDnInfo.getInstance().InsertDNDB(tempdnmodels) ;
+        closeActiviry();
+        return false;
     }
 
 
