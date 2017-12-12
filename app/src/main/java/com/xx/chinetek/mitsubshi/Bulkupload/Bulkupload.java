@@ -90,8 +90,16 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                ArrayList<MultipleDN> multipleDNS = returnMsgModel.getModelJson();
                String dnno="";
                 for (MultipleDN mulitdn:multipleDNS) {
+                    String tempdnno=mulitdn.getDN().getDN_SOURCE()==3?mulitdn.getDN().getCUS_DN_NO():mulitdn.getDN().getAGENT_DN_NO();
+                    DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(tempdnno);
+                    //保留原有数据
+                    if(tempdnModel!=null) {
+                        mulitdn.getDN().setOPER_DATE(tempdnModel.getOPER_DATE());
+                        mulitdn.getDN().setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
+                        mulitdn.getDN().setREMARK(tempdnModel.getREMARK());
+                    }
                     if(mulitdn.getDN().getDN_SOURCE()==3){ //自建单据,修改系统单号
-                        DbDnInfo.getInstance().DeleteDN(mulitdn.getDN());
+                        DbDnInfo.getInstance().DeleteDN(tempdnModel);
                         ArrayList<DNModel> dnModels = new ArrayList<>();
                         dnModels.add(mulitdn.getDN());
                         //插入数据
@@ -112,13 +120,6 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     }
                     if(mulitdn.getStatus().equals("S")){
                         if(mulitdn.getDN()!=null) {
-                            //保留原有数据
-                            DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(mulitdn.getDN().getAGENT_DN_NO());
-                            if(tempdnModel!=null) {
-                                mulitdn.getDN().setOPER_DATE(tempdnModel.getOPER_DATE());
-                                mulitdn.getDN().setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
-                                mulitdn.getDN().setREMARK(tempdnModel.getREMARK());
-                            }
                             ArrayList<DNModel> dnModels = new ArrayList<>();
                             dnModels.add(mulitdn.getDN());
                             //插入数据

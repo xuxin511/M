@@ -97,7 +97,7 @@ public class BulkuploadScan extends BaseIntentActivity {
      * 绑定列表
      */
     void GetDeliveryOrderScanList(){
-        dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(txtDnNo.getText().toString());
+        dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         bulkuploadScanItemAdapter=new BulkuploadScanItemAdapter(context, dnDetailModels,dnModel.getDN_SOURCE());
         lsvDeliveryScan.setAdapter(bulkuploadScanItemAdapter);
     }
