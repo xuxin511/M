@@ -17,6 +17,9 @@ import java.util.List;
  */
 
 public class Scan {
+
+    public static ArrayList<BarCodeModel>  barcodes= new ArrayList<BarCodeModel>();
+
     /**
      * 条码扫描（非自建方式）
      * @param barCodeModels

@@ -159,7 +159,13 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         if (barCodeModels != null && barCodeModels.size() != 0) {
             int isErrorStatus=Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
             txtScanQty.setText(getString(R.string.scanQty)+(DNScanModels.size()));
-            if (ShowErrMag(isErrorStatus)) return;
+            if (ShowErrMag(isErrorStatus)){
+//                BarCodeModel bmodel= new BarCodeModel();
+//                bmodel =barCodeModels.get(0);
+//                bmodel.setSerial_Number(barCodeModels.get(0).getSerial_Number());
+//                bmodel.setPlace_Code("");
+                return;
+            }
             if(SaveScanInfo(isErrorStatus))
                 edtBarcode.setText("");
             CommonUtil.setEditFocus(edtBarcode);

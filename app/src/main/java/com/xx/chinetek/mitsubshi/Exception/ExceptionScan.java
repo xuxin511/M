@@ -144,11 +144,11 @@ public class ExceptionScan extends BaseActivity {
             MessageBox.Show(context, "请先选择操作的行！");
             return;
         }
-        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认进入序列号扫描界面？\n")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO 自动生成的方法
+//        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认进入序列号扫描界面？\n")
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        // TODO 自动生成的方法
                         Intent intent=new Intent(context,ExceptionBarcodelist.class);
                         Bundle bundle=new Bundle();
                         DNDetailModel DNdetailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(flagposition);
@@ -157,8 +157,8 @@ public class ExceptionScan extends BaseActivity {
                         intent.putExtras(bundle);
                         startActivityLeft(intent);
 
-                    }
-                }).setNegativeButton("取消", null).show();
+//                    }
+//                }).setNegativeButton("取消", null).show();
 
     }
 
