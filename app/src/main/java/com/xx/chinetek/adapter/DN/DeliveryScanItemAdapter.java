@@ -78,7 +78,7 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         if(dnDetailModel.getSCAN_QTY()==null)
             dnDetailModel.setSCAN_QTY(0);
         listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
-        listItemView.txtRowNo.setText(convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO());
+        listItemView.txtRowNo.setText(dnDetailModel.getLINE_NO()==null?"":convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO());
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());
         listItemView.txtDNQty.setText(dnsource==3?"":(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY()));
         listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+dnDetailModel.getSCAN_QTY());

@@ -1,12 +1,15 @@
 package com.xx.chinetek.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by GHOST on 2017/11/9.
  */
 
-public class BarCodeModel {
+public class BarCodeModel implements Parcelable {
 
     /**
      * 识别码（小包装）
@@ -119,4 +122,49 @@ public class BarCodeModel {
     public void setCountry_Code(String country_Code) {
         Country_Code = country_Code;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.Heading_Code);
+        dest.writeString(this.Golfa_Code);
+        dest.writeString(this.Serial_Number);
+        dest.writeString(this.Packing_Date);
+        dest.writeString(this.Place_Code);
+        dest.writeString(this.Country_Code);
+        dest.writeValue(this.MAT_TYPE);
+        dest.writeStringList(this.OtherCode);
+        dest.writeValue(this.LINE_NO);
+    }
+
+    public BarCodeModel() {
+    }
+
+    protected BarCodeModel(Parcel in) {
+        this.Heading_Code = in.readString();
+        this.Golfa_Code = in.readString();
+        this.Serial_Number = in.readString();
+        this.Packing_Date = in.readString();
+        this.Place_Code = in.readString();
+        this.Country_Code = in.readString();
+        this.MAT_TYPE = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.OtherCode = in.createStringArrayList();
+        this.LINE_NO = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<BarCodeModel> CREATOR = new Parcelable.Creator<BarCodeModel>() {
+        @Override
+        public BarCodeModel createFromParcel(Parcel source) {
+            return new BarCodeModel(source);
+        }
+
+        @Override
+        public BarCodeModel[] newArray(int size) {
+            return new BarCodeModel[size];
+        }
+    };
 }

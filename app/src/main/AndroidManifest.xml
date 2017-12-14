@@ -25,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DN.DeliveryExceptionbarcode" />
         <activity android:name=".DN.DeliveryStart" />
         <activity android:name=".DN.DeliveryList" />
         <activity android:name=".DN.DeliveryScan" />

@@ -111,5 +111,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/remark" />
 
+    <ImageView
+        android:id="@+id/img_exception"
+        android:layout_width="39dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/remark" />
 
 </android.support.constraint.ConstraintLayout>
