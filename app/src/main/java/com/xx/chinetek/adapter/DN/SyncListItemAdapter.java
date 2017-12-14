@@ -139,8 +139,8 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
                 for (int i = 0; i < count; i++) {
                     DNModel pc = unfilteredValues.get(i);
                     if (pc != null) {
-                        if((pc.getAGENT_DN_NO()!=null && pc.getAGENT_DN_NO().startsWith(prefixString.toUpperCase()))
-                                || (pc.getCUS_DN_NO()!=null && pc.getCUS_DN_NO().startsWith(prefixString.toUpperCase()))){
+                        if((pc.getAGENT_DN_NO()!=null && pc.getAGENT_DN_NO().toUpperCase().startsWith(prefixString.toUpperCase()))
+                                || (pc.getCUS_DN_NO()!=null && pc.getCUS_DN_NO().toUpperCase().startsWith(prefixString.toUpperCase()))){
 
                             newValues.add(pc);
                         }
