@@ -72,10 +72,6 @@ public class DNsync extends BaseActivity{
                 lastClickTime = System.currentTimeMillis();
                 syncListItemAdapter.modifyStates(position);
             }
-
-
-
-
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }

@@ -50,10 +50,28 @@ public class FTPsync extends BaseActivity{
         GetFTPloadList();
     }
 
+    // 双击事件记录最近一次点击的ID
+    private String  lastClickId;
+
+    // 双击事件记录最近一次点击的时间
+    private long lastClickTime;
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
     private void LsvItemClick(AdapterView<?> parent, View view, int position, long id) {
         try{
-            syncListItemAdapter.modifyStates(position);
+            DNModel dnModel=(DNModel) syncListItemAdapter.getItem(position);
+            if(dnModel.getAGENT_DN_NO().equals(lastClickId)
+                    && (Math.abs(lastClickTime-System.currentTimeMillis()) < 1000)){
+                lastClickId = null;
+                lastClickTime = 0;
+                ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
+
+                Tempdnmodels.add(dnModel);
+                DownDN(Tempdnmodels);
+            }else{
+                lastClickId = dnModel.getAGENT_DN_NO();
+                lastClickTime = System.currentTimeMillis();
+                syncListItemAdapter.modifyStates(position);
+            }
         }catch(Exception ex){
             MessageBox.Show(context,ex.toString());
         }
@@ -78,31 +96,36 @@ public class FTPsync extends BaseActivity{
                         Tempdnmodels.add(0, dnModels.get(i));
                     }
                 }
-                if(Tempdnmodels==null||Tempdnmodels.size()==0){
-                    MessageBox.Show(context,"请先选择需要同步的单据！");
-                    return false;
-                }
-
-                int size=Tempdnmodels.size();
-                for(int i=0;i<size;i++) {
-                    DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(Tempdnmodels.get(i).getAGENT_DN_NO());
-                    if(dnModel!=null) {
-                        Tempdnmodels.get(i).setSTATUS(dnModel.getSTATUS());
-                        Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-                        Tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
-                        Tempdnmodels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
-                        Tempdnmodels.get(i).setREMARK(dnModel.getREMARK());
-                    }
-                }
-                //插入数据
-                DbDnInfo.getInstance().InsertDNDB(Tempdnmodels) ;
-                closeActiviry();
+                if (DownDN(Tempdnmodels)) return false;
 
             }catch(Exception ex){
                 MessageBox.Show(context,ex.toString());
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean DownDN(ArrayList<DNModel> tempdnmodels) throws Exception {
+        if(tempdnmodels ==null|| tempdnmodels.size()==0){
+            MessageBox.Show(context,"请先选择需要同步的单据！");
+            return true;
+        }
+
+        int size= tempdnmodels.size();
+        for(int i=0;i<size;i++) {
+            DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(tempdnmodels.get(i).getAGENT_DN_NO());
+            if(dnModel!=null) {
+                tempdnmodels.get(i).setSTATUS(dnModel.getSTATUS());
+                tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+                tempdnmodels.get(i).setOPER_DATE(dnModel.getOPER_DATE());
+                tempdnmodels.get(i).setCUS_DN_NO(dnModel.getCUS_DN_NO());
+                tempdnmodels.get(i).setREMARK(dnModel.getREMARK());
+            }
+        }
+        //插入数据
+        DbDnInfo.getInstance().InsertDNDB(tempdnmodels) ;
+        closeActiviry();
+        return false;
     }
 
 

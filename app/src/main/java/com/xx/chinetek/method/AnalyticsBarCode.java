@@ -1,7 +1,6 @@
 package com.xx.chinetek.method;
 
 import com.xx.chinetek.chineteklib.base.BaseApplication;
-import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
@@ -9,8 +8,6 @@ import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 
 import java.util.ArrayList;
-
-import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
 
 /**
  * Created by GHOST on 2017/11/9.
@@ -119,7 +116,7 @@ public class AnalyticsBarCode {
             barCodeModel.setMAT_TYPE(1);//三菱
             barCodeModel.setPacking_Date(Packing_Date);
             if(data[j].trim().length()!=7)
-                break;
+                continue;
             barCodeModel.setSerial_Number(data[j].trim().trim());
             barCodeModels.add(barCodeModel);
         }
