@@ -27,6 +27,7 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.PlaySound;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
@@ -46,7 +47,6 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,6 +60,7 @@ public class DeliveryScan extends BaseIntentActivity {
 
     Context context=DeliveryScan.this;
 
+
     @ViewInject(R.id.img_exception)
     ImageView imgexception;
     @ViewInject(R.id.img_Remark)
@@ -72,6 +73,10 @@ public class DeliveryScan extends BaseIntentActivity {
     TextView txtItemName;
     @ViewInject(R.id.txt_ScanQty)
     TextView txtScanQty;
+    @ViewInject(R.id.txt_ScanDnQty)
+    TextView itemScanQty;
+    @ViewInject(R.id.txt_SumDnQty)
+    TextView itemDNQty;
     @ViewInject(R.id.txt_DnNo)
     EditText txtDnNo;
     @ViewInject(R.id.lsv_DeliveryScan)
@@ -79,29 +84,36 @@ public class DeliveryScan extends BaseIntentActivity {
 
     DeliveryScanItemAdapter deliveryScanItemAdapter;
     ArrayList<DNDetailModel> dnDetailModels;
+    ArrayList<BarCodeModel> ErrorBarcodes;//错误消息集合
     DNModel dnModel;
     DbDnInfo dnInfo;
     @Override
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
             case RESULT_UploadDN:
-               final DBReturnModel dbReturnModel=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
-                    if(dbReturnModel.getReturnCode()==-1){
-                        new AlertDialog.Builder(this).setTitle("提示")
-                                .setIcon(android.R.drawable.ic_dialog_info)
-                                .setMessage(dbReturnModel.getReturnMsg())
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        MessageBox.Show(context,"提交成功！");
-                                        closeActiviry();
-                                    }
-                                })
-                                .show();
-                    }
-                    else{
-                        MessageBox.Show(context,"提交成功！");
-                        closeActiviry();
-                    }
+                final DBReturnModel dbReturnModel=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
+                if(dbReturnModel.getReturnCode()==-1){
+                    new AlertDialog.Builder(this).setTitle("提示")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setMessage(dbReturnModel.getReturnMsg())
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    closeActiviry();
+                                }
+                            })
+                            .show();
+                }
+                else{
+                    new AlertDialog.Builder(this).setTitle("提示")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setMessage("出库单提交成功！")
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    closeActiviry();
+                                }
+                            })
+                            .show();
+                }
                 break;
             case TAG_SCAN:
                 LogUtil.WriteLog(DeliveryScan.class, TAG_ScanBarcode, (String) msg.obj);
@@ -121,18 +133,18 @@ public class DeliveryScan extends BaseIntentActivity {
 
     @Override
     protected void initViews() {
-       super.initViews();
+        super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.deliveryScan),true);
         x.view().inject(this);
         //显示备注栏
         int visable=ParamaterModel.baseparaModel.getUseRemark()?View.VISIBLE:View.GONE;
         imgRemark.setVisibility(visable);
-        imgexception.setVisibility(View.GONE);
     }
 
     @Override
     protected void initData() {
         super.initData();
+        ErrorBarcodes=new ArrayList<>();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
@@ -165,7 +177,7 @@ public class DeliveryScan extends BaseIntentActivity {
                 MessageBox.Show(context,getString(R.string.Msg_ScnaQtyError));
                 return false;
             }
-           UploadDN.SumbitDN(context,dnModel,mHandler);
+            UploadDN.SumbitDN(context,dnModel,mHandler);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -177,55 +189,54 @@ public class DeliveryScan extends BaseIntentActivity {
         GetDeliveryOrderScanList();
     }
 
+
+    /**
+     * 错误信息
+     * @param view
+     */
+    @Event(R.id.img_exception)
+    private  void ImgexceptionClick(View view){
+        if(ErrorBarcodes==null||ErrorBarcodes.size()==0){
+            return;
+        }else{
+            Intent intent=new Intent(context,DeliveryExceptionbarcode.class);
+            Bundle bundle=new Bundle();
+            bundle.putParcelableArrayList("barcodemodels",ErrorBarcodes);
+            intent.putExtras(bundle);
+            startActivityLeft(intent);
+        }
+    }
+
     /**
      * 备注
      * @param view
      */
     @Event(R.id.img_Remark)
     private  void ImgRemarkClick(View view){
-            final EditText et = new EditText(this);
-            et.setTextColor(getResources().getColor(R.color.black));
-            new AlertDialog.Builder(this).setTitle("备注")
-                    .setIcon(android.R.drawable.ic_dialog_info)
-                    .setView(et)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            String input = et.getText().toString();
-                            if (!TextUtils.isEmpty(input)) {
-                                dnModel.setREMARK(input);
-                                try {
-                                    ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
-                                    dnModels.add(dnModel);
-                                    dnInfo.InsertDNDB(dnModels);
-                                    ShowRemark();
-                                }catch (Exception ex){
-                                    MessageBox.Show(context,ex.getMessage());
-                                }
+        final EditText et = new EditText(this);
+        et.setTextColor(getResources().getColor(R.color.black));
+        new AlertDialog.Builder(this).setTitle("备注")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(et)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String input = et.getText().toString();
+                        if (!TextUtils.isEmpty(input)) {
+                            dnModel.setREMARK(input);
+                            try {
+                                ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
+                                dnModels.add(dnModel);
+                                dnInfo.InsertDNDB(dnModels);
+                                ShowRemark();
+                            }catch (Exception ex){
+                                MessageBox.Show(context,ex.getMessage());
                             }
                         }
-                    })
-                    .setNegativeButton("取消", null)
-                    .show();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
-
-
-    /**
-     * 异常
-     * @param view
-     */
-    @Event(R.id.img_exception)
-    private  void ImgexceptionClick(View view){
-       if(barcodes==null||barcodes.size()==0){
-           return;
-       }else{
-           Intent intent=new Intent(context,DeliveryExceptionbarcode.class);
-           Bundle bundle=new Bundle();
-           bundle.putParcelableArrayList("barcodemodels",barcodes);
-           intent.putExtras(bundle);
-           startActivityLeft(intent);
-       }
-    }
-
 
 
     /**
@@ -235,7 +246,7 @@ public class DeliveryScan extends BaseIntentActivity {
      */
     private Boolean CheckScanBarcode(String barcode) {
         if (TextUtils.isEmpty(barcode)) {
-            MessageBox.Show(context, getString(R.string.Msg_No_Barcode));
+           // MessageBox.Show(context, getString(R.string.Msg_No_Barcode));
             return true;
         }
 
@@ -265,21 +276,19 @@ public class DeliveryScan extends BaseIntentActivity {
                 if (ParamaterModel.DnTypeModel.getDNType() == 3) { //自建
                     return CreateNewDN(barCodeModels,materialModel);
                 } else {
-                        int isErrorStatus= Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
-                        if (ShowErrMag(isErrorStatus)) return true;
-                        return SaveScanInfo();
+                    int isErrorStatus= Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
+                    if (ShowErrMag(isErrorStatus,barCodeModels.get(0))) return true;
+                    return SaveScanInfo();
 
                 }
             }
-
         } catch (Exception ex) {
-            BarCodeModel model= new BarCodeModel();
-            model.setSerial_Number(barcode);
-            model.setPlace_Code(ex.getMessage());
-            barcodes.add(model);
+            PlaySound.getInstance().PlayError();
+            BarCodeModel Errorbarcode=new BarCodeModel();
+            Errorbarcode.setSerial_Number("异常");
+            Errorbarcode.setPlace_Code(ex.getMessage());
+            ErrorBarcodes.add(Errorbarcode);
             imgexception.setVisibility(View.VISIBLE);
-//            MessageBox.Show(context, ex.getMessage());
-          //  CommonUtil.setEditFocus(edtBarcode);
         }
         return true;
     }
@@ -293,23 +302,21 @@ public class DeliveryScan extends BaseIntentActivity {
             return;
         }
 
+        Intent intent=new Intent(context,ExceptionBarcodelist.class);
+        Bundle bundle=new Bundle();
+        DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(flagposition);
+        bundle.putParcelable("DNdetailModel",DNdetailModel);
+        bundle.putParcelable("DNModel",dnModel);
+        intent.putExtras(bundle);
+        startActivityLeft(intent);
+
 //        new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认进入序列号扫描界面？\n")
 //                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO 自动生成的方法
-                        DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(flagposition);
-                        if(DNdetailModel.getGOLFA_CODE()==null||DNdetailModel.getGOLFA_CODE().equals("")){
-                            return;
-                        }
-                        Intent intent=new Intent(context,ExceptionBarcodelist.class);
-                        Bundle bundle=new Bundle();
-
-                        bundle.putParcelable("DNdetailModel",DNdetailModel);
-                        bundle.putParcelable("DNModel",dnModel);
-                        intent.putExtras(bundle);
-                        startActivityLeft(intent);
-
+//                        // TODO 自动生成的方法
+//
+//
 //                    }
 //                }).setNegativeButton("取消", null).show();
 
@@ -323,24 +330,19 @@ public class DeliveryScan extends BaseIntentActivity {
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         dnModel.setDETAILS(dnDetailModels);
         txtDnNo.setFocusable(dnDetailModels.size()==0?true:false);
-
-        ArrayList<DNDetailModel> dnDetailModelslm = new ArrayList<DNDetailModel>();
-        dnDetailModelslm.addAll(dnDetailModels);
+        int source=dnModel.getDN_SOURCE()==null?ParamaterModel.DnTypeModel.getDNType():dnModel.getDN_SOURCE();
+        deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,source);
+        lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
         Integer qty=0;
         Integer scanqty=0;
         if(dnDetailModels!=null&&dnDetailModels.size()>=1){
             for(int i=0;i<dnDetailModels.size();i++){
-                qty =qty+ dnDetailModels.get(i).getDN_QTY();
-                scanqty=scanqty+dnDetailModels.get(i).getSCAN_QTY();
+                qty +=dnDetailModels.get(i).getDN_QTY()==null?0:dnDetailModels.get(i).getDN_QTY();
+                scanqty+=dnDetailModels.get(i).getSCAN_QTY()==null?0:dnDetailModels.get(i).getSCAN_QTY();
             }
-            DNDetailModel ddDetail= new DNDetailModel();
-            ddDetail.setSCAN_QTY(scanqty);
-            ddDetail.setDN_QTY(qty);
-            dnDetailModelslm.add(ddDetail);
         }
-
-        deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModelslm,dnModel.getDN_SOURCE());
-        lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
+        itemScanQty.setText("总扫描数："+scanqty);
+       if(source!=3)  itemDNQty.setText("总出库数："+qty);
     }
 
 
@@ -380,9 +382,6 @@ public class DeliveryScan extends BaseIntentActivity {
             return true;
         }
         final DNDetailModel detailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(i);
-        if(detailModel.getGOLFA_CODE()==null||detailModel.getGOLFA_CODE().equals("")){
-            return false;
-        }
         new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -401,25 +400,39 @@ public class DeliveryScan extends BaseIntentActivity {
      * @param isErrorStatus
      * @return
      */
-    private boolean ShowErrMag(int isErrorStatus) {
+    private boolean ShowErrMag(int isErrorStatus,BarCodeModel materialModel) {
         //edtBarcode.setText("");
+        String GolfCode=materialModel==null?"":materialModel.getGolfa_Code();
+        BarCodeModel Errorbarcode=new BarCodeModel();
+        Errorbarcode.setSerial_Number(GolfCode);
+        boolean isError=false;
         if(isErrorStatus==0) {
-//            MessageBox.Show(context, getString(R.string.Msg_Serial_Scaned));
-            return true;
+            isError=true;
+            Errorbarcode.setPlace_Code(getString(R.string.Msg_Serial_Scaned));
+           // MessageBox.Show(context, getString(R.string.Msg_Serial_Scaned));
+           // return true;
         }
         if(isErrorStatus==1) {
-//            MessageBox.Show(context, getString(R.string.Msg_SerialNum_Finished));
-            return true;
+            isError=true;
+            Errorbarcode.setPlace_Code(getString(R.string.Msg_SerialNum_Finished));
+           // MessageBox.Show(context, getString(R.string.Msg_SerialNum_Finished));
+           // return true;
         }
         if(isErrorStatus==2) {
-//            MessageBox.Show(context, getString(R.string.Msg_Material_NotMatch));
-            return true;
+            isError=true;
+            Errorbarcode.setPlace_Code(getString(R.string.Msg_Material_NotMatch));
+            //MessageBox.Show(context, getString(R.string.Msg_Material_NotMatch));
+           // return true;
+        }
+        if(isError) {
+            PlaySound.getInstance().PlayError();
+            ErrorBarcodes.add(Errorbarcode);
+            imgexception.setVisibility(View.VISIBLE);
         }
         return false;
     }
 
 
-    private Boolean flagMaterial=false;
     /**
      * 自建出库单
      * @param barCodeModels
@@ -427,7 +440,6 @@ public class DeliveryScan extends BaseIntentActivity {
      * @throws Exception
      */
     private boolean CreateNewDN(ArrayList<BarCodeModel> barCodeModels,MaterialModel materialModel) throws Exception {
-        flagMaterial=false;
         //保存扫描数据
         int isErrorStatus=-1;//0:物料已扫描  1：数量已超出
         dnModel.resetDETAILS();
@@ -437,7 +449,6 @@ public class DeliveryScan extends BaseIntentActivity {
             //判断是否存在物料
             int index = Scan.getIndex(dnModel,dnDetailModels, barCodeModel, dnDetailModel);
             if (index != -1) {
-                flagMaterial=true;//存在物料
                 isErrorStatus=AddSerialByMaterialNo(dnDetailModels, barCodeModel, index);
                 if(isErrorStatus!=-1) break;
             } else {
@@ -445,11 +456,7 @@ public class DeliveryScan extends BaseIntentActivity {
             }
             dnModel.setDN_QTY(dnModel.getDN_QTY() + 1);
         }
-
-        int vis=(barcodes==null||barcodes.size()==0)?View.GONE:View.VISIBLE;
-        imgexception.setVisibility(vis);
-
-        if (ShowErrMag(isErrorStatus)) return true;
+        if (ShowErrMag(isErrorStatus,barCodeModels.get(0))) return true;
         dnModel.setDN_STATUS("AC");
         dnModel.setSTATUS(1);
         dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.PartenerID);
@@ -528,7 +535,6 @@ public class DeliveryScan extends BaseIntentActivity {
 
 
 
-    private ArrayList<BarCodeModel> barcodes= new ArrayList<BarCodeModel>();
     /**
      * 自建添加序列号
      * @param dnDetailModels
@@ -543,18 +549,7 @@ public class DeliveryScan extends BaseIntentActivity {
         DNScanModel dnScanModel=new DNScanModel();
         dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
         int barcodeIndex=dnScanModels.indexOf(dnScanModel);
-        if(barcodeIndex!=-1){
-            //ymh20171213
-            BarCodeModel model=barCodeModel;
-            if(flagMaterial){
-                model.setSerial_Number(barCodeModel.getGolfa_Code());
-                model.setPlace_Code("物料已经扫描");
-            }else{
-                model.setPlace_Code("条码已经扫描");
-            }
-            barcodes.add(model);
-            return 0;
-        }
+        if(barcodeIndex!=-1) return 0;
 
         //保存序列号
         dnScanModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());

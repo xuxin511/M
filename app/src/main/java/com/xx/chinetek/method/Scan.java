@@ -39,7 +39,7 @@ public class Scan {
             //判断扫描数量是否超过出库数量
             String condition = dnDetailModel.getGOLFA_CODE() == null ? dnDetailModel.getITEM_NO() : dnDetailModel.getGOLFA_CODE();
             DBReturnModel dbReturnModel = dnInfo.GetDNQty(dnModel.getAGENT_DN_NO(), condition,dnDetailModel.getLINE_NO());
-            if (dbReturnModel.getDNQTY() < dbReturnModel.getSCANQTY() + barCodeModels.size()) {
+            if (dbReturnModel.getDNQTY() < dbReturnModel.getSCANQTY() + barCodeModels.size() && dnModel.getDN_SOURCE()!=3) {
                 isErrorStatus = 1;
             }else {
                 isErrorStatus = Checkbarcode(dnInfo,dnModel,barCodeModels, dnDetailModels, index);

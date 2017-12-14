@@ -15,7 +15,7 @@ public class CreateDnNo {
     /**
      * 创建自定义单据号
      * 自定义出库单设定：三菱单据号：DNN+代理商编号(后5位)+PDA序列号（后7位）+年（1位）+顺序号（4位）
-     *                客户单据号：起始字符+PDA序列号（7位）+ 年（最后1位）+顺序号 (起始字符+顺序号长度不超过12位)
+     *                客户单据号：起始字符+PDA序列号（7位）+ 年（最后1位）月（2位）日（2位）+顺序号 (起始字符+顺序号长度不超8位)
      * @return
      */
     public static void GetDnNo(Context context,DNModel dnModel){
@@ -35,10 +35,11 @@ public class CreateDnNo {
         }
         if(!lastData.equals(date))
             index=0;
-        String d=date.substring(3,4);
+        String d=date.substring(3,4); //2017-10-01
+        String selfd=d+date.substring(5,7)+date.substring(8,10);
         String ShiftNum= String.format("%0"+len+"d", index+1);
         String ShiftNumAn= String.format("%04d", (index+1));
-        String cusDnNo=startWord+serial+d+ShiftNum;
+        String cusDnNo=startWord+serial+selfd+ShiftNum;
         len=ParamaterModel.PartenerID.length();
         String AGENT_DN_NO="DNN"+ParamaterModel.PartenerID.substring(len-5)+serial+d+ShiftNumAn;
         dnModel.setCUS_DN_NO(cusDnNo);

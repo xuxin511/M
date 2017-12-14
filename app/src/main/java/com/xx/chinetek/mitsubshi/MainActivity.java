@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import com.xx.chinetek.adapter.GridViewItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -37,6 +38,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,7 +138,9 @@ public class MainActivity extends BaseActivity {
     void AnalysisSyncMaterialJson(String result){
         LogUtil.WriteLog(MainActivity.class,TAG_SyncMaterial,result);
         try {
-            ReturnMsgModelList<MaterialModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<MaterialModel>>() {
+            JsonReader jsonReader = new JsonReader(new StringReader(result));//其中jsonContext为String类型的Json数据
+            jsonReader.setLenient(true);
+            ReturnMsgModelList<MaterialModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(jsonReader, new TypeToken<ReturnMsgModelList<MaterialModel>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
                ArrayList<MaterialModel> materialModels = returnMsgModel.getModelJson();

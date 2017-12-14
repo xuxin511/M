@@ -344,7 +344,7 @@ public class Setting extends BaseActivity {
                             return;
                         }
                         int len=Integer.parseInt(length);
-                        if(startword.length()+len>12){
+                        if(startword.length()+len>8){
                             MessageBox.Show(context,getString(R.string.Msg_lenMax));
                             return;
                         }

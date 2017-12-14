@@ -67,9 +67,11 @@ public class UploadDN {
             }
             if(!isFinished || dnModel.getDN_SOURCE()==3){
 //                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
+                String msg=dnModel.getDN_SOURCE()==3?context.getResources().getString(R.string.Msg_Upload_DNSelf):
+                context.getResources().getString(R.string.Msg_Upload_DN);
                 new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
-                        .setMessage(context.getResources().getString(R.string.Msg_Upload_DN))
+                        .setMessage(msg)
                         .setPositiveButton("提交并关闭", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -119,23 +121,24 @@ public class UploadDN {
                 }
                 DNModel dnModel = returnMsgModel.getModelJson();
                 DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
-                if(returnMsgModel.getHeaderStatus().equals("S") && dnModel!=null) { //有异常
-                    //保留原有数据
-                    DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(subdnModel.getAGENT_DN_NO());
-                    if(tempdnModel!=null) {
-                        dnModel.setOPER_DATE(tempdnModel.getOPER_DATE());
-                        dnModel.setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
-                        dnModel.setREMARK(tempdnModel.getREMARK());
-                        if(subdnModel.getDN_SOURCE()==3){
-                            DbDnInfo.getInstance().DeleteDN(subdnModel);
-//                            for (DNDetailModel dneatail:dnModel.getDETAILS()) {
-//                                dneatail.setAGENT_DN_NO(tempdnModel.getAGENT_DN_NO());
-//                                for (DNScanModel dnscanmodel:dneatail.getSERIALS()) {
-//                                    dnscanmodel.setAGENT_DN_NO(tempdnModel.getAGENT_DN_NO());
-//                                }
-//                            }
-                        }
+                //保留原有数据
+                DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(subdnModel.getAGENT_DN_NO());
+                if(tempdnModel!=null  && dnModel  !=null) {
+                    dnModel.setOPER_DATE(tempdnModel.getOPER_DATE());
+                    dnModel.setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
+                    dnModel.setREMARK(tempdnModel.getREMARK());
+                    if(subdnModel.getDN_SOURCE()==3){
+                        DbDnInfo.getInstance().DeleteDN(subdnModel);
                     }
+                }
+                if(returnMsgModel.getHeaderStatus().equals("N") && dnModel.getDN_SOURCE()==3){
+                    ArrayList<DNModel> dnModels = new ArrayList<>();
+                    dnModel.setSTATUS(DNStatusEnum.complete);
+                    dnModels.add(dnModel);
+                    //插入数据
+                    DbDnInfo.getInstance().InsertDNDB(dnModels);
+                }
+                if(returnMsgModel.getHeaderStatus().equals("S") && dnModel!=null) { //有异常
                     ArrayList<DNModel> dnModels = new ArrayList<>();
                     dnModels.add(dnModel);
                     //插入数据
@@ -146,12 +149,11 @@ public class UploadDN {
                     dbReturnModel.setReturnMsg(context.getString(R.string.Msg_ExceptionDN));
                 }
                 if(returnMsgModel.getHeaderStatus().equals("K") && dnModel!=null){ //后台单据已关闭
-                    subdnModel.setDETAILS(dnModel.getDETAILS());
-                    int status=dnModel.getSTATUS()==DNStatusEnum.download?DNStatusEnum.complete:dnModel.getSTATUS();
-                    subdnModel.setSTATUS(status);
-                    DbDnInfo.getInstance().DELscanbyagent(subdnModel.getAGENT_DN_NO());
+                    int status=dnModel.getSTATUS()==DNStatusEnum.download?DNStatusEnum.complete:DNStatusEnum.Sumbit;
+                    dnModel.setSTATUS(status);
+                   // DbDnInfo.getInstance().DELscanbyagent(subdnModel.getAGENT_DN_NO());
                     ArrayList<DNModel> dnModels = new ArrayList<>();
-                    dnModels.add(subdnModel);
+                    dnModels.add(dnModel);
                     //插入数据
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     dbReturnModel.setReturnCode(-1);
@@ -163,7 +165,8 @@ public class UploadDN {
                 }
                 if(returnMsgModel.getHeaderStatus().equals("F")) {
                     ArrayList<DNModel> dnModels=new ArrayList<>();
-                    dnModels.add(subdnModel);
+                    dnModels.add(dnModel);
+                    DbDnInfo.getInstance().InsertDNDB(dnModels);
                     final  ArrayList<DNModel> ExportdnModels=dnModels;
                         new Thread() {
                             @Override
@@ -178,7 +181,7 @@ public class UploadDN {
                         }.start();
 
                     //更新出库单状态
-                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
                 }
             } else {
                 dbReturnModel.setReturnCode(-1);

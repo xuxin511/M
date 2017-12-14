@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
-import com.xx.chinetek.model.DN.DNScanModel;
 
 import java.util.ArrayList;
 
@@ -27,6 +26,7 @@ public class BarcodeexceptionAdapter extends BaseAdapter {
 
         public TextView txtBarcode;
         public TextView txtIndex;
+        public TextView txtNum;
     }
 
     public BarcodeexceptionAdapter(Context context, ArrayList<BarCodeModel> barCodemodel) {
@@ -64,6 +64,7 @@ public class BarcodeexceptionAdapter extends BaseAdapter {
             convertView = listContainer.inflate(R.layout.item_barcode_exception,null);
             listItemView.txtBarcode = (TextView) convertView.findViewById(R.id.item_Barcode);
             listItemView.txtIndex = (TextView) convertView.findViewById(R.id.item_index);
+            listItemView.txtNum = (TextView) convertView.findViewById(R.id.item_num);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
@@ -71,6 +72,7 @@ public class BarcodeexceptionAdapter extends BaseAdapter {
         BarCodeModel Model = barCodemodel.get(selectID);
         listItemView.txtBarcode.setText(Model.getSerial_Number());
         listItemView.txtIndex.setText(Model.getPlace_Code());
+        listItemView.txtNum.setText((selectID+1)+"");
         return convertView;
     }
 

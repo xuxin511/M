@@ -119,20 +119,6 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             {
                 final String code=edtBarcode.getText().toString().trim();
                 LogUtil.WriteLog(ExceptionBarcodelist.class, TAG_ScanBarcode, code);
-                if(TextUtils.isEmpty(code)){
-                    MessageBox.Show(context,getString(R.string.Msg_No_Barcode));
-                    CommonUtil.setEditFocus(edtBarcode);
-                    return true;
-                }
-                if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
-                    MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
-                    return true;
-                }
-                if(code.length()>ParamaterModel.baseparaModel.getSerialMaxLength()){
-                    MessageBox.Show(context,getString(R.string.Msg_out_Barcode));
-                    CommonUtil.setEditFocus(edtBarcode);
-                    return true;
-                }
                 chaeckBarcode(code);
                 return true;
             }
@@ -145,6 +131,21 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     }
 
     private void chaeckBarcode(String code) throws Exception {
+        if(TextUtils.isEmpty(code)){
+            MessageBox.Show(context,getString(R.string.Msg_No_Barcode));
+            CommonUtil.setEditFocus(edtBarcode);
+            return;
+        }
+        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+            MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
+            return;
+        }
+        if(code.length()>ParamaterModel.baseparaModel.getSerialMaxLength()){
+            MessageBox.Show(context,getString(R.string.Msg_out_Barcode));
+            CommonUtil.setEditFocus(edtBarcode);
+            return;
+        }
+
         BarCodeModel model = new BarCodeModel();
         model.setSerial_Number(code);
         model.setGolfa_Code(dndetailmodel.getGOLFA_CODE());
