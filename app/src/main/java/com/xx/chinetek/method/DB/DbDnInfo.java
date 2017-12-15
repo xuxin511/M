@@ -141,7 +141,7 @@ public class DbDnInfo {
     public  ArrayList<DNModel> GetLoaclcompleteDN(){
         ArrayList<DNModel> dnModels=new ArrayList<>();
         dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
-                .where(DNModelDao.Properties.STATUS.eq(DNStatusEnum.complete)).list();
+                .whereOr(DNModelDao.Properties.STATUS.eq(DNStatusEnum.complete),DNModelDao.Properties.STATUS.eq(DNStatusEnum.download)).list();
         return dnModels;
     }
 
@@ -206,6 +206,12 @@ public class DbDnInfo {
         DELscanbyagent(dnModel.getAGENT_DN_NO());
         DelDetailAllNum(dnModel.getAGENT_DN_NO());
         DelDNmodels(dnModel.getAGENT_DN_NO());
+    }
+
+    public void DeleteDNQuery(DNModel dnModel){
+        DELscanbyagent(dnModel.getAGENT_DN_NO());
+        UpdateDetailAllNum(dnModel.getAGENT_DN_NO(),0,dnModel.getDN_SOURCE());
+        UpdateDNmodelState(dnModel.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE());
     }
 
     /**
@@ -551,11 +557,10 @@ public class DbDnInfo {
     /**
      * 修改主表的状态异常出库表
      * @param DNNo
-     * @param condition
      */
-    public boolean UpdateDNmodelDetailNumberbyDN(String DNNo,String condition){
+    public boolean UpdateDNmodelDetailNumberbyDN(String DNNo){
         try{
-            String sql="update DNDETAIL_MODEL set DN__QTY=0 " +
+            String sql="update DNDETAIL_MODEL set SCAN__QTY=0 " +
                     "where AGENT__DN__NO='"+ DNNo +"'";
             daoSession.getDatabase().execSQL(sql);
             return true;

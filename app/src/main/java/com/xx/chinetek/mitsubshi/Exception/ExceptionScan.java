@@ -154,6 +154,7 @@ public class ExceptionScan extends BaseActivity {
                         DNDetailModel DNdetailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(flagposition);
                         bundle.putParcelable("DNdetailModel",DNdetailModel);
                         bundle.putParcelable("DNModel",dnModel);
+                         bundle.putInt("WinModel",1);
                         intent.putExtras(bundle);
                         startActivityLeft(intent);
 

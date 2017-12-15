@@ -6,11 +6,10 @@
 
 
     <item
-        android:id="@+id/action_filter"
+        android:id="@+id/action_Delete"
         android:icon="@drawable/filter"
         android:orderInCategory="80"
         android:title=""
-        android:visible="false"
         app:showAsAction="ifRoom" />
 
     <item

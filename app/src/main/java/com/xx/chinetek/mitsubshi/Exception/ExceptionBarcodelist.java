@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -63,6 +64,8 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     TextView txtScanQty;
     @ViewInject(R.id.txt_DnNo)
     TextView txtDnNo;
+    @ViewInject(R.id.btn_DeleteException)
+    Button btn_DeleteException;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
 
@@ -103,7 +106,9 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         dnModel=getIntent().getParcelableExtra("DNModel");
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         dndetailmodel=getIntent().getParcelableExtra("DNdetailModel");
+        int winModel=getIntent().getIntExtra("WinModel",0);
 //        Flag=getIntent().getStringExtra("Flag");
+        btn_DeleteException.setVisibility(winModel==0?View.GONE:View.VISIBLE);
         //初始化数据
         txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO().toString():dnModel.getAGENT_DN_NO().toString());
         txtItemName.setText("物料名称："+dndetailmodel.getITEM_NAME());

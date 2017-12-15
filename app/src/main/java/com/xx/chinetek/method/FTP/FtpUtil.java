@@ -30,7 +30,7 @@ public class FtpUtil {
             ftp.closeConnect();
         }
 
-        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, total);
+        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, total/2);
         mHandler.sendMessage(msg);
     }
 
@@ -76,7 +76,7 @@ public class FtpUtil {
                 ftp.closeConnect();
             }
             if (mHandler != null) {
-                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadSuccess) + total);
+                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadSuccess) + total/2);
                 mHandler.sendMessage(msg);
             }
         } catch (Exception ex) {

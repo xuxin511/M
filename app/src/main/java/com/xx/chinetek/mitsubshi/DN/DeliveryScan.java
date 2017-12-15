@@ -307,6 +307,7 @@ public class DeliveryScan extends BaseIntentActivity {
         DNDetailModel DNdetailModel= (DNDetailModel)deliveryScanItemAdapter.getItem(flagposition);
         bundle.putParcelable("DNdetailModel",DNdetailModel);
         bundle.putParcelable("DNModel",dnModel);
+        bundle.putInt("WinModel",0);
         intent.putExtras(bundle);
         startActivityLeft(intent);
 

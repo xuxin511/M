@@ -79,10 +79,10 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                             FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(),MoveFiles);
                         }
                     }.start();
-                    MessageBox.Show(context,(String)msg.obj);
+                    MessageBox.Show(context,(String)msg.obj+("\r\n文件格式：txt/csv"));
                     break;
                 case RESULT_SyncUSB:
-                    MessageBox.Show(context,getString(R.string.Msg_UploadSuccess)+msg.obj+"\n路径："+ParamaterModel.UpDirectory);
+                    MessageBox.Show(context,getString(R.string.Msg_UploadSuccess)+msg.obj+("\r\n文件格式：txt/csv")+"\n路径："+ParamaterModel.UpDirectory);
                     break;
                 case NetworkError.NET_ERROR_CUSTOM:
                     ToastUtil.show("获取请求失败_____" + msg.obj);
@@ -116,17 +116,20 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final String[] items=getResources().getStringArray(R.array.ExportTypeList);
-        if(item.getItemId()==R.id.action_Export){
-           SelectDnModels=new ArrayList<>();
-            for (int i = 0; i < DNModels.size(); i++) {
-                if (deliveryListItemAdapter.getStates(i)) {
-                    SelectDnModels.add(0, DNModels.get(i));
-                }
+
+        SelectDnModels=new ArrayList<>();
+        for (int i = 0; i < DNModels.size(); i++) {
+            if (deliveryListItemAdapter.getStates(i)) {
+                SelectDnModels.add(0, DNModels.get(i));
             }
-            if(SelectDnModels.size()!=0) {
-//                ContextThemeWrapper contextThemeWrapper =
-//                        new ContextThemeWrapper(context, R.style.dialog);
+        }
+        if(SelectDnModels.size()==0) {
+            MessageBox.Show(context,getString(item.getItemId()==R.id.action_Export?R.string.Msg_No_ExportDn:R.string.Msg_No_DeleteDn));
+            return true;
+        }
+       final ArrayList<DNModel> deleteDN=SelectDnModels;
+        if(item.getItemId()==R.id.action_Export){
+            final String[] items=getResources().getStringArray(R.array.ExportTypeList);
                 new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_Export_Type))// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
                         .setItems(items, new DialogInterface.OnClickListener() {
@@ -139,9 +142,21 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                                 }
                             }
                         }).show();
-            }else{
-                MessageBox.Show(context,getString(R.string.Msg_No_ExportDn));
-            }
+        }
+        if(item.getItemId()==R.id.action_Delete){
+            new AlertDialog.Builder(this).setTitle("提示")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setMessage(R.string.Dia_DeleteDn)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            for (DNModel dnModel:deleteDN) {
+                                DbDnInfo.getInstance().DeleteDNQuery(dnModel);
+                            }
+                            BindListView();
+                        }
+                    })
+                    .setNegativeButton("取消",null)
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -224,7 +239,7 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                         BaseApplication.DialogShowText = getString(R.string.Dia_UploadUSB);
                         dialog = new LoadingDialog(context);
                         dialog.show();
-                        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, Files.length);
+                        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, Files.length/2);
                         mHandler.sendMessage(msg);
                         break;
                 }

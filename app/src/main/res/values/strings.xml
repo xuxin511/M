@@ -28,6 +28,7 @@
     <string name="Reason">异常原因：</string>
     <string name="ExceptionScan">异常扫描</string>
     <string name="BarcodeScan">异常扫描</string>
+    <string name="DeleteException">删除异常序列号</string>
     <string name="ScanDetails">序列号扫描</string>
 
     <string name="Setting_QRTitle">QR服务器设置</string>
@@ -140,7 +141,7 @@
     <string name="Msg_InputCustom">请输入代理商编号</string>
     <string name="Msg_ChoiceSaveTime">请选择保存时间（天）</string>
     <string name="Msg_PasswordError">管理员密码错误!</string>
-    <string name="Msg_UploadSuccess">DN导出成功!\n导出文件数：</string>
+    <string name="Msg_UploadSuccess">DN导出成功!\n导出出库单数：</string>
     <string name="Msg_DNUploadSuccess">出库单提交成功!</string>
     <string name="Msg_UploadFailue">DN导出失败!\n失败原因：</string>
     <string name="Msg_ImportDNError">DN导入失败!\n非代理商单据\n</string>
@@ -164,6 +165,7 @@
     <string name="Msg_Export_Format">请选择文件格式</string>
     <string name="Msg_New_Custom">新增客户</string>
     <string name="Msg_No_ExportDn">请选择需要导出的出库单</string>
+    <string name="Msg_No_DeleteDn">请选择需要删除的出库单</string>
     <string name="Msg_No_DirExportDn">不存在需要导出的出库单单据！</string>
     <string name="Msg_Upload_DN">出库单存在未完成项，是否提交之后关闭单据?</string>
     <string name="Msg_Upload_DNSelf">是否提交之后关闭单据?</string>
@@ -178,6 +180,7 @@
     <string name="Dia_UploadCus">正在上传新增客户信息...</string>
     <string name="Dia_UploadDN">正在上传出库单...</string>
     <string name="Dia_GetDNDetailItems">获取已关闭出库单...</string>
+    <string name="Dia_DeleteDn">是否删除已选中单据的扫描记录？</string>
     <string name="Dia_SyncPara">正在同步参数设置...</string>
     <string name="Dia_UploadPara">正在上传参数设置...</string>
     <string name="Dia_SyncDn">通过MAPS形式获取出库单...</string>

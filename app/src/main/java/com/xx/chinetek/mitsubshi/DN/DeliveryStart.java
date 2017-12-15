@@ -1,8 +1,6 @@
 package com.xx.chinetek.mitsubshi.DN;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -132,17 +130,18 @@ public class DeliveryStart extends BaseActivity {
                 }
                 //新增客户
                 if (partnerItemAdapter.getCount() == 0) {
-                    new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_New_Custom))// 设置对话框标题
-                            .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
-                            .setMessage(code)
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
-                                }
-                            })
-                            .setNegativeButton("取消", null)
-                            .show();
+                    UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
+//                    new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_New_Custom))// 设置对话框标题
+//                            .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
+//                            .setMessage(code)
+//                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                                }
+//                            })
+//                            .setNegativeButton("取消", null)
+//                            .show();
                     CommonUtil.setEditFocus(edtContentText);
                     return;
                 }
@@ -296,7 +295,7 @@ public class DeliveryStart extends BaseActivity {
             ReturnMsgModel<CustomModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<CustomModel>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
-                CustomModel customModel = returnMsgModel.getModelJson();
+                customModel = returnMsgModel.getModelJson();
                 //插入数据
                 ArrayList<CustomModel> customModels=new ArrayList<>();
                 customModels.add(customModel);

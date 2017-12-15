@@ -7,6 +7,17 @@
     tools:context="com.xx.chinetek.mitsubshi.DN.DeliveryScan">
 
 
+    <Button
+        android:id="@+id/btn_DeleteException"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bt_selector"
+        android:text="@string/DeleteException"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <include
     android:id="@+id/include"
     layout="@layout/activity_exception_scan_title"
@@ -25,7 +36,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_DeleteException"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline6" />

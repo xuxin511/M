@@ -86,6 +86,7 @@ public class BulkuploadScan extends BaseIntentActivity {
         DNDetailModel DNdetailModel= (DNDetailModel)bulkuploadScanItemAdapter.getItem(position);
         bundle.putParcelable("DNdetailModel",DNdetailModel);
         bundle.putParcelable("DNModel",dnModel);
+        bundle.putInt("WinModel",0);
         intent.putExtras(bundle);
         startActivityLeft(intent);
 

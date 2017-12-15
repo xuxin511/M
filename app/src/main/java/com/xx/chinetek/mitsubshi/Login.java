@@ -118,68 +118,9 @@ public class Login extends BaseActivity {
 
 
     }
-//        String Tag="VPN";
-//    private Handler mVPNHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case Common.VpnMsg.MSG_VPN_CONNECTING:
-//                    Log.i(Tag, "vpn connecting");
-//                    break;
-//                case Common.VpnMsg.MSG_VPN_CONNECTED:
-//                    Log.i(Tag, "vpn connected ");
-//                    break;
-//                case Common.VpnMsg.MSG_VPN_DISCONNECTING:
-//                    Log.i(Tag, "vpn disconnecting ");
-//                    break;
-//                case Common.VpnMsg.MSG_VPN_DISCONNECTED:
-//                    Log.i(Tag, "vpn disconnected");
-//                    break;
-//                case Common.VpnMsg.MSG_VPN_CONNECT_FAILED:
-//                    Log.i(Tag, "vpn connect failed"+Common.VpnMsg.MSG_VPN_ERROR_CODE);
-//                    break;
-//                case Common.VpnMsg.MSG_VPN_RECONNECTING:
-//                    Log.i(Tag, "vpn reconnecting");
-//                    break;
-//                case Common.VpnMsg.MSG_VPN_LOGIN:
-//                    int error = msg.getData().getInt(Common.VpnMsg.MSG_VPN_ERROR_CODE);
-//                    Log.i(Tag, "vpn connect MSG_VPN_LOGIN"+  error);
-//                    break;
-//                case Common.VpnMsg.MSG_VPN_DEVREG:
-//                    Log.i(Tag, "vpn connect MSG_VPN_DEVREG"+  msg.obj);
-//                    break;
-//                default:
-//                    super.handleMessage(msg);
-//            }
-//        }
-//    };
-//
-//    @Override
-//    protected void onStop() {
-//        Thread t = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                VPNManager.getInstance().stopVPN();
-//            }
-//        });
-//        t.start();
-//
-//        super.onStop();
-//    }
 
     @Override
     protected void onResume() {
-//        VPNManager.initialize(this).setHandler(mVPNHandler);
-//        Thread t = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                VPNManager.getInstance().startVPN("116.247.107.214", 443, "TESTING",
-//                        "meas@2018");
-//            }
-//        });
-//        t.start();
-
-
         super.onResume();
         txtPartner.setText( ParamaterModel.PartenerID);
     }

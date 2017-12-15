@@ -81,7 +81,7 @@ public class MailUtil {
                 f.delete();
             }
             if(mHandler!=null) {
-                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail, BaseApplication.context.getString(R.string.Msg_UploadSuccess) + Files.length);
+                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncMail, BaseApplication.context.getString(R.string.Msg_UploadSuccess) + Files.length/2);
                 mHandler.sendMessage(msg);
             }
         }catch (Exception ex){
