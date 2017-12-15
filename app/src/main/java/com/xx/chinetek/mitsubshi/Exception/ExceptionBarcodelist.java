@@ -41,13 +41,14 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
+import static com.xx.chinetek.method.Delscan.Delscan.DelAllScanmodel;
 import static com.xx.chinetek.method.Delscan.Delscan.DelScanmodel;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
 
 @ContentView(R.layout.activity_exception_scanlist)
 public class ExceptionBarcodelist extends BaseIntentActivity {
 
-    Context context=ExceptionBarcodelist.this;
+    Context context = ExceptionBarcodelist.this;
     @ViewInject(R.id.img_Remark)
     ImageView img_Remark;
     @ViewInject(R.id.textView5)
@@ -78,8 +79,8 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
 
     @Override
     protected void initViews() {
-       super.initViews();
-        BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.ScanDetails),true);
+        super.initViews();
+        BaseApplication.toolBarTitle = new ToolBarTitle(getString(R.string.ScanDetails), true);
         x.view().inject(this);
     }
 
@@ -90,32 +91,62 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                 try {
                     LogUtil.WriteLog(ExceptionBarcodelist.class, TAG_ScanBarcode, (String) msg.obj);
                     chaeckBarcode((String) msg.obj);
-                }catch (Exception ex){
-                    MessageBox.Show(context,ex.getMessage());
+                } catch (Exception ex) {
+                    MessageBox.Show(context, ex.getMessage());
                 }
                 break;
         }
     }
 
-//    private String Flag="";
+    //    private String Flag="";
     @Override
     protected void initData() {
         super.initData();
         img_Remark.setVisibility(View.GONE);
-        dnInfo=DbDnInfo.getInstance();
-        dnModel=getIntent().getParcelableExtra("DNModel");
+        dnInfo = DbDnInfo.getInstance();
+        dnModel = getIntent().getParcelableExtra("DNModel");
         dnModel.__setDaoSession(dnInfo.getDaoSession());
-        dndetailmodel=getIntent().getParcelableExtra("DNdetailModel");
-        int winModel=getIntent().getIntExtra("WinModel",0);
+        dndetailmodel = getIntent().getParcelableExtra("DNdetailModel");
+        int winModel = getIntent().getIntExtra("WinModel", 0);
 //        Flag=getIntent().getStringExtra("Flag");
-        btn_DeleteException.setVisibility(winModel==0?View.GONE:View.VISIBLE);
+        btn_DeleteException.setVisibility(winModel == 0 ? View.GONE : View.VISIBLE);
         //初始化数据
-        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO().toString():dnModel.getAGENT_DN_NO().toString());
-        txtItemName.setText("物料名称："+dndetailmodel.getITEM_NAME());
-        txtItemNo.setText("物料编码："+dndetailmodel.getGOLFA_CODE());
-        txtKUQty.setText("出库数量："+dndetailmodel.getDN_QTY());
+        txtDnNo.setText(dnModel.getDN_SOURCE() == 3 ? dnModel.getCUS_DN_NO().toString() : dnModel.getAGENT_DN_NO().toString());
+        txtItemName.setText("物料名称：" + dndetailmodel.getITEM_NAME());
+        txtItemNo.setText("物料编码：" + dndetailmodel.getGOLFA_CODE());
+        txtKUQty.setText("出库数量：" + dndetailmodel.getDN_QTY());
         GetDeliveryOrderScanList();
     }
+
+    @Event(R.id.btn_DeleteException)
+    private void DelExceptionClick(View view) {
+        try {
+            new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认批量删除异常扫描数据？")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO 自动生成的方法
+                            //删除异常扫描数据
+                            DelAllScanmodel(dndetailmodel,dnModel);
+
+
+                            ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
+                            int index = dnDetailModels.indexOf(dndetailmodel);
+                            if(index>0){
+                                dndetailmodel=dnDetailModels.get(index);
+                                txtScanQty.setText("扫描数量："+dndetailmodel.getSCAN_QTY());
+                            }
+                            GetDeliveryOrderScanList();
+                        }
+                    }).setNegativeButton("取消", null).show();
+        } catch(Exception ex)
+        {
+            MessageBox.Show(context, ex.getMessage());
+        }
+
+}
+
+
 
     @Event(value = R.id.edt_Barcode, type = View.OnKeyListener.class)
     private boolean edtfilterOnKey(View v, int keyCode, KeyEvent event) {

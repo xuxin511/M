@@ -620,6 +620,18 @@ public class DbDnInfo {
 
     }
 
+    public Boolean DelExceptionScanmodel(DNDetailModel model){
+        try{
+            String deletesql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ model.getAGENT_DN_NO()
+                    +"' and LINE__NO='"+ model.getLINE_NO() +"' and GOLFA__CODE='"+ model.getGOLFA_CODE()
+                    +"' and status != 0";
+            daoSession.getDatabase().execSQL(deletesql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
 
 //    /**
 //     * 插入DN
