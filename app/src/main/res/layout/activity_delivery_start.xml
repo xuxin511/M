@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:allowUndo="true"
         android:background="@drawable/bt_selector"
         android:text="@string/startOutput"
         app:layout_constraintBottom_toBottomOf="parent"

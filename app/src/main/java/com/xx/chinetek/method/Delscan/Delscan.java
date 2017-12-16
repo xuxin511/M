@@ -122,4 +122,44 @@ public class Delscan {
     }
 
 
+
+    public static void DelAllScanmodel(DNDetailModel dndetailmodel,DNModel dnModel){
+        //删除扫描记录，改变明细数量
+        if(DbDnInfo.getInstance().DelExceptionScanmodel(dndetailmodel)){
+            //判断剩余的扫描数量
+            Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
+
+            //删除扫描记录，修改扫描记录表
+            DNDetailModel dndetail = DbDnInfo.getInstance().GetLoaclDNDetailStatus(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
+            if(dndetail.getSTATUS()==2||dndetail.getSTATUS()==3){
+                if(DbDnInfo.getInstance().GetDNScanOKModel(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO()) && dndetail.getDN_QTY()>=lastNum){
+                    //改变所有序列号的状态
+                    DbDnInfo.getInstance().UpdateDNScanState(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
+                }
+            }
+
+
+            if(DbDnInfo.getInstance().UpdateDetailNum(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
+                if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(dndetailmodel.getAGENT_DN_NO())==0){
+                    //需要改变主表状态
+                    if(DbDnInfo.getInstance().UpdateDNmodelState(dndetailmodel.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){
+
+                    }else{
+                        MessageBox.Show(context,BaseApplication.context.getString(R.string.Error_del_dnmodel));
+                        return;
+                    }
+                }
+                MessageBox.Show(context,BaseApplication.context.getString(R.string.Msg_del_success));
+
+            }else{
+                MessageBox.Show(context,BaseApplication.context.getString(R.string.Error_del_dnmodeldetail));
+                return;
+            }
+        }else{
+            MessageBox.Show(context,BaseApplication.context.getString(R.string.Error_del_dnmodelbarcode));
+        }
+
+    }
+
+
 }
