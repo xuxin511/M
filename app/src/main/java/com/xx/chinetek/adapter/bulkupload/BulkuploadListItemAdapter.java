@@ -14,6 +14,7 @@ import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by GHOST on 2017/1/13.
@@ -25,7 +26,7 @@ public class BulkuploadListItemAdapter extends BaseAdapter implements Filterable
     private Context context; // 运行上下文
     private ArrayList<DNModel> DNModels; // 信息集合
     private LayoutInflater listContainer; // 视图容器
-
+    private List<Boolean> listselected;//用布尔型的list记录每一行的选中状态
 
     public final class ListItemView { // 自定义控件集合
 
@@ -41,9 +42,29 @@ public class BulkuploadListItemAdapter extends BaseAdapter implements Filterable
         this.context = context;
         listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
         this.DNModels = DNModels;
-
+        this.setListselected(new ArrayList<Boolean>(getCount()));
+        for(int i=0;i<getCount();i++)
+            getListselected().add(false);//初始为false，长度和listview一样
     }
 
+    public List<Boolean> getListselected() {
+        return listselected;
+    }
+    public void setListselected(List<Boolean> listselected) {
+        this.listselected = listselected;
+    }
+    public Boolean getStates(int position){
+        return getListselected().get(position);
+    }
+
+    public void modifyStates(int position){
+        if(!getListselected().get(position)){
+            getListselected().set(position, true);//如果相应position的记录是未被选中则设置为选中（true）
+            notifyDataSetChanged();
+        }else{
+            getListselected().set(position, false);//否则相应position的记录是被选中则设置为未选中（false）
+            notifyDataSetChanged();}
+    }
 
     @Override
     public int getCount() {
@@ -88,10 +109,10 @@ public class BulkuploadListItemAdapter extends BaseAdapter implements Filterable
         listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.overtime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
         listItemView.txtSource.setText(convertView.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         listItemView.txtSubmitUser.setText("");
-        if(DNModel.getFlag()!=null&&DNModel.getFlag().equals("1")){
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.lightgreen));
-        }else{
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.trans));
+        if (getListselected().get(position)) {
+            convertView.setBackgroundResource(R.color.lightgreen);
+        } else {
+            convertView.setBackgroundResource(R.color.trans);
         }
 
         return convertView;

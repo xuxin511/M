@@ -11,7 +11,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -179,33 +178,12 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onRefresh() {
-//        ImportDelivery();
         mSwipeLayout.setRefreshing(false);
     }
 
-
-    @Event(value = R.id.edt_DNNoFuilter, type = View.OnKeyListener.class)
-    private boolean edtDNNoFuilterOnkeyUp(View v, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-//            ExceptionListItemAdapter.getFilter().filter(edtDNNoFuilter.getText().toString());
-        }
-        return false;
-    }
-
-
-    @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
+        @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
     private boolean LsvItemlongClick(AdapterView<?> parent, View view, int position, long id) {
-        try{
-            DNModel  dnModel=(DNModel)bulkuploadListItemAdapter.getItem(position);
-                if(dnModel.getFlag()==null||dnModel.getFlag().equals("0")){
-                    dnModel.setFlag("1");
-                }else{
-                    dnModel.setFlag("0");
-                }
-            bulkuploadListItemAdapter.notifyDataSetInvalidated();
-        }catch(Exception ex){
-            MessageBox.Show(context,ex.toString());
-        }
+            bulkuploadListItemAdapter.modifyStates(position);
         return true;
     }
 
@@ -277,7 +255,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
             List<DNModel> postmodels=new ArrayList<>();
             boolean isUpload=true;
             for (int i = 0; i < DNModels.size(); i++) {
-                if (DNModels.get(i).getFlag() == "1") {
+                if (bulkuploadListItemAdapter.getStates(i)) {
                    DNModel postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
                     if (postmodel == null) {
                         MessageBox.Show(context, "出库单上报错误！\n" + DNModels.get(i).getAGENT_DN_NO());
