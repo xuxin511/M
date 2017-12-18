@@ -143,6 +143,8 @@
     <string name="Msg_PasswordError">管理员密码错误!</string>
     <string name="Msg_UploadSuccess">DN导出成功!\n导出出库单数：</string>
     <string name="Msg_DNUploadSuccess">出库单提交成功!</string>
+    <string name="Msg_bolkDNUploadSuccess">批量出库单提交完成!</string>
+    <string name="Msg_DNSuccess">出库单完成数：</string>
     <string name="Msg_UploadFailue">DN导出失败!\n失败原因：</string>
     <string name="Msg_ImportDNError">DN导入失败!\n非代理商单据\n</string>
     <string name="Msg_QRScanFormatr">QR扫描单据格式不正确！</string>

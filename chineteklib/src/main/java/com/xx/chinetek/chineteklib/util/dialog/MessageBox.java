@@ -3,14 +3,25 @@ package com.xx.chinetek.chineteklib.util.dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.DialogInterface.OnShowListener;
 import android.widget.EditText;
 
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 
 
 public class MessageBox {
+    static AlertDialog.Builder builder;
+
+    public static AlertDialog.Builder getDialog(Context context) {
+        if (null == builder) {
+            synchronized (MessageBox.class) {
+                if (null == builder) {
+                    builder = new AlertDialog.Builder(context);
+                }
+            }
+        }
+        return builder;
+    }
+    static String Showmsg="";
     /**
      * 弹出默认提示框
      *
@@ -18,7 +29,15 @@ public class MessageBox {
      * @param message 需要弹出的消息
      */
     public static void Show(Context context, String message) {
-        new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(message).setPositiveButton("确定", null).show();
+        if(!Showmsg.equals(message)) {
+            getDialog(context).setTitle("提示").setCancelable(false).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Showmsg="";
+                }
+            }).show();
+            Showmsg=message;
+        }
     }
 
     public static void Show(Context context, int resourceID) {
@@ -30,7 +49,7 @@ public class MessageBox {
         alertDialog = new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(mString).setPositiveButton("确定", null).create();
 
         final EditText tagEditText = togText;
-        alertDialog.setOnShowListener(new OnShowListener() {
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
             @Override
             public void onShow(DialogInterface dialog) {
@@ -45,14 +64,14 @@ public class MessageBox {
         AlertDialog dialog = new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setMessage(mString).setPositiveButton("确定", null).create();
 
         final EditText tagEditText = togText;
-        dialog.setOnShowListener(new OnShowListener() {
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
             @Override
             public void onShow(DialogInterface dialog) {
                 CommonUtil.setEditFocus(tagEditText);
             }
         });
-        dialog.setOnDismissListener(new OnDismissListener() {
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -66,14 +85,14 @@ public class MessageBox {
         AlertDialog dialog = new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setMessage(message).setPositiveButton("是", null).create();
         final EditText RecivceTEXT = recivceTEXT;
         final EditText SendTEXT = sendTEXT;
-        dialog.setOnShowListener(new OnShowListener() {
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
             @Override
             public void onShow(DialogInterface dialog) {
                 CommonUtil.setEditFocus(RecivceTEXT);
             }
         });
-        dialog.setOnDismissListener(new OnDismissListener() {
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
             @Override
             public void onDismiss(DialogInterface dialog) {

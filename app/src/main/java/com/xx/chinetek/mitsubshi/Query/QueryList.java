@@ -31,7 +31,6 @@ import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
-import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
@@ -151,8 +150,8 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             for (DNModel dnModel:deleteDN) {
-                                if(dnModel.getSTATUS()!= DNStatusEnum.Sumbit)
-                                    DbDnInfo.getInstance().DeleteDNQuery(dnModel);
+                              //  if(dnModel.getSTATUS()!= DNStatusEnum.Sumbit)
+                                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
                             }
                             BindListView();
                         }

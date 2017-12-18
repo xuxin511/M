@@ -15,6 +15,7 @@ import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.DN.DNModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -126,15 +127,11 @@ public class DNsync extends BaseActivity{
                     for (int j = 0; j < tempdnmodels.get(i).getDETAILS().size(); j++) {
                         int scanQty = tempdnmodels.get(i).getDETAILS().get(j).getSERIALS().size();
                         tempdnmodels.get(i).getDETAILS().get(j).setSCAN_QTY(scanQty);
-                        if(tempdnmodels.get(i).getDN_SOURCE()==3) {
-                            DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
-//                            tempdnmodels.get(i).getDETAILS().get(j).setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-//                            List<DNScanModel> dnScanModels = tempdnmodels.get(i).getDETAILS().get(j).getSERIALS();
-//                            for (DNScanModel dnscanmodel : dnScanModels) {
-//                                dnscanmodel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
-//                            }
-                        }
+
                     }
+                }
+                if(tempdnmodels.get(i).getDN_SOURCE()==3 || tempdnmodels.get(i).getSTATUS()== DNStatusEnum.exeption) {
+                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
                 }
             }
         }

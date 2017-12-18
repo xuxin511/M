@@ -141,6 +141,8 @@ public class UploadDN {
                 if(returnMsgModel.getHeaderStatus().equals("S") && dnModel!=null) { //有异常
                     ArrayList<DNModel> dnModels = new ArrayList<>();
                     dnModels.add(dnModel);
+                    //删除异常数据，以下载为准
+                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
                     //插入数据
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)

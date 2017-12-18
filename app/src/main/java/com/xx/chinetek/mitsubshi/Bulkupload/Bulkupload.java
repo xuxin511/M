@@ -89,6 +89,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 ArrayList<DNModel> SendDNs=new ArrayList<>();//存放发送邮件和FTP-DN单据
                ArrayList<MultipleDN> multipleDNS = returnMsgModel.getModelJson();
                String dnno="";
+               int completeDnNum=0;
                 for (MultipleDN mulitdn:multipleDNS) {
                     String tempdnno=mulitdn.getDN().getDN_SOURCE()==3?mulitdn.getDN().getCUS_DN_NO():mulitdn.getDN().getAGENT_DN_NO();
                     DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(tempdnno);
@@ -109,6 +110,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
 
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.complete);
                     if(mulitdn.getStatus().equals("N") && mulitdn.getDN().getDN_SOURCE()==3){
+                        completeDnNum++;
                         ArrayList<DNModel> dnModels = new ArrayList<>();
                         mulitdn.getDN().setSTATUS(DNStatusEnum.complete);
                         dnModels.add(mulitdn.getDN());
@@ -116,6 +118,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         DbDnInfo.getInstance().InsertDNDB(dnModels);
                     }
                     if(mulitdn.getStatus().equals("F")){
+                        completeDnNum++;
                         ArrayList<DNModel> dnModels=new ArrayList<>();
                         dnModels.add(mulitdn.getDN());
                         SendDNs.add(mulitdn.getDN());
@@ -124,8 +127,11 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     }
                     if(mulitdn.getStatus().equals("S")){
                         if(mulitdn.getDN()!=null) {
+                            dnno+="后台异常出库单："+Showdnno+"\n";
                             ArrayList<DNModel> dnModels = new ArrayList<>();
                             dnModels.add(mulitdn.getDN());
+                            //删除异常数据，以下载为准
+                            DbDnInfo.getInstance().DeleteDN(mulitdn.getDN().getAGENT_DN_NO());
                             //插入数据
                             DbDnInfo.getInstance().InsertDNDB(dnModels);
                             //更新出库单状态(异常)
@@ -164,9 +170,8 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 }.start();
 
                 if(!TextUtils.isEmpty(dnno)){
-                    MessageBox.Show(context, "提交说明！\n"+dnno);
-                }else{
-                    MessageBox.Show(context, getString(R.string.Msg_DNUploadSuccess));
+                    String content=getString(R.string.Msg_DNSuccess)+completeDnNum+"\n" + dnno;
+                    MessageBox.Show(context, getString(R.string.Msg_bolkDNUploadSuccess)+"\n提交说明！\n"+content);
                 }
 
             } else {
