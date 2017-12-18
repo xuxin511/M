@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.xx.chinetek.adapter.Exception.ExceptionScanItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
@@ -40,6 +41,10 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
 public class ExceptionScan extends BaseActivity {
 
     Context context=ExceptionScan.this;
+    @ViewInject(R.id.txt_DnNo)
+    TextView txtDnNo;
+    @ViewInject(R.id.txt_Custom)
+    TextView txtCustom;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
 
@@ -86,6 +91,8 @@ public class ExceptionScan extends BaseActivity {
         super.initData();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
+        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
+        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         dnModel.__setDaoSession(dnInfo.getDaoSession());
     }
 
@@ -189,6 +196,7 @@ public class ExceptionScan extends BaseActivity {
 
 
     void GetDeliveryOrderScanList(){
+        DbDnInfo.getInstance().DeleteRepertItems(dnModel.getAGENT_DN_NO(),1); //序列号重复项
         dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
         int size=dnDetailModels.size();
         for(int i=0;i<size;i++){

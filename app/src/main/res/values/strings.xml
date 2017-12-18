@@ -160,7 +160,7 @@
     <string name="Msg_No_Barcode">请扫描条码！</string>
     <string name="Msg_out_Barcode">扫描内容超出序列号范围！</string>
     <string name="Msg_Dn_Finished">出库单已关闭,不能提交数据！</string>
-    <string name="Msg_DnScan_Finished">出库单已关闭,不能修改！</string>
+    <string name="Msg_DnScan_Finished">出库单已完成,不能修改！</string>
     <string name="Msg_Export_Type">请选择导出方式</string>
     <string name="Msg_Export_Format">请选择文件格式</string>
     <string name="Msg_New_Custom">新增客户</string>
@@ -182,6 +182,7 @@
     <string name="Dia_GetDNDetailItems">获取已关闭出库单...</string>
     <string name="Dia_DeleteDn">是否删除已选中单据的扫描记录？</string>
     <string name="Dia_SyncPara">正在同步参数设置...</string>
+    <string name="Dia_SyncDeleteDN">正在同步已删除出库单...</string>
     <string name="Dia_UploadPara">正在上传参数设置...</string>
     <string name="Dia_SyncDn">通过MAPS形式获取出库单...</string>
     <string name="Dia_SyncMail">通过邮件形式获取出库单...</string>

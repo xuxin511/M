@@ -202,10 +202,10 @@ public class DbDnInfo {
     }
 
 
-    public void DeleteDN(DNModel dnModel){
-        DELscanbyagent(dnModel.getAGENT_DN_NO());
-        DelDetailAllNum(dnModel.getAGENT_DN_NO());
-        DelDNmodels(dnModel.getAGENT_DN_NO());
+    public void DeleteDN(String AGENT_DN_NO){
+        DELscanbyagent(AGENT_DN_NO);
+        DelDetailAllNum(AGENT_DN_NO);
+        DelDNmodels(AGENT_DN_NO);
     }
 
     public void DeleteDNQuery(DNModel dnModel){
@@ -259,6 +259,48 @@ public class DbDnInfo {
         return qty;
     }
 
+
+    /**
+     *查询DN单据扫描数量
+     * @param DNNo
+     * @return
+     */
+    public Integer GetScanQtyInDNScanModel(String DNNo){
+        Integer qty=0;
+        String sql="select  COUNT(SERIAL__NO) as  SCANQTY from DNSCAN_MODEL " +
+                "where AGENT__DN__NO='"+DNNo+"'";
+        Cursor cursor= dnScanModelDao.getDatabase().rawQuery(sql,null);
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                int index=cursor.getColumnIndex("SCANQTY");
+                qty=cursor.getInt(index);
+            }
+        }
+        cursor.close();
+        return qty;
+    }
+
+    /**
+     *查询DN单据出库数量
+     * @param DNNo
+     * @return
+     */
+    public Integer GetDNQtyInDNDetail(String DNNo){
+        Integer qty=0;
+        String sql="select  Sum(DN__QTY) as  DNQTY from DNDETAIL_MODEL " +
+                "where AGENT__DN__NO='"+DNNo+"'";
+        Cursor cursor= dnScanModelDao.getDatabase().rawQuery(sql,null);
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                int index=cursor.getColumnIndex("DNQTY");
+                qty=cursor.getInt(index);
+            }
+        }
+        cursor.close();
+        return qty;
+    }
+
+
     /**
      *更新单据状态
      * @param DnNo
@@ -269,22 +311,25 @@ public class DbDnInfo {
         if(Status==DNStatusEnum.Sumbit){
             sql="update DNDETAIL_MODEL set status=0 where AGENT__DN__NO='"+DnNo+"'";
             dnDetailModelDao.getDatabase().execSQL(sql);
+            dnDetailModelDao.detachAll();
             sql="update DNSCAN_MODEL set status=0 where AGENT__DN__NO='"+DnNo+"'";
             dnScanModelDao.getDatabase().execSQL(sql);
+            dnScanModelDao.detachAll();
+        }
+        dnModelDao.detachAll();
+    }
+
+    public boolean DeleteRepertItems(String DNNo,int Status){
+        try{
+            String sql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ DNNo
+                    +"'  and status = "+Status;
+            daoSession.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
         }
     }
 
-    /**
-     * 自建单据，根据自定义单号查询系统单号
-     * @param CusNo
-     */
-    public String GetAgentNoByCusDnNO(String CusNo){
-        DNModel dnModel=dnModelDao.queryBuilder().where(DNModelDao.Properties.CUS_DN_NO.eq(CusNo)).unique();
-        if(dnModel!=null){
-            return  dnModel.getAGENT_DN_NO();
-        }
-        return "";
-    }
 
     //ymh
     /**

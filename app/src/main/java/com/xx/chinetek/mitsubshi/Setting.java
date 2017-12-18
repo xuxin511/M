@@ -411,6 +411,10 @@ public class Setting extends BaseActivity {
         Paramater.IPAdress = edtIPAdress.getText().toString().trim();
         Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
         Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
+        if( !ParamaterModel.PartenerID.equals(txtPartner.getText().toString().trim())){
+            ParamaterModel.PartenerName="";
+            SharePreferUtil.SetSyncTimeShare("MaterialSyncTime","");
+        }
         ParamaterModel.PartenerID =txtPartner.getText().toString().trim();
         ParamaterModel.baseparaModel.setDNSaveTime(Integer.parseInt(txtDNSaveTime.getText().toString().trim()));
         ParamaterModel.baseparaModel.setUseRemark(ckIsuserRemark.isChecked());

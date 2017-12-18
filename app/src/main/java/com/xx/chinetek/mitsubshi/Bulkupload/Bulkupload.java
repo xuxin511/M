@@ -86,6 +86,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
             ReturnMsgModelList<MultipleDN> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<MultipleDN>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
+                ArrayList<DNModel> SendDNs=new ArrayList<>();//存放发送邮件和FTP-DN单据
                ArrayList<MultipleDN> multipleDNS = returnMsgModel.getModelJson();
                String dnno="";
                 for (MultipleDN mulitdn:multipleDNS) {
@@ -97,8 +98,9 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         mulitdn.getDN().setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
                         mulitdn.getDN().setREMARK(tempdnModel.getREMARK());
                     }
+                    String Showdnno=mulitdn.getDN().getDN_SOURCE()==3?mulitdn.getDN().getCUS_DN_NO():mulitdn.getDN().getAGENT_DN_NO();
                     if(mulitdn.getDN().getDN_SOURCE()==3){ //自建单据,修改系统单号
-                        DbDnInfo.getInstance().DeleteDN(tempdnModel);
+                        DbDnInfo.getInstance().DeleteDN(tempdnModel.getAGENT_DN_NO());
 //                        ArrayList<DNModel> dnModels = new ArrayList<>();
 //                        dnModels.add(mulitdn.getDN());
 //                        //插入数据
@@ -106,7 +108,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     }
 
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.complete);
-                    if(returnMsgModel.getHeaderStatus().equals("N") && mulitdn.getDN().getDN_SOURCE()==3){
+                    if(mulitdn.getStatus().equals("N") && mulitdn.getDN().getDN_SOURCE()==3){
                         ArrayList<DNModel> dnModels = new ArrayList<>();
                         mulitdn.getDN().setSTATUS(DNStatusEnum.complete);
                         dnModels.add(mulitdn.getDN());
@@ -116,6 +118,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     if(mulitdn.getStatus().equals("F")){
                         ArrayList<DNModel> dnModels=new ArrayList<>();
                         dnModels.add(mulitdn.getDN());
+                        SendDNs.add(mulitdn.getDN());
                         DbDnInfo.getInstance().InsertDNDB(dnModels);
                         DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.Sumbit);
                     }
@@ -130,7 +133,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         }
                     }
                     if(mulitdn.getStatus().equals("K") && mulitdn.getDN()!=null){ //后台单据已关闭
-                        dnno+="关闭出库单："+mulitdn.getDN().getAGENT_DN_NO()+"\n";
+                        dnno+="关闭出库单："+Showdnno+"\n";
                         DbDnInfo.getInstance().DELscanbyagent(mulitdn.getDN().getAGENT_DN_NO());
                         int status=mulitdn.getDN().getSTATUS()==DNStatusEnum.download?DNStatusEnum.complete:DNStatusEnum.Sumbit;
                         mulitdn.getDN().setSTATUS(status);
@@ -140,15 +143,30 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         DbDnInfo.getInstance().InsertDNDB(dnModels);
                     }
                     if(mulitdn.getStatus().equals("Z") ) { //后台单据有异常
-                        dnno+="后台异常出库单："+mulitdn.getDN().getAGENT_DN_NO()+"\n";
+                        dnno+="后台异常出库单："+Showdnno+"\n";
                     }
                     if(mulitdn.getStatus().equals("E")){
-                        dnno+="失败出库单："+mulitdn.getDN().getAGENT_DN_NO()+"\n";
+                        dnno+="失败出库单："+Showdnno+"\n";
                     }
                 }
 
+                final  ArrayList<DNModel> ExportdnModels=SendDNs;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                         UploadDN.ExportDN(ExportdnModels, 0);
+                         UploadDN.ExportDN(ExportdnModels, 1);
+                        }catch (Exception ex){
+
+                        }
+                    }
+                }.start();
+
                 if(!TextUtils.isEmpty(dnno)){
                     MessageBox.Show(context, "提交说明！\n"+dnno);
+                }else{
+                    MessageBox.Show(context, getString(R.string.Msg_DNUploadSuccess));
                 }
 
             } else {
@@ -245,7 +263,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_querytitle, menu);
+        getMenuInflater().inflate(R.menu.menu_bulkuptitle, menu);
         return true;
     }
 
@@ -269,7 +287,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 final List<DNModel> uploadModels= postmodels;
                 new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
-                        .setMessage(context.getResources().getString(R.string.Msg_Upload_DN))
+                        .setMessage(context.getResources().getString(R.string.Msg_Upload_DNSelf))
                         .setPositiveButton("提交并关闭", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

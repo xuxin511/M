@@ -5,16 +5,10 @@
     tools:context=".Qc.QCBillChoice">
 
 
-    <item
-        android:id="@+id/action_Delete"
-        android:icon="@drawable/delete"
-        android:orderInCategory="80"
-        android:title=""
-        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_Export"
-        android:icon="@drawable/export"
+        android:icon="@drawable/bupload"
         android:orderInCategory="80"
         android:title=""
         app:showAsAction="ifRoom" />

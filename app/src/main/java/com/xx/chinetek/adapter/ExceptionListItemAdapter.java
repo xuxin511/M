@@ -10,6 +10,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
 
@@ -35,6 +36,8 @@ public class ExceptionListItemAdapter extends BaseAdapter implements Filterable 
         public TextView txtSumbitTime;
         public TextView txtSource;
         public TextView txtSubmitUser;
+        public TextView txtDNQty;
+        public TextView txtScanQty;
     }
 
     public ExceptionListItemAdapter(Context context, ArrayList<DNModel> DNModels) {
@@ -76,6 +79,8 @@ public class ExceptionListItemAdapter extends BaseAdapter implements Filterable 
             listItemView.txtSumbitTime = (TextView) convertView.findViewById(R.id.item_SubmitTime);
             listItemView.txtSource = (TextView) convertView.findViewById(R.id.item_Source);
             listItemView.txtSubmitUser = (TextView) convertView.findViewById(R.id.item_SubmitUser);
+            listItemView.txtDNQty = (TextView) convertView.findViewById(R.id.item_DNQty);
+            listItemView.txtScanQty = (TextView) convertView.findViewById(R.id.item_ScanQty);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
@@ -88,6 +93,9 @@ public class ExceptionListItemAdapter extends BaseAdapter implements Filterable 
         listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.submittime) + CommonUtil.DateToString(DNModel.getOPER_DATE(), null));
         listItemView.txtSource.setText(convertView.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         listItemView.txtSubmitUser.setText("");
+        listItemView.txtDNQty.setText(DNModel.getDN_SOURCE()==3?"":convertView.getResources().getString(R.string.dnQty)+ DbDnInfo.getInstance().GetDNQtyInDNDetail(DNModel.getAGENT_DN_NO()));
+        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+ DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNModel.getAGENT_DN_NO()));
+
         return convertView;
     }
 

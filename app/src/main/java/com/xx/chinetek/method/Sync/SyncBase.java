@@ -18,9 +18,11 @@ import java.util.Map;
 
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncCus;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncPara;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncCus;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncPara;
 
@@ -57,6 +59,19 @@ public class SyncBase {
                 context.getString(R.string.Dia_SyncMaterial), context, mHandler, RESULT_SyncMaterial, null,  URLModel.GetURL().SyncMaterial, params, null);
     }
 
+
+    public void SyncMaterialRang(MyHandler<BaseActivity> mHandler,int StartIndex,int EndIndex){
+        final Map<String, String> params = new HashMap<String, String>();
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("DateString", ParamaterModel.MaterialSyncTime);
+        params.put("UserInfoJS", user);
+        params.put("StartIndex", StartIndex+"");
+        params.put("EndIndex", EndIndex+"");
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_SyncMaterial, para);
+        RequestHandler.addRequest(Request.Method.POST, TAG_SyncMaterial, mHandler, RESULT_SyncMaterial, null,  URLModel.GetURL().SyncMaterialRang, params, null);
+    }
+
     public void SyncCus(MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
@@ -78,6 +93,17 @@ public class SyncBase {
         LogUtil.WriteLog(SyncBase.class, TAG_SyncPara, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncPara,
                 context.getString(R.string.Dia_SyncPara), context, mHandler, RESULT_SyncPara, null,  URLModel.GetURL().SyncPara, params, null);
+
+    }
+
+    public void  SyncDeleteDN(MyHandler<BaseActivity> mHandler){
+        final Map<String, String> params = new HashMap<String, String>();
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("UserInfoJS", user);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_SyncDeleteDn, para);
+        RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncDeleteDn,
+                context.getString(R.string.Dia_SyncDeleteDN), context, mHandler, RESULT_SyncDeleteDn, null,  URLModel.GetURL().SyncDeleteDn, params, null);
 
     }
 

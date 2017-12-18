@@ -148,7 +148,7 @@ public class FileUtils {
     }
 
     public static String GetDirectory(int index){
-       String dir= ParamaterModel.MailDirectory;
+       String dir= ParamaterModel.UpDirectory;
        switch (index){
            case 0:
                dir= ParamaterModel.MailDirectory;

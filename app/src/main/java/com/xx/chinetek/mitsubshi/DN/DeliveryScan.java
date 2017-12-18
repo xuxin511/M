@@ -79,6 +79,8 @@ public class DeliveryScan extends BaseIntentActivity {
     TextView itemDNQty;
     @ViewInject(R.id.txt_DnNo)
     EditText txtDnNo;
+    @ViewInject(R.id.txt_Custom)
+    TextView txtCustom;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
 
@@ -148,6 +150,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
+        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         ShowRemark();
         dnModel.__setDaoSession(dnInfo.getDaoSession());
     }
@@ -251,7 +254,7 @@ public class DeliveryScan extends BaseIntentActivity {
         }
 
         try {
-            if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+            if(dnModel.getSTATUS()== DNStatusEnum.Sumbit || dnModel.getSTATUS()== DNStatusEnum.complete){ //已提交单据无法扫描
                 MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
                 return true;
             }
@@ -357,6 +360,7 @@ public class DeliveryScan extends BaseIntentActivity {
 
         //保存至数据库
         ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
+        dnModel.setOPER_DATE(new Date());
         dnModels.add(dnModel);
         dnInfo.InsertDNDB(dnModels);
         //刷新listview
@@ -378,7 +382,7 @@ public class DeliveryScan extends BaseIntentActivity {
             MessageBox.Show(context, "请先选择操作的行！");
             return false;
         }
-        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit || dnModel.getSTATUS()== DNStatusEnum.complete){ //已提交单据无法扫描
             MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
             return true;
         }
@@ -468,7 +472,6 @@ public class DeliveryScan extends BaseIntentActivity {
                 dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
             }
         }
-        dnModel.setOPER_DATE(new Date());
         dnModel.setDN_DATE(new Date());
         //添加客户
         if(ParamaterModel.DnTypeModel.getDNCusType()!=null) {

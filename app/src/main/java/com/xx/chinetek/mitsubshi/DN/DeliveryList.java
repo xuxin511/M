@@ -32,6 +32,7 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -150,7 +151,8 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             }
             //插入数据
             DbDnInfo.getInstance().InsertDNDetailDB(dnDetailModels);
-            DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnDetailModels.get(0).getAGENT_DN_NO(),1);
+            DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnDetailModels.get(0).getAGENT_DN_NO(),DNStatusEnum.download);
+            dnModel.setSTATUS(DNStatusEnum.download);
             StartScan(dnModel);
         } else {
             MessageBox.Show(context, returnMsgModel.getMessage());

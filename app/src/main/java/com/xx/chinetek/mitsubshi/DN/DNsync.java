@@ -127,7 +127,7 @@ public class DNsync extends BaseActivity{
                         int scanQty = tempdnmodels.get(i).getDETAILS().get(j).getSERIALS().size();
                         tempdnmodels.get(i).getDETAILS().get(j).setSCAN_QTY(scanQty);
                         if(tempdnmodels.get(i).getDN_SOURCE()==3) {
-                            DbDnInfo.getInstance().DeleteDN(dnModel);
+                            DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
 //                            tempdnmodels.get(i).getDETAILS().get(j).setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
 //                            List<DNScanModel> dnScanModels = tempdnmodels.get(i).getDETAILS().get(j).getSERIALS();
 //                            for (DNScanModel dnscanmodel : dnScanModels) {
@@ -139,7 +139,7 @@ public class DNsync extends BaseActivity{
             }
         }
         //插入数据
-        DbDnInfo.getInstance().InsertDNDB(tempdnmodels) ;
+        DbDnInfo.getInstance().InsertDNDB(tempdnmodels);
         closeActiviry();
         return false;
     }

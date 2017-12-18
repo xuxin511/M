@@ -57,6 +57,8 @@ public class Login extends BaseActivity {
     Context context = Login.this;
     @ViewInject(R.id.txt_Partner)
     TextView txtPartner;
+    @ViewInject(R.id.txt_PartnerName)
+    TextView txtPartnerName;
     @ViewInject(R.id.txt_SerialNo)
     TextView txtSerialNo;
     @ViewInject(R.id.txtVer)
@@ -123,6 +125,7 @@ public class Login extends BaseActivity {
     protected void onResume() {
         super.onResume();
         txtPartner.setText( ParamaterModel.PartenerID);
+        txtPartnerName.setText( ParamaterModel.PartenerName);
     }
 
     @Event(R.id.btn_Login)
@@ -167,9 +170,10 @@ public class Login extends BaseActivity {
         DbDnInfo.getInstance().DeleteDnBySaveTime();
         //获取参数
         SharePreferUtil.ReadSyncTimeShare();
-
-        ParamaterModel.PartenerName = DbBaseInfo.getInstance().GetCustomNameById(ParamaterModel.PartenerID);
-
+        if(ParamaterModel.PartenerName==null ||  ParamaterModel.PartenerName.equals("")) {
+            ParamaterModel.PartenerName = DbBaseInfo.getInstance().GetCustomNameById(ParamaterModel.PartenerID);
+            SharePreferUtil.SetShare(context);
+        }
         LogUtil.WriteLog(Login.class,"btnLoginClick",ParamaterModel.Operater);
 
         UserInfoModel userInfoModel=new UserInfoModel();

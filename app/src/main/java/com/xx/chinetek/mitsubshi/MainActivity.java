@@ -17,11 +17,13 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
+import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
+import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
@@ -32,6 +34,7 @@ import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.SyncParaModel;
+import com.xx.chinetek.model.DN.DeletedDN;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -46,9 +49,11 @@ import java.util.List;
 import java.util.Map;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncCus;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncPara;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncCus;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncPara;
 
@@ -59,7 +64,8 @@ public class MainActivity extends BaseActivity {
     GridView gridView;
     GridViewItemAdapter adapter;
     Context context=MainActivity.this;
-
+    int startIndex=0;
+    LoadingDialog dialog;
 
     @Override
     public void onHandleMessage(Message msg) {
@@ -72,6 +78,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case RESULT_SyncPara:
                 AnalysisSyncParamaterJson((String) msg.obj);
+                break;
+            case RESULT_SyncDeleteDn:
+                AnalysisSyncDeleteDnJson((String) msg.obj);
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
                 ToastUtil.show("获取请求失败_____"+ msg.obj);
@@ -124,9 +133,12 @@ public class MainActivity extends BaseActivity {
             startActivityLeft(intent);
         }
         else if (textView.getText().toString().equals(getString(R.string.sync))) {
-
+            BaseApplication.DialogShowText = getString(R.string.Dia_SyncMaterial);
+            dialog =new LoadingDialog(context);
+            dialog.show();
+            startIndex=0;
             //同步物料
-            SyncBase.getInstance().SyncMaterial(mHandler);
+            SyncBase.getInstance().SyncMaterialRang(mHandler,startIndex,startIndex+10000);
         }
 
     }
@@ -144,8 +156,13 @@ public class MainActivity extends BaseActivity {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
                ArrayList<MaterialModel> materialModels = returnMsgModel.getModelJson();
-               //插入数据
-                DbBaseInfo.getInstance().InsertMaterialDB(materialModels);
+               if(materialModels!=null && materialModels.size()!=0) {
+                   //插入数据
+                   DbBaseInfo.getInstance().InsertMaterialDB(materialModels);
+                   startIndex+=10000;
+                   SyncBase.getInstance().SyncMaterialRang(mHandler,startIndex,startIndex+10000);
+                    return;
+               }
                 ParamaterModel.MaterialSyncTime=returnMsgModel.getMessage();
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare("MaterialSyncTime",ParamaterModel.MaterialSyncTime);
@@ -154,7 +171,9 @@ public class MainActivity extends BaseActivity {
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
+            dialog.dismiss();
         }catch (Exception ex) {
+            dialog.dismiss();
             MessageBox.Show(context,ex.getMessage());
         }
     }
@@ -209,6 +228,32 @@ public class MainActivity extends BaseActivity {
                 }
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare("ParamaterSyncTime",ParamaterModel.ParamaterSyncTime);
+                SyncBase.getInstance().SyncDeleteDN(mHandler);
+            } else {
+                MessageBox.Show(context,returnMsgModel.getMessage());
+            }
+        }catch (Exception ex) {
+            MessageBox.Show(context,ex.getMessage());
+        }
+    }
+
+    /**
+     * 同步删除DN单据
+     * @param result
+     */
+    void  AnalysisSyncDeleteDnJson(String result) {
+        LogUtil.WriteLog(MainActivity.class, TAG_SyncDeleteDn, result);
+        try {
+            ReturnMsgModelList<DeletedDN> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DeletedDN>>() {
+            }.getType());
+            if (returnMsgModel.getHeaderStatus().equals("S")) {
+                ArrayList<DeletedDN> deletedDNS = returnMsgModel.getModelJson();
+                for (DeletedDN deletedDN: deletedDNS) {
+                    String dnNo=deletedDN.getCUS_DN_NO()==null || !deletedDN.getCUS_DN_NO().trim().equals("")?
+                            deletedDN.getAGENT_DN_NO():deletedDN.getCUS_DN_NO();
+                    DbDnInfo.getInstance().DeleteDN(dnNo);
+                }
+
                 MessageBox.Show(context,getString(R.string.Dia_SyncSuccess));
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());

@@ -32,7 +32,6 @@ import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
-import com.xx.chinetek.model.DN.DNTypeModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -67,12 +66,13 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     TextView txtDnNo;
     @ViewInject(R.id.btn_DeleteException)
     Button btn_DeleteException;
+    @ViewInject(R.id.txt_Custom)
+    TextView txtCustom;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
 
     ExceptionScanbarcodeAdapter exceptionScanbarcodeAdapter;
     ArrayList<DNScanModel> DNScanModels;
-    DNTypeModel dnTypeModel;
     DNModel dnModel;
     DbDnInfo dnInfo;
     DNDetailModel dndetailmodel;
@@ -112,6 +112,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         btn_DeleteException.setVisibility(winModel == 0 ? View.GONE : View.VISIBLE);
         //初始化数据
         txtDnNo.setText(dnModel.getDN_SOURCE() == 3 ? dnModel.getCUS_DN_NO().toString() : dnModel.getAGENT_DN_NO().toString());
+        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         txtItemName.setText("物料名称：" + dndetailmodel.getITEM_NAME());
         txtItemNo.setText("物料编码：" + dndetailmodel.getGOLFA_CODE());
         txtKUQty.setText("出库数量：" + dndetailmodel.getDN_QTY());
@@ -128,8 +129,6 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                             // TODO 自动生成的方法
                             //删除异常扫描数据
                             DelAllScanmodel(dndetailmodel,dnModel);
-
-
                             ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
                             int index = dnDetailModels.indexOf(dndetailmodel);
                             if(index>0){
@@ -172,7 +171,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             CommonUtil.setEditFocus(edtBarcode);
             return;
         }
-        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit || dnModel.getSTATUS()== DNStatusEnum.complete){ //已提交单据无法扫描
             MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
             return;
         }
@@ -257,7 +256,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             MessageBox.Show(context,"请先选择操作的行！");
             return;
         }
-        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit){ //已提交单据无法扫描
+        if(dnModel.getSTATUS()== DNStatusEnum.Sumbit || dnModel.getSTATUS()== DNStatusEnum.complete){ //已提交单据无法扫描
             MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
             return;
         }
@@ -280,6 +279,12 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                 }).setNegativeButton("取消", null).show();
 
 
+    }
+
+    @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemLongClickListener.class)
+    private boolean lsv_DeliveryScanItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        exceptionScanbarcodeAdapter.modifyStates(position);
+        return true;
     }
 
     void GetDeliveryOrderScanList(){

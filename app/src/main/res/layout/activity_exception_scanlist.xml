@@ -19,14 +19,13 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <include
-    android:id="@+id/include"
-    layout="@layout/activity_exception_scan_title"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintBottom_toTopOf="@+id/guideline6"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/include"
+        layout="@layout/activity_exception_scan_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/lsv_DeliveryScan"
@@ -39,14 +38,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_DeleteException"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline6" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.36" />
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
 
 </android.support.constraint.ConstraintLayout>

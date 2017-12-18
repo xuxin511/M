@@ -10,6 +10,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNModel;
 
@@ -35,6 +36,8 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
         public TextView txtConsignee;
         public TextView txtCreateTime;
         public TextView txtSource;
+        public TextView txtDNQty;
+        public TextView txtScanQty;
     }
 
     public DeliveryListItemAdapter(Context context, ArrayList<DNModel> DNModels) {
@@ -95,6 +98,8 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
             listItemView.txtConsignee = (TextView) convertView.findViewById(R.id.item_Consignee);
             listItemView.txtCreateTime = (TextView) convertView.findViewById(R.id.item_CreateTime);
             listItemView.txtSource = (TextView) convertView.findViewById(R.id.item_Source);
+            listItemView.txtDNQty = (TextView) convertView.findViewById(R.id.item_DNQty);
+            listItemView.txtScanQty = (TextView) convertView.findViewById(R.id.item_ScanQty);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
@@ -105,6 +110,8 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
         listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME()==null?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
         listItemView.txtCreateTime.setText(convertView.getResources().getString(R.string.createtime)+ CommonUtil.DateToString(DNModel.getDN_DATE(),null));
+        listItemView.txtDNQty.setText(DNModel.getDN_SOURCE()==3?"":convertView.getResources().getString(R.string.dnQty)+ DbDnInfo.getInstance().GetDNQtyInDNDetail(DNModel.getAGENT_DN_NO()));
+        listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+ DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNModel.getAGENT_DN_NO()));
         if(DNModel.getDN_SOURCE()!=null)
             listItemView.txtSource.setText(context.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         if (getListselected().get(position)) {

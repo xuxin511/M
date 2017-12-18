@@ -33,6 +33,8 @@ public class BulkuploadScan extends BaseIntentActivity {
     Context context=BulkuploadScan.this;
     @ViewInject(R.id.txt_DnNo)
     TextView txtDnNo;
+    @ViewInject(R.id.txt_Custom)
+    TextView txtCustom;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
 
@@ -58,6 +60,7 @@ public class BulkuploadScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(getIntent().getStringExtra("DNNo"));
+        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         GetDeliveryOrderScanList();
         if (dnModel.getDETAILS() == null)

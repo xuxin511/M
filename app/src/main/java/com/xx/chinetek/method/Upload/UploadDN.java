@@ -128,7 +128,7 @@ public class UploadDN {
                     dnModel.setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
                     dnModel.setREMARK(tempdnModel.getREMARK());
                     if(subdnModel.getDN_SOURCE()==3){
-                        DbDnInfo.getInstance().DeleteDN(subdnModel);
+                        DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
                     }
                 }
                 if(returnMsgModel.getHeaderStatus().equals("N") && dnModel.getDN_SOURCE()==3){
@@ -145,6 +145,7 @@ public class UploadDN {
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.exeption);
+
                     dbReturnModel.setReturnCode(-1);
                     dbReturnModel.setReturnMsg(context.getString(R.string.Msg_ExceptionDN));
                 }
@@ -195,7 +196,7 @@ public class UploadDN {
         return dbReturnModel;
     }
 
-    static void ExportDN(ArrayList<DNModel> selectDnModels, int Index) throws Exception{
+    public static void ExportDN(ArrayList<DNModel> selectDnModels, int Index) throws Exception{
         FileUtils.DeleteFiles(Index);
         FileUtils.ExportDNFile(selectDnModels,Index); //导出文件至本地目录
         File dirFile=new File(FileUtils.GetDirectory(Index));
