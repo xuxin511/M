@@ -59,11 +59,8 @@
         style="@style/TextViewComminStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:text="行号:12"
-        android:textAlignment="textStart"
+        android:textAlignment="textEnd"
         android:textColor="@color/indianred"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/item_barcode"
@@ -88,11 +85,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guideline7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline7"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.69" />
+        app:layout_constraintGuide_percent="0.5" />
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"

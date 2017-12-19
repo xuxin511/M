@@ -80,7 +80,6 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
 
 
     void  AnalysisExceptionDNListJson(String result){
-
         try {
             LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, result);
             ReturnMsgModelList<MultipleDN> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<MultipleDN>>() {
@@ -102,10 +101,6 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     String Showdnno=mulitdn.getDN().getDN_SOURCE()==3?mulitdn.getDN().getCUS_DN_NO():mulitdn.getDN().getAGENT_DN_NO();
                     if(mulitdn.getDN().getDN_SOURCE()==3){ //自建单据,修改系统单号
                         DbDnInfo.getInstance().DeleteDN(tempdnModel.getAGENT_DN_NO());
-//                        ArrayList<DNModel> dnModels = new ArrayList<>();
-//                        dnModels.add(mulitdn.getDN());
-//                        //插入数据
-//                        DbDnInfo.getInstance().InsertDNDB(dnModels);
                     }
 
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.complete);
@@ -139,7 +134,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         }
                     }
                     if(mulitdn.getStatus().equals("K") && mulitdn.getDN()!=null){ //后台单据已关闭
-                        dnno+="关闭出库单："+Showdnno+"\n";
+                        dnno+="关闭/重复出库单："+Showdnno+"\n";
                         DbDnInfo.getInstance().DELscanbyagent(mulitdn.getDN().getAGENT_DN_NO());
                         int status=mulitdn.getDN().getSTATUS()==DNStatusEnum.download?DNStatusEnum.complete:DNStatusEnum.Sumbit;
                         mulitdn.getDN().setSTATUS(status);

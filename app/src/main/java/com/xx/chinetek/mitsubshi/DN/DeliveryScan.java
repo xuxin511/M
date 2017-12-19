@@ -150,7 +150,8 @@ public class DeliveryScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
-        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
+        txtCustom.setText(ParamaterModel.DnTypeModel.getDNType()==3?ParamaterModel.DnTypeModel.getCustomModel().getNAME():
+                dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         ShowRemark();
         dnModel.__setDaoSession(dnInfo.getDaoSession());
     }
@@ -263,6 +264,7 @@ public class DeliveryScan extends BaseIntentActivity {
                 DNModel model = DbDnInfo.getInstance().GetLoaclDN(txtDnNo.getText().toString());
                 if (model != null) {
                     MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
+                    CommonUtil.setEditFocus(txtDnNo);
                     return true;
                 }
                 txtDnNo.setFocusable(false);
@@ -392,7 +394,7 @@ public class DeliveryScan extends BaseIntentActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
-                        DelDNDetailmodel(detailModel,dnModel);
+                        DelDNDetailmodel(context,detailModel,dnModel);
                         GetDeliveryOrderScanList();
 
                     }

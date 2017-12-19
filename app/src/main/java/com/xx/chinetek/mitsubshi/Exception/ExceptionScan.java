@@ -70,7 +70,15 @@ public class ExceptionScan extends BaseActivity {
                             .show();
                 }
                 else{
-                    closeActiviry();
+                    new AlertDialog.Builder(this).setTitle("提示")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setMessage("异常出库单提交成功！")
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    closeActiviry();
+                                }
+                            })
+                            .show();
                 }
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
@@ -186,7 +194,7 @@ public class ExceptionScan extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
-                        DelDNDetailmodel(detailModel,dnModel);
+                        DelDNDetailmodel(context,detailModel,dnModel);
                         GetDeliveryOrderScanList();
 
                     }

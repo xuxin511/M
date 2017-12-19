@@ -1,8 +1,8 @@
 package com.xx.chinetek.mitsubshi;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -15,9 +15,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-
 import com.google.gson.reflect.TypeToken;
-import com.xx.chinetek.adapter.DN.DeliveryListItemAdapter;
 import com.xx.chinetek.adapter.ExceptionListItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -31,7 +29,6 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.DN.DNsync;
-import com.xx.chinetek.mitsubshi.DN.FTPsync;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.model.DN.DNModel;
 
@@ -42,15 +39,8 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
-import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
-import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
-import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncException;
-import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
-import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
-import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
-import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncException;
 
 @ContentView(R.layout.activity_exception_list)
@@ -260,7 +250,7 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
-                        DelDNmodel(Model);
+                        DelDNmodel(context,Model);
                         GetExceptionList();
 
                     }

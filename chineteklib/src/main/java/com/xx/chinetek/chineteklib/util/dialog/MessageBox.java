@@ -9,18 +9,7 @@ import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 
 
 public class MessageBox {
-    static AlertDialog.Builder builder;
 
-    public static AlertDialog.Builder getDialog(Context context) {
-        if (null == builder) {
-            synchronized (MessageBox.class) {
-                if (null == builder) {
-                    builder = new AlertDialog.Builder(context);
-                }
-            }
-        }
-        return builder;
-    }
     static String Showmsg="";
     /**
      * 弹出默认提示框
@@ -30,7 +19,7 @@ public class MessageBox {
      */
     public static void Show(Context context, String message) {
         if(!Showmsg.equals(message)) {
-            getDialog(context).setTitle("提示").setCancelable(false).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+           new AlertDialog.Builder(context).setTitle("提示").setCancelable(false).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Showmsg="";

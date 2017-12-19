@@ -40,7 +40,6 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
-import static com.xx.chinetek.method.Delscan.Delscan.DelAllScanmodel;
 import static com.xx.chinetek.method.Delscan.Delscan.DelScanmodel;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
 
@@ -108,8 +107,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         dndetailmodel = getIntent().getParcelableExtra("DNdetailModel");
         int winModel = getIntent().getIntExtra("WinModel", 0);
-//        Flag=getIntent().getStringExtra("Flag");
-        btn_DeleteException.setVisibility(winModel == 0 ? View.GONE : View.VISIBLE);
+
         //初始化数据
         txtDnNo.setText(dnModel.getDN_SOURCE() == 3 ? dnModel.getCUS_DN_NO().toString() : dnModel.getAGENT_DN_NO().toString());
         txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
@@ -117,6 +115,16 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         txtItemNo.setText("物料编码：" + dndetailmodel.getGOLFA_CODE());
         txtKUQty.setText("出库数量：" + dndetailmodel.getDN_QTY());
         GetDeliveryOrderScanList();
+        if(DNScanModels!=null && winModel==1) {
+            winModel=0;
+            for (DNScanModel scanModel : DNScanModels) {
+                if(!scanModel.getSTATUS().equals("0")){
+                    winModel=1;
+                    break;
+                }
+            }
+        }
+        btn_DeleteException.setVisibility(winModel == 0 ? View.GONE : View.VISIBLE);
     }
 
     @Event(R.id.btn_DeleteException)
@@ -128,13 +136,16 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO 自动生成的方法
                             //删除异常扫描数据
-                            DelAllScanmodel(dndetailmodel,dnModel);
-                            ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
-                            int index = dnDetailModels.indexOf(dndetailmodel);
-                            if(index>0){
-                                dndetailmodel=dnDetailModels.get(index);
-                                txtScanQty.setText("扫描数量："+dndetailmodel.getSCAN_QTY());
+                            if(DbDnInfo.getInstance().DeleteRepertItems(dnModel.getAGENT_DN_NO(),2)){ //删除数量超出的序列号
+                               MessageBox.Show(context,getString(R.string.Msg_del_success));
                             }
+                           // DelAllScanmodel(dndetailmodel,dnModel);
+//                            ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
+//                            int index = dnDetailModels.indexOf(dndetailmodel);
+//                            if(index>0){
+//                                dndetailmodel=dnDetailModels.get(index);
+//                                txtScanQty.setText("扫描数量："+dndetailmodel.getSCAN_QTY());
+//                            }
                             GetDeliveryOrderScanList();
                         }
                     }).setNegativeButton("取消", null).show();
@@ -266,7 +277,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
-                        DelScanmodel(Model,dndetailmodel,dnModel);
+                        DelScanmodel(context,Model,dndetailmodel,dnModel);
 
                         ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
                         int index = dnDetailModels.indexOf(dndetailmodel);
@@ -291,7 +302,6 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         DNScanModels= DbDnInfo.getInstance().GetLoaclDNScanModelDN(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
         exceptionScanbarcodeAdapter=new ExceptionScanbarcodeAdapter(context, DNScanModels);
         lsvDeliveryScan.setAdapter(exceptionScanbarcodeAdapter);
-      //  dndetailmodel.setSCAN_QTY(DNScanModels.size());
         txtScanQty.setText("扫描数量："+DNScanModels.size());
     }
 

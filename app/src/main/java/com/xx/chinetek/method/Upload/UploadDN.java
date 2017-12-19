@@ -43,8 +43,6 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadDN;
  */
 
 public class UploadDN {
-
-
     /**
      * 单个单据提交
      * @param context
