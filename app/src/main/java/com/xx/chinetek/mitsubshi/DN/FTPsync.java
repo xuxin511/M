@@ -59,6 +59,13 @@ public class FTPsync extends BaseActivity{
     private void LsvItemClick(AdapterView<?> parent, View view, int position, long id) {
         try{
             DNModel dnModel=(DNModel) syncListItemAdapter.getItem(position);
+            //判断单号是否在本地重复
+           DNModel temp= DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
+           if(temp!=null){
+               MessageBox.Show(context,getString(R.string.Msg_ExitDn)+dnModel.getAGENT_DN_NO());
+               return;
+           }
+
             if(dnModel.getAGENT_DN_NO().equals(lastClickId)
                     && (Math.abs(lastClickTime-System.currentTimeMillis()) < 1000)){
                 lastClickId = null;
@@ -93,6 +100,8 @@ public class FTPsync extends BaseActivity{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
                 for(int i=0;i<dnModels.size();i++){
                     if (syncListItemAdapter.getStates(i)) {
+
+
                         Tempdnmodels.add(0, dnModels.get(i));
                     }
                 }

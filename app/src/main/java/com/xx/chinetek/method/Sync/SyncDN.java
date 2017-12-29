@@ -90,7 +90,9 @@ public class SyncDN {
     public static void SyncMAPSDetail(String dnNo,MyHandler<BaseActivity> mHandler){
         //MAPS获取单据明细
         final Map<String, String> params = new HashMap<String, String>();
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
         params.put("DN_NO", dnNo);
+        params.put("UserInfoJS", user);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncDnDetail, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncDnDetail,context.getString(R.string.Dia_SyncDnDetail) ,context,mHandler, RESULT_SyncDnDetail, null,  URLModel.GetURL().SyncDnDetail, params, null);

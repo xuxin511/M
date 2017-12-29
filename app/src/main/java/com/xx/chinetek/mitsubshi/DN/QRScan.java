@@ -44,20 +44,29 @@ public class QRScan extends BaseIntentActivity {
             String[] lines=Barcode.split("\n");
             Boolean isFormartCongif=false;
             String DNno ="";
-            if(lines.length>2) {
+            if(lines.length>1) {
                 String[] cloumns=lines[1].toString().split(",");
                 if(cloumns.length==8) {
+                    DNno = cloumns[0].toString();
+                    //判断单号是否在本地重复
+                    DNModel temp= DbDnInfo.getInstance().GetLoaclDN(DNno);
+                    if(temp!=null){
+                        MessageBox.Show(context,getString(R.string.Msg_ExitDn)+DNno);
+                        return;
+                    }
                     File file = new File(ParamaterModel.DownDirectory + File.separator + fileName);
                     OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(file), "GBK");
                     BufferedWriter bw = new BufferedWriter(writerStream);
                     bw.write(Barcode);
                     bw.close();
                    ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
+
+
                    if(dnModels.size()==0){
                        return;
                    }
                    DbDnInfo.getInstance().InsertDNDB(dnModels);
-                    DNno = cloumns[0].toString();
+
                     isFormartCongif=true;
                 }
             }

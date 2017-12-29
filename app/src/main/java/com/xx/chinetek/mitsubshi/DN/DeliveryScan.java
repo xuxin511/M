@@ -94,13 +94,19 @@ public class DeliveryScan extends BaseIntentActivity {
         switch (msg.what) {
             case RESULT_UploadDN:
                 final DBReturnModel dbReturnModel=UploadDN.AnalysisUploadDNToMapsJson(context,(String) msg.obj,dnModel);
-                if(dbReturnModel.getReturnCode()==-1){
+                if(dbReturnModel.getReturnCode()==-1 || dbReturnModel.getReturnCode()==-2){
                     new AlertDialog.Builder(this).setTitle("提示")
                             .setIcon(android.R.drawable.ic_dialog_info)
                             .setMessage(dbReturnModel.getReturnMsg())
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    closeActiviry();
+                                    if( dbReturnModel.getReturnCode()==-2){
+                                        txtDnNo.setFocusable(true);
+                                        dnModel.setSTATUS(DNStatusEnum.Repert);
+                                        CommonUtil.setEditFocus(txtDnNo);
+                                    }else {
+                                        closeActiviry();
+                                    }
                                 }
                             })
                             .show();
@@ -150,8 +156,10 @@ public class DeliveryScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
-        txtCustom.setText(ParamaterModel.DnTypeModel.getDNType()==3?ParamaterModel.DnTypeModel.getCustomModel().getNAME():
+        txtCustom.setText(ParamaterModel.DnTypeModel.getDNType()==3 && ParamaterModel.DnTypeModel.getCustomModel()!=null?ParamaterModel.DnTypeModel.getCustomModel().getNAME():
                 dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
+//        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
+//        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         ShowRemark();
         dnModel.__setDaoSession(dnInfo.getDaoSession());
     }
@@ -165,9 +173,11 @@ public class DeliveryScan extends BaseIntentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_submit){
-//            if(dnModel.getSTATUS()!=3) { //不是提交状态，修改单据为已完成
-//                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
-//            }
+            if(dnDetailModels.size()==0){
+                MessageBox.Show(context,getString(R.string.Msg_ScanMaterial));
+                return false;
+            }
+
             boolean canUpload=true;
             for(int i=0;i<dnDetailModels.size();i++){
                 if(dnDetailModels.get(i).getSCAN_QTY()!=null &&
@@ -181,6 +191,32 @@ public class DeliveryScan extends BaseIntentActivity {
                 MessageBox.Show(context,getString(R.string.Msg_ScnaQtyError));
                 return false;
             }
+            //重复出库单修改单号
+            if(dnModel!=null  && dnModel.getSTATUS()==DNStatusEnum.Repert){
+                //修改出库单号
+                String dnno=txtDnNo.getText().toString();
+                DNModel model = DbDnInfo.getInstance().GetLoaclDN(dnno);
+                if (model != null) {
+                    MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
+                    CommonUtil.setEditFocus(txtDnNo);
+                    return true;
+                }
+                dnModel.setSTATUS(DNStatusEnum.download);
+                DbDnInfo.getInstance().ChangeDNNoByRepertDnNo(dnno,dnModel);
+                if(dnModel.getDN_SOURCE()==3)
+                    dnModel.setCUS_DN_NO(dnno);
+                else {
+                    dnModel.setCUS_DN_NO(dnno);
+                    dnModel.setAGENT_DN_NO(dnno);
+                    for (DNDetailModel dnDetailModel : dnModel.getDETAILS()) {
+                        dnDetailModel.setAGENT_DN_NO(dnno);
+                        for (DNScanModel dnScanModel : dnDetailModel.getSERIALS()) {
+                            dnScanModel.setAGENT_DN_NO(dnno);
+                        }
+                    }
+                }
+            }
+
             UploadDN.SumbitDN(context,dnModel,mHandler);
         }
         return super.onOptionsItemSelected(item);
@@ -260,7 +296,7 @@ public class DeliveryScan extends BaseIntentActivity {
                 return true;
             }
 
-            if(ParamaterModel.DnTypeModel.getDNType() == 3 && dnModel.getDN_SOURCE()==null) {
+            if((ParamaterModel.DnTypeModel.getDNType() == 3 && dnModel.getDN_SOURCE()==null )){
                 DNModel model = DbDnInfo.getInstance().GetLoaclDN(txtDnNo.getText().toString());
                 if (model != null) {
                     MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
@@ -335,7 +371,7 @@ public class DeliveryScan extends BaseIntentActivity {
     void GetDeliveryOrderScanList(){
         dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         dnModel.setDETAILS(dnDetailModels);
-        txtDnNo.setFocusable(dnDetailModels.size()==0?true:false);
+        txtDnNo.setFocusable(dnDetailModels.size()==0 || dnModel.getSTATUS()==DNStatusEnum.Repert?true:false);
         int source=dnModel.getDN_SOURCE()==null?ParamaterModel.DnTypeModel.getDNType():dnModel.getDN_SOURCE();
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,source);
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
@@ -579,7 +615,5 @@ public class DeliveryScan extends BaseIntentActivity {
         dnDetailModels.get(index).setSCAN_QTY(qty);
         return -1;
     }
-
-
 
 }

@@ -10,6 +10,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -101,6 +103,36 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
             MessageBox.Show(context,ex.getMessage());
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_exceptiontitle, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+            if (item.getItemId() == R.id.action_Delete) {
+                new AlertDialog.Builder(this).setTitle("提示")
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setMessage(R.string.Dia_DeleteExDn)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (DNModel dnModel : DNModels) {
+                                    //  if(dnModel.getSTATUS()!= DNStatusEnum.Sumbit)
+                                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
+                                }
+                                GetExceptionList();
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+            }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
     /**

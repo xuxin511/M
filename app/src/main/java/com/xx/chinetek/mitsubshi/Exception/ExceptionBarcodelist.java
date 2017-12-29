@@ -113,7 +113,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         txtItemName.setText("物料名称：" + dndetailmodel.getITEM_NAME());
         txtItemNo.setText("物料编码：" + dndetailmodel.getGOLFA_CODE());
-        txtKUQty.setText("出库数量：" + dndetailmodel.getDN_QTY());
+        txtKUQty.setText("出库数量：" + (dnModel.getDN_SOURCE() == 3 ?"9999":dndetailmodel.getDN_QTY()));
         GetDeliveryOrderScanList();
         if(DNScanModels!=null && winModel==1) {
             winModel=0;
@@ -136,7 +136,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO 自动生成的方法
                             //删除异常扫描数据
-                            if(DbDnInfo.getInstance().DeleteRepertItems(dnModel.getAGENT_DN_NO(),2)){ //删除数量超出的序列号
+                            if(DbDnInfo.getInstance().DeleteRepertItems(dnModel.getAGENT_DN_NO(),dndetailmodel.getLINE_NO(),2)){ //删除数量超出的序列号
                                MessageBox.Show(context,getString(R.string.Msg_del_success));
                             }
                            // DelAllScanmodel(dndetailmodel,dnModel);
@@ -277,7 +277,9 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
-                        DelScanmodel(context,Model,dndetailmodel,dnModel);
+                        Integer LeftNum=DelScanmodel(context,Model,dndetailmodel,dnModel);
+                        if(LeftNum==0 && dnModel.getDN_SOURCE()==3)
+                            closeActiviry();
 
                         ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
                         int index = dnDetailModels.indexOf(dndetailmodel);

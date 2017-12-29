@@ -82,7 +82,7 @@ public class Delscan {
     }
 
 
-    public static void DelScanmodel(Context context,DNScanModel Model, DNDetailModel dndetailmodel, DNModel dnModel){
+    public static Integer DelScanmodel(Context context,DNScanModel Model, DNDetailModel dndetailmodel, DNModel dnModel){
         //删除扫描记录，改变明细数量
         if(DbDnInfo.getInstance().DELscanbyserial(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),Model.getSERIAL_NO(),"",Model.getSTATUS())){
             //判断剩余的扫描数量
@@ -105,19 +105,20 @@ public class Delscan {
 
                     }else{
                         MessageBox.Show(context,context.getString(R.string.Error_del_dnmodel));
-                        return;
+                        return -1;
                     }
                 }
                 MessageBox.Show(context,context.getString(R.string.Msg_del_success));
+                return lastNum;
 
             }else{
                 MessageBox.Show(context,context.getString(R.string.Error_del_dnmodeldetail));
-                return;
+                return-1 ;
             }
         }else{
             MessageBox.Show(context,context.getString(R.string.Error_del_dnmodelbarcode));
         }
-
+        return-1 ;
     }
 
 

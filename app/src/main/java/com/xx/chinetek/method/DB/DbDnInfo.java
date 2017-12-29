@@ -220,7 +220,7 @@ public class DbDnInfo {
      * @param condition
      */
     public DBReturnModel  GetDNQty(String DNNo,String condition,Integer Line_NO){
-        String sql="select sum(DN__QTY) as DNQTY,sum(SCAN__QTY) as SCANQTY from DNDETAIL_MODEL " +
+        String sql="select sum(DN__QTY) as DNQTY from DNDETAIL_MODEL " +
                 "where AGENT__DN__NO='"+DNNo+"' and  (ITEM__NO='"+condition+"' or GOLFA__CODE='"+condition+"')";
         if(Line_NO!=null)
             sql+= " and LINE__NO="+Line_NO;
@@ -230,7 +230,19 @@ public class DbDnInfo {
             if(cursor.moveToFirst()){
                 int index=cursor.getColumnIndex("DNQTY");
                 dbReturnModel.setDNQTY(cursor.getInt(index));
-                index=cursor.getColumnIndex("SCANQTY");
+            }
+        }
+        cursor.close();
+
+        sql="select COUNT(SERIAL__NO) as SCANQTY from DNSCAN_MODEL " +
+                "where AGENT__DN__NO='"+DNNo+"' and  (ITEM__NO='"+condition+"' or GOLFA__CODE='"+condition+"')";
+        if(Line_NO!=null)
+            sql+= " and LINE__NO="+Line_NO;
+
+       cursor= dnScanModelDao.getDatabase().rawQuery(sql,null);
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                int index=cursor.getColumnIndex("SCANQTY");
                 dbReturnModel.setSCANQTY(cursor.getInt(index));
             }
         }
@@ -319,10 +331,16 @@ public class DbDnInfo {
         dnModelDao.detachAll();
     }
 
-    public boolean DeleteRepertItems(String DNNo,int Status){
+    /**
+     * 删除异常扫描记录
+     * @param DNNo
+     * @param Status
+     * @return
+     */
+    public boolean DeleteRepertItems(String DNNo,int lineNo,int Status){
         try{
             String sql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ DNNo
-                    +"'  and status = "+Status;
+                    +"' and LINE__NO="+lineNo+" and status = "+Status;
             daoSession.getDatabase().execSQL(sql);
             return true;
         }catch(Exception ex){
@@ -330,6 +348,30 @@ public class DbDnInfo {
         }
     }
 
+    /**
+     * 修改重复出库单单号
+     * @param NewDnno
+     * @param dnModel
+     */
+    public void ChangeDNNoByRepertDnNo(String NewDnno,DNModel dnModel){
+        String OldDnno=dnModel.getAGENT_DN_NO();
+
+        String sql="update DNMODEL set CUS__DN__NO='"+NewDnno+"' where AGENT__DN__NO='"+OldDnno+"'";
+        dnModelDao.getDatabase().execSQL(sql);
+        if(dnModel.getDN_SOURCE()!=3) {
+            sql = "update DNMODEL set AGENT__DN__NO='" + NewDnno + "' where AGENT__DN__NO='" + OldDnno + "'";
+            dnModelDao.getDatabase().execSQL(sql);
+        }
+        dnModelDao.detachAll();
+        if(dnModel.getDN_SOURCE()!=3) {
+            sql = "update DNDETAIL_MODEL set AGENT__DN__NO='" + NewDnno + "' where AGENT__DN__NO='" + OldDnno + "'";
+            dnDetailModelDao.getDatabase().execSQL(sql);
+            dnDetailModelDao.detachAll();
+            sql = "update DNSCAN_MODEL set AGENT__DN__NO='" + NewDnno + "' where AGENT__DN__NO='" + OldDnno + "'";
+            dnScanModelDao.getDatabase().execSQL(sql);
+            dnScanModelDao.detachAll();
+        }
+    }
 
     //ymh
     /**
@@ -577,6 +619,16 @@ public class DbDnInfo {
             String sql="";
             sql="delete from DNMODEL where AGENT__DN__NO='"+ DNNo+"'";
             daoSession.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
+    public boolean UpdateDNScanState(String DNNo){
+        try{
+            String sql = "update DNSCAN_MODEL set status='0' where AGENT__DN__NO='"+DNNo+"'";
+            dnScanModelDao.getDatabase().execSQL(sql);
             return true;
         }catch(Exception ex){
             return false;

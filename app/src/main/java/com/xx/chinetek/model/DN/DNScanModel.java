@@ -8,14 +8,12 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Keep;
 
-import java.util.Date;
-
 /**
  * Created by GHOST on 2017/10/25.
  */
 @Entity(
         indexes = {
-        @Index(value = "AGENT_DN_NO,LINE_NO,SERIAL_NO,STATUS" ,unique = true)
+        @Index(value = "AGENT_DN_NO,LINE_NO,SERIAL_NO" ,unique = true)//,STATUS
 }
 )
 public class DNScanModel implements Parcelable{

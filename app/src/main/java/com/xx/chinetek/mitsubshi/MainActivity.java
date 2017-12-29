@@ -83,6 +83,9 @@ public class MainActivity extends BaseActivity {
                 AnalysisSyncDeleteDnJson((String) msg.obj);
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
+                if(dialog!=null){
+                    dialog.dismiss();
+                }
                 ToastUtil.show("获取请求失败_____"+ msg.obj);
                 break;
         }

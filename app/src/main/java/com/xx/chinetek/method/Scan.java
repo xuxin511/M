@@ -73,10 +73,16 @@ public class Scan {
      */
     private static int Checkbarcode(DbDnInfo dnInfo,DNModel dnModel,ArrayList<BarCodeModel> barCodeModels, List<DNDetailModel> dnDetailModels, int index) {
         int isErrorStatus=-1;
+        List<DNScanModel> dnScanModels=new ArrayList<>();
+        for(DNDetailModel dnDetailModel:dnDetailModels){
+            dnDetailModel.__setDaoSession(dnInfo.getDaoSession());
+            dnScanModels.addAll(dnDetailModel.getSERIALS());
+        }
+
         for (BarCodeModel barCodeModel : barCodeModels) {
             //判断条码是否存在
-            dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
-            List<DNScanModel> dnScanModels = dnDetailModels.get(index).getSERIALS();
+           // dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
+           // List<DNScanModel> dnScanModels = dnDetailModels.get(index).getSERIALS();
             DNScanModel dnScanModel = new DNScanModel();
             dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
             int barcodeIndex = dnScanModels.indexOf(dnScanModel);

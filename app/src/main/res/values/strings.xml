@@ -106,6 +106,7 @@
         <item>已下载</item>
         <item>完成</item>
         <item>已提交</item>
+        <item>单据重复</item>
     </string-array>
     <string-array name="sendCustomList">
         <item>代理商</item>
@@ -135,6 +136,7 @@
     <string name="Msg_lenMax">起始字符长度+序号长度不能超过8位！</string>
     <string name="Msg_BarcodeNotmatch">条码不匹配！</string>
     <string name="Msg_ExceptionDN">出库单存在异常\n请至异常模块处理！</string>
+    <string name="Msg_DNNORepert">出库单单号与后台重复\n请更改单号之后提交</string>
     <string name="Msg_InputPassword">请输入管理员密码</string>
     <string name="Msg_SetbarcodeRule">请设置条码规则</string>
     <string name="Msg_maxlength">请设置序列号最大长度</string>
@@ -146,6 +148,8 @@
     <string name="Msg_bolkDNUploadSuccess">批量出库单提交完成!</string>
     <string name="Msg_DNSuccess">出库单完成数：</string>
     <string name="Msg_UploadFailue">DN导出失败!\n失败原因：</string>
+    <string name="Msg_ExitDn">出库单号已存在，请确认后导入！\n</string>
+    <string name="Msg_ScanMaterial">没有可以提交的扫描数据</string>
     <string name="Msg_ImportDNError">DN导入失败!\n非代理商单据\n</string>
     <string name="Msg_QRScanFormatr">QR扫描单据格式不正确！</string>
     <string name="Msg_NotSupportModel">设备型号不支持！</string>
@@ -183,6 +187,7 @@
     <string name="Dia_UploadDN">正在上传出库单...</string>
     <string name="Dia_GetDNDetailItems">获取已关闭出库单...</string>
     <string name="Dia_DeleteDn">是否删除已选中单据的扫描记录？</string>
+    <string name="Dia_DeleteExDn">是否删除所有异常单据？</string>
     <string name="Dia_SyncPara">正在同步参数设置...</string>
     <string name="Dia_SyncDeleteDN">正在同步已删除出库单...</string>
     <string name="Dia_UploadPara">正在上传参数设置...</string>

@@ -30,7 +30,7 @@ public class FtpUtil {
             ftp.closeConnect();
         }
 
-        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, total/2);
+        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, total);
         mHandler.sendMessage(msg);
     }
 

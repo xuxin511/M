@@ -79,15 +79,14 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     AnalysisSyncMAPSDNDetailJson((String) msg.obj);
                     break;
                 case RESULT_SyncUSB:
-                    ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
-                    DbDnInfo.getInstance().InsertDNDB(dnModels);
-                    break;
+//                    ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
+//                    DbDnInfo.getInstance().InsertDNDB(dnModels);
+//                    break;
                 case RESULT_SyncMail:
                 case RESULT_SyncFTP:
                     if ((int) msg.obj > 0) {
                         Intent intent = new Intent(context, FTPsync.class);
                         startActivityLeft(intent);
-
                     }
                     break;
                 case TAG_SCAN:
@@ -221,7 +220,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemClickListener.class)
     private void LsvDeliveryListonItemClick(AdapterView<?> parent, View view, int position, long id) {
          dnModel=(DNModel)deliveryListItemAdapter.getItem(position);
-        ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
+       // ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
         if(dnModel.getDN_SOURCE()==0){
             SyncDN.SyncMAPSDetail(dnModel.getAGENT_DN_NO(),mHandler);
         }else {
@@ -264,9 +263,11 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         if(DNModels!=null) {
             DNModel dnModel=new DNModel();
             dnModel.setAGENT_DN_NO(DNNo);
+            dnModel.setCUS_DN_NO(DNNo);
             int index=DNModels.indexOf(dnModel);
             if(index!=-1) {
                 dnModel=DNModels.get(index);
+                ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
                 StartScan(dnModel);
             }else{
                 MessageBox.Show(context,getString(R.string.Msg_No_DNno));
@@ -336,7 +337,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                 BaseApplication.DialogShowText = getString(R.string.Dia_SyncUSB);
                 dialog =new LoadingDialog(context);
                 dialog.show();
-                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB,null);
+                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB,1);
                 mHandler.sendMessage(msg);
                 break;
             case 3:

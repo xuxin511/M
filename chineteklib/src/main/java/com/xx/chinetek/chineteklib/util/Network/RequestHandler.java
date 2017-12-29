@@ -50,6 +50,10 @@ public class RequestHandler {
                 onVolleyErrorResponse(volleyError, listener, handler, bundle);
             }
         });
+        //清除缓存
+        getRequestQueue().getCache().get(url);
+        getRequestQueue().getCache().remove(url);
+        getRequestQueue().getCache().clear();
         // 清除请求队列中的tag标记请求
         getRequestQueue().cancelAll(tag);
         // 为当前请求添加标记

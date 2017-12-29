@@ -82,8 +82,8 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
                 "\"EXTEND__FIELD5\" TEXT," + // 17: EXTEND_FIELD5
                 "\"EXTEND__FIELD6\" TEXT);"); // 18: EXTEND_FIELD6
         // Add Indexes
-        db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_DNSCAN_MODEL_AGENT__DN__NO_LINE__NO_SERIAL__NO_STATUS ON \"DNSCAN_MODEL\"" +
-                " (\"AGENT__DN__NO\" ASC,\"LINE__NO\" ASC,\"SERIAL__NO\" ASC,\"STATUS\" ASC);");
+        db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_DNSCAN_MODEL_AGENT__DN__NO_LINE__NO_SERIAL__NO ON \"DNSCAN_MODEL\"" +
+                " (\"AGENT__DN__NO\" ASC,\"LINE__NO\" ASC,\"SERIAL__NO\" ASC);");
     }
 
     /** Drops the underlying database table. */

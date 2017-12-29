@@ -122,7 +122,7 @@ public class DNModel implements Parcelable {
         if (o == null || getClass() != o.getClass()) return false;
 
         DNModel that = (DNModel) o;
-        return  AGENT_DN_NO.trim().equals(that.AGENT_DN_NO.trim());
+        return  AGENT_DN_NO.trim().equals(that.AGENT_DN_NO.trim()) || (that.CUS_DN_NO!=null && CUS_DN_NO!=null &&CUS_DN_NO.trim().equals(that.CUS_DN_NO.trim()));
 
     }
 

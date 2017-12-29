@@ -13,6 +13,11 @@ public class DNStatusEnum {
     public static final int exeption =-1;
 
     /**
+     * 重复
+     */
+    public static final int Repert =4;
+
+    /**
      * 未下载
      */
     public static final int ready =0;

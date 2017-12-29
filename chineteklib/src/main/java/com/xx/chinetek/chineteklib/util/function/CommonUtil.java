@@ -204,7 +204,7 @@ public class CommonUtil {
         int day = currentDate.get(Calendar.DAY_OF_MONTH);
         // 设置文本的内容：
         StringBuffer dateStr = new StringBuffer();
-        dateStr.append(currentDate.get(Calendar.YEAR)).append("-").append(month).append("-").append(day);
+        dateStr.append(currentDate.get(Calendar.YEAR)).append("-").append( String.format("%02d", month)).append("-").append(String.format("%02d", day));
         return dateStr.toString();
     }
 

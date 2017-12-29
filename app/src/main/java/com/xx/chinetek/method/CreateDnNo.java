@@ -19,33 +19,37 @@ public class CreateDnNo {
      * @return
      */
     public static void GetDnNo(Context context,DNModel dnModel){
-        String startWord= ParamaterModel.baseparaModel.getCusDnnoRule().getStartWords();
-        int len= ParamaterModel.baseparaModel.getCusDnnoRule().getIndexLength();
-        ParamaterModel.SerialNo= ParamaterModel.SerialNo==null?"0000000":ParamaterModel.SerialNo;
-        int SerialLen=ParamaterModel.SerialNo.length();
-        String serial= SerialLen>7?
-                    ParamaterModel.SerialNo.substring(SerialLen-7):ParamaterModel.SerialNo;
-        String date= CommonUtil.getSystemDate();
-        String lastData="";
-        Integer index=0;
-        SharedPreferences sharedPreferences=context.getSharedPreferences("CusDN", Context.MODE_PRIVATE);
-        if(sharedPreferences!=null) {
-            lastData=sharedPreferences.getString("time","");
-            index=sharedPreferences.getInt("index",0);
+        try {
+            String startWord = ParamaterModel.baseparaModel.getCusDnnoRule().getStartWords();
+            int len = ParamaterModel.baseparaModel.getCusDnnoRule().getIndexLength();
+            ParamaterModel.SerialNo = ParamaterModel.SerialNo == null ? "0000000" : ParamaterModel.SerialNo;
+            int SerialLen = ParamaterModel.SerialNo.length();
+            String serial = SerialLen > 7 ?
+                    ParamaterModel.SerialNo.substring(SerialLen - 7) : ParamaterModel.SerialNo;
+            String date = CommonUtil.getSystemDate();
+            String lastData = "";
+            Integer index = 0;
+            SharedPreferences sharedPreferences = context.getSharedPreferences("CusDN", Context.MODE_PRIVATE);
+            if (sharedPreferences != null) {
+                lastData = sharedPreferences.getString("time", "");
+                index = sharedPreferences.getInt("index", 0);
+            }
+            if (!lastData.equals(date))
+                index = 0;
+            String selfd = date.substring(3, 4) + date.substring(5, 7) + date.substring(8, 10);
+            String ShiftNum = String.format("%0" + len + "d", index + 1);
+            String ShiftNumAn = String.format("%04d", (index + 1));
+            String cusDnNo = startWord + serial + selfd + ShiftNum;
+            String AGENT_DN_NO = "DNN" + selfd + serial + ShiftNumAn;
+            dnModel.setCUS_DN_NO(cusDnNo);
+            dnModel.setAGENT_DN_NO(AGENT_DN_NO);
+            SharedPreferences.Editor edit = sharedPreferences.edit();
+            edit.putString("time", date);
+            edit.putInt("index", index + 1);
+            edit.apply();
+        }catch (Exception ex){
+
         }
-        if(!lastData.equals(date))
-            index=0;
-        String selfd=date.substring(3,4)+date.substring(5,7)+date.substring(8,10);
-        String ShiftNum= String.format("%0"+len+"d", index+1);
-        String ShiftNumAn= String.format("%04d", (index+1));
-        String cusDnNo=startWord+serial+selfd+ShiftNum;
-        String AGENT_DN_NO="DNN"+selfd+serial+ShiftNumAn;
-        dnModel.setCUS_DN_NO(cusDnNo);
-        dnModel.setAGENT_DN_NO(AGENT_DN_NO);
-        SharedPreferences.Editor edit=sharedPreferences.edit();
-        edit.putString("time",date);
-        edit.putInt("index",index+1);
-        edit.apply();
     }
 
 }

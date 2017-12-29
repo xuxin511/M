@@ -8,6 +8,16 @@
     tools:context="com.xx.chinetek.mitsubshi.DN.DeliveryScan">
 
 
+    <ImageView
+        android:id="@+id/img_exception"
+        android:layout_width="39dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/error" />
+
     <TextView
         android:id="@+id/txt_Custom"
         style="@style/TextViewComminStyle"
@@ -30,12 +40,10 @@
         style="@style/TextViewComminStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:text="1234567890"
         android:textAlignment="center"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/img_exception"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

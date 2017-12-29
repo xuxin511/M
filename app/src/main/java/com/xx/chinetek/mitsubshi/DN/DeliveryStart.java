@@ -120,6 +120,11 @@ public class DeliveryStart extends BaseActivity {
 
     @Event(R.id.btn_StartOutPut)
     private void btnStartOutPutClick(View view){
+        start();
+
+    }
+
+    private void start() {
         try {
             if (dnTypeModel.getDNType() == 3) { //自建方式需要确认发货客户
                 final String code = edtContentText.getText().toString().trim();
@@ -172,6 +177,9 @@ public class DeliveryStart extends BaseActivity {
                 CreateDnNo.GetDnNo(context,dnModel);
                 dnModel.setDN_QTY(0);
                 dnModel.setOPER_DATE(new Date());
+               // dnModel.setDN_SOURCE(3);
+                dnModel.setCUSTOM_NO(customModel.getCUSTOMER());
+                dnModel.setCUSTOM_NAME(customModel.getNAME());
                 jumpClass=DeliveryScan.class;
                 break;
             case 5:
@@ -186,7 +194,6 @@ public class DeliveryStart extends BaseActivity {
         bundle.putParcelable("DNModel",dnModel);
         intent.putExtras(bundle);
         startActivityLeft(intent);
-
     }
 
     @Event(value = R.id.spin_sendType,type = AdapterView.OnItemSelectedListener.class)
@@ -302,6 +309,7 @@ public class DeliveryStart extends BaseActivity {
                 DbBaseInfo.getInstance().InsertCustomDB(customModels);
                 BindData();
                 edtContentText.setText(customModel.getCUSTOMER());
+                start();
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }

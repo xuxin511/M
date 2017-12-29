@@ -117,6 +117,7 @@ public class UploadDN {
                         }
                     }.start();
                 }
+
                 DNModel dnModel = returnMsgModel.getModelJson();
                 DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
                 //保留原有数据
@@ -128,6 +129,11 @@ public class UploadDN {
                     if(subdnModel.getDN_SOURCE()==3){
                         DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
                     }
+                }
+                if(returnMsgModel.getHeaderStatus().equals("R")){ //单据重复
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.Repert);
+                    dbReturnModel.setReturnCode(-2);
+                    dbReturnModel.setReturnMsg(context.getString(R.string.Msg_DNNORepert));
                 }
                 if(returnMsgModel.getHeaderStatus().equals("N") && dnModel.getDN_SOURCE()==3){
                     ArrayList<DNModel> dnModels = new ArrayList<>();
@@ -150,6 +156,7 @@ public class UploadDN {
                     dbReturnModel.setReturnMsg(context.getString(R.string.Msg_ExceptionDN));
                 }
                 if(returnMsgModel.getHeaderStatus().equals("K") && dnModel!=null){ //后台单据已关闭
+                    DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
                     int status=dnModel.getSTATUS()==DNStatusEnum.download?DNStatusEnum.complete:DNStatusEnum.Sumbit;
                     dnModel.setSTATUS(status);
                    // DbDnInfo.getInstance().DELscanbyagent(subdnModel.getAGENT_DN_NO());
@@ -161,13 +168,18 @@ public class UploadDN {
                     dbReturnModel.setReturnMsg(returnMsgModel.getMessage());
                 }
                 if(returnMsgModel.getHeaderStatus().equals("Z") ) { //后台单据有异常
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.download);
                     dbReturnModel.setReturnCode(-1);
                     dbReturnModel.setReturnMsg(returnMsgModel.getMessage());
                 }
                 if(returnMsgModel.getHeaderStatus().equals("F")) {
+                    DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
                     ArrayList<DNModel> dnModels=new ArrayList<>();
                     dnModels.add(dnModel);
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
+                    DNModel upDnmodel=DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
+                    dnModels=new ArrayList<>();
+                    dnModels.add(upDnmodel);
                     final  ArrayList<DNModel> ExportdnModels=dnModels;
                         new Thread() {
                             @Override

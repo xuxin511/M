@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,7 +61,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
 
 
-   // String UploadDNno="";
+    // String UploadDNno="";
 
     @Override
     public void onHandleMessage(Message msg) {
@@ -99,21 +98,37 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         mulitdn.getDN().setREMARK(tempdnModel.getREMARK());
                     }
                     String Showdnno=mulitdn.getDN().getDN_SOURCE()==3?mulitdn.getDN().getCUS_DN_NO():mulitdn.getDN().getAGENT_DN_NO();
-                    if(mulitdn.getDN().getDN_SOURCE()==3){ //自建单据,修改系统单号
+                    if(mulitdn.getDN().getDN_SOURCE()==3 && !(
+                            mulitdn.getStatus().equals("Z") || mulitdn.getStatus().equals("E"))){ //自建单据,修改系统单号
                         DbDnInfo.getInstance().DeleteDN(tempdnModel.getAGENT_DN_NO());
                     }
 
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.complete);
-                    if(mulitdn.getStatus().equals("N") && mulitdn.getDN().getDN_SOURCE()==3){
+                    if(mulitdn.getStatus().equals("R")){ //单据重复
+                        dnno+="后台重复出库单："+Showdnno+"\n";
+                        if ( mulitdn.getDN().getDN_SOURCE() == 3){
+                            ArrayList<DNModel> dnModels = new ArrayList<>();
+                            mulitdn.getDN().setSTATUS(DNStatusEnum.complete);
+                            dnModels.add(mulitdn.getDN());
+                            //插入数据
+                            DbDnInfo.getInstance().InsertDNDB(dnModels);
+                        }
+                        DbDnInfo.getInstance().ChangeDNStatusByDnNo(mulitdn.getDN().getAGENT_DN_NO(), DNStatusEnum.Repert);
+
+                    }
+                    if(mulitdn.getStatus().equals("N")) {
                         completeDnNum++;
-                        ArrayList<DNModel> dnModels = new ArrayList<>();
-                        mulitdn.getDN().setSTATUS(DNStatusEnum.complete);
-                        dnModels.add(mulitdn.getDN());
-                        //插入数据
-                        DbDnInfo.getInstance().InsertDNDB(dnModels);
+                        if ( mulitdn.getDN().getDN_SOURCE() == 3){
+                            ArrayList<DNModel> dnModels = new ArrayList<>();
+                            mulitdn.getDN().setSTATUS(DNStatusEnum.complete);
+                            dnModels.add(mulitdn.getDN());
+                            //插入数据
+                            DbDnInfo.getInstance().InsertDNDB(dnModels);
+                        }
                     }
                     if(mulitdn.getStatus().equals("F")){
                         completeDnNum++;
+                        DbDnInfo.getInstance().DeleteDN(mulitdn.getDN().getAGENT_DN_NO());
                         ArrayList<DNModel> dnModels=new ArrayList<>();
                         dnModels.add(mulitdn.getDN());
                         SendDNs.add(mulitdn.getDN());
@@ -134,7 +149,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         }
                     }
                     if(mulitdn.getStatus().equals("K") && mulitdn.getDN()!=null){ //后台单据已关闭
-                        dnno+="关闭/重复出库单："+Showdnno+"\n";
+                        dnno+="关闭出库单："+Showdnno+"\n";
                         DbDnInfo.getInstance().DELscanbyagent(mulitdn.getDN().getAGENT_DN_NO());
                         int status=mulitdn.getDN().getSTATUS()==DNStatusEnum.download?DNStatusEnum.complete:DNStatusEnum.Sumbit;
                         mulitdn.getDN().setSTATUS(status);
@@ -147,6 +162,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         dnno+="后台异常出库单："+Showdnno+"\n";
                     }
                     if(mulitdn.getStatus().equals("E")){
+
                         dnno+="失败出库单："+Showdnno+"\n";
                     }
                 }
@@ -164,10 +180,10 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     }
                 }.start();
 
-                if(!TextUtils.isEmpty(dnno)){
+              //  if(!TextUtils.isEmpty(dnno)){
                     String content=getString(R.string.Msg_DNSuccess)+completeDnNum+"\n" + dnno;
                     MessageBox.Show(context, getString(R.string.Msg_bolkDNUploadSuccess)+"\n提交说明！\n"+content);
-                }
+               // }
 
             } else {
                 MessageBox.Show(context, returnMsgModel.getMessage());
@@ -301,6 +317,11 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                             }
                         })
                         .show();
+            }
+        }
+        if(item.getItemId()==R.id.action_select) {
+            for(int i=0;i<DNModels.size();i++){
+                bulkuploadListItemAdapter.modifyStates(i);
             }
         }
         return super.onOptionsItemSelected(item);
