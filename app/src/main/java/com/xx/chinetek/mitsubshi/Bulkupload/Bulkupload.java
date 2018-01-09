@@ -288,8 +288,13 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
         if(item.getItemId()==R.id.action_Export) {
             List<DNModel> postmodels=new ArrayList<>();
             boolean isUpload=true;
+            boolean isFlag=false;
             for (int i = 0; i < DNModels.size(); i++) {
                 if (bulkuploadListItemAdapter.getStates(i)) {
+                    if(DNModels.get(i).getFlag()!=null && DNModels.get(i).getFlag()==1){
+                        isFlag=true;
+                        break;
+                    }
                    DNModel postmodel = DbDnInfo.getInstance().AllPostDate(DNModels.get(i));
                     if (postmodel == null) {
                         MessageBox.Show(context, "出库单上报错误！\n" + DNModels.get(i).getAGENT_DN_NO());
@@ -298,6 +303,10 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     }
                     postmodels.add(postmodel);
                 }
+            }
+            if(isFlag){
+                MessageBox.Show(context, getString(R.string.Msg_miltuMaterial));
+                return false;
             }
             if(isUpload && postmodels.size()!=0){
                 final List<DNModel> uploadModels= postmodels;

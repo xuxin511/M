@@ -29,6 +29,7 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
     public final class ListItemView { // 自定义控件集合
 
         public TextView txtPartnerName;
+        public TextView txtType;
     }
 
     public PartnerItemAdapter(Context context, ArrayList<CustomModel> customModels) {
@@ -65,12 +66,14 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_partner_detail,null);
             listItemView.txtPartnerName = (TextView) convertView.findViewById(R.id.item_PartnerName);
+            listItemView.txtType = (TextView) convertView.findViewById(R.id.item_Type);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
         }
         CustomModel customModel = customModels.get(selectID);
         listItemView.txtPartnerName.setText(customModel.getNAME());
+        listItemView.txtType.setText(customModel.getPARTNER_FUNCTION());
         return convertView;
     }
 
@@ -106,8 +109,8 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
                 for (int i = 0; i < count; i++) {
                     CustomModel pc = unfilteredValues.get(i);
                     if (pc != null) {
-                        if(pc.getCUSTOMER()!=null && pc.getCUSTOMER().startsWith(prefixString.toUpperCase())){
-
+                        if(pc.getCUSTOMER()!=null && pc.getCUSTOMER().startsWith(prefixString.toUpperCase())
+                                || pc.getNAME()!=null && pc.getNAME().contains(prefixString.toUpperCase())){
                             newValues.add(pc);
                         }
                     }

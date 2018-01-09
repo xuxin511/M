@@ -13,7 +13,6 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.ToMany;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
@@ -97,16 +96,15 @@ public class DNModel implements Parcelable {
     private String FtpFileName;
 
     /**
-     * Falg
+     * 多物料主数据记录 0：正常 1：存在多条主数据记录
      */
-    @Transient
-    private String Flag;
+    private Integer Flag;
 
-    public String getFlag() {
+    public Integer getFlag() {
         return Flag;
     }
 
-    public void setFlag(String flag) {
+    public void setFlag(Integer flag) {
         Flag = flag;
     }
 
@@ -362,11 +360,10 @@ public class DNModel implements Parcelable {
     }
 
 
-    @Generated(hash = 1223170972)
-    public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS, String LEVEL_1_AGENT_NO,
-            String LEVEL_1_AGENT_NAME, String LEVEL_2_AGENT_NO, String LEVEL_2_AGENT_NAME,
-            String CUSTOM_NO, String CUSTOM_NAME, Integer DN_QTY, Date OPER_DATE, Integer DN_SOURCE,
-            int STATUS, String CUS_DN_NO, String REMARK, String FtpFileName) {
+    @Generated(hash = 1513509784)
+    public DNModel(String AGENT_DN_NO, Date DN_DATE, String DN_STATUS, String LEVEL_1_AGENT_NO, String LEVEL_1_AGENT_NAME, String LEVEL_2_AGENT_NO,
+            String LEVEL_2_AGENT_NAME, String CUSTOM_NO, String CUSTOM_NAME, Integer DN_QTY, Date OPER_DATE, Integer DN_SOURCE, int STATUS, String CUS_DN_NO,
+            String REMARK, String FtpFileName, Integer Flag) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.DN_DATE = DN_DATE;
         this.DN_STATUS = DN_STATUS;
@@ -383,6 +380,7 @@ public class DNModel implements Parcelable {
         this.CUS_DN_NO = CUS_DN_NO;
         this.REMARK = REMARK;
         this.FtpFileName = FtpFileName;
+        this.Flag = Flag;
     }
 
     /** Used to resolve relations */
@@ -391,6 +389,14 @@ public class DNModel implements Parcelable {
     /** Used for active entity operations. */
     @Generated(hash = 718579950)
     private transient DNModelDao myDao;
+
+    public String getFtpFileName() {
+        return this.FtpFileName;
+    }
+
+    public void setFtpFileName(String FtpFileName) {
+        this.FtpFileName = FtpFileName;
+    }
 
     @Override
     public int describeContents() {
@@ -415,16 +421,8 @@ public class DNModel implements Parcelable {
         dest.writeString(this.CUS_DN_NO);
         dest.writeString(this.REMARK);
         dest.writeString(this.FtpFileName);
-        dest.writeString(this.Flag);
+        dest.writeValue(this.Flag);
         dest.writeTypedList(this.DETAILS);
-    }
-
-    public String getFtpFileName() {
-        return this.FtpFileName;
-    }
-
-    public void setFtpFileName(String FtpFileName) {
-        this.FtpFileName = FtpFileName;
     }
 
     protected DNModel(Parcel in) {
@@ -446,7 +444,7 @@ public class DNModel implements Parcelable {
         this.CUS_DN_NO = in.readString();
         this.REMARK = in.readString();
         this.FtpFileName = in.readString();
-        this.Flag = in.readString();
+        this.Flag = (Integer) in.readValue(Integer.class.getClassLoader());
         this.DETAILS = in.createTypedArrayList(DNDetailModel.CREATOR);
     }
 

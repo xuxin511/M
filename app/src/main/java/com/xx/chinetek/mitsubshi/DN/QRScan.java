@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class QRScan extends BaseIntentActivity {
 
    Context context=QRScan.this;
+    ArrayList<DNModel>  dnModels;
 
     @Override
     public void onHandleMessage(Message msg) {
@@ -59,32 +60,61 @@ public class QRScan extends BaseIntentActivity {
                     BufferedWriter bw = new BufferedWriter(writerStream);
                     bw.write(Barcode);
                     bw.close();
-                   ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
-
-
+                    dnModels= SyncDN.DNFromFiles();
                    if(dnModels.size()==0){
                        return;
                    }
-                   DbDnInfo.getInstance().InsertDNDB(dnModels);
-
                     isFormartCongif=true;
+
                 }
             }
             if(!isFormartCongif){
                 MessageBox.Show(context,getString(R.string.Msg_QRScanFormatr));
                 return;
             }
-            DNModel dnModel= DbDnInfo.getInstance().GetLoaclDN(DNno);
-            if(dnModel!=null){
-                Intent intent=new Intent(context,DeliveryScan.class);
-                Bundle bundle=new Bundle();
-                bundle.putParcelable("DNModel",dnModel);
-                intent.putExtras(bundle);
-                startActivityLeft(intent);
+            if(dnModels.size()==1){
+                if(dnModels.get(0).getFlag()==1){
+                    Intent intent=new Intent(context,MultiMaterialSelect.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("DNModel", dnModels.get(0));
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent,1001);
+                }else{
+                    startActivity(DNno);
+                }
             }
-
         }catch (Exception  ex){
             MessageBox.Show(context,ex.getMessage());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1001 && resultCode==1){
+            try {
+                DNModel dnModel = data.getParcelableExtra("DNModel");
+                if (dnModel.getFlag() == 1) {
+                    MessageBox.Show(context,getString(R.string.Msg_QRMulitMaterial));
+                } else {
+                    dnModels.set(0, dnModel);
+                    startActivity(dnModel.getAGENT_DN_NO());
+                }
+            }catch (Exception  ex){
+                MessageBox.Show(context,ex.getMessage());
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void startActivity(String DNno) throws Exception{
+        DbDnInfo.getInstance().InsertDNDB(dnModels);
+        DNModel dnModel= DbDnInfo.getInstance().GetLoaclDN(DNno);
+        if(dnModel!=null){
+            Intent intent=new Intent(context,DeliveryScan.class);
+            Bundle bundle=new Bundle();
+            bundle.putParcelable("DNModel",dnModel);
+            intent.putExtras(bundle);
+            startActivityLeft(intent);
         }
     }
 

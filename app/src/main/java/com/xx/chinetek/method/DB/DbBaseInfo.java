@@ -150,4 +150,28 @@ public class DbBaseInfo {
                 MaterialModelDao.Properties.BISMT.eq(condition)).unique();
         return materialModel;
     }
+
+    public List<MaterialModel> GetItemNames(String GolafCode){
+        if(TextUtils.isEmpty(GolafCode)) return null;
+        List<MaterialModel>  materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode)).list();
+        return materialModels;
+    }
+
+    public List<MaterialModel> GetItems(String SapNo,String ItemName,String GolafCode){
+        List<MaterialModel> materialModels=new ArrayList<>();
+        if(!TextUtils.isEmpty(SapNo)){
+            materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MATNR.eq(SapNo)).list();
+        }else{
+            if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(GolafCode)){
+                materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode),
+                        MaterialModelDao.Properties.MAKTX.eq(ItemName)).list();
+            }else{
+                if(!TextUtils.isEmpty(ItemName) && TextUtils.isEmpty(GolafCode))
+                    materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.eq(ItemName)).list();
+                else
+                    materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode)).list();
+            }
+        }
+        return materialModels;
+    }
 }

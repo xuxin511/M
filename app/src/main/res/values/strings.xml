@@ -11,11 +11,13 @@
     <string name="main">主界面</string>
     <string name="outputscan">出库</string>
     <string name="qrscan">QR扫描</string>
+    <string name="MaterialSelect">物料数据选择</string>
     <string name="exceptionList">异常处理</string>
     <string name="Query">出库查询</string>
     <string name="sync">基础数据同步</string>
     <string name="deliveryScan">出库扫描</string>
     <string name="startOutput">开始出库扫描</string>
+    <string name="config">修改保存</string>
     <string name="outputlist">单据列表</string>
     <string name="barcodeDetail">条码明细</string>
     <string name="barcodeException">错误信息</string>
@@ -148,10 +150,12 @@
     <string name="Msg_bolkDNUploadSuccess">批量出库单提交完成!</string>
     <string name="Msg_DNSuccess">出库单完成数：</string>
     <string name="Msg_UploadFailue">DN导出失败!\n失败原因：</string>
+    <string name="Msg_MitMaterialS">所选单据中存在物料无法确定唯一性\n请处理后再下载</string>
     <string name="Msg_ExitDn">出库单号已存在，请确认后导入！\n</string>
     <string name="Msg_ScanMaterial">没有可以提交的扫描数据</string>
     <string name="Msg_ImportDNError">DN导入失败!\n非代理商单据\n</string>
     <string name="Msg_QRScanFormatr">QR扫描单据格式不正确！</string>
+    <string name="Msg_QRMulitMaterial">所选单据中存在物料无法确定唯一性\n请重新扫描处理！</string>
     <string name="Msg_NotSupportModel">设备型号不支持！</string>
     <string name="Msg_No_Sync">无基础资料信息，请先同步！</string>
     <string name="Msg_No_Partner">请先设置代理商编号！</string>
@@ -179,6 +183,7 @@
     <string name="Msg_ToMailNotSet">收件人邮箱未设置！</string>
     <string name="Msg_HaveSameDN">该出库单号已存在！</string>
     <string name="Msg_ScnaQtyError">物料扫码数量不能大于出库数量！</string>
+    <string name="Msg_miltuMaterial">存在未修改物料信息，请确认！</string>
 
     <string name="Dia_UploadLogFile">日志文件上传中...</string>
     <string name="Dia_SyncMaterial">正在同步物料数据...</string>

@@ -100,12 +100,13 @@ public class DeliveryStart extends BaseActivity {
         super.initData();
         dnTypeModel= SharePreferUtil.ReadDNTypeShare(context);
         BindSpinner();
-        BindData();
-        InitForm();
         if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null){
             spinsendType.setSelection(dnTypeModel.getDNType());
-            spinCustom.setSelection(dnTypeModel.getDNCusType());
+            spinCustom.setSelection(dnTypeModel.getSelectCusType());
+            chooseposition=dnTypeModel.getSelectCusType();
         }
+        BindData();
+        InitForm();
     }
 
     @Override
@@ -113,8 +114,8 @@ public class DeliveryStart extends BaseActivity {
         super.onResume();
         if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null&&dnTypeModel.getDNType()==5){
             spinsendType.setSelection(dnTypeModel.getDNType());
-            spinCustom.setSelection(dnTypeModel.getDNCusType());
-
+            spinCustom.setSelection(dnTypeModel.getSelectCusType());
+            chooseposition=dnTypeModel.getSelectCusType();
         }
     }
 
@@ -154,11 +155,11 @@ public class DeliveryStart extends BaseActivity {
                 if (customModel == null && partnerItemAdapter.getCount() == 1) {
                     customModel = (CustomModel) partnerItemAdapter.getItem(0);
                 }
-//            if (customModel == null) {
-//                MessageBox.Show(context, getString(R.string.Msg_NoSelect_CusCode));
-//                CommonUtil.setEditFocus(edtContentText);
-//                return;
-//            }
+                if (customModel == null) {
+                    MessageBox.Show(context, getString(R.string.Msg_NoSelect_CusCode));
+                    CommonUtil.setEditFocus(edtContentText);
+                    return;
+                }
             }
             dnTypeModel.setCustomModel(customModel);
         }catch (Exception ex){
@@ -207,7 +208,7 @@ public class DeliveryStart extends BaseActivity {
     private void spinCustomonItemSelected(AdapterView<?> adapterView, View view, int position,long id) {
         chooseposition=position;
         txtContentName.setText(R.string.custom);
-//         dnTypeModel.setDNCusType(position);
+         dnTypeModel.setSelectCusType(position);
         if(!isFirstRun) {
             edtContentText.setText("");
             if(dnTypeModel==null) dnTypeModel=new DNTypeModel();
@@ -269,7 +270,7 @@ public class DeliveryStart extends BaseActivity {
 
     void BindData(){
         try {
-//            customModels = GetPartner.GetPartners(dnTypeModel == null ? 0 : dnTypeModel.getDNCusType());
+         // customModels = GetPartner.GetPartners(dnTypeModel == null ? 0 : dnTypeModel.getSelectCusType());
             customModels = GetPartner.GetPartnersbyposition(chooseposition == -1 ? 0 : chooseposition);
             InitListview();
         }catch (Exception ex){

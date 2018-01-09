@@ -45,6 +45,11 @@ public class DNDetailModel implements Parcelable {
      * 状态 0正常 1序列号重复 2数量超出
      */
     private Integer STATUS;
+    /**
+     * 多物料主数据记录 0：正常 1：存在多条主数据记录
+     */
+    //@Transient
+    private Integer Flag=0;
     @ToMany(joinProperties = {
             @JoinProperty(name = "AGENT_DN_NO", referencedName = "AGENT_DN_NO"),
             @JoinProperty(name = "LINE_NO", referencedName = "LINE_NO")})
@@ -57,13 +62,11 @@ public class DNDetailModel implements Parcelable {
     private transient DNDetailModelDao myDao;
 
 
-
-
-    @Generated(hash = 2137669822)
+    @Generated(hash = 638034525)
     public DNDetailModel(String AGENT_DN_NO, Integer LINE_NO, String ITEM_NO,
             String ITEM_NAME, String GOLFA_CODE, Integer DN_QTY,
-            String DETAIL_STATUS, Date OPER_DATE, Integer SCAN_QTY,
-            Integer STATUS) {
+            String DETAIL_STATUS, Date OPER_DATE, Integer SCAN_QTY, Integer STATUS,
+            Integer Flag) {
         this.AGENT_DN_NO = AGENT_DN_NO;
         this.LINE_NO = LINE_NO;
         this.ITEM_NO = ITEM_NO;
@@ -74,17 +77,17 @@ public class DNDetailModel implements Parcelable {
         this.OPER_DATE = OPER_DATE;
         this.SCAN_QTY = SCAN_QTY;
         this.STATUS = STATUS;
+        this.Flag = Flag;
     }
-
-
 
 
     @Generated(hash = 395629670)
     public DNDetailModel() {
     }
 
-
-
+    public void setSERIALS(List<DNScanModel> SERIALS) {
+        this.SERIALS = SERIALS;
+    }
 
     @Keep
     @Override
@@ -108,21 +111,14 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public String getAGENT_DN_NO() {
         return this.AGENT_DN_NO;
     }
 
-    public void setSERIALS(List<DNScanModel> SERIALS) {
-        this.SERIALS = SERIALS;
-    }
 
     public void setAGENT_DN_NO(String AGENT_DN_NO) {
         this.AGENT_DN_NO = AGENT_DN_NO;
     }
-
-
 
 
     public Integer getLINE_NO() {
@@ -130,13 +126,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setLINE_NO(Integer LINE_NO) {
         this.LINE_NO = LINE_NO;
     }
-
-
 
 
     public String getITEM_NO() {
@@ -144,13 +136,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setITEM_NO(String ITEM_NO) {
         this.ITEM_NO = ITEM_NO;
     }
-
-
 
 
     public String getITEM_NAME() {
@@ -158,13 +146,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setITEM_NAME(String ITEM_NAME) {
         this.ITEM_NAME = ITEM_NAME;
     }
-
-
 
 
     public String getGOLFA_CODE() {
@@ -172,13 +156,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setGOLFA_CODE(String GOLFA_CODE) {
         this.GOLFA_CODE = GOLFA_CODE;
     }
-
-
 
 
     public Integer getDN_QTY() {
@@ -186,13 +166,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setDN_QTY(Integer DN_QTY) {
         this.DN_QTY = DN_QTY;
     }
-
-
 
 
     public String getDETAIL_STATUS() {
@@ -200,13 +176,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setDETAIL_STATUS(String DETAIL_STATUS) {
         this.DETAIL_STATUS = DETAIL_STATUS;
     }
-
-
 
 
     public Date getOPER_DATE() {
@@ -214,13 +186,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setOPER_DATE(Date OPER_DATE) {
         this.OPER_DATE = OPER_DATE;
     }
-
-
 
 
     public Integer getSCAN_QTY() {
@@ -228,13 +196,9 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setSCAN_QTY(Integer SCAN_QTY) {
         this.SCAN_QTY = SCAN_QTY;
     }
-
-
 
 
     public Integer getSTATUS() {
@@ -242,13 +206,19 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     public void setSTATUS(Integer STATUS) {
         this.STATUS = STATUS;
     }
 
 
+    public Integer getFlag() {
+        return this.Flag;
+    }
+
+
+    public void setFlag(Integer Flag) {
+        this.Flag = Flag;
+    }
 
 
     /**
@@ -275,15 +245,11 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 1077848333)
     public synchronized void resetSERIALS() {
         SERIALS = null;
     }
-
-
 
 
     /**
@@ -299,8 +265,6 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -314,8 +278,6 @@ public class DNDetailModel implements Parcelable {
     }
 
 
-
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -327,8 +289,6 @@ public class DNDetailModel implements Parcelable {
         }
         myDao.update(this);
     }
-
-
 
 
     /** called by internal mechanisms, do not call yourself. */
@@ -356,6 +316,7 @@ public class DNDetailModel implements Parcelable {
         dest.writeLong(this.OPER_DATE != null ? this.OPER_DATE.getTime() : -1);
         dest.writeValue(this.SCAN_QTY);
         dest.writeValue(this.STATUS);
+        dest.writeValue(this.Flag);
         dest.writeTypedList(this.SERIALS);
     }
 
@@ -371,6 +332,7 @@ public class DNDetailModel implements Parcelable {
         this.OPER_DATE = tmpOPER_DATE == -1 ? null : new Date(tmpOPER_DATE);
         this.SCAN_QTY = (Integer) in.readValue(Integer.class.getClassLoader());
         this.STATUS = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.Flag = (Integer) in.readValue(Integer.class.getClassLoader());
         this.SERIALS = in.createTypedArrayList(DNScanModel.CREATOR);
     }
 

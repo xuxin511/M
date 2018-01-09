@@ -34,6 +34,7 @@ import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.DNTypeModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -129,17 +130,27 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
             }
         }else {
             SelectDnModels = new ArrayList<>();
+            boolean isFlag=false;
             for (int i = 0; i < DNModels.size(); i++) {
                 if (deliveryListItemAdapter.getStates(i)) {
+                    if(DNModels.get(i).getFlag()!=null && DNModels.get(i).getFlag()==1){
+                        isFlag=true;
+                        break;
+                    }
                     SelectDnModels.add(0, DNModels.get(i));
                 }
             }
+
             if (SelectDnModels.size() == 0) {
                 MessageBox.Show(context, getString(item.getItemId() == R.id.action_Export ? R.string.Msg_No_ExportDn : R.string.Msg_No_DeleteDn));
                 return true;
             }
             final ArrayList<DNModel> deleteDN = SelectDnModels;
             if (item.getItemId() == R.id.action_Export) {
+                if(isFlag){
+                    MessageBox.Show(context, getString(R.string.Msg_miltuMaterial));
+                    return false;
+                }
                 final String[] items = getResources().getStringArray(R.array.ExportTypeList);
                 new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_Export_Type))// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
@@ -200,8 +211,8 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
     }
 
     private void StartScan(DNModel dnModel) {
-//        ParamaterModel.DnTypeModel=new DNTypeModel();
-//        ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
+        ParamaterModel.DnTypeModel=new DNTypeModel();
+        ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
         Intent intent = new Intent();
         Bundle bundle=new Bundle();
         switch (dnModel.getSTATUS()){

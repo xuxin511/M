@@ -116,6 +116,8 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
             listItemView.txtSource.setText(context.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);
+        }else if(DNModel.getFlag()!=null && DNModel.getFlag()==1){
+            convertView.setBackgroundResource(R.color.palevioletred);
         } else {
             convertView.setBackgroundResource(R.color.trans);
         }

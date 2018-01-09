@@ -93,6 +93,9 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         else {
             convertView.setBackgroundResource(R.color.trans);
         }
+        if(dnDetailModel.getFlag()!=null && dnDetailModel.getFlag()==1){
+            convertView.setBackgroundResource(R.color.palevioletred);
+        }
         return convertView;
     }
 

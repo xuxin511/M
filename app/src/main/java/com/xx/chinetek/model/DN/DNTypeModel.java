@@ -30,6 +30,7 @@ public class DNTypeModel implements  Parcelable {
      */
     private Integer DNCusType;
 
+    private Integer SelectCusType=0;
     /**
      * 发货方信息
      */
@@ -59,6 +60,14 @@ public class DNTypeModel implements  Parcelable {
         CustomModel = customModel;
     }
 
+    public Integer getSelectCusType() {
+        return SelectCusType;
+    }
+
+    public void setSelectCusType(Integer selectCusType) {
+        SelectCusType = selectCusType;
+    }
+
     public DNTypeModel() {
     }
 
@@ -69,15 +78,17 @@ public class DNTypeModel implements  Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.CustomModel, flags);
-        dest.writeValue(this.DNCusType);
         dest.writeValue(this.DNType);
+        dest.writeValue(this.DNCusType);
+        dest.writeValue(this.SelectCusType);
+        dest.writeParcelable(this.CustomModel, flags);
     }
 
     protected DNTypeModel(Parcel in) {
-        this.CustomModel = in.readParcelable(com.xx.chinetek.model.Base.CustomModel.class.getClassLoader());
-        this.DNCusType = (Integer) in.readValue(Integer.class.getClassLoader());
         this.DNType = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.DNCusType = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.SelectCusType = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.CustomModel = in.readParcelable(com.xx.chinetek.model.Base.CustomModel.class.getClassLoader());
     }
 
     public static final Creator<DNTypeModel> CREATOR = new Creator<DNTypeModel>() {

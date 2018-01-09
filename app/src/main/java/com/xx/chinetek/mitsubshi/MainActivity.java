@@ -195,6 +195,10 @@ public class MainActivity extends BaseActivity {
                 ArrayList<CustomModel> customModels = returnMsgModel.getModelJson();
                 //插入数据
                 DbBaseInfo.getInstance().InsertCustomDB(customModels);
+                if(ParamaterModel.PartenerName==null ||  ParamaterModel.PartenerName.equals("")) {
+                    ParamaterModel.PartenerName = DbBaseInfo.getInstance().GetCustomNameById(ParamaterModel.PartenerID);
+                    SharePreferUtil.SetShare(context);
+                }
                 ParamaterModel.CustomSyncTime=returnMsgModel.getMessage();;
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare("CustomSyncTime",ParamaterModel.CustomSyncTime);

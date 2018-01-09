@@ -1,7 +1,6 @@
 package com.xx.chinetek.method.Sync;
 
 import android.os.Message;
-import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
@@ -148,6 +147,7 @@ public class SyncDN {
        String ErrorDN="";
        for(int i=0;i<DNfiles.length;i++) {
            Boolean isSelfDN=true;//判断单据是否为登陆代理商所有
+           Boolean isMitMaterials=false; //是否存在多条主数据记录
            DNModel dnModel = new DNModel();
            File file = DNfiles[i];
            String charSetName= FileUtil.GetCharSetName(file);
@@ -162,10 +162,10 @@ public class SyncDN {
                while ((line = reader.readLine()) != null) {
                    String[] lines = line.split(",");
                    String DNNo = lines[0].trim();
-                   if(firstIndex==0) {
+                   if (firstIndex == 0) {
                        dnModel = DbDnInfo.getInstance().GetLoaclDN(DNNo);
-                       if(dnModel==null){
-                           dnModel=new DNModel();
+                       if (dnModel == null) {
+                           dnModel = new DNModel();
                            dnModel.setSTATUS(1);
                            dnModel.setDN_STATUS("AC");
                        }
@@ -174,10 +174,10 @@ public class SyncDN {
                        dnModel.setAGENT_DN_NO(DNNo);
                        String cusNo = DbBaseInfo.getInstance().GetCustomName(lines[2].trim());
                        //判断代理商导入文件是否属于该代理商所有
-                       if(cusNo==null  || !cusNo.equals(ParamaterModel.PartenerID)) {
+                       if (cusNo == null || !cusNo.equals(ParamaterModel.PartenerID)) {
                            isSelfDN = false;
-                           dnModel=null;
-                           ErrorDN+=file.getName()+"\n";
+                           dnModel = null;
+                           ErrorDN += file.getName() + "\n";
                            break;
                        }
                        dnModel.setLEVEL_2_AGENT_NO(cusNo);
@@ -187,35 +187,44 @@ public class SyncDN {
                        dnModel.setCUSTOM_NAME(lines[3].trim());
                    }
 
-                       int lineno = Integer.parseInt(lines[1].trim());
-                       DNDetailModel dnDetailModel = DbDnInfo.getInstance().GetLoaclDNDetail(DNNo, lineno);
-                       if (dnDetailModel == null) {
-                           dnDetailModel = new DNDetailModel();
-                           dnDetailModel.setDETAIL_STATUS("1");
-                           dnDetailModel.setSTATUS(0);
-                       }
-                       dnDetailModel.setAGENT_DN_NO(DNNo);
-                       dnDetailModel.setLINE_NO(lineno);
-                       dnDetailModel.setITEM_NO(lines[4].trim());
-                       dnDetailModel.setGOLFA_CODE(lines[6].trim());
-                       if (TextUtils.isEmpty(lines[5].trim())) {
-                           String condition = dnDetailModel.getGOLFA_CODE() == null || TextUtils.isEmpty(dnDetailModel.getGOLFA_CODE()) ?
-                                   dnDetailModel.getITEM_NO() : dnDetailModel.getGOLFA_CODE();
-                           MaterialModel materialModel = DbBaseInfo.getInstance().GetItemName(condition);
-                           dnDetailModel.setITEM_NAME(materialModel == null ? "" : materialModel.getMAKTX());
-                       } else {
-                           dnDetailModel.setITEM_NAME(lines[5].trim());
-                       }
-                       int dnQty = Integer.parseInt(lines[7].trim());
-                       Qty += dnQty;
-                       dnDetailModel.setDN_QTY(dnQty);
-                       dnDetailModel.setOPER_DATE(new Date());
-                       int scanQTY = DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo, lines[6].trim(), lineno);
-                       dnDetailModel.setSCAN_QTY(scanQTY);
-                       dnDetailModels.add(dnDetailModel);
+                   int lineno = Integer.parseInt(lines[1].trim());
+                   DNDetailModel dnDetailModel = DbDnInfo.getInstance().GetLoaclDNDetail(DNNo, lineno);
+                   if (dnDetailModel == null) {
+                       dnDetailModel = new DNDetailModel();
+                       dnDetailModel.setDETAIL_STATUS("1");
+                       dnDetailModel.setSTATUS(0);
+                   }
+                   dnDetailModel.setAGENT_DN_NO(DNNo);
+                   dnDetailModel.setLINE_NO(lineno);
+                   dnDetailModel.setITEM_NO(lines[4].trim());
+                   dnDetailModel.setITEM_NAME(lines[5].trim());
+                   dnDetailModel.setGOLFA_CODE(lines[6].trim());
+                   dnDetailModel.setFlag(0);
+                   List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItems(lines[4].trim(), lines[5].trim(), lines[6].trim());
+                   if (materialModels!=null && materialModels.size() == 1) {
+                       dnDetailModel.setITEM_NO(materialModels.get(0).getMATNR());
+                       dnDetailModel.setITEM_NAME(materialModels.get(0).getMAKTX());
+                       dnDetailModel.setGOLFA_CODE(materialModels.get(0).getBISMT());
+                   }else if(materialModels.size() > 1) {
+                       dnDetailModel.setFlag(1);
+                       isMitMaterials = true;
+                   }
+                   if (dnDetailModel.getGOLFA_CODE().equals("")) {
+                       dnDetailModel.setFlag(1);
+                       isMitMaterials = true;
+                       dnDetailModel.setGOLFA_CODE("匹配主数据失败");
+                   }
+                   int dnQty = Integer.parseInt(lines[7].trim());
+                   Qty += dnQty;
+                   dnDetailModel.setDN_QTY(dnQty);
+                   dnDetailModel.setOPER_DATE(new Date());
+                   int scanQTY = DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo, lines[6].trim(), lineno);
+                   dnDetailModel.setSCAN_QTY(scanQTY);
+                   dnDetailModels.add(dnDetailModel);
 
                }
                if(isSelfDN) {
+                   dnModel.setFlag(isMitMaterials?1:0);
                    dnModel.setOPER_DATE(new Date());
                    dnModel.setDN_DATE(new Date());
                    dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());

@@ -99,7 +99,10 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
         listItemView.txtcustomer.setText(DNModel.getCUSTOM_NAME());
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);
-        } else {
+        }else if(DNModel.getFlag()!=null && DNModel.getFlag()==1){
+            convertView.setBackgroundResource(R.color.palevioletred);
+        }
+        else {
             convertView.setBackgroundResource(R.color.trans);
         }
         return convertView;

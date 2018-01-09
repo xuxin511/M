@@ -37,6 +37,7 @@ public class DNDetailModelDao extends AbstractDao<DNDetailModel, Void> {
         public final static Property OPER_DATE = new Property(7, java.util.Date.class, "OPER_DATE", false, "OPER__DATE");
         public final static Property SCAN_QTY = new Property(8, Integer.class, "SCAN_QTY", false, "SCAN__QTY");
         public final static Property STATUS = new Property(9, Integer.class, "STATUS", false, "STATUS");
+        public final static Property Flag = new Property(10, Integer.class, "Flag", false, "FLAG");
     }
 
     private DaoSession daoSession;
@@ -65,7 +66,8 @@ public class DNDetailModelDao extends AbstractDao<DNDetailModel, Void> {
                 "\"DETAIL__STATUS\" TEXT," + // 6: DETAIL_STATUS
                 "\"OPER__DATE\" INTEGER," + // 7: OPER_DATE
                 "\"SCAN__QTY\" INTEGER," + // 8: SCAN_QTY
-                "\"STATUS\" INTEGER);"); // 9: STATUS
+                "\"STATUS\" INTEGER," + // 9: STATUS
+                "\"FLAG\" INTEGER);"); // 10: Flag
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_DNDETAIL_MODEL_AGENT__DN__NO_LINE__NO ON \"DNDETAIL_MODEL\"" +
                 " (\"AGENT__DN__NO\" ASC,\"LINE__NO\" ASC);");
@@ -130,6 +132,11 @@ public class DNDetailModelDao extends AbstractDao<DNDetailModel, Void> {
         if (STATUS != null) {
             stmt.bindLong(10, STATUS);
         }
+ 
+        Integer Flag = entity.getFlag();
+        if (Flag != null) {
+            stmt.bindLong(11, Flag);
+        }
     }
 
     @Override
@@ -185,6 +192,11 @@ public class DNDetailModelDao extends AbstractDao<DNDetailModel, Void> {
         if (STATUS != null) {
             stmt.bindLong(10, STATUS);
         }
+ 
+        Integer Flag = entity.getFlag();
+        if (Flag != null) {
+            stmt.bindLong(11, Flag);
+        }
     }
 
     @Override
@@ -210,7 +222,8 @@ public class DNDetailModelDao extends AbstractDao<DNDetailModel, Void> {
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // DETAIL_STATUS
             cursor.isNull(offset + 7) ? null : new java.util.Date(cursor.getLong(offset + 7)), // OPER_DATE
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // SCAN_QTY
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9) // STATUS
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // STATUS
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10) // Flag
         );
         return entity;
     }
@@ -227,6 +240,7 @@ public class DNDetailModelDao extends AbstractDao<DNDetailModel, Void> {
         entity.setOPER_DATE(cursor.isNull(offset + 7) ? null : new java.util.Date(cursor.getLong(offset + 7)));
         entity.setSCAN_QTY(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
         entity.setSTATUS(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.setFlag(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
      }
     
     @Override

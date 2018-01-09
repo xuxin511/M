@@ -118,7 +118,9 @@ public class BulkuploadListItemAdapter extends BaseAdapter implements Filterable
         listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+ DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNModel.getAGENT_DN_NO()));
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);
-        } else {
+        } else if(DNModel.getFlag()!=null && DNModel.getFlag()==1){
+            convertView.setBackgroundResource(R.color.palevioletred);
+        }else {
             convertView.setBackgroundResource(R.color.trans);
         }
 

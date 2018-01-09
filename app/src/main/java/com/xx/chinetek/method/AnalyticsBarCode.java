@@ -94,6 +94,9 @@ public class AnalyticsBarCode {
                 barCodeModel.setCountry_Code(Barcode.substring(47,49).trim());
                 break;
         }
+        if(barCodeModel.getGolfa_Code()==null){
+            throw  new Exception(BaseApplication.context.getString(R.string.Msg_BarcodeNotmatch));
+        }
         barCodeModels.add(barCodeModel);
         return barCodeModels;
     }
