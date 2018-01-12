@@ -16,16 +16,16 @@ import java.util.ArrayList;
 public class AnalyticsBarCode {
 
 
-    public static ArrayList<BarCodeModel> CheckBarcode(String Barcode) throws Exception{
+    public static ArrayList<BarCodeModel> CheckBarcode(String Barcode,int selectRule) throws Exception{
 
         ArrayList<BarCodeModel> barCodeModels=new ArrayList<>();
         //判断是否启用非三菱条码
         Boolean isMitsubshiCode=true;
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
             int len=Barcode.length();
-            if(len== ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeLength()){
-                String KeyCode=Barcode.substring(ParamaterModel.baseparaModel.getCusBarcodeRule().getKeyStartIndex()-1,
-                        ParamaterModel.baseparaModel.getCusBarcodeRule().getKeyEndIndex());
+            if(len== ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules().get(selectRule).getBarcodeLength()){
+                String KeyCode=Barcode.substring(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules().get(selectRule).getKeyStartIndex()-1,
+                        ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules().get(selectRule).getKeyEndIndex());
                 MaterialModel materialModel= DbBaseInfo.getInstance().GetItemName(KeyCode);
                 if(materialModel==null) {//物料没有记录，非三菱条码
                     isMitsubshiCode=false;
@@ -33,7 +33,7 @@ public class AnalyticsBarCode {
                     barCodeModel.setGolfa_Code(KeyCode.trim());
                     barCodeModel.setMAT_TYPE(0); //非三菱
                     barCodeModel.setLINE_NO(null);
-                    SetNotMitSubshiCode(Barcode, barCodeModel);
+                    SetNotMitSubshiCode(Barcode, barCodeModel,selectRule);
                     barCodeModels.add(barCodeModel);
                 }
             }
@@ -48,14 +48,14 @@ public class AnalyticsBarCode {
         return  barCodeModels;
     }
 
-    private static void SetNotMitSubshiCode(String Barcode, BarCodeModel barCodeModel) {
-        String serialNo=Barcode.substring(ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialStartIndex()-1,
-                ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialEndIndex());
+    private static void SetNotMitSubshiCode(String Barcode, BarCodeModel barCodeModel,int selectRule) {
+        String serialNo=Barcode.substring(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules().get(selectRule).getSerialStartIndex()-1,
+                ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules().get(selectRule).getSerialEndIndex());
         barCodeModel.setSerial_Number(serialNo);
         barCodeModel.setOtherCode(new ArrayList<String>());
-        int otherSize=ParamaterModel.baseparaModel.getCusBarcodeRule().getOtherColumn().size();
+        int otherSize=ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules().get(selectRule).getOtherColumn().size();
         for(int i=0;i<otherSize;i++){
-           String[] indexs=ParamaterModel.baseparaModel.getCusBarcodeRule().getOtherColumn().get(i).split("-");
+           String[] indexs=ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules().get(selectRule).getOtherColumn().get(i).split("-");
            int start=Integer.parseInt(indexs[0].toString())-1;
            int end=Integer.parseInt(indexs[1].toString());
            String column=Barcode.substring(start,end);

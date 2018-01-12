@@ -13,14 +13,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.model.Paramater;
 import com.xx.chinetek.chineteklib.model.ReturnMsgModel;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
-import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
@@ -31,12 +29,9 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.method.SharePreferUtil;
-import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.model.Base.ParamaterModel;
-import com.xx.chinetek.model.Base.URLModel;
 import com.xx.chinetek.model.Base.UserInfoModel;
 
-import org.json.JSONObject;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -44,9 +39,7 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_Login;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_Login;
@@ -131,7 +124,7 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
-       // ParamaterModel.SerialNo="123456789";
+        ParamaterModel.SerialNo="123456789";
         if(ParamaterModel.SerialNo==null || TextUtils.isEmpty(ParamaterModel.SerialNo)){
             return;
         }
@@ -139,10 +132,10 @@ public class Login extends BaseActivity {
             unregisterReceiver(myReceiver); //取消MDM注册广播
             myReceiver=null;
         }
-        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
-            MessageBox.Show(context, getString(R.string.Msg_NotSupportModel));
-            return;
-        }
+//        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
+//            MessageBox.Show(context, getString(R.string.Msg_NotSupportModel));
+//            return;
+//        }
 
         if (TextUtils.isEmpty(ParamaterModel.PartenerID)) {
             MessageBox.Show(context, getString(R.string.Msg_No_Partner));
@@ -184,20 +177,20 @@ public class Login extends BaseActivity {
         userInfoModel.setUSER_CODE(ParamaterModel.Operater);
         ParamaterModel.userInfoModel=userInfoModel;
 //
-//        Intent intent = new Intent(context, MainActivity.class);
-//        startActivityLeft(intent);
+        Intent intent = new Intent(context, MainActivity.class);
+        startActivityLeft(intent);
 
-        if(ParamaterModel.Register!=null &&  ParamaterModel.Register.equals("1")) {
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivityLeft(intent);
-        }else {
-            final Map<String, String> params = new HashMap<String, String>();
-            String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
-            params.put("UserInfoJS", user);
-            String para = (new JSONObject(params)).toString();
-            LogUtil.WriteLog(SyncBase.class, TAG_Login, para);
-            RequestHandler.addRequest(Request.Method.POST, TAG_Login, mHandler, RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
-        }
+//        if(ParamaterModel.Register!=null &&  ParamaterModel.Register.equals("1")) {
+//                Intent intent = new Intent(context, MainActivity.class);
+//                startActivityLeft(intent);
+//        }else {
+//            final Map<String, String> params = new HashMap<String, String>();
+//            String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+//            params.put("UserInfoJS", user);
+//            String para = (new JSONObject(params)).toString();
+//            LogUtil.WriteLog(SyncBase.class, TAG_Login, para);
+//            RequestHandler.addRequest(Request.Method.POST, TAG_Login, mHandler, RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
+//        }
 
 
 

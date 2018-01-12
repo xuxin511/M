@@ -55,6 +55,29 @@ public class FTPsync extends BaseActivity{
     // 双击事件记录最近一次点击的ID
     private String  lastClickId;
 
+    @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
+    private boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+        if (position < 0) {
+            MessageBox.Show(context, "请先选择操作的行！");
+            return false;
+        }
+        DNModel dnModel = (DNModel) syncListItemAdapter.getItem(position);
+        //判断单号是否在本地重复
+        DNModel temp = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
+        if (temp != null) {
+            MessageBox.Show(context, getString(R.string.Msg_ExitDn) + dnModel.getAGENT_DN_NO());
+            return false;
+        }
+        if (dnModel.getFlag() == 1) { //存在多条物料主数据
+            Intent intent=new Intent(context,MultiMaterialSelect.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("DNModel", dnModel);
+            intent.putExtras(bundle);
+            startActivityForResult(intent,1001);
+        }
+        return true;
+    }
+
     // 双击事件记录最近一次点击的时间
     private long lastClickTime;
     @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemClickListener.class)
@@ -67,13 +90,13 @@ public class FTPsync extends BaseActivity{
                 MessageBox.Show(context, getString(R.string.Msg_ExitDn) + dnModel.getAGENT_DN_NO());
                 return;
             }
-            if (dnModel.getFlag() == 1) { //存在多条物料主数据
-                Intent intent=new Intent(context,MultiMaterialSelect.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("DNModel", dnModel);
-                intent.putExtras(bundle);
-                startActivityForResult(intent,1001);
-            }else {
+//            if (dnModel.getFlag() == 1) { //存在多条物料主数据
+//                Intent intent=new Intent(context,MultiMaterialSelect.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable("DNModel", dnModel);
+//                intent.putExtras(bundle);
+//                startActivityForResult(intent,1001);
+//            }else {
                 if (dnModel.getAGENT_DN_NO().equals(lastClickId)
                         && (Math.abs(lastClickTime - System.currentTimeMillis()) < 1000)) {
                     lastClickId = null;
@@ -87,11 +110,13 @@ public class FTPsync extends BaseActivity{
                     lastClickTime = System.currentTimeMillis();
                     syncListItemAdapter.modifyStates(position);
                 }
-            }
+           // }
         } catch (Exception ex) {
             MessageBox.Show(context, ex.toString());
         }
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -118,20 +143,20 @@ public class FTPsync extends BaseActivity{
         if(item.getItemId()==R.id.action_submit){
             try{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
-                Boolean isException=false;
+               // Boolean isException=false;
                 for(int i=0;i<dnModels.size();i++){
-                    if(dnModels.get(i).getFlag()==1){
-                        isException=true;
-                        break;
-                    }
+//                    if(dnModels.get(i).getFlag()==1){
+//                        isException=true;
+//                        break;
+//                    }
                     if (syncListItemAdapter.getStates(i)) {
                         Tempdnmodels.add(0, dnModels.get(i));
                     }
                 }
-                if(isException){ //存在多条物料主数据
-                    MessageBox.Show(context,getString(R.string.Msg_MitMaterialS));
-                    return false;
-                }
+//                if(isException){ //存在多条物料主数据
+//                    MessageBox.Show(context,getString(R.string.Msg_MitMaterialS));
+//                    return false;
+//                }
                 if (DownDN(Tempdnmodels)) return false;
 
             }catch(Exception ex){

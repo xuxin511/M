@@ -49,6 +49,9 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
                 "\"SPART\" TEXT," + // 2: SPART
                 "\"MAKTX\" TEXT," + // 3: MAKTX
                 "\"ZMAKTX\" TEXT);"); // 4: ZMAKTX
+        // Add Indexes
+        db.execSQL("CREATE INDEX " + constraint + "IDX_MATERIAL_MODEL_BISMT ON \"MATERIAL_MODEL\"" +
+                " (\"BISMT\" ASC);");
     }
 
     /** Drops the underlying database table. */

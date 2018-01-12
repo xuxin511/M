@@ -103,10 +103,16 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         super.initData();
         img_Remark.setVisibility(View.GONE);
         dnInfo = DbDnInfo.getInstance();
-        dnModel = getIntent().getParcelableExtra("DNModel");
-        dnModel.__setDaoSession(dnInfo.getDaoSession());
-        dndetailmodel = getIntent().getParcelableExtra("DNdetailModel");
+        int position=getIntent().getIntExtra("position",0);
+        String  dnno=getIntent().getStringExtra("DNno");
         int winModel = getIntent().getIntExtra("WinModel", 0);
+        dnModel=DbDnInfo.getInstance().GetLoaclDN(dnno);
+        dnModel.__setDaoSession(dnInfo.getDaoSession());
+        dndetailmodel=dnModel.getDETAILS().get(position);
+//        dnModel = getIntent().getParcelableExtra("DNModel");
+//        dnModel.__setDaoSession(dnInfo.getDaoSession());
+//        dndetailmodel = getIntent().getParcelableExtra("DNdetailModel");
+//        int winModel = getIntent().getIntExtra("WinModel", 0);
 
         //初始化数据
         txtDnNo.setText(dnModel.getDN_SOURCE() == 3 ? dnModel.getCUS_DN_NO().toString() : dnModel.getAGENT_DN_NO().toString());

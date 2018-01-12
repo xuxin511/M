@@ -4,14 +4,19 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Index;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by GHOST on 2017/10/25.
  */
 
-@Entity
+@Entity(
+        indexes = {
+                @Index(value = "BISMT" )//,STATUS
+        }
+)
 public class MaterialModel implements Parcelable {
 
     /**

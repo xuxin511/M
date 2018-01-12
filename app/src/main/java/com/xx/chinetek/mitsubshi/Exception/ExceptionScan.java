@@ -10,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.xx.chinetek.adapter.Exception.ExceptionScanItemAdapter;
@@ -27,11 +29,13 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.PlaySound;
 import com.xx.chinetek.method.Scan;
+import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.DN.DeliveryExceptionbarcode;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
+import com.xx.chinetek.model.Base.BarcodeRule;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -65,6 +69,10 @@ public class ExceptionScan extends BaseIntentActivity {
     TextView txtCustom;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
+    @ViewInject(R.id.txt_BarRule)
+    TextView txtBarRule;
+    @ViewInject(R.id.spin_barRule)
+    Spinner spinbarRule;
 
     ExceptionScanItemAdapter exceptionScanItemAdapter;
     ArrayList<DNDetailModel> dnDetailModels;
@@ -125,11 +133,30 @@ public class ExceptionScan extends BaseIntentActivity {
     @Override
     protected void initData() {
         super.initData();
+
         ErrorBarcodes=new ArrayList<>();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
         txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
+        if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
+            txtBarRule.setVisibility(View.VISIBLE);
+            ArrayList<String> barRules=new ArrayList();
+            if(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules()!=null) {
+                ArrayList<BarcodeRule> barcodeRules=ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules();
+                for (BarcodeRule rule:barcodeRules) {
+                    barRules.add(rule.getRuleName());
+                }
+            }
+            ArrayAdapter<String> adapter =new  ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            adapter.addAll(barRules);
+            spinbarRule.setAdapter(adapter);
+            spinbarRule.setSelection(ParamaterModel.DnTypeModel.getSelectRule());
+            spinbarRule.setPrompt(getString(R.string.choiceBarRules));
+        }
+
         dnModel.__setDaoSession(dnInfo.getDaoSession());
     }
 
@@ -190,7 +217,7 @@ public class ExceptionScan extends BaseIntentActivity {
 
     @Event(value = R.id.lsv_DeliveryScan,type = AdapterView.OnItemClickListener.class)
     private void lsvDeliveryScanonItemClick(AdapterView<?> parent, View view, int position, long id) {
-        final int flagposition=position;
+        final int flagposition = position;
         if (flagposition < 0) {
             MessageBox.Show(context, "请先选择操作的行！");
             return;
@@ -200,14 +227,17 @@ public class ExceptionScan extends BaseIntentActivity {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {
 //                        // TODO 自动生成的方法
-                        Intent intent=new Intent(context,ExceptionBarcodelist.class);
-                        Bundle bundle=new Bundle();
-                        DNDetailModel DNdetailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(flagposition);
-                        bundle.putParcelable("DNdetailModel",DNdetailModel);
-                        bundle.putParcelable("DNModel",dnModel);
-                         bundle.putInt("WinModel",1);
-                        intent.putExtras(bundle);
-                        startActivityLeft(intent);
+        Intent intent = new Intent(context, ExceptionBarcodelist.class);
+        // Bundle bundle=new Bundle();
+        // DNDetailModel DNdetailModel= (DNDetailModel)exceptionScanItemAdapter.getItem(flagposition);
+        // bundle.putParcelable("DNdetailModel",DNdetailModel);
+        // bundle.putParcelable("DNModel",dnModel);
+        //  bundle.putInt("WinModel",1);
+        //  intent.putExtras(bundle);
+        intent.putExtra("position", position);
+        intent.putExtra("DNno", dnModel.getAGENT_DN_NO());
+        intent.putExtra("WinModel", 1);
+        startActivityLeft(intent);
 
 //                    }
 //                }).setNegativeButton("取消", null).show();
@@ -286,6 +316,17 @@ public class ExceptionScan extends BaseIntentActivity {
                             }
                         })
                         .setNegativeButton("取消", null).show();
+            }else{
+                new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO 自动生成的方法
+                                DelDNDetailmodel(context, detailModel, dnModel);
+                                GetDeliveryOrderScanList();
+
+                            }
+                        }).setNegativeButton("取消", null).show();
             }
         }else {
             new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
@@ -323,8 +364,9 @@ public class ExceptionScan extends BaseIntentActivity {
                 MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
                 return true;
             }
-
-            ArrayList<BarCodeModel> barCodeModels = AnalyticsBarCode.CheckBarcode(barcode);
+            ParamaterModel.DnTypeModel.setSelectRule(spinbarRule.getSelectedItemPosition());
+            SharePreferUtil.SetDNTypeShare(context,ParamaterModel.DnTypeModel);
+            ArrayList<BarCodeModel> barCodeModels = AnalyticsBarCode.CheckBarcode(barcode,ParamaterModel.DnTypeModel.getSelectRule());
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItemNames(barCodeModels.get(0).getGolfa_Code());
                 if (dnModel.getDN_SOURCE() == 3) { //自建
@@ -392,7 +434,7 @@ public class ExceptionScan extends BaseIntentActivity {
 //                dnModel.setCUSTOM_NAME(ParamaterModel.DnTypeModel.getCustomModel().getNAME());
 //            }
 //        }
-        dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
+       // dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
         return SaveScanInfo();
     }
 
@@ -470,8 +512,9 @@ public class ExceptionScan extends BaseIntentActivity {
         dnDetailModel.setSTATUS(0);
         dnDetailModel.setOPER_DATE(new Date());
         //多条主数据
-        dnDetailModel.setFlag(materialModels!=null && materialModels.size()==1?0:1);
-        dnModel.setFlag(materialModels!=null && materialModels.size()==1?0:1);
+        boolean isError=(materialModels!=null && materialModels.size()==1) || barCodeModel.getMAT_TYPE()==0;
+        dnDetailModel.setFlag(isError?0:1);
+        dnModel.setFlag(isError?0:1);
 
         if(materialModels!=null && materialModels.size()>0) {
             MaterialModel materialModel = materialModels.get(0);

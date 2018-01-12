@@ -8,17 +8,44 @@
     tools:context="com.xx.chinetek.mitsubshi.DN.DeliveryScan">
 
 
+    <Spinner
+        android:id="@+id/spin_barRule"
+        style="@style/Platform.Widget.AppCompat.Spinner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        android:spinnerMode="dialog"
+        android:theme="@style/AlertDialog.AppCompat.Light"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_BarRule"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txt_BarRule"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <TextView
+        android:id="@+id/txt_BarRule"
+        style="@style/TextViewComminStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimary"
+        android:text="@string/barRules"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         style="@style/LayoutStyle"
         android:layout_width="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/spin_barRule"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_Remark">
@@ -123,7 +150,6 @@
         android:id="@+id/img_Remark"
         android:layout_width="39dp"
         android:layout_height="28dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_DnNo"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/remark" />
@@ -137,5 +163,12 @@
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/error" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.32" />
 
 </android.support.constraint.ConstraintLayout>

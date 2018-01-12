@@ -77,7 +77,11 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                             for(int i=0;i<SelectDnModels.size();i++){
                                 MoveFiles[i]=SelectDnModels.get(i).getFtpFileName();
                             }
-                            FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(),MoveFiles);
+                            try {
+                                FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(), MoveFiles);
+                            }catch (Exception ex){
+
+                            }
                         }
                     }.start();
                     dialog.dismiss();

@@ -43,7 +43,8 @@
         <activity android:name=".Query.QueryList" />
         <activity android:name=".Setting_CusBarcodeRule" />
         <activity android:name=".Setting_ToMailList" />
-        <activity android:name=".DN.MultiMaterialSelect"></activity>
+        <activity android:name=".DN.MultiMaterialSelect" />
+        <activity android:name=".Setting_BarcodeRules"></activity>
     </application>
 
 </manifest>

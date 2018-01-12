@@ -71,7 +71,7 @@ public class Scan {
      * @param index
      * @return
      */
-    private static int Checkbarcode(DbDnInfo dnInfo,DNModel dnModel,ArrayList<BarCodeModel> barCodeModels, List<DNDetailModel> dnDetailModels, int index) {
+    private static int Checkbarcode(DbDnInfo dnInfo,DNModel dnModel,ArrayList<BarCodeModel> barCodeModels, List<DNDetailModel> dnDetailModels, int index) throws  Exception{
         int isErrorStatus=-1;
         List<DNScanModel> dnScanModels=new ArrayList<>();
         for(DNDetailModel dnDetailModel:dnDetailModels){
@@ -115,11 +115,12 @@ public class Scan {
             dnScanModel.setMAT_TYPE(barCodeModel.getMAT_TYPE());
             dnScanModel.setSTATUS("0");
             setOtherColumn(barCodeModel, dnScanModel);
-
+            DbDnInfo.getInstance().InsertDNScanModel(dnScanModel);
             dnDetailModels.get(index).setOPER_DATE(new Date());
             dnDetailModels.get(index).getSERIALS().add(dnScanModel);
             dnDetailModels.get(index).setDETAIL_STATUS("AC");
             dnDetailModels.get(index).setSTATUS(0);
+            DbDnInfo.getInstance().InsertDNDetailDB(dnDetailModels.get(index));
         }
         return isErrorStatus;
     }

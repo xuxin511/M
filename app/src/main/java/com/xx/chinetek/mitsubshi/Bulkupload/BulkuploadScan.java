@@ -2,11 +2,8 @@ package com.xx.chinetek.mitsubshi.Bulkupload;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-
 import android.view.View;
 import android.widget.AdapterView;
-
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -85,12 +82,15 @@ public class BulkuploadScan extends BaseIntentActivity {
 //        startActivityLeft(intent);
 
         Intent intent=new Intent(context,ExceptionBarcodelist.class);
-        Bundle bundle=new Bundle();
-        DNDetailModel DNdetailModel= (DNDetailModel)bulkuploadScanItemAdapter.getItem(position);
-        bundle.putParcelable("DNdetailModel",DNdetailModel);
-        bundle.putParcelable("DNModel",dnModel);
-        bundle.putInt("WinModel",0);
-        intent.putExtras(bundle);
+        //Bundle bundle=new Bundle();
+        //DNDetailModel DNdetailModel= (DNDetailModel)bulkuploadScanItemAdapter.getItem(position);
+        intent.putExtra("position",position);
+        intent.putExtra("DNno",dnModel.getAGENT_DN_NO());
+        intent.putExtra("WinModel",0);
+//        bundle.putParcelable("DNdetailModel",DNdetailModel);
+//        bundle.putParcelable("DNModel",dnModel);
+//        bundle.putInt("WinModel",0);
+//        intent.putExtras(bundle);
         startActivityLeft(intent);
 
 

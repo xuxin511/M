@@ -59,6 +59,7 @@
     <string name="Setting_Save">保存</string>
     <string name="Setting_ParaUpload">参数上传</string>
     <string name="Setting_Clear">重置</string>
+    <string name="Setting_add">新增</string>
     <string name="Setting_StartWords">起始字符：</string>
     <string name="Setting_serialnomax">最大序列号长度：</string>
     <string name="Setting_BarcodeLength">条码长度：</string>
@@ -74,8 +75,10 @@
 
 
     <string name="sendType">发货方式：</string>
+    <string name="barRules">解析规则：</string>
     <string name="sendCompany">收货方：</string>
     <string name="choiceSendType">请选择收货方式：</string>
+    <string name="choiceBarRules">请选择解析规则：</string>
     <string name="choiceSendCusttom">请选择收货方：</string>
     <string name="supplier">代理商：</string>
     <string name="custom">客户：</string>
@@ -140,6 +143,7 @@
     <string name="Msg_ExceptionDN">出库单存在异常\n请至异常模块处理！</string>
     <string name="Msg_DNNORepert">出库单单号与后台重复\n请更改单号之后提交</string>
     <string name="Msg_InputPassword">请输入管理员密码</string>
+    <string name="Msg_Inputname">请输入扫描规则名称</string>
     <string name="Msg_SetbarcodeRule">请设置条码规则</string>
     <string name="Msg_maxlength">请设置序列号最大长度</string>
     <string name="Msg_InputCustom">请输入代理商编号</string>

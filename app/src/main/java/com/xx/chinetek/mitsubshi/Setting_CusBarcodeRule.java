@@ -1,6 +1,8 @@
 package com.xx.chinetek.mitsubshi;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,8 +19,7 @@ import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
-import com.xx.chinetek.model.Base.CusBarcodeRule;
-import com.xx.chinetek.model.Base.ParamaterModel;
+import com.xx.chinetek.model.Base.BarcodeRule;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -53,7 +54,8 @@ public class Setting_CusBarcodeRule extends BaseActivity {
 
     BarcodeRuleItemAdapter barcodeRuleItemAdapter;
 
-    CusBarcodeRule cusBarcodeRule;
+    BarcodeRule barcodeRule;
+    int position=0;
 
     @Override
     protected void initViews() {
@@ -65,14 +67,15 @@ public class Setting_CusBarcodeRule extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
-        if(ParamaterModel.baseparaModel.getCusBarcodeRule()==null)
-            ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
-        edtBarcodeLength.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeLength().toString());
-        edtKeyStart.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getKeyStartIndex().toString());
-        edtKeyEnd.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getKeyEndIndex().toString());
-        edtSerialStart.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialStartIndex().toString());
-        edtSerialEnd.setText(ParamaterModel.baseparaModel.getCusBarcodeRule().getSerialEndIndex().toString());
-        cusBarcodeRule=ParamaterModel.baseparaModel.getCusBarcodeRule();
+        barcodeRule=getIntent().getParcelableExtra("barcodeRule");
+        position=getIntent().getIntExtra("position",0);
+        if(barcodeRule!=null) {
+            edtBarcodeLength.setText(barcodeRule.getBarcodeLength().toString());
+            edtKeyStart.setText(barcodeRule.getKeyStartIndex().toString());
+            edtKeyEnd.setText(barcodeRule.getKeyEndIndex().toString());
+            edtSerialStart.setText(barcodeRule.getSerialStartIndex().toString());
+            edtSerialEnd.setText(barcodeRule.getSerialEndIndex().toString());
+        }
         BindView();
     }
 
@@ -93,25 +96,31 @@ public class Setting_CusBarcodeRule extends BaseActivity {
             editTexts.add(edtSerialEnd);
             if(CheckEmpty(editTexts)) return true;
             if(CheckNumeric(editTexts)) return true;
-            Integer barcodeLength=Integer.parseInt(edtBarcodeLength.getText().toString().trim());
+            final  Integer barcodeLength=Integer.parseInt(edtBarcodeLength.getText().toString().trim());
             if(CheckLength(edtKeyStart,edtKeyEnd,barcodeLength)) return true;
             if(CheckLength(edtSerialStart,edtSerialEnd,barcodeLength)) return true;
-            Integer KeyStartLength=Integer.parseInt(edtKeyStart.getText().toString().trim());
-            Integer KeyEndLength=Integer.parseInt(edtKeyEnd.getText().toString().trim());
-            Integer SerialStartLength=Integer.parseInt(edtSerialStart.getText().toString().trim());
-            Integer SerialEndLength=Integer.parseInt(edtSerialEnd.getText().toString().trim());
 
-            cusBarcodeRule.setBarcodeLength(barcodeLength);
-            cusBarcodeRule.setKeyStartIndex(KeyStartLength);
-            cusBarcodeRule.setKeyEndIndex(KeyEndLength);
-            cusBarcodeRule.setSerialStartIndex(SerialStartLength);
-            cusBarcodeRule.setSerialEndIndex(SerialEndLength);
-            Intent mIntent = new Intent();
-            Bundle bundle=new Bundle();
-            bundle.putParcelable("cusBarcodeRule",cusBarcodeRule);
-            mIntent.putExtras(bundle);
-            setResult(1, mIntent);
-            closeActiviry();
+            if(barcodeRule.getRuleName()!=null && !TextUtils.isEmpty(barcodeRule.getRuleName())){
+                save(barcodeLength);
+            }else {
+                final EditText et = new EditText(this);
+                et.setTextColor(getResources().getColor(R.color.black));
+                new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_Inputname))
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setView(et)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String name = et.getText().toString();
+                                if (TextUtils.isEmpty(name))
+                                    return;
+                                barcodeRule.setRuleName(name);
+                                save(barcodeLength);
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+
+            }
         }
         if(item.getItemId()==R.id.action_Clear){
             edtBarcodeLength.setText("0");
@@ -119,10 +128,30 @@ public class Setting_CusBarcodeRule extends BaseActivity {
             edtKeyEnd.setText("0");
             edtSerialStart.setText("0");
             edtSerialEnd.setText("0");
-            cusBarcodeRule=new CusBarcodeRule();
+            barcodeRule=new BarcodeRule();
             BindView();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    void save(int barcodeLength){
+        Integer KeyStartLength=Integer.parseInt(edtKeyStart.getText().toString().trim());
+        Integer KeyEndLength=Integer.parseInt(edtKeyEnd.getText().toString().trim());
+        Integer SerialStartLength=Integer.parseInt(edtSerialStart.getText().toString().trim());
+        Integer SerialEndLength=Integer.parseInt(edtSerialEnd.getText().toString().trim());
+
+        barcodeRule.setBarcodeLength(barcodeLength);
+        barcodeRule.setKeyStartIndex(KeyStartLength);
+        barcodeRule.setKeyEndIndex(KeyEndLength);
+        barcodeRule.setSerialStartIndex(SerialStartLength);
+        barcodeRule.setSerialEndIndex(SerialEndLength);
+        Intent mIntent = new Intent();
+        Bundle bundle=new Bundle();
+        bundle.putParcelable("barcodeRule",barcodeRule);
+        bundle.putInt("position",position);
+        mIntent.putExtras(bundle);
+        setResult(1, mIntent);
+        closeActiviry();
     }
 
     @Event(R.id.btn_SaveRule)
@@ -137,10 +166,10 @@ public class Setting_CusBarcodeRule extends BaseActivity {
         Integer barcodeLength=Integer.parseInt(edtBarcodeLength.getText().toString().trim());
         if(CheckLength(edtotherStart,edtotherEnd,barcodeLength)) return;
 
-        if(cusBarcodeRule.getOtherColumn()==null)
-            cusBarcodeRule.setOtherColumn(new ArrayList<String>());
-        if(cusBarcodeRule.getOtherColumn().size()<=6) {
-            cusBarcodeRule.getOtherColumn().add(edtotherStart.getText() + "-" + edtotherEnd.getText());
+        if(barcodeRule.getOtherColumn()==null)
+            barcodeRule.setOtherColumn(new ArrayList<String>());
+        if(barcodeRule.getOtherColumn().size()<=6) {
+            barcodeRule.getOtherColumn().add(edtotherStart.getText() + "-" + edtotherEnd.getText());
             BindView();
         }else{
             MessageBox.Show(context,getString(R.string.Error_maxLength));
@@ -151,8 +180,8 @@ public class Setting_CusBarcodeRule extends BaseActivity {
     }
 
     void  BindView(){
-        if(cusBarcodeRule!=null) {
-            barcodeRuleItemAdapter = new BarcodeRuleItemAdapter(context, cusBarcodeRule.getOtherColumn());
+        if(barcodeRule!=null) {
+            barcodeRuleItemAdapter = new BarcodeRuleItemAdapter(context, barcodeRule.getOtherColumn());
             lsvCusbarcode.setAdapter(barcodeRuleItemAdapter);
         }
 

@@ -24,6 +24,7 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
@@ -34,6 +35,7 @@ import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.SyncParaModel;
+import com.xx.chinetek.model.DN.DNTypeModel;
 import com.xx.chinetek.model.DN.DeletedDN;
 
 import org.xutils.view.annotation.ContentView;
@@ -105,6 +107,11 @@ public class MainActivity extends BaseActivity {
         List<Map<String, Object>> data_list = getData();
         adapter = new GridViewItemAdapter(context,data_list);
         gridView.setAdapter(adapter);
+        ParamaterModel.DnTypeModel= SharePreferUtil.ReadDNTypeShare(context);
+        if(ParamaterModel.DnTypeModel==null) {
+            ParamaterModel.DnTypeModel=new DNTypeModel();
+            ParamaterModel.DnTypeModel.setSelectRule(0);
+        }
     }
 
     @Event(value = R.id.gv_Function,type = AdapterView.OnItemClickListener.class)
@@ -231,6 +238,7 @@ public class MainActivity extends BaseActivity {
                             .replace("#","{").replace("?",":");
                     Type type = new TypeToken<BaseparaModel>(){}.getType();
                     ParamaterModel.baseparaModel=GsonUtil.parseJsonToModel(ParaString,type);
+                    FtpUtil.ftp=null;
                     SharePreferUtil.SetShare(context);
                 }
                 //保存同步时间

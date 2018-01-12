@@ -31,6 +31,9 @@ public class DNTypeModel implements  Parcelable {
     private Integer DNCusType;
 
     private Integer SelectCusType=0;
+
+    private Integer SelectRule=0;
+
     /**
      * 发货方信息
      */
@@ -60,6 +63,14 @@ public class DNTypeModel implements  Parcelable {
         CustomModel = customModel;
     }
 
+    public Integer getSelectRule() {
+        return SelectRule;
+    }
+
+    public void setSelectRule(Integer selectRule) {
+        SelectRule = selectRule;
+    }
+
     public Integer getSelectCusType() {
         return SelectCusType;
     }
@@ -81,6 +92,7 @@ public class DNTypeModel implements  Parcelable {
         dest.writeValue(this.DNType);
         dest.writeValue(this.DNCusType);
         dest.writeValue(this.SelectCusType);
+        dest.writeValue(this.SelectRule);
         dest.writeParcelable(this.CustomModel, flags);
     }
 
@@ -88,6 +100,7 @@ public class DNTypeModel implements  Parcelable {
         this.DNType = (Integer) in.readValue(Integer.class.getClassLoader());
         this.DNCusType = (Integer) in.readValue(Integer.class.getClassLoader());
         this.SelectCusType = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.SelectRule = (Integer) in.readValue(Integer.class.getClassLoader());
         this.CustomModel = in.readParcelable(com.xx.chinetek.model.Base.CustomModel.class.getClassLoader());
     }
 

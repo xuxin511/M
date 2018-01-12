@@ -201,18 +201,20 @@ public class SyncDN {
                    dnDetailModel.setGOLFA_CODE(lines[6].trim());
                    dnDetailModel.setFlag(0);
                    List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItems(lines[4].trim(), lines[5].trim(), lines[6].trim());
-                   if (materialModels!=null && materialModels.size() == 1) {
+                   if (materialModels!=null && materialModels.size() > 0) {//materialModels.size() == 1
                        dnDetailModel.setITEM_NO(materialModels.get(0).getMATNR());
                        dnDetailModel.setITEM_NAME(materialModels.get(0).getMAKTX());
                        dnDetailModel.setGOLFA_CODE(materialModels.get(0).getBISMT());
-                   }else if(materialModels.size() > 1) {
+                   }//else
+                   if(materialModels.size() > 1) {
                        dnDetailModel.setFlag(1);
                        isMitMaterials = true;
                    }
                    if (dnDetailModel.getGOLFA_CODE().equals("")) {
-                       dnDetailModel.setFlag(1);
-                       isMitMaterials = true;
-                       dnDetailModel.setGOLFA_CODE("匹配主数据失败");
+                       //dnDetailModel.setFlag(1);
+                      // isMitMaterials = true;
+                       //dnDetailModel.setGOLFA_CODE("匹配主数据失败");
+                       continue;
                    }
                    int dnQty = Integer.parseInt(lines[7].trim());
                    Qty += dnQty;

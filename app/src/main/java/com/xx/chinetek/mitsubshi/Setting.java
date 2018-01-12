@@ -33,6 +33,7 @@ import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.FTP.FtpModel;
+import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailModel;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.model.Base.BaseparaModel;
@@ -264,7 +265,7 @@ public class Setting extends BaseActivity {
             ckSelfBarcode.setChecked(false);
             return;
         }
-        Intent intent=new Intent(context,Setting_CusBarcodeRule.class);
+        Intent intent=new Intent(context,Setting_BarcodeRules.class);
         startActivityForResult(intent,1001);
     }
 
@@ -431,6 +432,7 @@ public class Setting extends BaseActivity {
             ParamaterModel.baseparaModel.getCusDnnoRule().setStartWords(startwordsCusDN==null?"":startwordsCusDN);
             ParamaterModel.baseparaModel.getCusDnnoRule().setIndexLength(indexLength);
         }
+
         if(ParamaterModel.baseparaModel.getMailModel()==null) ParamaterModel.baseparaModel.setMailModel(new MailModel());
         ParamaterModel.baseparaModel.getMailModel().setAccount(edtMailAccount.getText().toString().trim());
         ParamaterModel.baseparaModel.getMailModel().setPassword(edtMailPassword.getText().toString().trim());
@@ -445,7 +447,7 @@ public class Setting extends BaseActivity {
         ParamaterModel.baseparaModel.getFtpModel().setFtpPort(Integer.parseInt(edtFtpPort.getText().toString().trim()));
         ParamaterModel.baseparaModel.getFtpModel().setFtpDownLoad(edtFtpDown.getText().toString().trim());
         ParamaterModel.baseparaModel.getFtpModel().setFtpUpLoad(edtFtpUp.getText().toString().trim());
-
+        FtpUtil.ftp=null;
         SharePreferUtil.SetShare(context);
     }
 

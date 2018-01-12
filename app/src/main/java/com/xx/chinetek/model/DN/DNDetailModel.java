@@ -98,7 +98,7 @@ public class DNDetailModel implements Parcelable {
         DNDetailModel that = (DNDetailModel) o;
         boolean eq=false;
         boolean lin=true;
-        if(ITEM_NO!=null){
+        if(ITEM_NO!=null && that.ITEM_NO!=null){
             eq=ITEM_NO.trim().equals(that.ITEM_NO.trim());
         }
 

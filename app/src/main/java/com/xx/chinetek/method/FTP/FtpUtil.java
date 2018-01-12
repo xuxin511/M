@@ -15,7 +15,7 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
  */
 
 public class FtpUtil {
-    private static FtpHelper ftp;
+    public static FtpHelper ftp;
     public static void FtpDownDN(FtpModel ftpModel, MyHandler<BaseActivity> mHandler ) throws Exception {
         int total = 0;
         if (ftp == null) {
@@ -34,8 +34,7 @@ public class FtpUtil {
         mHandler.sendMessage(msg);
     }
 
-    public static void FtpMoveFile(FtpModel ftpModel,String[] moveFiles){
-        try {
+    public static void FtpMoveFile(FtpModel ftpModel,String[] moveFiles) throws Exception{
             if (ftp == null) {
                 ftp = new FtpHelper(ftpModel);
             }
@@ -46,13 +45,10 @@ public class FtpUtil {
             if (ftp.isConnect()) {
                 ftp.closeConnect();
             }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
     }
 
-    public static void FtpUploadDN(FtpModel ftpModel,File[] files, MyHandler<BaseActivity> mHandler ) {
+    public static void FtpUploadDN(FtpModel ftpModel,File[] files, MyHandler<BaseActivity> mHandler ) throws Exception{
         try {
             int total = 0;
             if (ftp == null) {

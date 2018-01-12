@@ -39,6 +39,9 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
 
     }
 
+    public void modify(){
+            notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {

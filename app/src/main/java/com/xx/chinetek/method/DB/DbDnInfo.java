@@ -87,12 +87,33 @@ public class DbDnInfo {
             dnModelDao.detachAll();
             for(DNModel  dnModel :dnModels){
                 dnDetailModelDao.insertOrReplaceInTx(dnModel.getDETAILS());
-                dnDetailModelDao.detachAll();
                 for(DNDetailModel  dnDetailModel:dnModel.getDETAILS()){
                     dnScanModelDao.insertOrReplaceInTx(dnDetailModel.getSERIALS());
-                    dnScanModelDao.detachAll();
                 }
+                dnScanModelDao.detachAll();
             }
+            dnDetailModelDao.detachAll();
+        }
+    }
+
+    public void InsertDNDetailDB(DNDetailModel dnDetailModel) throws Exception{
+        if(dnDetailModel!=null ) {
+            dnDetailModelDao.insertOrReplace(dnDetailModel);
+            dnDetailModelDao.detachAll();
+        }
+    }
+
+    public void InsertDNModel(DNModel dnModel) throws Exception{
+        if(dnModel!=null ) {
+            dnModelDao.insertOrReplace(dnModel);
+            dnModelDao.detachAll();
+        }
+    }
+
+    public void InsertDNScanModel(DNScanModel dnScanModel) throws Exception{
+        if(dnScanModel!=null ) {
+            dnScanModelDao.insertOrReplace(dnScanModel);
+            dnScanModelDao.detachAll();
         }
     }
 

@@ -113,7 +113,11 @@ public class UploadDN {
                     new Thread(){
                         @Override
                         public void run() {
-                            FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(),new String[]{subdnModel.getFtpFileName()});
+                            try {
+                                FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(), new String[]{subdnModel.getFtpFileName()});
+                            }catch (Exception ex){
+
+                            }
                         }
                     }.start();
                 }
