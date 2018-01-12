@@ -82,7 +82,7 @@ public class FtpHelper {
      *
      * @throws IOException
      */
-    public void openConnect() throws IOException {
+    public void openConnect() throws Exception {
         // 中文转码
         ftpClient.setControlEncoding("UTF-8");
         int reply; // 服务器响应值
@@ -127,7 +127,7 @@ public class FtpHelper {
      *
      * @throws IOException
      */
-    public void closeConnect() throws IOException {
+    public void closeConnect() throws Exception {
         if (ftpClient != null) {
             // 登出FTP
             ftpClient.logout();
@@ -152,7 +152,7 @@ public class FtpHelper {
      * @return FTPFile集合
      * @throws IOException
      */
-    public List<FTPFile> listFiles(String remotePath) throws IOException {
+    public List<FTPFile> listFiles(String remotePath) throws Exception {
         List<FTPFile> list = new ArrayList<>();
         // 获取文件
         ftpClient.changeWorkingDirectory(remotePath);
@@ -171,7 +171,7 @@ public class FtpHelper {
      * @return Result
      * @throws IOException
      */
-    public boolean downloadFile(String remotePath, String fileName, String localPath) throws IOException {
+    public boolean downloadFile(String remotePath, String fileName, String localPath) throws Exception {
         boolean result = false;
         // 初始化FTP当前目录
         currentPath = remotePath;
@@ -200,7 +200,7 @@ public class FtpHelper {
      * @return
      * @throws IOException
      */
-    public int deleteFolder(String remotePath) throws IOException{
+    public int deleteFolder(String remotePath) throws Exception{
         //删除的数量
         int fileCount = 0;
         // 初始化FTP当前目录
@@ -234,7 +234,7 @@ public class FtpHelper {
      * @return Result 成功下载的文件数量
      * @throws IOException
      */
-    public int downloadFolder(String remotePath, String localPath) throws IOException {
+    public int downloadFolder(String remotePath, String localPath) throws Exception {
         //下载的数量
         int fileCount = 0;
         // 初始化FTP当前目录
@@ -277,7 +277,7 @@ public class FtpHelper {
      * @return true下载成功, false下载失败
      * @throws IOException
      */
-    private boolean downloadSingle(File localFile, FTPFile ftpFile) throws IOException {
+    private boolean downloadSingle(File localFile, FTPFile ftpFile) throws Exception {
         boolean flag;
         // 创建输出流
         OutputStream outputStream = new FileOutputStream(localFile);
@@ -296,7 +296,7 @@ public class FtpHelper {
      * @return 上传结果
      * @throws IOException
      */
-    public boolean uploadFile(String localFilePath, String remotePath) throws IOException {
+    public boolean uploadFile(String localFilePath, String remotePath) throws Exception {
         boolean flag = false;
         // 初始化FTP当前目录
         currentPath = remotePath;
@@ -322,7 +322,7 @@ public class FtpHelper {
      * @return 上传结果
      * @throws IOException
      */
-    public int uploadFolder(String localFolderPath, String remotePath) throws IOException {
+    public int uploadFolder(String localFolderPath, String remotePath) throws Exception {
         //
         int count = 0;
         boolean flag = false;
@@ -366,7 +366,7 @@ public class FtpHelper {
      * @return true上传成功, false上传失败
      * @throws IOException
      */
-    public boolean uploadingSingle(File localFile) throws IOException {
+    public boolean uploadingSingle(File localFile) throws Exception {
         boolean flag;
         // 创建输入流
         InputStream inputStream = new FileInputStream(localFile);
@@ -383,7 +383,7 @@ public class FtpHelper {
      * @return
      * @throws IOException
      */
-    public boolean MoveFile(String remotePath,String moveFile,String bakPath) throws IOException {
+    public boolean MoveFile(String remotePath,String moveFile,String bakPath) throws Exception {
         boolean flag=false;
         try {
             createFolder(bakPath);
