@@ -8,6 +8,8 @@ import android.os.Message;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
@@ -84,7 +86,8 @@ public class QRScan extends BaseIntentActivity {
                 }
             }
         }catch (Exception  ex){
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(QRScan.class,"QRScan-ImportQRScanInfo", ex.toString());
         }
     }
 

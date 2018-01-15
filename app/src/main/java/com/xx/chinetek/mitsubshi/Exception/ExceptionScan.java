@@ -114,7 +114,8 @@ public class ExceptionScan extends BaseIntentActivity {
                     LogUtil.WriteLog(ExceptionBarcodelist.class, TAG_ScanBarcode, (String) msg.obj);
                     CheckScanBarcode((String) msg.obj);
                 } catch (Exception ex) {
-                    MessageBox.Show(context, ex.getMessage());
+                    ToastUtil.show(ex.getMessage());
+                    LogUtil.WriteLog(ExceptionScan.class,"ExceptionScan-CheckScanBarcode", ex.toString());
                 }
                 break;
             case NetworkError.NET_ERROR_CUSTOM:

@@ -13,6 +13,8 @@ import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
@@ -74,7 +76,8 @@ public class DNsync extends BaseActivity{
                 syncListItemAdapter.modifyStates(position);
             }
         }catch(Exception ex){
-            MessageBox.Show(context,ex.toString());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(DNsync.class,"DNsync-DownDN", ex.toString());
         }
     }
 

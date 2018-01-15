@@ -100,7 +100,8 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
                     break;
             }
         } catch (Exception ex) {
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(ExceptionList.class,"QueryList-SyncExceptionDN", ex.toString());
         }
     }
 
@@ -232,7 +233,8 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
 //                }
 //            }).show();
         }catch(Exception ex){
-            MessageBox.Show(context,ex.toString());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(ExceptionList.class,"QueryList-LsvExceptionListonItemClick", ex.toString());
         }
 
 

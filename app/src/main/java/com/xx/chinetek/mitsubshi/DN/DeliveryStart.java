@@ -137,17 +137,6 @@ public class DeliveryStart extends BaseActivity {
                 //新增客户
                 if (partnerItemAdapter.getCount() == 0) {
                     UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
-//                    new AlertDialog.Builder(context).setTitle(getResources().getString(R.string.Msg_New_Custom))// 设置对话框标题
-//                            .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
-//                            .setMessage(code)
-//                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                                }
-//                            })
-//                            .setNegativeButton("取消", null)
-//                            .show();
                     CommonUtil.setEditFocus(edtContentText);
                     return;
                 }
@@ -315,7 +304,8 @@ public class DeliveryStart extends BaseActivity {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
         }catch (Exception ex) {
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(DeliveryStart.class,"DeliveryStart-UploadCus", ex.toString());
         }
     }
 

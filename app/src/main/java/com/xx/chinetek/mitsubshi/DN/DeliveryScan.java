@@ -132,7 +132,12 @@ public class DeliveryScan extends BaseIntentActivity {
                 break;
             case TAG_SCAN:
                 LogUtil.WriteLog(DeliveryScan.class, TAG_ScanBarcode, (String) msg.obj);
-                CheckScanBarcode((String) msg.obj);
+                try {
+                    CheckScanBarcode((String) msg.obj);
+                }catch (Exception ex){
+                    ToastUtil.show(ex.getMessage());
+                    LogUtil.WriteLog(DeliveryScan.class,"DeliveryScan-CheckScanBarcode", ex.toString());
+                }
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
                 String result=(String)msg.obj;

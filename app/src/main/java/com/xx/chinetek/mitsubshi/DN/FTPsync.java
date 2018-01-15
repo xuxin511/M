@@ -15,6 +15,8 @@ import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.R;
@@ -112,7 +114,8 @@ public class FTPsync extends BaseActivity{
                 }
            // }
         } catch (Exception ex) {
-            MessageBox.Show(context, ex.toString());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(FTPsync.class,"FTPsync-LsvItemClick", ex.toString());
         }
     }
 

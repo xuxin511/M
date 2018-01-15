@@ -160,6 +160,7 @@ public class MainActivity extends BaseActivity {
     void AnalysisSyncMaterialJson(String result){
         LogUtil.WriteLog(MainActivity.class,TAG_SyncMaterial,result);
         try {
+
             JsonReader jsonReader = new JsonReader(new StringReader(result));//其中jsonContext为String类型的Json数据
             jsonReader.setLenient(true);
             ReturnMsgModelList<MaterialModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(jsonReader, new TypeToken<ReturnMsgModelList<MaterialModel>>() {
@@ -184,7 +185,8 @@ public class MainActivity extends BaseActivity {
             dialog.dismiss();
         }catch (Exception ex) {
             dialog.dismiss();
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(MainActivity.class,"MainActivity-SyncMaterial", ex.toString());
         }
     }
 
@@ -215,7 +217,8 @@ public class MainActivity extends BaseActivity {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
         }catch (Exception ex) {
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(MainActivity.class,"MainActivity-SyncCustom", ex.toString());
         }
     }
 
@@ -248,7 +251,8 @@ public class MainActivity extends BaseActivity {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
         }catch (Exception ex) {
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(MainActivity.class,"MainActivity-SyncParamater", ex.toString());
         }
     }
 
@@ -274,7 +278,8 @@ public class MainActivity extends BaseActivity {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
         }catch (Exception ex) {
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(MainActivity.class,"MainActivity-SyncDeleteDn", ex.toString());
         }
     }
 

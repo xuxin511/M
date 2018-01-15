@@ -79,9 +79,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     AnalysisSyncMAPSDNDetailJson((String) msg.obj);
                     break;
                 case RESULT_SyncUSB:
-//                    ArrayList<DNModel>  dnModels= SyncDN.DNFromFiles();
-//                    DbDnInfo.getInstance().InsertDNDB(dnModels);
-//                    break;
                 case RESULT_SyncMail:
                 case RESULT_SyncFTP:
                     if ((int) msg.obj > 0) {
@@ -199,17 +196,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             ParamaterModel.DnTypeModel.setDNType(5);
             startActivityLeft(intent);
         }
-//        if(item.getItemId()==R.id.action_New){
-//            Intent intent=new Intent(context,DeliveryScan.class);
-//            ParamaterModel.DnTypeModel.setDNType(3);
-//            Bundle bundle=new Bundle();
-//            DNModel dnModel=new DNModel();
-//            CreateDnNo.GetDnNo(context,dnModel);
-//            dnModel.setDN_QTY(0);
-//            bundle.putParcelable("DNModel",dnModel);
-//            intent.putExtras(bundle);
-//            startActivityLeft(intent);
-//        }
         if(item.getItemId()==R.id.action_sync){
             ImportDelivery();
         }
@@ -313,39 +299,44 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
      * @return
      */
    private void ImportDelivery(){
+       try {
 
-        switch (ParamaterModel.DnTypeModel.getDNType()){
-            case 0://MAPS
-                BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
-                dialog =new LoadingDialog(context);
-                dialog.show();
-                SyncDN.SyncMAPS(mHandler);
-                break;
-            case 1://邮件
-                BaseApplication.DialogShowText = getString(R.string.Dia_SyncMail);
-                dialog =new LoadingDialog(context);
-                dialog.show();
-                SyncDN.SyncMail(mHandler);
-                break;
-            case 2://FTP
-                BaseApplication.DialogShowText = getString(R.string.Dia_SyncFTP);
-                dialog =new LoadingDialog(context);
-                dialog.show();
-                SyncDN.SyncFtp(mHandler);
-                break;
-            case 4://USB
-                BaseApplication.DialogShowText = getString(R.string.Dia_SyncUSB);
-                dialog =new LoadingDialog(context);
-                dialog.show();
-                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB,1);
-                mHandler.sendMessage(msg);
-                break;
-            case 3:
-            case 5:
-                DNModels= DbDnInfo.getInstance().GetLoaclDN();
-                BindListView();
-                break;
-        }
+           switch (ParamaterModel.DnTypeModel.getDNType()) {
+               case 0://MAPS
+                   BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
+                   dialog = new LoadingDialog(context);
+                   dialog.show();
+                   SyncDN.SyncMAPS(mHandler);
+                   break;
+               case 1://邮件
+                   BaseApplication.DialogShowText = getString(R.string.Dia_SyncMail);
+                   dialog = new LoadingDialog(context);
+                   dialog.show();
+                   SyncDN.SyncMail(mHandler);
+                   break;
+               case 2://FTP
+                   BaseApplication.DialogShowText = getString(R.string.Dia_SyncFTP);
+                   dialog = new LoadingDialog(context);
+                   dialog.show();
+                   SyncDN.SyncFtp(mHandler);
+                   break;
+               case 4://USB
+                   BaseApplication.DialogShowText = getString(R.string.Dia_SyncUSB);
+                   dialog = new LoadingDialog(context);
+                   dialog.show();
+                   android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, 1);
+                   mHandler.sendMessage(msg);
+                   break;
+               case 3:
+               case 5:
+                   DNModels = DbDnInfo.getInstance().GetLoaclDN();
+                   BindListView();
+                   break;
+           }
+       }catch (Exception ex){
+           ToastUtil.show(ex.getMessage());
+           LogUtil.WriteLog(DeliveryList.class,"DeliveryList", ex.toString());
+       }
 
     }
 

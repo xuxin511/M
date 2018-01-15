@@ -18,12 +18,14 @@ import com.xx.chinetek.adapter.Exception.ExceptionScanbarcodeAdapter;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
+import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.DNStatusEnum;
@@ -91,7 +93,8 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                     LogUtil.WriteLog(ExceptionBarcodelist.class, TAG_ScanBarcode, (String) msg.obj);
                     chaeckBarcode((String) msg.obj);
                 } catch (Exception ex) {
-                    MessageBox.Show(context, ex.getMessage());
+                    ToastUtil.show(ex.getMessage());
+                    LogUtil.WriteLog(ExceptionBarcodelist.class,"ExceptionBarcodelist-chaeckBarcode", ex.toString());
                 }
                 break;
         }
@@ -157,7 +160,8 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                     }).setNegativeButton("取消", null).show();
         } catch(Exception ex)
         {
-            MessageBox.Show(context, ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(ExceptionBarcodelist.class,"ExceptionBarcodelist-DelExceptionClick", ex.toString());
         }
 
 }

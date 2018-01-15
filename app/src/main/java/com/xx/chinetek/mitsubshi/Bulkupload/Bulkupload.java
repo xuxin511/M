@@ -30,6 +30,7 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Upload.UploadDN;
+import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.DN.DNModel;
@@ -190,7 +191,8 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
             }
 
         }catch (Exception ex){
-            MessageBox.Show(context, ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(Bulkupload.class,"Bulkupload-ExceptionDNList", ex.toString());
         }
         GetbulkuploadList();
     }

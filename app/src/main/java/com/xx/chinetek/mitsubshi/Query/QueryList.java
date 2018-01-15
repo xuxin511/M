@@ -24,6 +24,7 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.FileUtils;
@@ -80,7 +81,8 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                             try {
                                 FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(), MoveFiles);
                             }catch (Exception ex){
-
+                                ToastUtil.show(ex.getMessage());
+                                LogUtil.WriteLog(QueryList.class,"QueryList-RESULT_SyncFTP", ex.toString());
                             }
                         }
                     }.start();
@@ -243,42 +245,47 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
      * @throws Exception
      */
     void ExportDN(ArrayList<DNModel> selectDnModels, int Index) throws Exception{
-        FileUtils.DeleteFiles(Index);
-        FileUtils.ExportDNFile(selectDnModels,Index); //导出文件至本地目录
-        File dirFile=new File(FileUtils.GetDirectory(Index));
-        if(dirFile.isDirectory()) {
-            File[] Files = dirFile.listFiles();
-            if (Files.length > 0) {
-                switch (Index) {
-                    case 0: //邮件
-                        if(ParamaterModel.baseparaModel.getMailModel()!=null &&(
-                                ParamaterModel.baseparaModel.getMailModel().getToAddress()==null
-                                || ParamaterModel.baseparaModel.getMailModel().getToAddress().size()==0)) {
-                            MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
+        try {
+            FileUtils.DeleteFiles(Index);
+            FileUtils.ExportDNFile(selectDnModels, Index); //导出文件至本地目录
+            File dirFile = new File(FileUtils.GetDirectory(Index));
+            if (dirFile.isDirectory()) {
+                File[] Files = dirFile.listFiles();
+                if (Files.length > 0) {
+                    switch (Index) {
+                        case 0: //邮件
+                            if (ParamaterModel.baseparaModel.getMailModel() != null && (
+                                    ParamaterModel.baseparaModel.getMailModel().getToAddress() == null
+                                            || ParamaterModel.baseparaModel.getMailModel().getToAddress().size() == 0)) {
+                                MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
+                                break;
+                            }
+                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadMail);
+                            dialog = new LoadingDialog(context);
+                            dialog.show();
+                            UploadFiles.UploadMail(Files, mHandler);
                             break;
-                        }
-                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadMail);
-                        dialog = new LoadingDialog(context);
-                        dialog.show();
-                        UploadFiles.UploadMail(Files, mHandler);
-                        break;
-                    case 1: //FTP
-                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
-                        dialog = new LoadingDialog(context);
-                        dialog.show();
-                        UploadFiles.UploadFtp(Files, mHandler);
-                        break;
-                    case 2://USB
-                        BaseApplication.DialogShowText = getString(R.string.Dia_UploadUSB);
-                        dialog = new LoadingDialog(context);
-                        dialog.show();
-                        android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, Files.length/2);
-                        mHandler.sendMessage(msg);
-                        break;
+                        case 1: //FTP
+                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
+                            dialog = new LoadingDialog(context);
+                            dialog.show();
+                            UploadFiles.UploadFtp(Files, mHandler);
+                            break;
+                        case 2://USB
+                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadUSB);
+                            dialog = new LoadingDialog(context);
+                            dialog.show();
+                            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, Files.length / 2);
+                            mHandler.sendMessage(msg);
+                            break;
+                    }
                 }
+            } else {
+                MessageBox.Show(context, getString(R.string.Msg_No_DirExportDn));
             }
-        }else{
-            MessageBox.Show(context,getString(R.string.Msg_No_DirExportDn));
+        }catch (Exception ex){
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(QueryList.class,"QueryList-ExportDN", ex.toString());
         }
     }
 

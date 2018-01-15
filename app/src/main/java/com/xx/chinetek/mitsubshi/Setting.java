@@ -392,7 +392,8 @@ public class Setting extends BaseActivity {
                         context.getString(R.string.Dia_UploadPara), context, mHandler, RESULT_UploadPara, null,  URLModel.GetURL().UploadPara, params, null);
             }
         }catch (Exception ex){
-            MessageBox.Show(context,ex.getMessage());
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(Setting.class,"Setting-onOptionsItemSelected", ex.toString());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -409,46 +410,54 @@ public class Setting extends BaseActivity {
     }
 
     private void savePara() {
-        Paramater.IPAdress = edtIPAdress.getText().toString().trim();
-        Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
-        Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
-        if( !ParamaterModel.PartenerID.equals(txtPartner.getText().toString().trim())){
-            ParamaterModel.PartenerName="";
-            SharePreferUtil.SetSyncTimeShare("MaterialSyncTime","");
-        }
-        ParamaterModel.PartenerID =txtPartner.getText().toString().trim();
-        ParamaterModel.baseparaModel.setDNSaveTime(Integer.parseInt(txtDNSaveTime.getText().toString().trim()));
-        ParamaterModel.baseparaModel.setUseRemark(ckIsuserRemark.isChecked());
-        ParamaterModel.SysPassword=Password;
-        ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
-        ParamaterModel.baseparaModel.getCusBarcodeRule().setUsed(ckSelfBarcode.isChecked());
-        ParamaterModel.baseparaModel.setSerialMaxLength(MaxLength);
-        if(cusBarcodeRule==null)  cusBarcodeRule=new CusBarcodeRule();
-        cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
-        ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);
+        try {
+            Paramater.IPAdress = edtIPAdress.getText().toString().trim();
+            Paramater.Port = Integer.parseInt(edtPort.getText().toString().trim());
+            Paramater.SOCKET_TIMEOUT = Integer.parseInt(edtTimeOut.getText().toString().trim()) * 1000;
+            if (!ParamaterModel.PartenerID.equals(txtPartner.getText().toString().trim())) {
+                ParamaterModel.PartenerName = "";
+                SharePreferUtil.SetSyncTimeShare("MaterialSyncTime", "");
+            }
+            ParamaterModel.PartenerID = txtPartner.getText().toString().trim();
+            ParamaterModel.baseparaModel.setDNSaveTime(Integer.parseInt(txtDNSaveTime.getText().toString().trim()));
+            ParamaterModel.baseparaModel.setUseRemark(ckIsuserRemark.isChecked());
+            ParamaterModel.SysPassword = Password;
+            ParamaterModel.baseparaModel.setCusBarcodeRule(new CusBarcodeRule());
+            ParamaterModel.baseparaModel.getCusBarcodeRule().setUsed(ckSelfBarcode.isChecked());
+            ParamaterModel.baseparaModel.setSerialMaxLength(MaxLength);
+            if (cusBarcodeRule == null) cusBarcodeRule = new CusBarcodeRule();
+            cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
+            ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);
 
-        if(!TextUtils.isEmpty(startwordsCusDN) && indexLength!=0) {
-            if (ParamaterModel.baseparaModel.getCusDnnoRule() == null) ParamaterModel.baseparaModel.setCusDnnoRule(new CusDnnoRule());
-            ParamaterModel.baseparaModel.getCusDnnoRule().setStartWords(startwordsCusDN==null?"":startwordsCusDN);
-            ParamaterModel.baseparaModel.getCusDnnoRule().setIndexLength(indexLength);
-        }
+            if (!TextUtils.isEmpty(startwordsCusDN) && indexLength != 0) {
+                if (ParamaterModel.baseparaModel.getCusDnnoRule() == null)
+                    ParamaterModel.baseparaModel.setCusDnnoRule(new CusDnnoRule());
+                ParamaterModel.baseparaModel.getCusDnnoRule().setStartWords(startwordsCusDN == null ? "" : startwordsCusDN);
+                ParamaterModel.baseparaModel.getCusDnnoRule().setIndexLength(indexLength);
+            }
 
-        if(ParamaterModel.baseparaModel.getMailModel()==null) ParamaterModel.baseparaModel.setMailModel(new MailModel());
-        ParamaterModel.baseparaModel.getMailModel().setAccount(edtMailAccount.getText().toString().trim());
-        ParamaterModel.baseparaModel.getMailModel().setPassword(edtMailPassword.getText().toString().trim());
-        ParamaterModel.baseparaModel.getMailModel().setMailServerPort(edtMailSMTPort.getText().toString().trim());
-        ParamaterModel.baseparaModel.getMailModel().setMailServerHost(edtMailSMTP.getText().toString().trim());
-        ParamaterModel.baseparaModel.getMailModel().setMailClientHost(edtMailIMAP.getText().toString().trim());
-        ParamaterModel.baseparaModel.getMailModel().setToAddress(ToAdress);
-        if(ParamaterModel.baseparaModel.getFtpModel()==null) ParamaterModel.baseparaModel.setFtpModel(new FtpModel());
-        ParamaterModel.baseparaModel.getFtpModel().setFtpHost(edtFtpHost.getText().toString().trim());
-        ParamaterModel.baseparaModel.getFtpModel().setFtpUserName(edtFtpUserName.getText().toString().trim());
-        ParamaterModel.baseparaModel.getFtpModel().setFtpPassword(edtFtpPassword.getText().toString().trim());
-        ParamaterModel.baseparaModel.getFtpModel().setFtpPort(Integer.parseInt(edtFtpPort.getText().toString().trim()));
-        ParamaterModel.baseparaModel.getFtpModel().setFtpDownLoad(edtFtpDown.getText().toString().trim());
-        ParamaterModel.baseparaModel.getFtpModel().setFtpUpLoad(edtFtpUp.getText().toString().trim());
-        FtpUtil.ftp=null;
-        SharePreferUtil.SetShare(context);
+            if (ParamaterModel.baseparaModel.getMailModel() == null)
+                ParamaterModel.baseparaModel.setMailModel(new MailModel());
+            ParamaterModel.baseparaModel.getMailModel().setAccount(edtMailAccount.getText().toString().trim());
+            ParamaterModel.baseparaModel.getMailModel().setPassword(edtMailPassword.getText().toString().trim());
+            ParamaterModel.baseparaModel.getMailModel().setMailServerPort(edtMailSMTPort.getText().toString().trim());
+            ParamaterModel.baseparaModel.getMailModel().setMailServerHost(edtMailSMTP.getText().toString().trim());
+            ParamaterModel.baseparaModel.getMailModel().setMailClientHost(edtMailIMAP.getText().toString().trim());
+            ParamaterModel.baseparaModel.getMailModel().setToAddress(ToAdress);
+            if (ParamaterModel.baseparaModel.getFtpModel() == null)
+                ParamaterModel.baseparaModel.setFtpModel(new FtpModel());
+            ParamaterModel.baseparaModel.getFtpModel().setFtpHost(edtFtpHost.getText().toString().trim());
+            ParamaterModel.baseparaModel.getFtpModel().setFtpUserName(edtFtpUserName.getText().toString().trim());
+            ParamaterModel.baseparaModel.getFtpModel().setFtpPassword(edtFtpPassword.getText().toString().trim());
+            ParamaterModel.baseparaModel.getFtpModel().setFtpPort(Integer.parseInt(edtFtpPort.getText().toString().trim()));
+            ParamaterModel.baseparaModel.getFtpModel().setFtpDownLoad(edtFtpDown.getText().toString().trim());
+            ParamaterModel.baseparaModel.getFtpModel().setFtpUpLoad(edtFtpUp.getText().toString().trim());
+            FtpUtil.ftp = null;
+            SharePreferUtil.SetShare(context);
+        }catch (Exception ex){
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(Setting.class,"Setting-savePara", ex.toString());
+        }
     }
 
     void UploadLog(){
