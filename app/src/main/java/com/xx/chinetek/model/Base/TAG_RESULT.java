@@ -37,5 +37,6 @@ public class TAG_RESULT {
     public static final int RESULT_Login=113;
     public static final int RESULT_ExceptionDNList=114;
     public static final int RESULT_SyncDeleteDn=115;
+    public static final int RESULT_UploadGPS=116;
 
 }

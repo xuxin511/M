@@ -14,6 +14,8 @@ import org.xutils.x;
  */
 
 public class BaseApplication extends Application {
+
+
     public static BaseApplication instance;
 
     public static Context context;  //activity中context对象
@@ -30,6 +32,9 @@ public class BaseApplication extends Application {
         instance = this;
         x.Ext.init(this);
         mRequestQueue = Volley.newRequestQueue(this);
+        /***
+         * 初始化定位sdk，建议在Application中创建
+         */
     }
 
 

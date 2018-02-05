@@ -166,6 +166,11 @@ public class FTPsync extends BaseActivity{
                 MessageBox.Show(context,ex.toString());
             }
         }
+        if(item.getItemId()==R.id.action_SelectAll){
+            for(int i=0;i<dnModels.size();i++){
+                syncListItemAdapter.modifyStates(i);
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 

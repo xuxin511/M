@@ -104,6 +104,11 @@ public class DNsync extends BaseActivity{
                 MessageBox.Show(context,ex.toString());
             }
         }
+        if(item.getItemId()==R.id.action_SelectAll){
+            for(int i=0;i<DNModels.size();i++){
+                syncListItemAdapter.modifyStates(i);
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 

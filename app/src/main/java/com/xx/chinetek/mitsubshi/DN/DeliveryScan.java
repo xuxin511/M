@@ -175,6 +175,7 @@ public class DeliveryScan extends BaseIntentActivity {
         ShowRemark();
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
             txtBarRule.setVisibility(View.VISIBLE);
+            spinbarRule.setVisibility(View.VISIBLE);
             ArrayList<String> barRules=new ArrayList();
             if(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules()!=null) {
                 ArrayList<BarcodeRule> barcodeRules=ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules();
@@ -658,7 +659,7 @@ public class DeliveryScan extends BaseIntentActivity {
             dnModel.setDN_QTY(dnModel.getDN_QTY() + 1);
         }
         if (ShowErrMag(isErrorStatus,barCodeModels.get(0))) return true;
-        scanqty+=1;
+        scanqty+=barCodeModels.size();
         dnModel.setDN_STATUS("AC");
         dnModel.setSTATUS(1);
         dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.PartenerID);

@@ -1,11 +1,15 @@
 package com.xx.chinetek.mitsubshi;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Message;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -14,6 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
 import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
@@ -35,6 +41,7 @@ import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
 import com.xx.chinetek.model.Base.UserInfoModel;
+import com.xx.chinetek.service.LocationService;
 
 import org.json.JSONObject;
 import org.xutils.view.annotation.ContentView;
@@ -43,6 +50,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -113,13 +121,14 @@ public class Login extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
+        MitApplication.locationModel=null;
         GetSysINfo();
         SharePreferUtil.ReadShare(context);
         SharePreferUtil.ReadUserShare(context);
        ///  = SharePreferUtil.ReadDNTypeShare(context);
         edtOperater.setText(ParamaterModel.Operater);
         txtVer.setText(getString(R.string.login_ver)+(updateVersionService.getVersionCode(context)));
-
+        getPersimmions();
 
     }
 
@@ -132,7 +141,7 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
-     //   ParamaterModel.SerialNo="123456789";
+      //ParamaterModel.SerialNo="123456789";
         if(ParamaterModel.SerialNo==null || TextUtils.isEmpty(ParamaterModel.SerialNo)){
             return;
         }
@@ -140,7 +149,8 @@ public class Login extends BaseActivity {
             unregisterReceiver(myReceiver); //取消MDM注册广播
             myReceiver=null;
         }
-        if (!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))) {
+        if (ParamaterModel.Model==null ||  !(Arrays.asList(getResources().getStringArray(R.array.Model)).contains(ParamaterModel.Model.toUpperCase()))) {
+            //!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))
             MessageBox.Show(context, getString(R.string.Msg_NotSupportModel));
             return;
         }
@@ -156,9 +166,9 @@ public class Login extends BaseActivity {
         }
 
         ParamaterModel.Operater = edtOperater.getText().toString().trim();
-        if (!TextUtils.isEmpty(ParamaterModel.Operater)) {
+      //  if (!TextUtils.isEmpty(ParamaterModel.Operater)) {
             SharePreferUtil.SetUserShare(context);
-        }
+       // }
 
         //设置数据库名称
         DbDnInfo.mSyncDn=null;
@@ -246,7 +256,6 @@ public class Login extends BaseActivity {
         Paths.add(ParamaterModel.MailDirectory);
         Paths.add(ParamaterModel.FTPDirectory);
         FileUtil.CreateFile(Paths);
-
     }
 
     private void GetSysINfo(){
@@ -295,4 +304,77 @@ public class Login extends BaseActivity {
             }
         }
     }
+
+    private final int SDK_PERMISSION_REQUEST = 127;
+    @TargetApi(23)
+    private void getPersimmions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ArrayList<String> permissions = new ArrayList<String>();
+            /***
+             * 定位权限为必须权限，用户如果禁止，则每次进入都会申请
+             */
+            // 定位精确位置
+            if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+            if(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            }
+
+            if (permissions.size() > 0) {
+                requestPermissions(permissions.toArray(new String[permissions.size()]), SDK_PERMISSION_REQUEST);
+            }
+        }
+    }
+
+
+    private LocationService locationService;
+    /***
+     * Stop location service
+     */
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        locationService.unregisterListener(mListener); //注销掉监听
+        locationService.stop(); //停止定位服务
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        // -----------location config ------------
+        locationService = ((MitApplication) getApplication()).locationService;
+        //获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
+        locationService.registerListener(mListener);
+        //注册监听
+        locationService.setLocationOption(locationService.getDefaultLocationClientOption());
+        locationService.start();// 定位SDK
+
+    }
+
+    /*****
+     *
+     * 定位结果回调，重写onReceiveLocation方法，可以直接拷贝如下代码到自己工程中修改
+     *
+     */
+    private BDAbstractLocationListener mListener = new BDAbstractLocationListener() {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            // TODO Auto-generated method stub
+            if (null != location && location.getLocType() != BDLocation.TypeServerError) {
+                StringBuffer sb = new StringBuffer();
+//                sb.append(location.getCountry());
+//                sb.append(location.getCity());
+//                sb.append(location.getDistrict());
+//                sb.append(location.getStreet());
+                sb.append(location.getAddrStr());
+                MitApplication.locationModel=sb.toString();
+                MitApplication.gpsModel=location.getLongitude()+","+location.getLatitude();
+            }
+        }
+
+    };
 }

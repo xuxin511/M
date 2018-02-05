@@ -35,5 +35,6 @@ public class URLModel {
     public String SyncDn = GetWCFAdress()+"GetDNHeaders"; //同步DN表头
     public String SyncDnDetail = GetWCFAdress()+"GetDNDetails"; //同步DN表体
     public String SyncException = GetWCFAdress()+"GetExceptionDNs"; //同步DN异常的单子
+    public String UploadGPS = GetWCFAdress()+"UploadGPS"; //同步DN异常的单子
 
 }

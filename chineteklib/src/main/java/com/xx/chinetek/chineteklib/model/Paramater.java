@@ -9,7 +9,7 @@ public class Paramater {
     /**
     服务器IP地址
      */
-    public static String IPAdress="10.236.195.12";
+    public static String IPAdress="qrscan.meach.cn";
 
     /**
     服务器端口号
@@ -19,7 +19,7 @@ public class Paramater {
     /**
      *超时时间
      */
-    public static int SOCKET_TIMEOUT=2000;
+    public static int SOCKET_TIMEOUT=300000;
 
     /**
     是否显示TitleBar：登陆界面设置为false

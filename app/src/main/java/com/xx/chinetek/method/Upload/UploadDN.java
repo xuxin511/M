@@ -16,6 +16,7 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.FileUtils;
+import com.xx.chinetek.method.UploadGPS;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -29,7 +30,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
@@ -114,9 +114,10 @@ public class UploadDN {
                         @Override
                         public void run() {
                             try {
+                                LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, "ftp_moveFile:"+subdnModel.getFtpFileName());
                                 FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(), new String[]{subdnModel.getFtpFileName()});
                             }catch (Exception ex){
-
+                                LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, "ftp_moveFile:"+ex.getMessage());
                             }
                         }
                     }.start();
@@ -192,7 +193,7 @@ public class UploadDN {
                                     ExportDN(ExportdnModels, 0);
                                     ExportDN(ExportdnModels, 1);
                                 }catch (Exception ex){
-
+                                    LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, "ExportDN:"+ex.getMessage());
                                 }
                             }
                         }.start();
@@ -255,10 +256,12 @@ public class UploadDN {
             RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadDN,
                     context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_UploadDN, null,
                     method, params, null);
-
+            ArrayList<DNModel> dnModels=new ArrayList<DNModel>();
+            dnModels.add(dnModel);
+            UploadGPS.UpGPS(mHandler,dnModels);
         }
 
-    public static void UploadDNListToMaps(List<DNModel> dnModels,String isCloseDN,MyHandler<BaseActivity> mHandler){
+    public static void UploadDNListToMaps(ArrayList<DNModel> dnModels,String isCloseDN,MyHandler<BaseActivity> mHandler){
 
         final Map<String, String> params = new HashMap<String, String>();
         String dnModelJson= GsonUtil.parseModelToJson(dnModels);
@@ -271,7 +274,7 @@ public class UploadDN {
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_ExceptionDNList,
                 context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_ExceptionDNList, null,
                 URLModel.GetURL().ExceptionDNList, params, null);
-
+        UploadGPS.UpGPS(mHandler,dnModels);
     }
 
 

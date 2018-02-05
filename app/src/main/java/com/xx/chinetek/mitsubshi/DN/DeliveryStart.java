@@ -112,7 +112,7 @@ public class DeliveryStart extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null&&dnTypeModel.getDNType()==5){
+        if(dnTypeModel!=null && dnTypeModel.getDNType()!=null ){//&& dnTypeModel.getDNCusType()!=null&&dnTypeModel.getDNType()==5
             spinsendType.setSelection(dnTypeModel.getDNType());
             spinCustom.setSelection(dnTypeModel.getSelectCusType());
             chooseposition=dnTypeModel.getSelectCusType();
@@ -172,7 +172,7 @@ public class DeliveryStart extends BaseActivity {
                 dnModel.setCUSTOM_NAME(customModel.getNAME());
                 jumpClass=DeliveryScan.class;
                 break;
-            case 5:
+            case 4:
                 jumpClass=QRScan.class;
                 break;
             default:

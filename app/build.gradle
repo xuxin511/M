@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "2.6"
+        versionName "1.5"
     }
     buildTypes {
         release {
@@ -19,6 +19,11 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     greendao {
         schemaVersion 1
         daoPackage 'com.xx.chinetek.greendao'
@@ -39,4 +44,5 @@ dependencies {
     compile files('libs/activation.jar')
     compile files('libs/additionnal.jar')
     compile files('libs/mail.jar')
+    implementation files('libs/BaiduLBS_Android.jar')
 }

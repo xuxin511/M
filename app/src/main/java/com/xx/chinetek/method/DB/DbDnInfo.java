@@ -131,6 +131,10 @@ public class DbDnInfo {
 //        dnModelDao.getDatabase().execSQL(sql);
     }
 
+    public String GetFtpFileName(String dnno){
+       return  dnModelDao.queryBuilder().where(DNModelDao.Properties.AGENT_DN_NO.eq(dnno)).unique().getFtpFileName();
+    }
+
     /**
      * 获取本地数据所有未处理完成单据
      * @return

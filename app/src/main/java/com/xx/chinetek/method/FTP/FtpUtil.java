@@ -40,7 +40,12 @@ public class FtpUtil {
             }
             ftp.openConnect();
             for (String moveFile:moveFiles){
-                ftp.MoveFile(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad(),moveFile,"/BAK/");
+               boolean isSuccess= ftp.MoveFile(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad(),moveFile,"/BAK/");
+               int count=0;
+               while(!isSuccess && count<=2) {
+                   count++;
+                   isSuccess = ftp.MoveFile(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad(), moveFile, "/BAK/");
+               }
             }
             if (ftp.isConnect()) {
                 ftp.closeConnect();

@@ -142,6 +142,7 @@ public class ExceptionScan extends BaseIntentActivity {
         txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
             txtBarRule.setVisibility(View.VISIBLE);
+            spinbarRule.setVisibility(View.VISIBLE);
             ArrayList<String> barRules=new ArrayList();
             if(ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules()!=null) {
                 ArrayList<BarcodeRule> barcodeRules=ParamaterModel.baseparaModel.getCusBarcodeRule().getBarcodeRules();

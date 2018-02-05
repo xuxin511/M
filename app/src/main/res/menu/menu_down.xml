@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Qc.QCBillChoice">
 
+    <item
+        android:id="@+id/action_SelectAll"
+        android:orderInCategory="80"
+        android:title="@string/Select"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_submit"

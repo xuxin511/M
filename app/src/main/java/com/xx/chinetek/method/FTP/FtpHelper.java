@@ -246,9 +246,9 @@ public class FtpHelper {
         //在本地创建对应文件夹目录
         localPath = localPath + "/" + remotePath.substring(remotePath.lastIndexOf("/"));
         File localFolder = new File(localPath);
-        if (!localFolder.exists()) {
-            localFolder.mkdirs();
-        }
+//        if (!localFolder.exists()) {
+//            localFolder.mkdirs();
+//        }
         // 循环遍历
         for (FTPFile ftpFile : ftpFiles) {
             if (!ftpFile.getName().equals("..")
@@ -390,7 +390,7 @@ public class FtpHelper {
             String from = remotePath + moveFile;
             String to = bakPath + moveFile;
             flag = ftpClient.rename(from, to);
-            flag=ftpClient.deleteFile(from);
+            ftpClient.deleteFile(from);
         }catch (Exception  e){
             e.printStackTrace();
         }

@@ -29,10 +29,11 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Upload.UploadDN;
-import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.MultipleDN;
 
@@ -42,7 +43,6 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_ExceptionDNList;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ExceptionDNList;
@@ -90,6 +90,21 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                String dnno="";
                int completeDnNum=0;
                 for (MultipleDN mulitdn:multipleDNS) {
+                    if(mulitdn.getDN().getDN_SOURCE()==2){//ftp需要移动文件之BAK
+                        final String ftpName= DbDnInfo.getInstance().GetFtpFileName(mulitdn.getDN().getAGENT_DN_NO());
+                        new Thread(){
+                            @Override
+                            public void run() {
+                                try {
+                                    LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, "ftp_moveFile:"+ftpName);
+                                    FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(), new String[]{ftpName});
+                                }catch (Exception ex){
+                                    LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, "ftp_moveFile:"+ex.getMessage());
+
+                                }
+                            }
+                        }.start();
+                    }
                     String tempdnno=mulitdn.getDN().getDN_SOURCE()==3?mulitdn.getDN().getCUS_DN_NO():mulitdn.getDN().getAGENT_DN_NO();
                     DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(tempdnno);
                     //保留原有数据
@@ -129,6 +144,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                     }
                     if(mulitdn.getStatus().equals("F")){
                         completeDnNum++;
+
                         DbDnInfo.getInstance().DeleteDN(mulitdn.getDN().getAGENT_DN_NO());
                         ArrayList<DNModel> dnModels=new ArrayList<>();
                         dnModels.add(mulitdn.getDN());
@@ -176,7 +192,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                          UploadDN.ExportDN(ExportdnModels, 0);
                          UploadDN.ExportDN(ExportdnModels, 1);
                         }catch (Exception ex){
-
+                            LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, "ExportDN:"+ex.getMessage());
                         }
                     }
                 }.start();
@@ -288,7 +304,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_Export) {
-            List<DNModel> postmodels=new ArrayList<>();
+            ArrayList<DNModel> postmodels=new ArrayList<>();
             boolean isUpload=true;
             boolean isFlag=false;
             for (int i = 0; i < DNModels.size(); i++) {
@@ -311,7 +327,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 return false;
             }
             if(isUpload && postmodels.size()!=0){
-                final List<DNModel> uploadModels= postmodels;
+                final ArrayList<DNModel> uploadModels= postmodels;
                 new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
                         .setMessage(context.getResources().getString(R.string.Msg_Upload_DNSelf))
