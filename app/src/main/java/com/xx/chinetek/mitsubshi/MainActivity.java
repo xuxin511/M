@@ -202,6 +202,8 @@ public class MainActivity extends BaseActivity {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
                 ArrayList<CustomModel> customModels = returnMsgModel.getModelJson();
+                //删除客户表
+                DbBaseInfo.getInstance().DeleteCustomDB();
                 //插入数据
                 DbBaseInfo.getInstance().InsertCustomDB(customModels);
                 if(ParamaterModel.PartenerName==null ||  ParamaterModel.PartenerName.equals("")) {

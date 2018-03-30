@@ -152,6 +152,7 @@
     <string name="Msg_InputPassword">请输入管理员密码</string>
     <string name="Msg_Inputname">请输入扫描规则名称</string>
     <string name="Msg_SetbarcodeRule">请设置条码规则</string>
+    <string name="Msg_ModifyCus">修改客户名称</string>
     <string name="Msg_maxlength">请设置序列号最大长度</string>
     <string name="Msg_InputCustom">请输入代理商编号</string>
     <string name="Msg_ChoiceSaveTime">请选择保存时间（天）</string>

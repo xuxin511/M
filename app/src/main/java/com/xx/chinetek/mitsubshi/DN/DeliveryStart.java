@@ -1,12 +1,15 @@
 package com.xx.chinetek.mitsubshi.DN;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -30,6 +33,7 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbBaseInfo;
+import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.GetPartner;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Upload.UploadNewCus;
@@ -93,7 +97,7 @@ public class DeliveryStart extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.outputscan),true);
         x.view().inject(this);
-    }
+      }
 
     @Override
     protected void initData() {
@@ -135,7 +139,17 @@ public class DeliveryStart extends BaseActivity {
                     return;
                 }
                 //新增客户
-                if (partnerItemAdapter.getCount() == 0) {
+                boolean isNewCus=true;
+                    int size=partnerItemAdapter.getCount();
+                    for(int i=0;i<size;i++){
+                        customModel = (CustomModel) partnerItemAdapter.getItem(i);
+                        if(customModel.getNAME().equals(code) || customModel.getCUSTOMER().equals(code)){
+                            isNewCus=false;
+                        }
+                    }
+
+
+                if(isNewCus) {
                     UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
                     CommonUtil.setEditFocus(edtContentText);
                     return;
@@ -217,6 +231,45 @@ public class DeliveryStart extends BaseActivity {
         }
     }
 
+
+    @Event(value = R.id.lsv_Partner,type =  AdapterView.OnItemLongClickListener.class)
+    private boolean lsvPartneronItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        //长按删除或者修改客户，修改客户时，同时 修改未上传单据的客户
+        customModel =(CustomModel) partnerItemAdapter.getItem(position);
+        if(customModel !=null && customModel.getCUSTOMER().toUpperCase().contains("CUST")) {
+            final View textEntryView = LayoutInflater.from(this).inflate(R.layout.activity_newcustom_content, null);
+            final EditText edtCustom=(EditText) textEntryView.findViewById(R.id.edt_Custom);
+            edtCustom.setText(customModel.getNAME());
+            final String oraignCus=customModel.getNAME();
+            new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_ModifyCus))
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setView(textEntryView)
+                    .setPositiveButton("修改", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            customModel.setNAME(edtCustom.getText().toString());
+                            DbBaseInfo.getInstance().ModifyPartnersByID(customModel);
+                            DbDnInfo.getInstance().ModifyCustomINDNModel(edtCustom.getText().toString(),oraignCus);
+                            BindData();
+                            edtContentText.setText(customModel.getCUSTOMER());
+                            CommonUtil.setEditFocus(edtContentText);
+                        }
+                    })
+                    .setNegativeButton("删除", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            customModel.setNAME(edtCustom.getText().toString());
+                            DbBaseInfo.getInstance().DeletePartnersByID(customModel);
+                            BindData();
+                            customModel=null;
+                            edtContentText.setText("");
+                            CommonUtil.setEditFocus(edtContentText);
+                        }
+                    })
+                    .setNeutralButton("取消", null)
+                    .show();
+        }
+        return true;
+    }
     /**
      * 文本变化事件
      */

@@ -1,13 +1,10 @@
 package com.xx.chinetek.method;
 
 import com.xx.chinetek.greendao.CustomModelDao;
-import com.xx.chinetek.greendao.DNScanModelDao;
-import com.xx.chinetek.greendao.DaoSession;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.method.DB.GreenDaoContext;
 import com.xx.chinetek.model.Base.CustomModel;
-import com.xx.chinetek.model.DN.DNScanModel;
 
 import java.util.ArrayList;
 
@@ -43,6 +40,7 @@ public class GetPartner {
         return customModels;
 
     }
+
 
 
 

@@ -318,6 +318,16 @@ public class DbDnInfo {
     }
 
     /**
+     * 修改出库单客户
+     * @param NewCustom
+     * @param OldCustom
+     */
+    public void ModifyCustomINDNModel(String NewCustom,String OldCustom){
+        String sql="update DNModel set CUSTOM__NAME='"+NewCustom+"' where CUSTOM__NAME='"+OldCustom+"' and status="+DNStatusEnum.download+" or status="+DNStatusEnum.ready;
+        dnModelDao.getDatabase().execSQL(sql);
+    }
+
+    /**
      *查询DN单据出库数量
      * @param DNNo
      * @return

@@ -467,8 +467,8 @@ public class Setting extends BaseActivity {
         File[] files = new File(Environment.getExternalStorageDirectory()+"/log/").listFiles();
         final List<File> list= Arrays.asList(files);
         Collections.sort(list, new FileComparator());
-
-        for(int i=0;i<LogUploadIndex;i++) {
+       final int UploadIndex=list.size()>LogUploadIndex?LogUploadIndex:list.size();
+        for(int i=0;i<UploadIndex;i++) {
             final  int index=i;
             RequestParams params = new RequestParams(url);
             params.setMultipart(true);
@@ -477,13 +477,13 @@ public class Setting extends BaseActivity {
                 @Override
                 public void onSuccess(String result) {
                     //加载成功回调，返回获取到的数据
-                    if(index==LogUploadIndex-1) {
+                    if(index==UploadIndex-1) {
                         ToastUtil.show(result);
                     }
                 }
                 @Override
                 public void onFinished() {
-                    if(index==LogUploadIndex-1) {
+                    if(index==UploadIndex-1) {
                         dialog.dismiss();
                     }
                 }

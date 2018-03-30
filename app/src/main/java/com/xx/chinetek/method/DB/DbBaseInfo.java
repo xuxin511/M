@@ -57,6 +57,11 @@ public class DbBaseInfo {
         }
     }
 
+
+    public void DeleteCustomDB(){
+        customModelDao.deleteAll();
+    }
+
     /**
      * 插入客户代理商
      * @param customModels
@@ -66,6 +71,28 @@ public class DbBaseInfo {
         if(customModels!=null && customModels.size()!=0) {
             customModelDao.insertOrReplaceInTx(customModels);
             customModelDao.detachAll();
+        }
+    }
+
+    /**
+     * 修改代理商
+     * @param customModel
+     */
+    public void ModifyPartnersByID(CustomModel customModel){
+        if(customModel!=null) {
+           String sql="update Custom_Model set name='"+customModel.getNAME()+"' where CUSTOMER='"+customModel.getCUSTOMER()+"'";
+            customModelDao.getDatabase().execSQL(sql);
+        }
+    }
+
+    /**
+     * 删除代理商
+     * @param customModel
+     */
+    public void DeletePartnersByID(CustomModel customModel){
+        if(customModel!=null) {
+            String sql="delete from  Custom_Model  where CUSTOMER='"+customModel.getCUSTOMER()+"'";
+            customModelDao.getDatabase().execSQL(sql);
         }
     }
 
