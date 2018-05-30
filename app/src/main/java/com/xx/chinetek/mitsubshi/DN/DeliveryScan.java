@@ -223,6 +223,10 @@ public class DeliveryScan extends BaseIntentActivity {
                     canUpload=false;
                     break;
                 }
+                if(dnDetailModels.get(i).getSERIALS()==null){
+                    List<DNScanModel>  DNScanModels= DbDnInfo.getInstance().GetLoaclDNScanModelDN(dnDetailModels.get(i).getAGENT_DN_NO(),dnDetailModels.get(i).getGOLFA_CODE(),dnDetailModels.get(i).getLINE_NO());
+                    dnDetailModels.get(i).setSERIALS(DNScanModels);
+                }
             }
             if(!isFlag){
                 MessageBox.Show(context, getString(R.string.Msg_miltuMaterial));

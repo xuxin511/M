@@ -26,6 +26,7 @@
     <string name="Select">全选</string>
     <string name="close">完毕</string>
     <string name="Bulkupload">批量上报</string>
+    <string name="MaterialQuery">物料查询</string>
     <string name="DNsync">MAPS单据同步</string>
     <string name="FTPDNChoice">单据下载</string>
     <string name="Reason">异常原因：</string>
@@ -33,6 +34,7 @@
     <string name="BarcodeScan">异常扫描</string>
     <string name="DeleteException">删除异常序列号</string>
     <string name="ScanDetails">序列号扫描</string>
+
 
     <string name="Setting_QRTitle">QR服务器设置</string>
     <string name="Setting_MAilTitle">邮件服务器设置</string>
@@ -73,6 +75,8 @@
     <string name="Setting_OtherEndIndex">其他项结束位：</string>
     <string name="Setting_Other">其他项设置</string>
     <string name="Setting_ADD">添加</string>
+    <string name="materialQuery_Code">产品编号：</string>
+    <string name="materialQuery_Item">产品型号：</string>
 
 
     <string name="sendType">发货方式：</string>
@@ -139,7 +143,8 @@
     </string-array>
 
     <string name="hint_inputDeliveryNo">输入/扫描出库单</string>
-
+    <string name="hint_inputItemName">请输入产品型号</string>
+    <string name="hint_inputCode">请输入编号或GolfaCode</string>
 
     <string name="Msg_SaveSuccess">保存成功！</string>
     <string name="Msg_inputNumic">请输入数字！</string>
@@ -174,6 +179,7 @@
     <string name="Msg_No_CusDnRule">请先设置自定义出库单规则！</string>
     <string name="Msg_Serial_Scaned">该条码已扫描！</string>
     <string name="Msg_No_DNno">出库单不存在！</string>
+    <string name="Msg_No_DNDetail">出库单体数据不存在！</string>
     <string name="Msg_Delete_DN">是否删除出库单所有扫描记录？\n单号：</string>
     <string name="Msg_SerialNum_Finished">该物料扫码数量已超出出库数量！</string>
     <string name="Msg_Material_NotMatch">该物料不存在于出库单中！</string>

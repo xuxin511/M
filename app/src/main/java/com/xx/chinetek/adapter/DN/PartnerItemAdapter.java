@@ -109,8 +109,8 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
                 for (int i = 0; i < count; i++) {
                     CustomModel pc = unfilteredValues.get(i);
                     if (pc != null) {
-                        if(pc.getCUSTOMER()!=null && pc.getCUSTOMER().startsWith(prefixString.toUpperCase())
-                                || pc.getNAME()!=null && pc.getNAME().contains(prefixString.toUpperCase())){
+                        if(pc.getCUSTOMER()!=null && pc.getCUSTOMER().toUpperCase().startsWith(prefixString.toUpperCase())
+                                || pc.getNAME()!=null && pc.getNAME().toUpperCase().contains(prefixString.toUpperCase())){
                             newValues.add(pc);
                         }
                     }

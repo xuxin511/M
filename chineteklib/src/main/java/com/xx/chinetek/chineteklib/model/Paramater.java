@@ -21,6 +21,7 @@ public class Paramater {
      */
     public static int SOCKET_TIMEOUT=300000;
 
+
     /**
     是否显示TitleBar：登陆界面设置为false
      */

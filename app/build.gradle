@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "1.8"
+        versionName "1.9"
     }
     buildTypes {
         release {
@@ -38,6 +38,7 @@ dependencies {
     })
     compile project(':chineteklib')
     compile 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+    compile 'net.zetetic:android-database-sqlcipher:3.5.9@aar'
     compile 'org.greenrobot:greendao:3.2.2'
     compile 'commons-net:commons-net:3.6'
     testCompile 'junit:junit:4.12'

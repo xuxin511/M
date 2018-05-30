@@ -30,6 +30,7 @@ import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.function.DESUtil;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
@@ -98,7 +99,8 @@ public class Login extends BaseActivity {
             ReturnMsgModel<String> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<String>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
-                SharePreferUtil.SetSyncTimeShare("Register","1");
+               // SharePreferUtil.SetSyncTimeShare("Register","1");
+                DESUtil.pvkey=returnMsgModel.getMaterialDoc();
                 Intent intent = new Intent(context, MainActivity.class);
                 startActivityLeft(intent);
             } else {
@@ -141,7 +143,9 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
-      //ParamaterModel.SerialNo="123456789";
+        DESUtil.pvkey="SCGWMS00";
+        ParamaterModel.SerialNo="1177326";
+        ParamaterModel.Model="A15_A5";
         if(ParamaterModel.SerialNo==null || TextUtils.isEmpty(ParamaterModel.SerialNo)){
             return;
         }

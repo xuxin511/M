@@ -22,12 +22,12 @@ public class NetDateTimeAdapter extends TypeAdapter<Date> {
             return null;
         }
         Date result = null;
-        String str = reader.nextString();
+        String str = reader.nextString().replace("/Date(","").replace(")/","");
       //  str = str.replaceAll("[^0-9]", "");
         if (!TextUtils.isEmpty(str)) {
             try {
-                Date date=new Date(str);
-                result = date;//;new Date(Long.parseLong(str));
+              //  Date date=new Date(str);
+                result = new Date(Long.parseLong(str));//date;//;
             } catch (NumberFormatException e) {
             }
         }

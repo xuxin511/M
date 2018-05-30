@@ -29,6 +29,7 @@ import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
 import com.xx.chinetek.mitsubshi.DN.DeliveryStart;
+import com.xx.chinetek.mitsubshi.Query.MaterialQuery;
 import com.xx.chinetek.mitsubshi.Query.QueryList;
 import com.xx.chinetek.model.Base.BaseparaModel;
 import com.xx.chinetek.model.Base.CustomModel;
@@ -140,6 +141,10 @@ public class MainActivity extends BaseActivity {
         }
         else if (textView.getText().toString().equals(getString(R.string.Bulkupload))) {
             intent.setClass(context, Bulkupload.class);
+            startActivityLeft(intent);
+        }
+        else if (textView.getText().toString().equals(getString(R.string.MaterialQuery))) {
+            intent.setClass(context, MaterialQuery.class);
             startActivityLeft(intent);
         }
         else if (textView.getText().toString().equals(getString(R.string.sync))) {
@@ -302,6 +307,8 @@ public class MainActivity extends BaseActivity {
         itemNamesList.add(getString(R.string.Query));
         itemIconList.add(R.drawable.upload);
         itemNamesList.add(getString(R.string.Bulkupload));
+        itemIconList.add(R.drawable.materialquery);
+        itemNamesList.add(getString(R.string.MaterialQuery));
         itemIconList.add(R.drawable.sync);
         itemNamesList.add(getString(R.string.sync));
 

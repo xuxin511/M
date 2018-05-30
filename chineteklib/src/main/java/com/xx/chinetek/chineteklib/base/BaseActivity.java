@@ -44,6 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IHandleM
         updateVersionService = new UpdateVersionService(context);// 创建更新业务对象
         initViews(); //自定义的方法
         initData();
+
     }
 
     /**

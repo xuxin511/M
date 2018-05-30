@@ -11,12 +11,15 @@ import com.xx.chinetek.greendao.DaoSession;
  */
 
 public class DbManager {
+    // 是否加密
+    public static final boolean ENCRYPTED = true;
 
     public static String DB_NAME = "mitsubshi.db";
     private static DbManager mDbManager;
     private static DaoMaster.DevOpenHelper mDevOpenHelper;
     public static DaoMaster mDaoMaster;
     public static DaoSession mDaoSession;
+    private static String dbpassword="MitshisubQR";
 
     private Context mContext;
 
@@ -76,7 +79,7 @@ public class DbManager {
             synchronized (DbManager.class) {
                 if (null == mDaoMaster) {
                     DbOpenHelper helper = new DbOpenHelper(context,DB_NAME,null);
-                    mDaoMaster = new DaoMaster(helper.getWritableDatabase());
+                    mDaoMaster = new DaoMaster(helper.getWritableDatabase());//new DaoMaster(helper.getEncryptedReadableDb(dbpassword));//
                 }
             }
         }

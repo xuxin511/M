@@ -17,7 +17,7 @@ public class DESUtil {
 
     public static final String ALGORITHM_DES = "DES/CBC/PKCS5Padding";
     private static String pukey = "XianDa00";
-    private static String pvkey = "SCGWMS00";
+    public static String pvkey = "SCGWMS00";
 
     /**
      * DES算法，加密
@@ -43,7 +43,7 @@ public class DESUtil {
             return byte2String(bytes);
         } catch (Exception e) {
             e.printStackTrace();
-            return data;
+            return  "解码失败，密钥不正确";
         }
     }
 
@@ -70,7 +70,7 @@ public class DESUtil {
             return new String(cipher.doFinal(byte2hex(data.getBytes())));
         } catch (Exception e) {
             e.printStackTrace();
-            return data;
+            return  "解码失败，密钥不正确";
         }
     }
 

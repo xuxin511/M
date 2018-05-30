@@ -150,8 +150,20 @@ public class DeliveryStart extends BaseActivity {
 
 
                 if(isNewCus) {
-                    UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
-                    CommonUtil.setEditFocus(edtContentText);
+                    new AlertDialog.Builder(this).setTitle("新增客户确认")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setMessage("输入客户名称已找到匹配项，是否确认新增?")
+                            .setPositiveButton("新增", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
+                                    CommonUtil.setEditFocus(edtContentText);
+                                }
+                            })
+                            .setNeutralButton("取消", null)
+                            .show();
+//                    UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
+//                    CommonUtil.setEditFocus(edtContentText);
                     return;
                 }
 

@@ -8,8 +8,10 @@ import com.android.volley.Request;
 import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.model.ReturnMsgModel;
+import com.xx.chinetek.chineteklib.util.CompressUtil;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.function.DESUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
@@ -248,7 +250,7 @@ public class UploadDN {
             String dnModelJson = GsonUtil.parseModelToJson(dnModel);
             String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
             params.put("UserInfoJS", user);
-            params.put("DNJS", dnModelJson);
+            params.put("DNJS", CompressUtil.compressForZip(DESUtil.encode(dnModelJson)));
             params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
             String para = (new JSONObject(params)).toString();
             LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, para);
@@ -267,7 +269,7 @@ public class UploadDN {
         String dnModelJson= GsonUtil.parseModelToJson(dnModels);
         String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
         params.put("UserInfoJS", user);
-        params.put("DNListJS", dnModelJson);
+        params.put("DNListJS", CompressUtil.compressForZip(DESUtil.encode(dnModelJson)));
         params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(UploadDN.class, TAG_ExceptionDNList, para);

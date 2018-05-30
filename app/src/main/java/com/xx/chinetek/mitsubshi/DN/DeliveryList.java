@@ -140,16 +140,22 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         if (returnMsgModel.getHeaderStatus().equals("S")) {
             ArrayList<DNDetailModel> dnDetailModels = returnMsgModel.getModelJson();
             int size=dnDetailModels.size();
-            for(int i=0;i<size;i++){
-                int scanQTY=DbDnInfo.getInstance().GetScanQtyInDNScanModel(dnDetailModels.get(i).getAGENT_DN_NO()
-                        ,dnDetailModels.get(i).getGOLFA_CODE(),dnDetailModels.get(i).getLINE_NO());
-                dnDetailModels.get(i).setSCAN_QTY(scanQTY);
+            if(size!=0) {
+                for (int i = 0; i < size; i++) {
+                    int scanQTY = DbDnInfo.getInstance().GetScanQtyInDNScanModel(dnDetailModels.get(i).getAGENT_DN_NO()
+                            , dnDetailModels.get(i).getGOLFA_CODE(), dnDetailModels.get(i).getLINE_NO());
+                    dnDetailModels.get(i).setSCAN_QTY(scanQTY);
+                }
+                //插入数据
+
+                DbDnInfo.getInstance().InsertDNDetailDB(dnDetailModels);
+                DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnDetailModels.get(0).getAGENT_DN_NO(), DNStatusEnum.download);
+                dnModel.setSTATUS(DNStatusEnum.download);
+                StartScan(dnModel);
             }
-            //插入数据
-            DbDnInfo.getInstance().InsertDNDetailDB(dnDetailModels);
-            DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnDetailModels.get(0).getAGENT_DN_NO(),DNStatusEnum.download);
-            dnModel.setSTATUS(DNStatusEnum.download);
-            StartScan(dnModel);
+            else{
+                MessageBox.Show(context, getString(R.string.Msg_No_DNDetail));
+            }
         } else {
             MessageBox.Show(context, returnMsgModel.getMessage());
         }

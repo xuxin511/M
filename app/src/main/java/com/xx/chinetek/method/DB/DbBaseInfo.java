@@ -201,4 +201,19 @@ public class DbBaseInfo {
         }
         return materialModels;
     }
+
+    public List<MaterialModel> Querytems(String SapNo,String ItemName,String GolafCode){
+        List<MaterialModel> materialModels=new ArrayList<>();
+        if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)) {
+            materialModels= materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"))
+                    .whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
+                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();
+        }else if(TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)){
+            materialModels = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
+                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();
+        }else if(!TextUtils.isEmpty(ItemName) && TextUtils.isEmpty(SapNo)){
+            materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%")).list();
+        }
+       return materialModels;
+    }
 }

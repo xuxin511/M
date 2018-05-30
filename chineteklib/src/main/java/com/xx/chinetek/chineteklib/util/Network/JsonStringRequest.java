@@ -5,10 +5,13 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
+import com.xx.chinetek.chineteklib.util.CompressUtil;
+import com.xx.chinetek.chineteklib.util.function.DESUtil;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Created by GHOST on 2016/12/14.
@@ -39,9 +42,11 @@ public class JsonStringRequest extends JsonRequest<String> {
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
         try {
-            String je = new String(response.data, HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+            String je = new String(response.data,HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+            je= CompressUtil.decompressForZip(je);
+            je= DESUtil.decode(je);
             return Response.success(JSONTokener(je), HttpHeaderParser.parseCacheHeaders(response));
-        } catch (UnsupportedEncodingException var3) {
+        } catch (Exception var3) {
             return Response.error(new ParseError(var3));
         }
     }
