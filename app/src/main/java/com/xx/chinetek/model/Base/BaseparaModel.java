@@ -44,6 +44,19 @@ public class BaseparaModel {
      */
     private FtpModel ftpModel;
 
+    /**
+     * 第三方调用接口
+     */
+    private ThirdInterfaceModel thirdInterfaceModel=null;
+
+    public ThirdInterfaceModel getThirdInterfaceModel() {
+        return thirdInterfaceModel;
+    }
+
+    public void setThirdInterfaceModel(ThirdInterfaceModel thirdInterfaceModel) {
+        this.thirdInterfaceModel = thirdInterfaceModel;
+    }
+
     public int getSerialMaxLength() {
         return SerialMaxLength;
     }

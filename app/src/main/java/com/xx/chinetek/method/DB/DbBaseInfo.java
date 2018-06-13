@@ -205,14 +205,14 @@ public class DbBaseInfo {
     public List<MaterialModel> Querytems(String SapNo,String ItemName,String GolafCode){
         List<MaterialModel> materialModels=new ArrayList<>();
         if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)) {
-            materialModels= materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"))
+            materialModels= materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"))//,MaterialModelDao.Properties.BISMT.isNotNull()
                     .whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
                     MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();
         }else if(TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)){
             materialModels = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
-                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();
+                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();//.where(MaterialModelDao.Properties.BISMT.isNotNull())
         }else if(!TextUtils.isEmpty(ItemName) && TextUtils.isEmpty(SapNo)){
-            materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%")).list();
+            materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%")).list();//,MaterialModelDao.Properties.BISMT.isNotNull()
         }
        return materialModels;
     }

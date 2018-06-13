@@ -30,6 +30,7 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.function.DESUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.FTP.FtpModel;
@@ -41,6 +42,7 @@ import com.xx.chinetek.model.Base.CusBarcodeRule;
 import com.xx.chinetek.model.Base.CusDnnoRule;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.SyncParaModel;
+import com.xx.chinetek.model.Base.ThirdInterfaceModel;
 import com.xx.chinetek.model.Base.URLModel;
 
 import org.json.JSONObject;
@@ -117,6 +119,7 @@ public class Setting extends BaseActivity {
     String startwordsCusDN;
     Integer indexLength=0;
     CusBarcodeRule cusBarcodeRule;
+    ThirdInterfaceModel thirdInterfaceModel;
     List<String> ToAdress;
 
     Integer MaxLength=0;
@@ -166,7 +169,7 @@ public class Setting extends BaseActivity {
     @Override
     protected void initData() {
         super.initData();
-
+        DESUtil.pvkey="SCGWMS00"; //登陆之前密钥固定
         if(ParamaterModel.baseparaModel==null) ParamaterModel.baseparaModel=new BaseparaModel();
         edtIPAdress.setText(Paramater.IPAdress);
         edtPort.setText(Paramater.Port+"");
@@ -180,6 +183,9 @@ public class Setting extends BaseActivity {
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null){
             ckSelfBarcode.setChecked(ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed());
             cusBarcodeRule=ParamaterModel.baseparaModel.getCusBarcodeRule();
+        }
+        if(ParamaterModel.baseparaModel.getThirdInterfaceModel()!=null){
+            thirdInterfaceModel=ParamaterModel.baseparaModel.getThirdInterfaceModel();
         }
         if(ParamaterModel.baseparaModel.getMailModel()!=null){
             edtMailAccount.setText(ParamaterModel.baseparaModel.getMailModel().getAccount());
@@ -208,6 +214,9 @@ public class Setting extends BaseActivity {
         }
         if(requestCode==1002  && resultCode==1){
             ToAdress=data.getStringArrayListExtra("ToAdress");
+        }
+        if(requestCode==1003  && resultCode==1){
+            thirdInterfaceModel=data.getParcelableExtra("thirdInterfaceModel");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -267,6 +276,12 @@ public class Setting extends BaseActivity {
         }
         Intent intent=new Intent(context,Setting_BarcodeRules.class);
         startActivityForResult(intent,1001);
+    }
+
+    @Event(R.id.thirdInterface)
+    private void thirdInterfaceClick(View view){
+        Intent intent=new Intent(context,Setting_ThirdInterface.class);
+        startActivityForResult(intent,1003);
     }
 
  @Event(R.id.layoutTOMail)
@@ -428,6 +443,8 @@ public class Setting extends BaseActivity {
             if (cusBarcodeRule == null) cusBarcodeRule = new CusBarcodeRule();
             cusBarcodeRule.setUsed(ckSelfBarcode.isChecked());
             ParamaterModel.baseparaModel.setCusBarcodeRule(cusBarcodeRule);
+            if (thirdInterfaceModel == null) thirdInterfaceModel = new ThirdInterfaceModel();
+            ParamaterModel.baseparaModel.setThirdInterfaceModel(thirdInterfaceModel);
 
             if (!TextUtils.isEmpty(startwordsCusDN) && indexLength != 0) {
                 if (ParamaterModel.baseparaModel.getCusDnnoRule() == null)

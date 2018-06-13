@@ -55,7 +55,9 @@
     <string name="Setting_SysPassword">修改管理员密码</string>
     <string name="Setting_DNRule">自定义出库单规则</string>
     <string name="Setting_serialnoaxlength">设置序列号最大长度</string>
+    <string name="Setting_thirdInterface">设置第三方接口</string>
     <string name="Setting_Port">端口：</string>
+    <string name="Setting_Serverpart">服务后缀：</string>
     <string name="Setting_TimeOut">超时时间：</string>
     <string name="Setting_Second">秒</string>
     <string name="Setting_LogUpload">日志上报</string>

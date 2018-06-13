@@ -41,7 +41,7 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote" />
 
         <!-- AK鉴权 -->
         <!-- meta-data需要写在application中 -->
@@ -77,7 +77,8 @@
         <activity android:name=".Setting_ToMailList" />
         <activity android:name=".DN.MultiMaterialSelect" />
         <activity android:name=".Setting_BarcodeRules" />
-        <activity android:name=".Query.MaterialQuery"></activity>
+        <activity android:name=".Query.MaterialQuery" />
+        <activity android:name=".Setting_ThirdInterface"></activity>
     </application>
 
 </manifest>

@@ -74,8 +74,8 @@ public class MaterialQuery extends BaseIntentActivity {
     @Override
     protected void initViews() {
         super.initViews();
-        QueryBuilder.LOG_SQL = true;
-        QueryBuilder.LOG_VALUES = true;
+//        QueryBuilder.LOG_SQL = true;
+//        QueryBuilder.LOG_VALUES = true;
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.MaterialQuery),true);
         x.view().inject(this);
     }
