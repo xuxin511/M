@@ -1,5 +1,6 @@
 package com.xx.chinetek.method.DB;
 
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.xx.chinetek.greendao.CustomModelDao;
@@ -9,6 +10,8 @@ import com.xx.chinetek.greendao.SyncParaModelDao;
 import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.SyncParaModel;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,18 +205,45 @@ public class DbBaseInfo {
         return materialModels;
     }
 
-    public List<MaterialModel> Querytems(String SapNo,String ItemName,String GolafCode){
+    public List<MaterialModel> Querytems(String SapNo,String ItemName,String GolafCode,String ItemLine){
         List<MaterialModel> materialModels=new ArrayList<>();
-        if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)) {
-            materialModels= materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"))//,MaterialModelDao.Properties.BISMT.isNotNull()
-                    .whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
-                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();
-        }else if(TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)){
-            materialModels = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
-                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();//.where(MaterialModelDao.Properties.BISMT.isNotNull())
-        }else if(!TextUtils.isEmpty(ItemName) && TextUtils.isEmpty(SapNo)){
-            materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%")).list();//,MaterialModelDao.Properties.BISMT.isNotNull()
-        }
+        QueryBuilder queryBuilder=materialModelDao.queryBuilder();
+        if(!TextUtils.isEmpty(SapNo))
+            queryBuilder=queryBuilder.whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
+                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%"));
+        if(!TextUtils.isEmpty(ItemName))
+            queryBuilder=queryBuilder.where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"));
+        if(!TextUtils.isEmpty(ItemLine))
+            queryBuilder=queryBuilder.where(MaterialModelDao.Properties.SPART.eq(ItemLine));
+        materialModels=queryBuilder.list();
+
+//        if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)) {
+//            materialModels= materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"))//,MaterialModelDao.Properties.BISMT.isNotNull()
+//                    .whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
+//                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();
+//        }else if(TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)){
+//            materialModels = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
+//                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();//.where(MaterialModelDao.Properties.BISMT.isNotNull())
+//        }else if(!TextUtils.isEmpty(ItemName) && TextUtils.isEmpty(SapNo)){
+//            materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%")).list();//,MaterialModelDao.Properties.BISMT.isNotNull()
+//        }
        return materialModels;
+    }
+
+    public ArrayList<String> QueryItemLines(){
+        ArrayList<String> ItemLines=new ArrayList<>();
+        ItemLines.add("所有");
+        String sql="SELECT DISTINCT SPART FROM MATERIAL_MODEL;";
+        Cursor c = materialModelDao.getDatabase().rawQuery(sql,null);
+        try{
+            if (c.moveToFirst()) {
+                do {
+                    ItemLines.add(c.getString(0));
+                } while (c.moveToNext());
+            }
+        } finally {
+            c.close();
+        }
+        return ItemLines;
     }
 }

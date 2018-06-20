@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -71,6 +72,8 @@ public class ExceptionScan extends BaseIntentActivity {
     ListView lsvDeliveryScan;
     @ViewInject(R.id.txt_BarRule)
     TextView txtBarRule;
+    @ViewInject(R.id.CBCloseDN)
+    CheckBox CBCloseDn;
     @ViewInject(R.id.spin_barRule)
     Spinner spinbarRule;
 
@@ -139,6 +142,7 @@ public class ExceptionScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
+        CBCloseDn.setChecked(dnModel.getDN_SOURCE()==3);
         txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
             txtBarRule.setVisibility(View.VISIBLE);
@@ -208,7 +212,7 @@ public class ExceptionScan extends BaseIntentActivity {
             if (postmodel == null) {
                 MessageBox.Show(context, "提交失败！");
             } else {
-                UploadDN.SumbitDN(context, postmodel, mHandler);
+                UploadDN.SumbitDN(context, postmodel,CBCloseDn.isChecked()?"F":"N", mHandler);
             }
 
 

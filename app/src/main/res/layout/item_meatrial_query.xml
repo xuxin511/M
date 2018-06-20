@@ -7,6 +7,20 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/txt_ItemLine"
+        style="@style/TextViewComminStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="5dp"
+        android:text="SAP编号："
+        android:textAlignment="textStart"
+        android:textColor="@color/mediumblue"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_ItemNo" />
+
+    <TextView
         android:id="@+id/item_ItemName"
         style="@style/TextViewComminStyle"
         android:layout_width="0dp"
@@ -56,15 +70,14 @@
         style="@style/TextViewComminStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="5dp"
         android:text="SAP编号："
         android:textAlignment="textStart"
         android:textColor="@color/mediumblue"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toStartOf="@+id/txt_ItemLine"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guideline7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_ItemNo" />
 

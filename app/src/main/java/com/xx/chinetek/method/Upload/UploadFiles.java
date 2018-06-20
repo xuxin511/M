@@ -48,8 +48,8 @@ public class UploadFiles {
             public void run() {
                 try {
                     ParamaterModel.baseparaModel.getMailModel().setFromAddress( ParamaterModel.baseparaModel.getMailModel().getAccount());
-                    ParamaterModel.baseparaModel.getMailModel().setSubject("DN_"+ CommonUtil.DateToString(new Date(),null));
-                    ParamaterModel.baseparaModel.getMailModel().setContent("QR扫描数据文件包含于附件中");
+                    ParamaterModel.baseparaModel.getMailModel().setSubject((list.length==1?"M_":"DN_")+ CommonUtil.DateToString(new Date(),null));
+                    ParamaterModel.baseparaModel.getMailModel().setContent(list.length==1?"导出物料数据包含于附件中":"QR扫描数据文件包含于附件中");
                     MailUtil.SendMail(ParamaterModel.baseparaModel.getMailModel(), list,mHandler);
                 }catch (Exception ex){
                     Message msg = mHandler.obtainMessage(NetworkError.NET_ERROR_CUSTOM, ex.getMessage());

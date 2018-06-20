@@ -77,7 +77,7 @@ public class FtpUtil {
                 ftp.closeConnect();
             }
             if (mHandler != null) {
-                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadSuccess) + total/2);
+                android.os.Message msg = mHandler.obtainMessage(RESULT_SyncFTP, BaseApplication.context.getString(R.string.Msg_UploadSuccess) +(total==1?total: total/2));
                 mHandler.sendMessage(msg);
             }
         } catch (Exception ex) {

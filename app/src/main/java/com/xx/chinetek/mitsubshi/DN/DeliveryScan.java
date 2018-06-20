@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -86,6 +87,8 @@ public class DeliveryScan extends BaseIntentActivity {
     EditText txtDnNo;
     @ViewInject(R.id.txt_Custom)
     TextView txtCustom;
+    @ViewInject(R.id.CBCloseDN)
+    CheckBox CBCloseDN;
     @ViewInject(R.id.spin_barRule)
     Spinner spinbarRule;
     @ViewInject(R.id.lsv_DeliveryScan)
@@ -168,6 +171,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
+        CBCloseDN.setChecked(ParamaterModel.DnTypeModel.getDNType()==3);
         txtCustom.setText(ParamaterModel.DnTypeModel.getDNType()==3 && ParamaterModel.DnTypeModel.getCustomModel()!=null?ParamaterModel.DnTypeModel.getCustomModel().getNAME():
                 dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
 //        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
@@ -262,7 +266,7 @@ public class DeliveryScan extends BaseIntentActivity {
                 }
             }
 
-            UploadDN.SumbitDN(context,dnModel,mHandler);
+            UploadDN.SumbitDN(context,dnModel,CBCloseDN.isChecked()?"F":"N",mHandler);
         }
         return super.onOptionsItemSelected(item);
     }

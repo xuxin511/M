@@ -25,6 +25,7 @@ public class URLModel {
     public String SyncMaterialRang = GetWCFAdress()+"GetMatrialsRange"; //同步物料基础数据
     public String SyncCus = GetWCFAdress()+"GetCustomers"; //同步代理商和客户基础数据
     public String UploadCus = GetWCFAdress()+"AddNewCustomer"; //上传新增客户
+    public String DeleteCus = GetWCFAdress()+"DeleteCustomer"; //删除客户
     public String UploadNDN = GetWCFAdress()+"UploadDN";//"UploadDN"; //上传出库单
     public String ExceptionDN = GetWCFAdress()+"ExceptionDN"; //上传异常出库单
     public String ExceptionDNList = GetWCFAdress()+"UploadMultipleDNs"; //上传异常出库单

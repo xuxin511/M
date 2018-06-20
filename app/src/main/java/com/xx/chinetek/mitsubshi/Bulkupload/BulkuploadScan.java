@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ public class BulkuploadScan extends BaseIntentActivity {
     TextView txtDnNo;
     @ViewInject(R.id.txt_Custom)
     TextView txtCustom;
+    @ViewInject(R.id.CBCloseDN)
+    CheckBox CBCloseDN;
     @ViewInject(R.id.lsv_DeliveryScan)
     ListView lsvDeliveryScan;
 
@@ -48,7 +51,7 @@ public class BulkuploadScan extends BaseIntentActivity {
        super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.Bulkupload),true);
         x.view().inject(this);
-
+        CBCloseDN.setVisibility(View.GONE);
     }
 
     @Override

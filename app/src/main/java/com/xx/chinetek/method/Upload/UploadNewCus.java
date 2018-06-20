@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_DeleteCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadCus;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_DeleteCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadCus;
 
 /**
@@ -39,6 +41,22 @@ public class UploadNewCus {
         LogUtil.WriteLog(SyncBase.class, TAG_UploadCus, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadCus,
                 context.getString(R.string.Dia_UploadCus), context, mHandler, RESULT_UploadCus, null,  URLModel.GetURL().UploadCus, params, null);
+
+    }
+
+    /**
+     * 删除客户
+     */
+    public static void DeleteCusToMaps(String customer,String customeName,MyHandler<BaseActivity> mHandler){
+        final Map<String, String> params = new HashMap<String, String>();
+        String user= GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("Customer", customer);
+        params.put("CutomeName", customeName);
+        params.put("UserInfoJS", user);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_DeleteCus, para);
+        RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_DeleteCus,
+                context.getString(R.string.Dia_DeleteCus), context, mHandler, RESULT_DeleteCus, null,  URLModel.GetURL().DeleteCus, params, null);
 
     }
 }

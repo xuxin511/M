@@ -7,6 +7,7 @@ import android.os.Environment;
 
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by GHOST on 2017/11/15.
@@ -43,7 +45,31 @@ public class FileUtils {
 
         }
     }
+    public static void  ExportMaterialFile(List<MaterialModel> materialModels, int index) throws Exception{
+        String fileName="Material_QR.csv";
+        String dir=GetDirectory(index);
+        String Title="SPA号,GolafCode,产品线,型号";
+        File file = new File(dir+File.separator+fileName);
+        OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(file),"GBK");
+        BufferedWriter bw = new BufferedWriter(writerStream);
+        bw.write(Title);
+        bw.write("\r\n");
+        if(materialModels!=null && materialModels.size()!=0){
+            for (MaterialModel material:materialModels) {
+                String sap=material.getMATNR();
+                String golafcode=material.getBISMT();
+                String itemline=material.getSPART();
+                String itemName=material.getMAKTX();
+                String writeLine=sap+","+golafcode+","+itemline+","+itemName;
+                bw.write(writeLine);
+                bw.write("\r\n");
+                bw.flush();
+            }
+        }
+        bw.close();
+        UpdateMediaDirectory(BaseApplication.context,file);
 
+    }
 
     /**
      * 导出文件至本地

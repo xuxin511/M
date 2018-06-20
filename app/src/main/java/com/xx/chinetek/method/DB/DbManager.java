@@ -12,7 +12,7 @@ import com.xx.chinetek.greendao.DaoSession;
 
 public class DbManager {
     // 是否加密
-    public static final boolean ENCRYPTED = true;
+    public static boolean ENCRYPTED = false;
 
     public static String DB_NAME = "mitsubshi.db";
     private static DbManager mDbManager;
@@ -79,7 +79,13 @@ public class DbManager {
             synchronized (DbManager.class) {
                 if (null == mDaoMaster) {
                     DbOpenHelper helper = new DbOpenHelper(context,DB_NAME,null);
-                    mDaoMaster = new DaoMaster(helper.getWritableDatabase());//new DaoMaster(helper.getEncryptedReadableDb(dbpassword));//
+                    if (ENCRYPTED) {//加密
+                        mDaoMaster= new DaoMaster(helper.getEncryptedReadableDb(dbpassword));;
+                    } else {
+                        mDaoMaster =new DaoMaster(helper.getWritableDatabase());
+                    }
+
+                   // mDaoMaster = new DaoMaster(helper.getWritableDatabase());//new DaoMaster(helper.getEncryptedReadableDb(dbpassword));//
                 }
             }
         }

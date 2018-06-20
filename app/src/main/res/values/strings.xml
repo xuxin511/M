@@ -79,12 +79,14 @@
     <string name="Setting_ADD">添加</string>
     <string name="materialQuery_Code">产品编号：</string>
     <string name="materialQuery_Item">产品型号：</string>
+    <string name="materialQuery_ItemLine">产品线：</string>
 
 
     <string name="sendType">发货方式：</string>
     <string name="barRules">非三菱规则：</string>
     <string name="sendCompany">收货方：</string>
     <string name="choiceSendType">请选择发货方式：</string>
+    <string name="choiceItemLine">请选择产品线：</string>
     <string name="choiceBarRules">请选择解析规则：</string>
     <string name="choiceSendCusttom">请选择收货方：</string>
     <string name="supplier">代理商：</string>
@@ -164,11 +166,11 @@
     <string name="Msg_InputCustom">请输入代理商编号</string>
     <string name="Msg_ChoiceSaveTime">请选择保存时间（天）</string>
     <string name="Msg_PasswordError">管理员密码错误!</string>
-    <string name="Msg_UploadSuccess">DN导出成功!\n导出出库单数：</string>
+    <string name="Msg_UploadSuccess">导出成功!\n导出出库单数：</string>
     <string name="Msg_DNUploadSuccess">出库单提交成功!</string>
     <string name="Msg_bolkDNUploadSuccess">批量出库单提交完成!</string>
     <string name="Msg_DNSuccess">出库单完成数：</string>
-    <string name="Msg_UploadFailue">DN导出失败!\n失败原因：</string>
+    <string name="Msg_UploadFailue">导出失败!\n失败原因：</string>
     <string name="Msg_MitMaterialS">所选单据中存在物料无法确定唯一性\n请处理后再下载</string>
     <string name="Msg_ExitDn">出库单号已存在，请确认后导入！\n</string>
     <string name="Msg_ScanMaterial">没有可以提交的扫描数据</string>
@@ -209,6 +211,7 @@
     <string name="Dia_SyncMaterial">正在同步物料数据...</string>
     <string name="Dia_SyncCus">正在同步客户和代理商...</string>
     <string name="Dia_UploadCus">正在上传新增客户信息...</string>
+    <string name="Dia_DeleteCus">正在修改客户信息...</string>
     <string name="Dia_UploadDN">正在上传出库单...</string>
     <string name="Dia_GetDNDetailItems">获取已关闭出库单...</string>
     <string name="Dia_DeleteDn">是否删除已选中单据的扫描记录？</string>
@@ -219,10 +222,13 @@
     <string name="Dia_SyncDn">通过MAPS形式获取出库单...</string>
     <string name="Dia_SyncMail">通过邮件形式获取出库单...</string>
     <string name="Dia_UploadMail">通过邮件形式导出出库单...</string>
+    <string name="Dia_UploadMailM">通过邮件形式导出物料...</string>
     <string name="Dia_SyncUSB">通过USB形式导入出库单...</string>
     <string name="Dia_UploadUSB">通过USB形式导出出库单...</string>
+    <string name="Dia_UploadUSBM">通过USB形式导出物料...</string>
     <string name="Dia_SyncFTP">通过FTP形式导入出库单...</string>
     <string name="Dia_UploadFtp">通过FTP形式导出出库单...</string>
+    <string name="Dia_UploadFtpM">通过FTP形式导出物料...</string>
     <string name="Dia_SyncDnDetail">通过MAPS形式获取出库单明细...</string>
     <string name="Dia_SyncSuccess">基础数据同步完成</string>
     <string name="Dia_UploadSuccess">参数上传成功！</string>

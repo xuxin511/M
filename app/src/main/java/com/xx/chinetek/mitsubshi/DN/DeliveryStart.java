@@ -51,7 +51,9 @@ import org.xutils.x;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_DeleteCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadCus;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_DeleteCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadCus;
 
 @ContentView(R.layout.activity_delivery_start)
@@ -77,12 +79,17 @@ public class DeliveryStart extends BaseActivity {
     ArrayList<CustomModel> customModels;
 
     Boolean isFirstRun=true;
+    int isDeleteOrChange=-1; //0：删除 1：修改
 
     @Override
     public void onHandleMessage(Message msg) {
+        isDeleteOrChange=-1;
         switch (msg.what) {
             case RESULT_UploadCus:
                 AnalysisUploadCusJson((String) msg.obj);
+                break;
+            case RESULT_DeleteCus:
+                AnalysisDeleteCusJson((String) msg.obj);
                 break;
             case NetworkError.NET_ERROR_CUSTOM:
                 ToastUtil.show("获取请求失败_____"+ msg.obj);
@@ -150,20 +157,23 @@ public class DeliveryStart extends BaseActivity {
 
 
                 if(isNewCus) {
-                    new AlertDialog.Builder(this).setTitle("新增客户确认")
-                            .setIcon(android.R.drawable.ic_dialog_info)
-                            .setMessage("输入客户名称已找到匹配项，是否确认新增?")
-                            .setPositiveButton("新增", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                        if(size!=0) {
+                            new AlertDialog.Builder(this).setTitle("新增客户确认")
+                                    .setIcon(android.R.drawable.ic_dialog_info)
+                                    .setMessage("输入客户名称已找到匹配项，是否确认新增?")
+                                    .setPositiveButton("新增", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                    UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
-                                    CommonUtil.setEditFocus(edtContentText);
-                                }
-                            })
-                            .setNeutralButton("取消", null)
-                            .show();
-//                    UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
-//                    CommonUtil.setEditFocus(edtContentText);
+                                            UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
+                                            CommonUtil.setEditFocus(edtContentText);
+                                        }
+                                    })
+                                    .setNeutralButton("取消", null)
+                                    .show();
+                        }else {
+                            UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
+                            CommonUtil.setEditFocus(edtContentText);
+                        }
                     return;
                 }
 
@@ -259,22 +269,27 @@ public class DeliveryStart extends BaseActivity {
                     .setPositiveButton("修改", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             customModel.setNAME(edtCustom.getText().toString());
-                            DbBaseInfo.getInstance().ModifyPartnersByID(customModel);
+                            isDeleteOrChange=1;
                             DbDnInfo.getInstance().ModifyCustomINDNModel(edtCustom.getText().toString(),oraignCus);
-                            BindData();
-                            edtContentText.setText(customModel.getCUSTOMER());
-                            CommonUtil.setEditFocus(edtContentText);
+                            UploadNewCus.DeleteCusToMaps(customModel.getCUSTOMER(),customModel.getNAME(), mHandler);
+//                            DbBaseInfo.getInstance().ModifyPartnersByID(customModel);
+
+//                            BindData();
+//                            edtContentText.setText(customModel.getCUSTOMER());
+//                            CommonUtil.setEditFocus(edtContentText);
                         }
                     })
                     .setNegativeButton("删除", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            customModel.setNAME(edtCustom.getText().toString());
-                            DbBaseInfo.getInstance().DeletePartnersByID(customModel);
-                            BindData();
-                            customModel=null;
-                            edtContentText.setText("");
-                            CommonUtil.setEditFocus(edtContentText);
+                            isDeleteOrChange=0;
+                            UploadNewCus.DeleteCusToMaps(customModel.getCUSTOMER(),"", mHandler);
+//                            customModel.setNAME(edtCustom.getText().toString());
+//                            DbBaseInfo.getInstance().DeletePartnersByID(customModel);
+//                            BindData();
+//                            customModel=null;
+//                            edtContentText.setText("");
+//                            CommonUtil.setEditFocus(edtContentText);
                         }
                     })
                     .setNeutralButton("取消", null)
@@ -346,6 +361,40 @@ public class DeliveryStart extends BaseActivity {
         CommonUtil.setEditFocus(edtContentText);
     }
 
+    /**
+     * 删除客户
+     * @param result
+     */
+    void AnalysisDeleteCusJson(String result){
+        LogUtil.WriteLog(DeliveryStart.class,TAG_DeleteCus,result);
+        try {
+            ReturnMsgModel<CustomModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<CustomModel>>() {
+            }.getType());
+            if (returnMsgModel.getHeaderStatus().equals("S")) {
+                if (isDeleteOrChange == 1) {
+                    DbBaseInfo.getInstance().ModifyPartnersByID(customModel);
+                    BindData();
+                    edtContentText.setText(customModel.getCUSTOMER());
+                }
+                if (isDeleteOrChange == 0) {
+                    DbBaseInfo.getInstance().DeletePartnersByID(customModel);
+                    BindData();
+                    customModel = null;
+                    edtContentText.setText("");
+                    dnTypeModel.setCustomModel(new CustomModel());
+                    SharePreferUtil.SetDNTypeShare(context, dnTypeModel);
+                    ParamaterModel.DnTypeModel = dnTypeModel;
+                }
+                CommonUtil.setEditFocus(edtContentText);
+            }
+            else {
+                MessageBox.Show(context,returnMsgModel.getMessage());
+            }
+        }catch (Exception ex) {
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(DeliveryStart.class,"DeliveryStart-DeleteCus", ex.toString());
+        }
+    }
 
     /**
      * 获取新增客户

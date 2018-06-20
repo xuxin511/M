@@ -50,7 +50,7 @@
         android:text="1234567890"
         android:textAlignment="center"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/img_Remark"
+        app:layout_constraintEnd_toStartOf="@+id/CBCloseDN"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -172,5 +172,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.32" />
+
+    <CheckBox
+        android:id="@+id/CBCloseDN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="关闭"
+        android:textColor="@color/aliceblue"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_DnNo"
+        app:layout_constraintEnd_toStartOf="@+id/img_Remark" />
 
 </android.support.constraint.ConstraintLayout>

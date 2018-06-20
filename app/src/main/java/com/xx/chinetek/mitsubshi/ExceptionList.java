@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -53,6 +54,8 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     EditText edtDNNoFuilter;
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
+    @ViewInject(R.id.CBCloseDN)
+    CheckBox CBCloseDN;
     @ViewInject(R.id.mSwipeLayout)
     SwipeRefreshLayout mSwipeLayout;
     ArrayList<DNModel> DNModels;
@@ -64,6 +67,7 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
         super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.exceptionList),true);
         x.view().inject(this);
+        CBCloseDN.setVisibility(View.GONE);
     }
 
     @Override

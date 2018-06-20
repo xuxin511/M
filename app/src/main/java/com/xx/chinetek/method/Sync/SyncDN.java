@@ -191,7 +191,7 @@ public class SyncDN {
                    DNDetailModel dnDetailModel = DbDnInfo.getInstance().GetLoaclDNDetail(DNNo, lineno);
                    if (dnDetailModel == null) {
                        dnDetailModel = new DNDetailModel();
-                       dnDetailModel.setDETAIL_STATUS("1");
+                       dnDetailModel.setDETAIL_STATUS("AC");
                        dnDetailModel.setSTATUS(0);
                    }
                    dnDetailModel.setAGENT_DN_NO(DNNo);

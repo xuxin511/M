@@ -44,20 +44,8 @@ public class MaterialModel implements Parcelable {
      */
     private String ZMAKTX;
 
+    private String ACTION_CODE;
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.MATNR);
-        dest.writeString(this.BISMT);
-        dest.writeString(this.SPART);
-        dest.writeString(this.MAKTX);
-        dest.writeString(this.ZMAKTX);
-    }
 
     public String getMATNR() {
         return this.MATNR;
@@ -99,7 +87,41 @@ public class MaterialModel implements Parcelable {
         this.ZMAKTX = ZMAKTX;
     }
 
+    public String getACTION_CODE() {
+        return ACTION_CODE;
+    }
+
+    public void setACTION_CODE(String ACTION_CODE) {
+        this.ACTION_CODE = ACTION_CODE;
+    }
+
     public MaterialModel() {
+    }
+
+    @Generated(hash = 1216317872)
+    public MaterialModel(String MATNR, String BISMT, String SPART, String MAKTX,
+            String ZMAKTX, String ACTION_CODE) {
+        this.MATNR = MATNR;
+        this.BISMT = BISMT;
+        this.SPART = SPART;
+        this.MAKTX = MAKTX;
+        this.ZMAKTX = ZMAKTX;
+        this.ACTION_CODE = ACTION_CODE;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.MATNR);
+        dest.writeString(this.BISMT);
+        dest.writeString(this.SPART);
+        dest.writeString(this.MAKTX);
+        dest.writeString(this.ZMAKTX);
+        dest.writeString(this.ACTION_CODE);
     }
 
     protected MaterialModel(Parcel in) {
@@ -108,16 +130,7 @@ public class MaterialModel implements Parcelable {
         this.SPART = in.readString();
         this.MAKTX = in.readString();
         this.ZMAKTX = in.readString();
-    }
-
-    @Generated(hash = 1749243774)
-    public MaterialModel(String MATNR, String BISMT, String SPART, String MAKTX,
-            String ZMAKTX) {
-        this.MATNR = MATNR;
-        this.BISMT = BISMT;
-        this.SPART = SPART;
-        this.MAKTX = MAKTX;
-        this.ZMAKTX = ZMAKTX;
+        this.ACTION_CODE = in.readString();
     }
 
     public static final Creator<MaterialModel> CREATOR = new Creator<MaterialModel>() {

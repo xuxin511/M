@@ -27,6 +27,7 @@ public class MaterialQueryItemAdapter extends BaseAdapter {
         public TextView txtRowNo;
         public TextView txtItemName;
         public TextView txtItemSap;
+        public TextView txtItemLine;
     }
 
     public MaterialQueryItemAdapter(Context context, List<MaterialModel> materialModels) {
@@ -68,6 +69,7 @@ public class MaterialQueryItemAdapter extends BaseAdapter {
             listItemView.txtRowNo = (TextView) convertView.findViewById(R.id.item_RowNo);
             listItemView.txtItemName = (TextView) convertView.findViewById(R.id.item_ItemName);
             listItemView.txtItemSap = (TextView) convertView.findViewById(R.id.txt_ItemSap);
+            listItemView.txtItemLine = (TextView) convertView.findViewById(R.id.txt_ItemLine);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
@@ -76,15 +78,16 @@ public class MaterialQueryItemAdapter extends BaseAdapter {
         listItemView.txtItemNo.setText(materialModel.getBISMT()==null?"":materialModel.getBISMT());
         listItemView.txtItemName.setText(materialModel.getMAKTX());
         listItemView.txtItemSap.setText("SAP号："+materialModel.getMATNR());
-//        if(position==0){
-            listItemView.txtRowNo.setText("正常");
-            listItemView.txtRowNo.setTextColor(convertView.getResources().getColor(R.color.green));
-//
-//        }else{
-//            listItemView.txtRowNo.setText("已删除");
-//            listItemView.txtRowNo.setTextColor(convertView.getResources().getColor(R.color.white));
-//            convertView.setBackgroundColor(convertView.getResources().getColor(R.color.lightcoral));
-//        }
+        listItemView.txtRowNo.setText("正常");
+        listItemView.txtItemLine.setText(materialModel.getSPART());
+        listItemView.txtRowNo.setTextColor(convertView.getResources().getColor(R.color.green));
+        if(materialModel.getACTION_CODE()!=null && materialModel.getACTION_CODE().equals("D")){
+            listItemView.txtRowNo.setText("已删除");
+            listItemView.txtRowNo.setTextColor(convertView.getResources().getColor(R.color.white));
+            convertView.setBackgroundColor(convertView.getResources().getColor(R.color.lightcoral));
+        }else{
+            convertView.setBackgroundColor(convertView.getResources().getColor(R.color.trans));
+        }
 
         return convertView;
     }

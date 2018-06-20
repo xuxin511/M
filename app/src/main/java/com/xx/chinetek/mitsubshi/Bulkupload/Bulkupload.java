@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -57,7 +58,8 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     ListView LsvExceptionList;
     @ViewInject(R.id.mSwipeLayout)
     SwipeRefreshLayout mSwipeLayout;
-
+    @ViewInject(R.id.CBCloseDN)
+    CheckBox CBCloseDN;
     ArrayList<DNModel> DNModels;
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
 
@@ -331,16 +333,16 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 new AlertDialog.Builder(context).setTitle("提示")// 设置对话框标题
                         .setIcon(android.R.drawable.ic_dialog_info)// 设置对话框图
                         .setMessage(context.getResources().getString(R.string.Msg_Upload_DNSelf))
-                        .setPositiveButton("提交并关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                UploadDN.UploadDNListToMaps(uploadModels,"F", mHandler);
-                            }
-                        })
+//                        .setPositiveButton("提交并关闭", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                UploadDN.UploadDNListToMaps(uploadModels,"F", mHandler);
+//                            }
+//                        })
                         .setNegativeButton("提交", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                UploadDN.UploadDNListToMaps(uploadModels,"N", mHandler);
+                                UploadDN.UploadDNListToMaps(uploadModels,CBCloseDN.isChecked()?"F":"N", mHandler);
                             }
                         })
                         .show();

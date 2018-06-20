@@ -12,6 +12,7 @@ public class TAG_RESULT {
     public static  String  TAG_SyncDn="SyncDn";
     public static  String  TAG_SyncDnDetail="SyncDnDetail";
     public static  String  TAG_UploadCus="UploadCus";
+    public static  String  TAG_DeleteCus="DeleteCus";
     public static  String  TAG_UploadDN="UploadDN";
     public static  String  TAG_ExceptionDNList="ExceptionDNList";
     public static  String  TAG_SyncException="SyncException";
@@ -30,6 +31,7 @@ public class TAG_RESULT {
     public static final int RESULT_SyncUSB=106;
     public static final int RESULT_SyncFTP=107;
     public static final int RESULT_UploadCus=108;
+    public static final int RESULT_DeleteCus=117;
     public static final int RESULT_UploadDN=109;
     public static final int RESULT_SyncDnDetail=110;
     public static final int RESULT_SyncException=111;

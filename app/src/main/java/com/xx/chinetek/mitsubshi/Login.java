@@ -144,7 +144,7 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         DESUtil.pvkey="SCGWMS00"; //初始密钥
-        ParamaterModel.SerialNo="1177325";
+        ParamaterModel.SerialNo="1177326";
         ParamaterModel.Model="A15_A5";
         if(ParamaterModel.SerialNo==null || TextUtils.isEmpty(ParamaterModel.SerialNo)){
             return;
