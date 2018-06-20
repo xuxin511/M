@@ -79,7 +79,7 @@ public class MaterialQueryItemAdapter extends BaseAdapter {
         listItemView.txtItemName.setText(materialModel.getMAKTX());
         listItemView.txtItemSap.setText("SAP号："+materialModel.getMATNR());
         listItemView.txtRowNo.setText("正常");
-        listItemView.txtItemLine.setText(materialModel.getSPART());
+        listItemView.txtItemLine.setText(materialModel.getSPARTNAME());
         listItemView.txtRowNo.setTextColor(convertView.getResources().getColor(R.color.green));
         if(materialModel.getACTION_CODE()!=null && materialModel.getACTION_CODE().equals("D")){
             listItemView.txtRowNo.setText("已删除");

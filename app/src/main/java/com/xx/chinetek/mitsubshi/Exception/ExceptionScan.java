@@ -142,7 +142,8 @@ public class ExceptionScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
-        CBCloseDn.setChecked(dnModel.getDN_SOURCE()==3);
+        if(dnModel.getDN_SOURCE()==3)
+            CBCloseDn.setVisibility(View.GONE);
         txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
             txtBarRule.setVisibility(View.VISIBLE);

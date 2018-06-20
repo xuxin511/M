@@ -178,6 +178,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="关闭"
+        android:checked="true"
         android:textColor="@color/aliceblue"
         app:layout_constraintBottom_toBottomOf="@+id/txt_DnNo"
         app:layout_constraintEnd_toStartOf="@+id/img_Remark" />

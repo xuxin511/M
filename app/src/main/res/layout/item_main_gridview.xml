@@ -28,7 +28,7 @@ android:layout_width="140dp"
 android:layout_height="140dp"
 android:orientation="vertical"
 android:gravity="center"
-android:background="@drawable/gridviewitem_bg_layout"
+
 android:padding="10dp"
     >
 

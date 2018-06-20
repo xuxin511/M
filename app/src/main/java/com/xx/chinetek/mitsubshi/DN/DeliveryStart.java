@@ -83,7 +83,7 @@ public class DeliveryStart extends BaseActivity {
 
     @Override
     public void onHandleMessage(Message msg) {
-        isDeleteOrChange=-1;
+
         switch (msg.what) {
             case RESULT_UploadCus:
                 AnalysisUploadCusJson((String) msg.obj);
@@ -95,6 +95,7 @@ public class DeliveryStart extends BaseActivity {
                 ToastUtil.show("获取请求失败_____"+ msg.obj);
                 break;
         }
+        isDeleteOrChange=-1;
     }
 
 

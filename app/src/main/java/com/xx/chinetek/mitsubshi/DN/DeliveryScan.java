@@ -171,7 +171,8 @@ public class DeliveryScan extends BaseIntentActivity {
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
         txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
-        CBCloseDN.setChecked(ParamaterModel.DnTypeModel.getDNType()==3);
+        if(ParamaterModel.DnTypeModel.getDNType()==3)
+            CBCloseDN.setVisibility(View.GONE);
         txtCustom.setText(ParamaterModel.DnTypeModel.getDNType()==3 && ParamaterModel.DnTypeModel.getCustomModel()!=null?ParamaterModel.DnTypeModel.getCustomModel().getNAME():
                 dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
 //        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());

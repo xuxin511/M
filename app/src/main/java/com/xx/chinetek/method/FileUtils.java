@@ -58,7 +58,7 @@ public class FileUtils {
             for (MaterialModel material:materialModels) {
                 String sap=material.getMATNR();
                 String golafcode=material.getBISMT();
-                String itemline=material.getSPART();
+                String itemline=material.getSPARTNAME();
                 String itemName=material.getMAKTX();
                 String writeLine=sap+","+golafcode+","+itemline+","+itemName;
                 bw.write(writeLine);

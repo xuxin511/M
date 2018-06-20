@@ -36,6 +36,10 @@ public class MaterialModel implements Parcelable {
     private String SPART;
 
     /**
+     * 产品线名称
+     */
+    private String SPARTNAME;
+    /**
      * 型号
      */
     private String MAKTX;
@@ -46,6 +50,13 @@ public class MaterialModel implements Parcelable {
 
     private String ACTION_CODE;
 
+    public String getSPARTNAME() {
+        return SPARTNAME;
+    }
+
+    public void setSPARTNAME(String SPARTNAME) {
+        this.SPARTNAME = SPARTNAME;
+    }
 
     public String getMATNR() {
         return this.MATNR;
@@ -98,12 +109,13 @@ public class MaterialModel implements Parcelable {
     public MaterialModel() {
     }
 
-    @Generated(hash = 1216317872)
-    public MaterialModel(String MATNR, String BISMT, String SPART, String MAKTX,
-            String ZMAKTX, String ACTION_CODE) {
+    @Generated(hash = 465745909)
+    public MaterialModel(String MATNR, String BISMT, String SPART, String SPARTNAME,
+            String MAKTX, String ZMAKTX, String ACTION_CODE) {
         this.MATNR = MATNR;
         this.BISMT = BISMT;
         this.SPART = SPART;
+        this.SPARTNAME = SPARTNAME;
         this.MAKTX = MAKTX;
         this.ZMAKTX = ZMAKTX;
         this.ACTION_CODE = ACTION_CODE;
@@ -119,6 +131,7 @@ public class MaterialModel implements Parcelable {
         dest.writeString(this.MATNR);
         dest.writeString(this.BISMT);
         dest.writeString(this.SPART);
+        dest.writeString(this.SPARTNAME);
         dest.writeString(this.MAKTX);
         dest.writeString(this.ZMAKTX);
         dest.writeString(this.ACTION_CODE);
@@ -128,6 +141,7 @@ public class MaterialModel implements Parcelable {
         this.MATNR = in.readString();
         this.BISMT = in.readString();
         this.SPART = in.readString();
+        this.SPARTNAME = in.readString();
         this.MAKTX = in.readString();
         this.ZMAKTX = in.readString();
         this.ACTION_CODE = in.readString();

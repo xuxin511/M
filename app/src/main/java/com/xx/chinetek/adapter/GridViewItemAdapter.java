@@ -51,23 +51,7 @@ public class GridViewItemAdapter extends BaseAdapter {
         Map<String, Object> map = listitem.get(position);
         imageView.setImageResource((Integer) map.get("image"));
         textView.setText(map.get("text") + "");
-        switch (position) {
-            case 0:
-                convertView.setBackgroundResource(R.color.trans);
-                break;
-            case 1:
-                convertView.setBackgroundResource(R.color.trans);
-                break;
-            case 2:
-                convertView.setBackgroundResource(R.color.trans);
-                break;
-            case 3:
-                convertView.setBackgroundResource(R.color.trans);
-                break;
-            case 4:
-                convertView.setBackgroundResource(R.color.trans);
-                break;
-        }
+
         return convertView;
     }
 

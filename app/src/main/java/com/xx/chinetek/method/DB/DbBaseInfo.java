@@ -213,8 +213,10 @@ public class DbBaseInfo {
                     MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%"));
         if(!TextUtils.isEmpty(ItemName))
             queryBuilder=queryBuilder.where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"));
-        if(!TextUtils.isEmpty(ItemLine))
-            queryBuilder=queryBuilder.where(MaterialModelDao.Properties.SPART.eq(ItemLine));
+        if(!TextUtils.isEmpty(ItemLine)) {
+            ItemLine=ItemLine.split("_")[0];
+            queryBuilder = queryBuilder.where(MaterialModelDao.Properties.SPART.eq(ItemLine));
+        }
         materialModels=queryBuilder.list();
 
 //        if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)) {
@@ -233,12 +235,12 @@ public class DbBaseInfo {
     public ArrayList<String> QueryItemLines(){
         ArrayList<String> ItemLines=new ArrayList<>();
         ItemLines.add("所有");
-        String sql="SELECT DISTINCT SPART FROM MATERIAL_MODEL;";
+        String sql="SELECT DISTINCT SPART,SPARTNAME FROM MATERIAL_MODEL;";
         Cursor c = materialModelDao.getDatabase().rawQuery(sql,null);
         try{
             if (c.moveToFirst()) {
                 do {
-                    ItemLines.add(c.getString(0));
+                    ItemLines.add(c.getString(0)+"_"+c.getString(1));
                 } while (c.moveToNext());
             }
         } finally {

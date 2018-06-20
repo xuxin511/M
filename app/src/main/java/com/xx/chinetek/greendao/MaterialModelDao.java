@@ -27,9 +27,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
         public final static Property MATNR = new Property(0, String.class, "MATNR", false, "MATNR");
         public final static Property BISMT = new Property(1, String.class, "BISMT", false, "BISMT");
         public final static Property SPART = new Property(2, String.class, "SPART", false, "SPART");
-        public final static Property MAKTX = new Property(3, String.class, "MAKTX", false, "MAKTX");
-        public final static Property ZMAKTX = new Property(4, String.class, "ZMAKTX", false, "ZMAKTX");
-        public final static Property ACTION_CODE = new Property(5, String.class, "ACTION_CODE", false, "ACTION__CODE");
+        public final static Property SPARTNAME = new Property(3, String.class, "SPARTNAME", false, "SPARTNAME");
+        public final static Property MAKTX = new Property(4, String.class, "MAKTX", false, "MAKTX");
+        public final static Property ZMAKTX = new Property(5, String.class, "ZMAKTX", false, "ZMAKTX");
+        public final static Property ACTION_CODE = new Property(6, String.class, "ACTION_CODE", false, "ACTION__CODE");
     }
 
 
@@ -48,9 +49,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
                 "\"MATNR\" TEXT UNIQUE ," + // 0: MATNR
                 "\"BISMT\" TEXT," + // 1: BISMT
                 "\"SPART\" TEXT," + // 2: SPART
-                "\"MAKTX\" TEXT," + // 3: MAKTX
-                "\"ZMAKTX\" TEXT," + // 4: ZMAKTX
-                "\"ACTION__CODE\" TEXT);"); // 5: ACTION_CODE
+                "\"SPARTNAME\" TEXT," + // 3: SPARTNAME
+                "\"MAKTX\" TEXT," + // 4: MAKTX
+                "\"ZMAKTX\" TEXT," + // 5: ZMAKTX
+                "\"ACTION__CODE\" TEXT);"); // 6: ACTION_CODE
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_MATERIAL_MODEL_BISMT ON \"MATERIAL_MODEL\"" +
                 " (\"BISMT\" ASC);");
@@ -81,19 +83,24 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
             stmt.bindString(3, SPART);
         }
  
+        String SPARTNAME = entity.getSPARTNAME();
+        if (SPARTNAME != null) {
+            stmt.bindString(4, SPARTNAME);
+        }
+ 
         String MAKTX = entity.getMAKTX();
         if (MAKTX != null) {
-            stmt.bindString(4, MAKTX);
+            stmt.bindString(5, MAKTX);
         }
  
         String ZMAKTX = entity.getZMAKTX();
         if (ZMAKTX != null) {
-            stmt.bindString(5, ZMAKTX);
+            stmt.bindString(6, ZMAKTX);
         }
  
         String ACTION_CODE = entity.getACTION_CODE();
         if (ACTION_CODE != null) {
-            stmt.bindString(6, ACTION_CODE);
+            stmt.bindString(7, ACTION_CODE);
         }
     }
 
@@ -116,19 +123,24 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
             stmt.bindString(3, SPART);
         }
  
+        String SPARTNAME = entity.getSPARTNAME();
+        if (SPARTNAME != null) {
+            stmt.bindString(4, SPARTNAME);
+        }
+ 
         String MAKTX = entity.getMAKTX();
         if (MAKTX != null) {
-            stmt.bindString(4, MAKTX);
+            stmt.bindString(5, MAKTX);
         }
  
         String ZMAKTX = entity.getZMAKTX();
         if (ZMAKTX != null) {
-            stmt.bindString(5, ZMAKTX);
+            stmt.bindString(6, ZMAKTX);
         }
  
         String ACTION_CODE = entity.getACTION_CODE();
         if (ACTION_CODE != null) {
-            stmt.bindString(6, ACTION_CODE);
+            stmt.bindString(7, ACTION_CODE);
         }
     }
 
@@ -143,9 +155,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // MATNR
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // BISMT
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // SPART
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // MAKTX
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // ZMAKTX
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // ACTION_CODE
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // SPARTNAME
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // MAKTX
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // ZMAKTX
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // ACTION_CODE
         );
         return entity;
     }
@@ -155,9 +168,10 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
         entity.setMATNR(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
         entity.setBISMT(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setSPART(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setMAKTX(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setZMAKTX(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setACTION_CODE(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setSPARTNAME(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setMAKTX(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setZMAKTX(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setACTION_CODE(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     @Override
