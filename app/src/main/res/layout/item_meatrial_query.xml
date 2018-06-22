@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/txt_ItemLine"
         style="@style/TextViewComminStyle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="5dp"

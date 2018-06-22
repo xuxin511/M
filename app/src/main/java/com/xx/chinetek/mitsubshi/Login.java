@@ -37,6 +37,7 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbManager;
+import com.xx.chinetek.method.DB.MigrationHelper;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -143,17 +144,17 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
-        DESUtil.pvkey="SCGWMS00"; //初始密钥
-        ParamaterModel.SerialNo="1177326";
-        ParamaterModel.Model="A15_A5";
-        if(ParamaterModel.SerialNo==null || TextUtils.isEmpty(ParamaterModel.SerialNo)){
+        DESUtil.pvkey = "SCGWMS00"; //初始密钥
+        ParamaterModel.SerialNo = "1177326";
+        ParamaterModel.Model = "A15_A5";
+        if (ParamaterModel.SerialNo == null || TextUtils.isEmpty(ParamaterModel.SerialNo)) {
             return;
         }
-        if(myReceiver!=null) {
+        if (myReceiver != null) {
             unregisterReceiver(myReceiver); //取消MDM注册广播
-            myReceiver=null;
+            myReceiver = null;
         }
-        if (ParamaterModel.Model==null ||  !(Arrays.asList(getResources().getStringArray(R.array.Model)).contains(ParamaterModel.Model.toUpperCase()))) {
+        if (ParamaterModel.Model == null || !(Arrays.asList(getResources().getStringArray(R.array.Model)).contains(ParamaterModel.Model.toUpperCase()))) {
             //!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))
             MessageBox.Show(context, getString(R.string.Msg_NotSupportModel));
             return;
@@ -164,56 +165,63 @@ public class Login extends BaseActivity {
             return;
         }
 
-        if (ParamaterModel.baseparaModel.getCusDnnoRule()==null) {
+        if (ParamaterModel.baseparaModel.getCusDnnoRule() == null) {
             MessageBox.Show(context, getString(R.string.Msg_No_CusDnRule));
             return;
         }
 
         ParamaterModel.Operater = edtOperater.getText().toString().trim();
-      //  if (!TextUtils.isEmpty(ParamaterModel.Operater)) {
-            SharePreferUtil.SetUserShare(context);
-       // }
+        //  if (!TextUtils.isEmpty(ParamaterModel.Operater)) {
+        SharePreferUtil.SetUserShare(context);
+        // }
 
         //设置数据库名称
-        DbDnInfo.mSyncDn=null;
-        DbManager.mDaoSession=null;
-        DbManager.mDaoMaster=null;
-        DbBaseInfo.mSyncDB=null;
-        DbManager.DB_NAME=ParamaterModel.PartenerID+".db";
+        DbDnInfo.mSyncDn = null;
+        DbManager.mDaoSession = null;
+        DbManager.mDaoMaster = null;
+        DbBaseInfo.mSyncDB = null;
+        DbManager.DB_NAME = ParamaterModel.PartenerID + ".db";
 
         CommonUtil.setEditFocus(edtOperater);
+        try {
+            //删除超过保存日期的DN单据
+            DbDnInfo.getInstance().DeleteDnBySaveTime();
+        } catch (Exception ex) {
+            try {
+                MigrationHelper.encrypt(context, ParamaterModel.PartenerID + ".db", DbManager.dbpassword);
+                DbBaseInfo.getInstance().DeleteAllBase();
+            }catch (Exception exx){
 
-        //删除超过保存日期的DN单据
-        DbDnInfo.getInstance().DeleteDnBySaveTime();
+            }
+        }
         //获取参数
         SharePreferUtil.ReadSyncTimeShare();
-        if(ParamaterModel.PartenerName==null ||  ParamaterModel.PartenerName.equals("")) {
+        if (ParamaterModel.PartenerName == null || ParamaterModel.PartenerName.equals("")) {
             ParamaterModel.PartenerName = DbBaseInfo.getInstance().GetCustomNameById(ParamaterModel.PartenerID);
             SharePreferUtil.SetShare(context);
         }
-        LogUtil.WriteLog(Login.class,"btnLoginClick",ParamaterModel.Operater);
+        LogUtil.WriteLog(Login.class, "btnLoginClick", ParamaterModel.Operater);
 
-        UserInfoModel userInfoModel=new UserInfoModel();
+        UserInfoModel userInfoModel = new UserInfoModel();
         userInfoModel.setAGENT_NO(ParamaterModel.PartenerID);
         userInfoModel.setPDA_CODE(ParamaterModel.SerialNo);
         userInfoModel.setUSER_CODE(ParamaterModel.Operater);
-        ParamaterModel.userInfoModel=userInfoModel;
+        ParamaterModel.userInfoModel = userInfoModel;
 //
 //        Intent intent = new Intent(context, MainActivity.class);
 //        startActivityLeft(intent);
 
-        if(ParamaterModel.Register!=null &&  ParamaterModel.Register.equals("1")) {
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivityLeft(intent);
-        }else {
+//        if (ParamaterModel.Register != null && ParamaterModel.Register.equals("1")) {
+//            Intent intent = new Intent(context, MainActivity.class);
+//            startActivityLeft(intent);
+//        } else {
             final Map<String, String> params = new HashMap<String, String>();
             String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
             params.put("UserInfoJS", user);
             String para = (new JSONObject(params)).toString();
             LogUtil.WriteLog(SyncBase.class, TAG_Login, para);
             RequestHandler.addRequest(Request.Method.POST, TAG_Login, mHandler, RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
-        }
-
+//        }
 
 
     }
@@ -221,9 +229,6 @@ public class Login extends BaseActivity {
 
     @Event(R.id.btnSetting)
     private void btnSettingClick(View view) {
-
-//        Intent intent = new Intent(context, Setting.class);
-//        startActivityLeft(intent);
         try {
             final EditText et = new EditText(this);
             et.setInputType(InputType.TYPE_CLASS_TEXT
@@ -370,10 +375,6 @@ public class Login extends BaseActivity {
             // TODO Auto-generated method stub
             if (null != location && location.getLocType() != BDLocation.TypeServerError) {
                 StringBuffer sb = new StringBuffer();
-//                sb.append(location.getCountry());
-//                sb.append(location.getCity());
-//                sb.append(location.getDistrict());
-//                sb.append(location.getStreet());
                 sb.append(location.getAddrStr());
                 MitApplication.locationModel=sb.toString();
                 MitApplication.gpsModel=location.getLongitude()+","+location.getLatitude();

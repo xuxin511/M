@@ -31,13 +31,14 @@ public class DbOpenHelper extends DaoMaster.OpenHelper {
      */
     @Override
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
-        //操作数据库的更新 有几个表升级都可以传入到下面
-//        MigrationHelper.getInstance().migrate(db,DNModelDao.class);
-//        MigrationHelper.getInstance().migrate(db,DNDetailModelDao.class);
-//        MigrationHelper.getInstance().migrate(db,DNScanModelDao.class);
-//        MigrationHelper.getInstance().migrate(db,MaterialModelDao.class);
-//        MigrationHelper.getInstance().migrate(db,CustomModelDao.class);
-//        MigrationHelper.getInstance().migrate(db,SyncParaModelDao.class);
+            if(newVersion>oldVersion){
+                switch (newVersion){
+                    case 2:
+                        db.execSQL("ALTER TABLE MATERIAL_MODEL ADD COLUMN SPARTNAME Text; ");
+                        db.execSQL("ALTER TABLE MATERIAL_MODEL ADD COLUMN ACTION__CODE Text; ");
+                        break;
+                }
+            }
     }
 
 }

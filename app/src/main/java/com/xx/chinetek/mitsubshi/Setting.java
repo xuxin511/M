@@ -33,6 +33,8 @@ import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.DESUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.DB.DbManager;
+import com.xx.chinetek.method.DB.MigrationHelper;
 import com.xx.chinetek.method.FTP.FtpModel;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Mail.MailModel;
@@ -389,6 +391,14 @@ public class Setting extends BaseActivity {
             if (item.getItemId() == R.id.action_Save) {
                 SaveSetting();
             }
+//            if (item.getItemId() == R.id.action_endatabase) {
+//                if(TextUtils.isEmpty(ParamaterModel.PartenerID)){
+//                    MessageBox.Show(context,"请设置代理商编号！");
+//                    return true;
+//                }
+//                MigrationHelper.encrypt(context,  ParamaterModel.PartenerID+".db",DbManager.dbpassword);
+//                ToastUtil.show("数据库升级成功！");
+//            }
             if (item.getItemId() == R.id.action_upPara) {
                 savePara();
                 final Map<String, String> params = new HashMap<String, String>();

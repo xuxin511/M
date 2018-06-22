@@ -10,7 +10,11 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "1.9"
+        versionName "2.0"
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'arm64-v8a', 'armeabi','arm64-v7a'
+        }
     }
     buildTypes {
         release {
@@ -25,7 +29,7 @@ android {
         }
     }
     greendao {
-        schemaVersion 1
+        schemaVersion 2
         daoPackage 'com.xx.chinetek.greendao'
         targetGenDir 'src/main/java'
     }

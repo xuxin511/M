@@ -15,6 +15,12 @@
         <item name="actionMenuTextAppearance">@style/MenuTextStyle</item>
         <item name="selectableItemBackground">@drawable/toolbar_button_bg</item>
         <item name="android:alertDialogTheme">@style/CustomDialog</item>
+        <item name="actionOverflowMenuStyle">@style/CMOptionsMenu</item>
+    </style>
+
+    <!--toolbar背景色-->
+    <style name="CMOptionsMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/colorPrimary</item>
     </style>
 
     <style name="CustomDialog" parent="@style/Theme.AppCompat.DayNight.Dialog.Alert">

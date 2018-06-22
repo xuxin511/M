@@ -60,6 +60,11 @@ public class DbBaseInfo {
         }
     }
 
+    public void DeleteAllBase(){
+        customModelDao.deleteAll();
+        materialModelDao.deleteAll();
+        syncParaModelDao.deleteAll();
+    }
 
     public void DeleteCustomDB(){
         customModelDao.deleteAll();
