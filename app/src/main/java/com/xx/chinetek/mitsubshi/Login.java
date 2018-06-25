@@ -95,7 +95,7 @@ public class Login extends BaseActivity {
     }
 
     void  AnalysisLoginJson(String result){
-        LogUtil.WriteLog(Login.class,TAG_Login,result);
+     //   LogUtil.WriteLog(Login.class,TAG_Login,result);
         try {
             ReturnMsgModel<String> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<String>>() {
             }.getType());
@@ -220,7 +220,7 @@ public class Login extends BaseActivity {
             params.put("UserInfoJS", user);
             String para = (new JSONObject(params)).toString();
             LogUtil.WriteLog(SyncBase.class, TAG_Login, para);
-            RequestHandler.addRequest(Request.Method.POST, TAG_Login, mHandler, RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
+            RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_Login,getResources().getString(R.string.Msg_Login),context,mHandler,RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
 //        }
 
 

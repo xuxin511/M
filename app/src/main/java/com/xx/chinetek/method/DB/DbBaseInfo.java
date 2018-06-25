@@ -210,7 +210,7 @@ public class DbBaseInfo {
         return materialModels;
     }
 
-    public List<MaterialModel> Querytems(String SapNo,String ItemName,String GolafCode,String ItemLine){
+    public List<MaterialModel> Querytems(String SapNo,String ItemName,String GolafCode,String ItemLine,String showCount){
         List<MaterialModel> materialModels=new ArrayList<>();
         QueryBuilder queryBuilder=materialModelDao.queryBuilder();
         if(!TextUtils.isEmpty(SapNo))
@@ -222,7 +222,12 @@ public class DbBaseInfo {
             ItemLine=ItemLine.split("_")[0];
             queryBuilder = queryBuilder.where(MaterialModelDao.Properties.SPART.eq(ItemLine));
         }
-        materialModels=queryBuilder.list();
+        if(!TextUtils.isEmpty(showCount)) {
+            int count = Integer.parseInt(showCount);
+            queryBuilder= queryBuilder.limit(count);
+        }
+            materialModels=queryBuilder.list();
+
 
 //        if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)) {
 //            materialModels= materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"))//,MaterialModelDao.Properties.BISMT.isNotNull()

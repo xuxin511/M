@@ -8,10 +8,12 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.xx.chinetek.adapter.MaterialQueryItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
@@ -27,6 +29,7 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.FileUtils;
+import com.xx.chinetek.method.Mail.MailUtil;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.method.Upload.UploadFiles;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
@@ -46,6 +49,7 @@ import org.xutils.x;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
@@ -67,6 +71,10 @@ public class MaterialQuery extends BaseIntentActivity {
     EditText edtCode;
     @ViewInject(R.id.spin_ItemLine)
     Spinner spinItemLine;
+    @ViewInject(R.id.spin_ShowCount )
+    Spinner spinShowCount;
+    @ViewInject(R.id.txt_ListCount)
+    TextView txtListCount;
 
 
     LoadingDialog dialog;
@@ -83,10 +91,7 @@ public class MaterialQuery extends BaseIntentActivity {
                     if(!spinItemLine.getSelectedItem().toString().equals("所有")){
                         itemLine=spinItemLine.getSelectedItem().toString();
                     }
-                    String bracode=(String) msg.obj;
-                    materialModels = DbBaseInfo.getInstance().Querytems(bracode,bracode,bracode,itemLine);
-                    materialQueryItemAdapter=new MaterialQueryItemAdapter(context,materialModels);
-                    lsvMaterialQuery.setAdapter(materialQueryItemAdapter);
+                    BindListView();
                 } catch (Exception ex) {
                     ToastUtil.show(ex.getMessage());
                     LogUtil.WriteLog(ExceptionScan.class,"ExceptionScan-CheckScanBarcode", ex.toString());
@@ -115,7 +120,37 @@ public class MaterialQuery extends BaseIntentActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinItemLine.setAdapter(adapter);
         spinItemLine.setPrompt(getString(R.string.choiceItemLine));
+        spinItemLine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+               //if( !spinItemLine.getSelectedItem().toString().equals("所有"))
+                    BindListView();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+      String[] showCount  =getResources().getStringArray(R.array.Material_ShowCount);
+        adapter = new ArrayAdapter<String>(this,
+                R.layout.item_spinner);
+        adapter.addAll(showCount);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinShowCount.setAdapter(adapter);
+        spinShowCount.setPrompt(getString(R.string.choiceShowCount));
+        spinShowCount.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    BindListView();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
@@ -127,20 +162,35 @@ public class MaterialQuery extends BaseIntentActivity {
         x.view().inject(this);
     }
 
+    void BindListView(){
+        try {
+            String itemLine="";
+            if(!spinItemLine.getSelectedItem().toString().equals("所有")){
+                itemLine=spinItemLine.getSelectedItem().toString();
+            }
+            String showCount=spinShowCount.getSelectedItem().toString();
+            String itemName=edtItemName.getText().toString().trim();
+            String code=edtCode.getText().toString().trim();
+//            BaseApplication.DialogShowText = getString(R.string.Dia_MaterialQuery);
+//            dialog = new LoadingDialog(context);
+//            dialog.show();
+            materialModels = DbBaseInfo.getInstance().Querytems(code, itemName, code, itemLine,showCount);
+            materialQueryItemAdapter = new MaterialQueryItemAdapter(context, materialModels);
+            lsvMaterialQuery.setAdapter(materialQueryItemAdapter);
+         //   dialog.dismiss();
+            txtListCount.setText("合计数：" + materialModels.size() + "");
+        }catch (Exception ex){
+          //  dialog.dismiss();
+        }
+    }
+
     @Event(value = {R.id.edt_ItemName,R.id.edt_Code}, type = View.OnKeyListener.class)
     private boolean edtOnKey(View v, int keyCode, KeyEvent event) {
         try{
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP)// 如果为Enter键
             {
-                String itemLine="";
-                if(!spinItemLine.getSelectedItem().toString().equals("所有")){
-                    itemLine=spinItemLine.getSelectedItem().toString();
-                }
-                String itme=edtItemName.getText().toString().trim();
-                String code=edtCode.getText().toString().trim();
-                materialModels = DbBaseInfo.getInstance().Querytems(code,itme,code,itemLine);
-                materialQueryItemAdapter=new MaterialQueryItemAdapter(context,materialModels);
-                lsvMaterialQuery.setAdapter(materialQueryItemAdapter);
+
+                BindListView();
                 return true;
             }
         }catch(Exception ex){
@@ -183,52 +233,75 @@ public class MaterialQuery extends BaseIntentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    void ExportDN(int Index) throws Exception{
+    void ExportDN(final  int Index) throws Exception{
         try {
             FileUtils.DeleteFiles(Index);
             String itemLine="";
             if(!spinItemLine.getSelectedItem().toString().equals("所有")){
                 itemLine=spinItemLine.getSelectedItem().toString();
             }
-            List<MaterialModel> materialModels=DbBaseInfo.getInstance().Querytems("","","",itemLine);
-            FileUtils.ExportMaterialFile(materialModels, Index); //导出文件至本地目录
-
-            File dirFile = new File(FileUtils.GetDirectory(Index));
-            if (dirFile.isDirectory()) {
-                File[] Files = dirFile.listFiles();
-                if (Files.length > 0) {
-                    switch (Index) {
-                        case 0: //邮件
-                            if (ParamaterModel.baseparaModel.getMailModel() != null && (
-                                    ParamaterModel.baseparaModel.getMailModel().getToAddress() == null
-                                            || ParamaterModel.baseparaModel.getMailModel().getToAddress().size() == 0)) {
-                                MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
-                                break;
+            final String line=itemLine;
+            switch (Index){
+                case 0: //邮件
+                    if (ParamaterModel.baseparaModel.getMailModel() != null && (
+                            ParamaterModel.baseparaModel.getMailModel().getToAddress() == null
+                                    || ParamaterModel.baseparaModel.getMailModel().getToAddress().size() == 0)) {
+                        MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
+                        break;
+                    }
+                    BaseApplication.DialogShowText = getString(R.string.Dia_UploadMailM);
+                    dialog = new LoadingDialog(context);
+                    dialog.show();
+                    break;
+                case 1: //FTP
+                    BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtpM);
+                    dialog = new LoadingDialog(context);
+                    dialog.show();
+                    break;
+            }
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        List<MaterialModel> materialModels=DbBaseInfo.getInstance().Querytems("","","",line,"");
+                        FileUtils.ExportMaterialFile(materialModels, Index); //导出文件至本地目录
+                        File dirFile = new File(FileUtils.GetDirectory(Index));
+                        if (dirFile.isDirectory()) {
+                            File[] Files = dirFile.listFiles();
+                            if (Files.length > 0) {
+                                switch (Index) {
+                                    case 0: //邮件
+//                            if (ParamaterModel.baseparaModel.getMailModel() != null && (
+//                                    ParamaterModel.baseparaModel.getMailModel().getToAddress() == null
+//                                            || ParamaterModel.baseparaModel.getMailModel().getToAddress().size() == 0)) {
+//                                MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
+//                                break;
+//                            }
+//                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadMailM);
+//                            dialog = new LoadingDialog(context);
+//                            dialog.show();
+                                        UploadFiles.UploadMail(Files, mHandler);
+                                        break;
+                                    case 1: //FTP
+//                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtpM);
+//                            dialog = new LoadingDialog(context);
+//                            dialog.show();
+                                        UploadFiles.UploadFtp(Files, mHandler);
+                                        break;
+                                }
                             }
-                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadMailM);
-                            dialog = new LoadingDialog(context);
-                            dialog.show();
-                            UploadFiles.UploadMail(Files, mHandler);
-                            break;
-                        case 1: //FTP
-                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtpM);
-                            dialog = new LoadingDialog(context);
-                            dialog.show();
-                            UploadFiles.UploadFtp(Files, mHandler);
-                            break;
-                        case 2://USB
-                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadUSBM);
-                            dialog = new LoadingDialog(context);
-                            dialog.show();
-                            android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, Files.length / 2);
-                            mHandler.sendMessage(msg);
-                            break;
+                        } else {
+                            dialog.dismiss();
+                            MessageBox.Show(context, getString(R.string.Msg_No_DirExportDn));
+                        }
+                    }catch (Exception ex){
+                        dialog.dismiss();
                     }
                 }
-            } else {
-                MessageBox.Show(context, getString(R.string.Msg_No_DirExportDn));
-            }
+            }.start();
+
         }catch (Exception ex){
+            dialog.dismiss();
             ToastUtil.show(ex.getMessage());
             LogUtil.WriteLog(QueryList.class,"QueryList-ExportDN", ex.toString());
         }

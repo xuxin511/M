@@ -119,7 +119,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
 
         //初始化数据
         txtDnNo.setText(dnModel.getDN_SOURCE() == 3 ? dnModel.getCUS_DN_NO().toString() : dnModel.getAGENT_DN_NO().toString());
-        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
+        txtCustom.setText(dnModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(dnModel.getCUSTOM_NAME())?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         txtItemName.setText("物料名称：" + dndetailmodel.getITEM_NAME());
         txtItemNo.setText("物料编码：" + dndetailmodel.getGOLFA_CODE());
         txtKUQty.setText("出库数量：" + (dnModel.getDN_SOURCE() == 3 ?"9999":dndetailmodel.getDN_QTY()));

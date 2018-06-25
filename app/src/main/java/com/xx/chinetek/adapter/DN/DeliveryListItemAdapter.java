@@ -1,6 +1,7 @@
 package com.xx.chinetek.adapter.DN;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +109,7 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
         int dnSoource=DNModel.getDN_SOURCE()==null?-1:DNModel.getDN_SOURCE();
         listItemView.txtDeliveryNo.setText(dnSoource==3?DNModel.getCUS_DN_NO():DNModel.getAGENT_DN_NO());
         listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
-        listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME()==null?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
+        listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(DNModel.getCUSTOM_NAME())?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
         listItemView.txtCreateTime.setText(convertView.getResources().getString(R.string.createtime)+ CommonUtil.DateToString(DNModel.getDN_DATE(),null));
         listItemView.txtDNQty.setText(DNModel.getDN_SOURCE()!=null && DNModel.getDN_SOURCE()==3?"":convertView.getResources().getString(R.string.dnQty)+ DbDnInfo.getInstance().GetDNQtyInDNDetail(DNModel.getAGENT_DN_NO()));
         listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+ DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNModel.getAGENT_DN_NO()));

@@ -174,7 +174,7 @@ public class DeliveryScan extends BaseIntentActivity {
         if(ParamaterModel.DnTypeModel.getDNType()==3)
             CBCloseDN.setVisibility(View.GONE);
         txtCustom.setText(ParamaterModel.DnTypeModel.getDNType()==3 && ParamaterModel.DnTypeModel.getCustomModel()!=null?ParamaterModel.DnTypeModel.getCustomModel().getNAME():
-                dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
+                dnModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(dnModel.getCUSTOM_NAME())?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
 //        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
 //        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         ShowRemark();
