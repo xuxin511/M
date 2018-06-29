@@ -383,6 +383,14 @@ public class DbDnInfo {
         }
     }
 
+    public boolean DeleteSelectItems(DNScanModel dnscan){
+        try{
+            return   DELscanbyserial(dnscan.getAGENT_DN_NO(),dnscan.getGOLFA_CODE(),dnscan.getLINE_NO(),dnscan.getSERIAL_NO(),"",dnscan.getSTATUS());
+        }catch(Exception ex){
+            return false;
+        }
+    }
+
     /**
      * 修改重复出库单单号
      * @param NewDnno

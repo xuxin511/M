@@ -382,7 +382,7 @@ public class DeliveryStart extends BaseActivity {
                     BindData();
                     customModel = null;
                     edtContentText.setText("");
-                    dnTypeModel.setCustomModel(new CustomModel());
+                    dnTypeModel.setCustomModel(null);
                     SharePreferUtil.SetDNTypeShare(context, dnTypeModel);
                     ParamaterModel.DnTypeModel = dnTypeModel;
                 }

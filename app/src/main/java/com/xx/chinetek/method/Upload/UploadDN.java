@@ -190,11 +190,15 @@ public class UploadDN {
                     DNModel upDnmodel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
                     dnModels = new ArrayList<>();
                     dnModels.add(upDnmodel);
+                    //更新出库单状态
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
+
                     final ArrayList<DNModel> ExportdnModels = dnModels;
                     new Thread() {
                         @Override
                         public void run() {
                             try {
+                                Thread.sleep(5000);
                                 ExportDN(ExportdnModels, 0);
                                 ExportDN(ExportdnModels, 1);
                             } catch (Exception ex) {
@@ -203,8 +207,8 @@ public class UploadDN {
                         }
                     }.start();
 
-                    //更新出库单状态
-                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
+
+
                 }
             } else {
                 dbReturnModel.setReturnCode(-1);

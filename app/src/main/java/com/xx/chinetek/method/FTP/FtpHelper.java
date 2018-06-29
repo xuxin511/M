@@ -390,7 +390,8 @@ public class FtpHelper {
             String from = remotePath + moveFile;
             String to = bakPath + moveFile;
             flag = ftpClient.rename(from, to);
-            ftpClient.deleteFile(from);
+            if(flag)
+                ftpClient.deleteFile(from);
         }catch (Exception  e){
             e.printStackTrace();
         }

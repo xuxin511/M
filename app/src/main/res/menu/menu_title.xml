@@ -5,12 +5,12 @@
     tools:context=".Qc.QCBillChoice">
 
 
-    <item
-        android:id="@+id/action_QR"
-        android:icon="@drawable/qr"
-        android:orderInCategory="80"
-        android:title="QR出库单扫描"
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/action_QR"-->
+        <!--android:icon="@drawable/qr"-->
+        <!--android:orderInCategory="80"-->
+        <!--android:title="QR出库单扫描"-->
+        <!--app:showAsAction="ifRoom" />-->
 
     <!--<item-->
         <!--android:id="@+id/action_New"-->

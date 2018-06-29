@@ -44,6 +44,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_ExceptionDNList;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ExceptionDNList;
@@ -91,21 +92,11 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                ArrayList<MultipleDN> multipleDNS = returnMsgModel.getModelJson();
                String dnno="";
                int completeDnNum=0;
+               List<String> ftpNames=new ArrayList<>();
                 for (MultipleDN mulitdn:multipleDNS) {
                     if(mulitdn.getDN().getDN_SOURCE()==2){//ftp需要移动文件之BAK
-                        final String ftpName= DbDnInfo.getInstance().GetFtpFileName(mulitdn.getDN().getAGENT_DN_NO());
-                        new Thread(){
-                            @Override
-                            public void run() {
-                                try {
-                                    LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, "ftp_moveFile:"+ftpName);
-                                    FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(), new String[]{ftpName});
-                                }catch (Exception ex){
-                                    LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, "ftp_moveFile:"+ex.getMessage());
-
-                                }
-                            }
-                        }.start();
+                        String ftpName= DbDnInfo.getInstance().GetFtpFileName(mulitdn.getDN().getAGENT_DN_NO());
+                        ftpNames.add(ftpName);
                     }
                     String tempdnno=mulitdn.getDN().getDN_SOURCE()==3?mulitdn.getDN().getCUS_DN_NO():mulitdn.getDN().getAGENT_DN_NO();
                     DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(tempdnno);
@@ -185,12 +176,32 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         dnno+="失败出库单："+Showdnno+"\n";
                     }
                 }
+                String content=getString(R.string.Msg_DNSuccess)+completeDnNum+"\n" + dnno;
+                MessageBox.Show(context, getString(R.string.Msg_bolkDNUploadSuccess)+"\n提交说明！\n"+content);
+
+            if(ftpNames.size()!=0) {
+                 final  List<String> moveFiles=ftpNames;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, "ftp_moveFile:" + moveFiles.toArray());
+                            FtpUtil.FtpMoveFile(ParamaterModel.baseparaModel.getFtpModel(),moveFiles.toArray(new String[moveFiles.size()]));
+                        } catch (Exception ex) {
+                            LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, "ftp_moveFile:" + ex.getMessage());
+
+                        }
+                    }
+                }.start();
+            }
+
 
                 final  ArrayList<DNModel> ExportdnModels=SendDNs;
                 new Thread() {
                     @Override
                     public void run() {
                         try {
+                            Thread.sleep(15000);
                          UploadDN.ExportDN(ExportdnModels, 0);
                          UploadDN.ExportDN(ExportdnModels, 1);
                         }catch (Exception ex){
@@ -200,8 +211,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 }.start();
 
               //  if(!TextUtils.isEmpty(dnno)){
-                    String content=getString(R.string.Msg_DNSuccess)+completeDnNum+"\n" + dnno;
-                    MessageBox.Show(context, getString(R.string.Msg_bolkDNUploadSuccess)+"\n提交说明！\n"+content);
+
                // }
 
             } else {

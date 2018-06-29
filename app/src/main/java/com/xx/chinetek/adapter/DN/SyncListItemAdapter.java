@@ -1,6 +1,7 @@
 package com.xx.chinetek.adapter.DN;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
         DNModel DNModel = DNModels.get(selectID);
         listItemView.txtStatus.setText((position+1)+"");
         listItemView.txtDeliveryNo.setText(DNModel.getDN_SOURCE()==3?DNModel.getCUS_DN_NO():DNModel.getAGENT_DN_NO());
-        listItemView.txtcustomer.setText(DNModel.getCUSTOM_NAME());
+        listItemView.txtcustomer.setText(DNModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(DNModel.getCUSTOM_NAME())?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);
         }else if(DNModel.getFlag()!=null && DNModel.getFlag()==1){

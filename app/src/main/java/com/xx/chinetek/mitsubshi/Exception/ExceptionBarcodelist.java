@@ -41,6 +41,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelScanmodel;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
@@ -145,9 +146,27 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO 自动生成的方法
                             //删除异常扫描数据
-                            if(DbDnInfo.getInstance().DeleteRepertItems(dnModel.getAGENT_DN_NO(),dndetailmodel.getLINE_NO(),2)){ //删除数量超出的序列号
-                               MessageBox.Show(context,getString(R.string.Msg_del_success));
+//                            if(DbDnInfo.getInstance().DeleteRepertItems(dnModel.getAGENT_DN_NO(),dndetailmodel.getLINE_NO(),2)){ //删除数量超出的序列号
+//                               MessageBox.Show(context,getString(R.string.Msg_del_success));
+//                            }
+
+
+
+                            List<DNScanModel> deldnScanModels=new ArrayList<>();
+                            boolean isdel=true;
+                            for(int i=0;i<DNScanModels.size();i++){
+                                if(exceptionScanbarcodeAdapter.getStates(i)){
+                                    if(!DbDnInfo.getInstance().DeleteSelectItems(DNScanModels.get(i))){
+                                        isdel=false;
+                                        break;
+                                    }
+                                }
                             }
+                            if(isdel){
+                                    MessageBox.Show(context,getString(R.string.Msg_del_success));
+                            }
+
+
                            // DelAllScanmodel(dndetailmodel,dnModel);
 //                            ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
 //                            int index = dnDetailModels.indexOf(dndetailmodel);

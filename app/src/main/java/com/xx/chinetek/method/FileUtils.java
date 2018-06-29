@@ -48,7 +48,7 @@ public class FileUtils {
     public static void  ExportMaterialFile(List<MaterialModel> materialModels, int index) throws Exception{
         String fileName="Material_QR.csv";
         String dir=GetDirectory(index);
-        String Title="SPA号,GolafCode,产品线,型号";
+        String Title="SPA号,GolafCode,产品线,型号,删除标志(C:使用 D:删除)";
         File file = new File(dir+File.separator+fileName);
         OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(file),"GBK");
         BufferedWriter bw = new BufferedWriter(writerStream);
@@ -60,7 +60,8 @@ public class FileUtils {
                 String golafcode=material.getBISMT();
                 String itemline=material.getSPARTNAME();
                 String itemName=material.getMAKTX();
-                String writeLine=sap+","+golafcode+","+itemline+","+itemName;
+                String ActionCode=material.getACTION_CODE();
+                String writeLine=sap+","+golafcode+","+itemline+","+itemName+","+ActionCode;
                 bw.write(writeLine);
                 bw.write("\r\n");
                 bw.flush();

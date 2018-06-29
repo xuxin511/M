@@ -147,11 +147,13 @@ public class FTPsync extends BaseActivity{
             try{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
                // Boolean isException=false;
+
                 for(int i=0;i<dnModels.size();i++){
 //                    if(dnModels.get(i).getFlag()==1){
 //                        isException=true;
 //                        break;
 //                    }
+
                     if (syncListItemAdapter.getStates(i)) {
                         Tempdnmodels.add(0, dnModels.get(i));
                     }
@@ -167,8 +169,20 @@ public class FTPsync extends BaseActivity{
             }
         }
         if(item.getItemId()==R.id.action_SelectAll){
+            Boolean hasDnno=false;
+            String contnt=getString(R.string.Msg_ExitDn) +"\n";
             for(int i=0;i<dnModels.size();i++){
-                syncListItemAdapter.modifyStates(i);
+                //判断单号是否在本地重复
+                DNModel temp = DbDnInfo.getInstance().GetLoaclDN(dnModels.get(i).getAGENT_DN_NO());
+                if (temp != null) {
+                    hasDnno=true;
+                    contnt+= dnModels.get(i).getAGENT_DN_NO() +"\n";
+                }else {
+                    syncListItemAdapter.modifyStates(i);
+                }
+            }
+            if(hasDnno){
+                MessageBox.Show(context,contnt);
             }
         }
         return super.onOptionsItemSelected(item);

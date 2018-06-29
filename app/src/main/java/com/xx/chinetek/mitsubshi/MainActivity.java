@@ -275,9 +275,9 @@ public class MainActivity extends BaseActivity {
             if (returnMsgModel.getHeaderStatus().equals("S")) {
                 ArrayList<DeletedDN> deletedDNS = returnMsgModel.getModelJson();
                 for (DeletedDN deletedDN: deletedDNS) {
-                    String dnNo=deletedDN.getCUS_DN_NO()==null || !deletedDN.getCUS_DN_NO().trim().equals("")?
-                            deletedDN.getAGENT_DN_NO():deletedDN.getCUS_DN_NO();
-                    DbDnInfo.getInstance().DeleteDN(dnNo);
+//                    String dnNo=deletedDN.getCUS_DN_NO()==null || !deletedDN.getCUS_DN_NO().trim().equals("")?
+//                            deletedDN.getAGENT_DN_NO():deletedDN.getCUS_DN_NO();
+                    DbDnInfo.getInstance().DeleteDN(deletedDN.getAGENT_DN_NO());
                 }
 
                 MessageBox.Show(context,getString(R.string.Dia_SyncSuccess));

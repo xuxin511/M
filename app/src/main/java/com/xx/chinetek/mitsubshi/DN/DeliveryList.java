@@ -197,11 +197,11 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.action_QR){
-            Intent intent=new Intent(context,QRScan.class);
-            ParamaterModel.DnTypeModel.setDNType(5);
-            startActivityLeft(intent);
-        }
+//        if(item.getItemId()==R.id.action_QR){
+//            Intent intent=new Intent(context,QRScan.class);
+//            ParamaterModel.DnTypeModel.setDNType(5);
+//            startActivityLeft(intent);
+//        }
         if(item.getItemId()==R.id.action_sync){
             ImportDelivery();
         }

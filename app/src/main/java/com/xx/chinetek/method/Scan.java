@@ -85,6 +85,7 @@ public class Scan {
            // List<DNScanModel> dnScanModels = dnDetailModels.get(index).getSERIALS();
             DNScanModel dnScanModel = new DNScanModel();
             dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
+            dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
             int barcodeIndex = dnScanModels.indexOf(dnScanModel);
             if (barcodeIndex != -1) {
                 isErrorStatus = 0;

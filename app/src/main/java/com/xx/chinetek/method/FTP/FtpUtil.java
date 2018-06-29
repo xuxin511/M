@@ -42,7 +42,7 @@ public class FtpUtil {
             for (String moveFile:moveFiles){
                boolean isSuccess= ftp.MoveFile(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad(),moveFile,"/BAK/");
                int count=0;
-               while(!isSuccess && count<=2) {
+               while(!isSuccess && count<=5) {
                    count++;
                    isSuccess = ftp.MoveFile(ParamaterModel.baseparaModel.getFtpModel().getFtpDownLoad(), moveFile, "/BAK/");
                }

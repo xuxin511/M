@@ -145,8 +145,8 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         DESUtil.pvkey = "SCGWMS00"; //初始密钥
-        ParamaterModel.SerialNo = "1177326";
-        ParamaterModel.Model = "A15_A5";
+//        ParamaterModel.SerialNo = "1177326";
+//        ParamaterModel.Model = "A15_A5";
         if (ParamaterModel.SerialNo == null || TextUtils.isEmpty(ParamaterModel.SerialNo)) {
             return;
         }
@@ -210,7 +210,6 @@ public class Login extends BaseActivity {
 //
 //        Intent intent = new Intent(context, MainActivity.class);
 //        startActivityLeft(intent);
-
 //        if (ParamaterModel.Register != null && ParamaterModel.Register.equals("1")) {
 //            Intent intent = new Intent(context, MainActivity.class);
 //            startActivityLeft(intent);
@@ -231,8 +230,7 @@ public class Login extends BaseActivity {
     private void btnSettingClick(View view) {
         try {
             final EditText et = new EditText(this);
-            et.setInputType(InputType.TYPE_CLASS_TEXT
-                    | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             et.setTextColor(getResources().getColor(R.color.black));
             new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InputPassword))
                     .setIcon(android.R.drawable.ic_dialog_info)

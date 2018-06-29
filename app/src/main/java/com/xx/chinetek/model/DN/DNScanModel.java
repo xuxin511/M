@@ -53,7 +53,7 @@ public class DNScanModel implements Parcelable{
 
         DNScanModel that = (DNScanModel) o;
 
-        return SERIAL_NO.trim().equals(that.SERIAL_NO.trim());
+        return SERIAL_NO.trim().equals(that.SERIAL_NO.trim()) && GOLFA_CODE.trim().equals(that.GOLFA_CODE.trim());
 
     }
 
