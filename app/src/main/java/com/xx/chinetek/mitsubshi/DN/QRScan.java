@@ -83,6 +83,7 @@ public class QRScan extends BaseIntentActivity {
                     startActivityForResult(intent,1001);
                 }else{
                     startActivity(DNno);
+                  //  closeActiviry();
                 }
             }
         }catch (Exception  ex){

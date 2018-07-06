@@ -43,7 +43,7 @@
     <string name="Setting_MAilPort">SMTP端口：</string>
     <string name="Setting_MAilSMTP">SMTP地址：</string>
     <string name="Setting_MAilIMAP">IMAP地址：</string>
-    <string name="Setting_TOMAil">发件邮件设置</string>
+    <string name="Setting_TOMAil">收件邮箱设置</string>
     <string name="Setting_IPAdress">服务器：</string>
     <string name="Setting_FtpUser">用户名：</string>
     <string name="Setting_FtpDown">下载目录：</string>
@@ -85,14 +85,14 @@
 
     <string name="sendType">发货方式：</string>
     <string name="barRules">非三菱规则：</string>
-    <string name="sendCompany">收货方：</string>
+    <string name="sendCompany">类型：</string>
     <string name="choiceSendType">请选择发货方式：</string>
     <string name="choiceItemLine">请选择产品线：</string>
     <string name="choiceShowCount">请选择显示最大记录数：</string>
     <string name="choiceBarRules">请选择解析规则：</string>
     <string name="choiceSendCusttom">请选择收货方：</string>
-    <string name="supplier">代理商：</string>
-    <string name="custom">客户：</string>
+    <string name="supplier">收货方：</string>
+    <string name="custom">收货方：</string>
 
     <string name="createtime">创建时间：</string>
     <string name="submittime">提交时间：</string>
@@ -130,7 +130,7 @@
     </string-array>
 
     <string-array name="sendCustomListy">
-        <item>下属客户</item>
+        <item>下属</item>
         <item>所有</item>
     </string-array>
 

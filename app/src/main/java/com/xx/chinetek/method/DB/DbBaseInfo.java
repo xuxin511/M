@@ -9,6 +9,7 @@ import com.xx.chinetek.greendao.MaterialModelDao;
 import com.xx.chinetek.greendao.SyncParaModelDao;
 import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.MaterialModel;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.SyncParaModel;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -168,8 +169,16 @@ public class DbBaseInfo {
     public String GetCustomNameById(String CusID){
         List<CustomModel> customModels=customModelDao.queryBuilder().where(CustomModelDao.Properties.CUSTOMER.eq(CusID)).distinct().list();
         CustomModel customModel=null;
-        if(customModels!=null && customModels.size()>0)
-            customModel=customModels.get(0);
+        if(customModels!=null && customModels.size()>0) {
+            for (CustomModel cus:customModels) {
+                if(cus.getPARTNER_FUNCTION().equals("Z1")){
+                    customModel =cus;
+                }
+            }
+            if(customModel==null)
+                customModel = customModels.get(0);
+            ParamaterModel.PartenerFUNCTION=customModel.getPARTNER_FUNCTION();
+        }
         return customModel==null?null:customModel.getNAME();
     }
 
@@ -245,7 +254,7 @@ public class DbBaseInfo {
     public ArrayList<String> QueryItemLines(){
         ArrayList<String> ItemLines=new ArrayList<>();
         ItemLines.add("所有");
-        String sql="SELECT DISTINCT SPART,SPARTNAME FROM MATERIAL_MODEL;";
+        String sql="SELECT DISTINCT SPART,SPARTNAME FROM MATERIAL_MODEL order BY SPART;";
         Cursor c = materialModelDao.getDatabase().rawQuery(sql,null);
         try{
             if (c.moveToFirst()) {

@@ -41,6 +41,7 @@ public class ParamaterModel {
      */
     public static  String  PartenerID="";
     public static  String  PartenerName="";
+    public static  String  PartenerFUNCTION="";
 
     /**
      * 发货方式，发货方

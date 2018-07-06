@@ -210,6 +210,10 @@ public class DeliveryScan extends BaseIntentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+//        if(item.getItemId()==R.id.action_scan){
+//            CheckScanBarcode("1FRD740CT0075 C85J2C050 20180502T76");
+//        }
+
         if(item.getItemId()==R.id.action_submit){
             if(dnDetailModels.size()==0){
                 MessageBox.Show(context,getString(R.string.Msg_ScanMaterial));
@@ -767,6 +771,7 @@ public class DeliveryScan extends BaseIntentActivity {
         dnDetailModels.get(index).__setDaoSession(dnInfo.getDaoSession());
         List<DNScanModel> dnScanModels=dnDetailModels.get(index).getSERIALS();
         DNScanModel dnScanModel=new DNScanModel();
+        dnScanModel.setGOLFA_CODE(barCodeModel.getGolfa_Code());
         dnScanModel.setSERIAL_NO(barCodeModel.getSerial_Number());
         int barcodeIndex=dnScanModels.indexOf(dnScanModel);
         if(barcodeIndex!=-1) return 0;

@@ -249,6 +249,7 @@ public class DeliveryStart extends BaseActivity {
     private void lsvPartneronItemClick(AdapterView<?> parent, View view, int position, long id) {
         customModel =(CustomModel) partnerItemAdapter.getItem(position);
         if(customModel !=null) {
+            keyBoardCancle();
             edtContentText.setText(customModel.getCUSTOMER());
             CommonUtil.setEditFocus(edtContentText);
         }
@@ -273,11 +274,6 @@ public class DeliveryStart extends BaseActivity {
                             isDeleteOrChange=1;
                             DbDnInfo.getInstance().ModifyCustomINDNModel(edtCustom.getText().toString(),oraignCus);
                             UploadNewCus.DeleteCusToMaps(customModel.getCUSTOMER(),customModel.getNAME(), mHandler);
-//                            DbBaseInfo.getInstance().ModifyPartnersByID(customModel);
-
-//                            BindData();
-//                            edtContentText.setText(customModel.getCUSTOMER());
-//                            CommonUtil.setEditFocus(edtContentText);
                         }
                     })
                     .setNegativeButton("删除", new DialogInterface.OnClickListener() {
@@ -285,12 +281,7 @@ public class DeliveryStart extends BaseActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             isDeleteOrChange=0;
                             UploadNewCus.DeleteCusToMaps(customModel.getCUSTOMER(),"", mHandler);
-//                            customModel.setNAME(edtCustom.getText().toString());
-//                            DbBaseInfo.getInstance().DeletePartnersByID(customModel);
-//                            BindData();
-//                            customModel=null;
-//                            edtContentText.setText("");
-//                            CommonUtil.setEditFocus(edtContentText);
+
                         }
                     })
                     .setNeutralButton("取消", null)
@@ -308,8 +299,9 @@ public class DeliveryStart extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(!edtContentText.getText().toString().equals(""))
+            if(!edtContentText.getText().toString().equals("")) {
                 partnerItemAdapter.getFilter().filter(edtContentText.getText().toString());
+            }
             else{
                 InitListview();
             }
@@ -317,6 +309,19 @@ public class DeliveryStart extends BaseActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
+               new Thread(new Runnable() {
+                   @Override
+                   public void run() {
+                        try{
+                            Thread.sleep(500);
+                            if(partnerItemAdapter.getCount()==1){
+                                keyBoardCancle();
+                            }
+                        }catch (Exception ex){
+
+                        }
+                   }
+               }).start();
 
         }
     };

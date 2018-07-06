@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -145,8 +146,8 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         DESUtil.pvkey = "SCGWMS00"; //初始密钥
-//        ParamaterModel.SerialNo = "1177326";
-//        ParamaterModel.Model = "A15_A5";
+        ParamaterModel.SerialNo = "1177326";
+        ParamaterModel.Model = "A15_A5";
         if (ParamaterModel.SerialNo == null || TextUtils.isEmpty(ParamaterModel.SerialNo)) {
             return;
         }
@@ -312,6 +313,19 @@ public class Login extends BaseActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == SDK_PERMISSION_REQUEST) {
+            //询问用户权限
+            if (permissions[2].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) && grantResults[2]
+                    == PackageManager.PERMISSION_GRANTED) {
+                CreateDirectory();
+            }
+        }
+    }
+
+
     private final int SDK_PERMISSION_REQUEST = 127;
     @TargetApi(23)
     private void getPersimmions() {
@@ -327,7 +341,9 @@ public class Login extends BaseActivity {
             if(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                 permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
             }
-
+            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
             if (permissions.size() > 0) {
                 requestPermissions(permissions.toArray(new String[permissions.size()]), SDK_PERMISSION_REQUEST);
             }

@@ -9,6 +9,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.xx.chinetek.chineteklib.base.AppManager;
+import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.CustomModel;
 

@@ -40,6 +40,7 @@ public class SharePreferUtil {
             Paramater.SOCKET_TIMEOUT=sharedPreferences.getInt("TimeOut", 300000);
             ParamaterModel.PartenerID=sharedPreferences.getString("PartenerNo","");
             ParamaterModel.PartenerName=sharedPreferences.getString("PartenerName","");
+            ParamaterModel.PartenerFUNCTION=sharedPreferences.getString("PartenerFUNCTION","");
             ParamaterModel.SysPassword=sharedPreferences.getString("SysPassword","123456");
             Gson gson = new Gson();
             Type type = new TypeToken<BaseparaModel>(){}.getType();
@@ -68,6 +69,7 @@ public class SharePreferUtil {
         edit.putInt("TimeOut",Paramater.SOCKET_TIMEOUT);
         edit.putString("PartenerNo", ParamaterModel.PartenerID);
         edit.putString("PartenerName", ParamaterModel.PartenerName);
+        edit.putString("PartenerFUNCTION", ParamaterModel.PartenerFUNCTION);
         edit.putString("SysPassword", ParamaterModel.SysPassword);
         Gson gson=new Gson();
         Type type = new TypeToken<BaseparaModel>() {}.getType();

@@ -189,7 +189,7 @@ public class MaterialQuery extends BaseIntentActivity {
         try{
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP)// 如果为Enter键
             {
-
+                keyBoardCancle();
                 BindListView();
                 return true;
             }

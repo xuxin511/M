@@ -5,6 +5,7 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.method.DB.GreenDaoContext;
 import com.xx.chinetek.model.Base.CustomModel;
+import com.xx.chinetek.model.Base.ParamaterModel;
 
 import java.util.ArrayList;
 
@@ -32,11 +33,14 @@ public class GetPartner {
     public static ArrayList<CustomModel> GetPartnersbyposition(int position) throws Exception{
         ArrayList<CustomModel> customModels= new ArrayList<CustomModel>();
         if(position==1){
-            customModels=(ArrayList<CustomModel>) DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder().distinct().list();
+            customModels=(ArrayList<CustomModel>) DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder().distinct()
+                    .orderAsc(CustomModelDao.Properties.PARTNER_FUNCTION).list();
         }else{
             customModels=(ArrayList<CustomModel>) DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder().distinct().
-                    where(CustomModelDao.Properties.PARTNER_FUNCTION.eq("Z3")).list();
+                    where(CustomModelDao.Properties.PARTNER_FUNCTION.gt(ParamaterModel.PartenerFUNCTION))
+                    .orderAsc(CustomModelDao.Properties.PARTNER_FUNCTION).list();
         }
+
         return customModels;
 
     }

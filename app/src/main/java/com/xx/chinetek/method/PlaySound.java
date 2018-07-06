@@ -19,8 +19,8 @@ public class PlaySound {
 
     private PlaySound() {
         soundPool= new SoundPool(10, AudioManager.STREAM_SYSTEM, 8);
-        playSoundID = soundPool.load(context, R.raw.error1, 1);
-        playSoundErrID = soundPool.load(context, R.raw.error2, 1);
+      //  playSoundID = soundPool.load(context, R.raw.error1, 0);
+        //  playSoundErrID = soundPool.load(context, R.raw.error2, 0);
     }
 
     public static PlaySound getInstance() {
@@ -34,11 +34,19 @@ public class PlaySound {
         return mPlaySound;
     }
 
-    public void PlayNormal(){
-        soundPool.play(playSoundID, 2, 2, 0, 0, 1);
-    }
+//    public void PlayNormal(){
+//        soundPool.play(playSoundID, 2, 2, 0, 0, 1);
+//    }
 
-    public void PlayError(){
-        soundPool.play(playSoundErrID, 2, 2, 0, 0, 1);
+    public void PlayError() {
+        playSoundErrID = soundPool.load(context, R.raw.error2, 0);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                soundPool.play(playSoundErrID, 2, 2, 0, 1, 1);
+            }
+        });
+
+       // soundPool.play(playSoundErrID, 2, 2, 0, 1, 1);
     }
 }
