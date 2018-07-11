@@ -2,10 +2,15 @@ package com.xx.chinetek.mitsubshi.DN;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.xx.chinetek.adapter.DN.SyncListItemAdapter;
@@ -16,9 +21,11 @@ import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.mitsubshi.OrderFilter;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.QueryModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -33,24 +40,52 @@ public class DNsync extends BaseActivity{
     Context context = DNsync.this;
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
+    @ViewInject(R.id.edt_DeleveryNoFuilter)
+    EditText edtFuilter;
 
     ArrayList<DNModel> DNModels;
     SyncListItemAdapter syncListItemAdapter;
+
 
     @Override
     protected void initViews() {
         super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.FTPDNChoice),true);
         x.view().inject(this);
-
+        edtFuilter.addTextChangedListener(DeleveryNoTextWatcher);
     }
 
     @Override
     protected void initData() {
         super.initData();
+
         DNModels=getIntent().getParcelableArrayListExtra("DNModels");
         GetbulkuploadList();
     }
+
+    /**
+     * 文本变化事件
+     */
+    TextWatcher DeleveryNoTextWatcher=new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String filterContent=edtFuilter.getText().toString();
+            if(!filterContent.equals(""))
+                syncListItemAdapter.getFilter().filter(filterContent);
+            else{
+                GetbulkuploadList();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     // 双击事件记录最近一次点击的ID
     private String  lastClickId;
@@ -93,9 +128,9 @@ public class DNsync extends BaseActivity{
         if(item.getItemId()==R.id.action_submit){
             try{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
-                for(int i=0;i<DNModels.size();i++){
+                for(int i=0;i<syncListItemAdapter.getCount();i++){
                     if (syncListItemAdapter.getStates(i)) {
-                        Tempdnmodels.add(0, DNModels.get(i));
+                        Tempdnmodels.add(0, (DNModel) syncListItemAdapter.getItem(i));
                     }
                 }
                 if (DownDN(Tempdnmodels)) return false;
@@ -105,7 +140,7 @@ public class DNsync extends BaseActivity{
             }
         }
         if(item.getItemId()==R.id.action_SelectAll){
-            for(int i=0;i<DNModels.size();i++){
+            for(int i=0;i<syncListItemAdapter.getCount();i++){
                 syncListItemAdapter.modifyStates(i);
             }
         }

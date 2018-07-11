@@ -40,7 +40,7 @@ public class DbBaseInfo {
 
     public static DbBaseInfo getInstance() {
         if (null == mSyncDB) {
-            synchronized (DbManager.class) {
+            synchronized (DbBaseInfo.class) {
                 if (null == mSyncDB) {
                     mSyncDB = new DbBaseInfo();
                 }

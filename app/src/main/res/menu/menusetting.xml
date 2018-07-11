@@ -18,12 +18,6 @@
         android:orderInCategory="80"
         app:showAsAction="ifRoom" />
 
-    <!--<item-->
-        <!--android:id="@+id/action_endatabase"-->
-        <!--android:title="数据库升级"-->
-        <!--android:orderInCategory="80"-->
-        <!--app:showAsAction="ifRoom" />-->
-
     <item
         android:id="@+id/action_filter"
         android:title="@string/Setting_LogUpload"

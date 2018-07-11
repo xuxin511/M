@@ -7,6 +7,9 @@ import android.content.IntentFilter;
 
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.model.Base.ParamaterModel;
+
+import java.util.concurrent.ExecutionException;
+
 /**
  * Created by GHOST on 2017/11/14.
  */
@@ -47,12 +50,16 @@ public class BaseIntentActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
             if (intent.getAction().equals(RES_ACTION)){
-                //获取扫描结果value
-                String valueName= ParamaterModel.Model.equals("TC75")?"com.symbol.datawedge.data_string":"value";
-                final String scanResult = intent.getStringExtra(valueName);//"com.symbol.datawedge.data_string
-                android.os.Message msg = mHandler.obtainMessage(TAG_SCAN,scanResult);
-                mHandler.sendMessage(msg);
+                try {
+                    //获取扫描结果value
+                    String valueName = ParamaterModel.Model.equals("TC75") ? "com.symbol.datawedge.data_string" : "value";
+                    final String scanResult = intent.getStringExtra(valueName);//"com.symbol.datawedge.data_string
+                    android.os.Message msg = mHandler.obtainMessage(TAG_SCAN, scanResult);
+                    mHandler.sendMessage(msg);
 
+                }catch (Exception ex){
+
+                }
             }
 
         }

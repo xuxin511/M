@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -99,6 +100,8 @@ public class DeliveryScan extends BaseIntentActivity {
     ArrayList<BarCodeModel> ErrorBarcodes;//错误消息集合
     DNModel dnModel;
     DbDnInfo dnInfo;
+
+   // int count=0;
     @Override
     public void onHandleMessage(Message msg) {
         switch (msg.what) {
@@ -137,6 +140,8 @@ public class DeliveryScan extends BaseIntentActivity {
                 LogUtil.WriteLog(DeliveryScan.class, TAG_ScanBarcode, (String) msg.obj);
                 try {
                     CheckScanBarcode((String) msg.obj);
+//                    count++;
+//                    Log.d("scancount",count+"");
                 }catch (Exception ex){
                     ToastUtil.show(ex.getMessage());
                     LogUtil.WriteLog(DeliveryScan.class,"DeliveryScan-CheckScanBarcode", ex.toString());
@@ -162,6 +167,7 @@ public class DeliveryScan extends BaseIntentActivity {
         //显示备注栏
         int visable=ParamaterModel.baseparaModel.getUseRemark()?View.VISIBLE:View.GONE;
         imgRemark.setVisibility(visable);
+
     }
 
     @Override
@@ -211,7 +217,7 @@ public class DeliveryScan extends BaseIntentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 //        if(item.getItemId()==R.id.action_scan){
-//            CheckScanBarcode("1FRD740CT0075 C85J2C050 20180502T76");
+//                CheckScanBarcode("1FRD740CT0075 C85J2C050 20180502T76");
 //        }
 
         if(item.getItemId()==R.id.action_submit){
@@ -457,20 +463,11 @@ public class DeliveryScan extends BaseIntentActivity {
      */
     void GetDeliveryOrderScanList(){
         if(dnDetailModels==null) dnDetailModels=new ArrayList<>();
-       // dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
         dnModel.setDETAILS(dnDetailModels);
         txtDnNo.setFocusable(dnDetailModels.size()==0 || dnModel.getSTATUS()==DNStatusEnum.Repert?true:false);
         int source=dnModel.getDN_SOURCE()==null?ParamaterModel.DnTypeModel.getDNType():dnModel.getDN_SOURCE();
         deliveryScanItemAdapter=new DeliveryScanItemAdapter(context, dnDetailModels,source);
         lsvDeliveryScan.setAdapter(deliveryScanItemAdapter);
-// Integer qty=0;
- ///       Integer scanqty=0;
-//        if(dnDetailModels!=null&&dnDetailModels.size()>=1){
-//            for(int i=0;i<dnDetailModels.size();i++){
-//                qty +=dnDetailModels.get(i).getDN_QTY()==null?0:dnDetailModels.get(i).getDN_QTY();
-//                scanqty+=dnDetailModels.get(i).getSCAN_QTY()==null?0:dnDetailModels.get(i).getSCAN_QTY();
-//            }
-//        }
         itemScanQty.setText("总扫描数："+scanqty);
        if(source!=3)  itemDNQty.setText("总出库数："+qty);
     }
@@ -483,13 +480,6 @@ public class DeliveryScan extends BaseIntentActivity {
      * @throws Exception
      */
     private boolean SaveScanInfo() throws Exception {
-
-//        //保存至数据库
-//        ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
-//        dnModel.setOPER_DATE(new Date());
-//        dnModels.add(dnModel);
-//        dnInfo.InsertDNDB(dnModels);
-        //刷新listview
         GetDeliveryOrderScanList();
         return true;
     }
@@ -712,9 +702,10 @@ public class DeliveryScan extends BaseIntentActivity {
         dnDetailModel.setSTATUS(0);
         dnDetailModel.setOPER_DATE(new Date());
         //多条主数据
-        boolean isError=(materialModels!=null && materialModels.size()==1) || barCodeModel.getMAT_TYPE()==0;
+        boolean isError=(materialModels!=null && materialModels.size()<=1) || barCodeModel.getMAT_TYPE()==0;
         dnDetailModel.setFlag(isError?0:1);
-        dnModel.setFlag(isError?0:1);
+        if(dnModel.getFlag()==null || dnModel.getFlag()!=1)
+            dnModel.setFlag(isError?0:1);
 
 
         if(materialModels!=null && materialModels.size()>0) {

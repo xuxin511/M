@@ -18,6 +18,11 @@
         <item name="actionOverflowMenuStyle">@style/CMOptionsMenu</item>
     </style>
 
+    <style name="AppThemeFilter" parent="AppTheme">
+        <item name="colorPrimary">@color/steelblue</item>
+        <item name="colorPrimaryDark">@color/steelblue</item>
+    </style>
+
     <!--toolbar背景色-->
     <style name="CMOptionsMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:popupBackground">@color/colorPrimary</item>

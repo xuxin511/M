@@ -4,10 +4,13 @@ package com.xx.chinetek.mitsubshi.DN;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.xx.chinetek.adapter.DN.SyncListItemAdapter;
@@ -35,6 +38,8 @@ public class FTPsync extends BaseActivity{
     Context context = FTPsync.this;
     @ViewInject(R.id.Lsv_ExceptionList)
     ListView LsvExceptionList;
+    @ViewInject(R.id.edt_DeleveryNoFuilter)
+    EditText edtFuilter;
 
     ArrayList<DNModel> dnModels;
     SyncListItemAdapter syncListItemAdapter;
@@ -46,13 +51,44 @@ public class FTPsync extends BaseActivity{
         super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.FTPDNChoice),true);
         x.view().inject(this);
+        edtFuilter.addTextChangedListener(DeleveryNoTextWatcher);
     }
 
     @Override
     protected void initData() {
         super.initData();
-        GetFTPloadList();
+        try {
+            dnModels = SyncDN.DNFromFiles();
+            GetFTPloadList();
+        }catch (Exception ex){
+            MessageBox.Show(context, ex.toString());
+        }
     }
+
+
+    /**
+     * 文本变化事件
+     */
+    TextWatcher DeleveryNoTextWatcher=new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String filterContent=edtFuilter.getText().toString();
+            if(!filterContent.equals(""))
+                syncListItemAdapter.getFilter().filter(filterContent);
+            else{
+                GetFTPloadList();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     // 双击事件记录最近一次点击的ID
     private String  lastClickId;
@@ -92,13 +128,6 @@ public class FTPsync extends BaseActivity{
                 MessageBox.Show(context, getString(R.string.Msg_ExitDn) + dnModel.getAGENT_DN_NO());
                 return;
             }
-//            if (dnModel.getFlag() == 1) { //存在多条物料主数据
-//                Intent intent=new Intent(context,MultiMaterialSelect.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("DNModel", dnModel);
-//                intent.putExtras(bundle);
-//                startActivityForResult(intent,1001);
-//            }else {
                 if (dnModel.getAGENT_DN_NO().equals(lastClickId)
                         && (Math.abs(lastClickTime - System.currentTimeMillis()) < 1000)) {
                     lastClickId = null;
@@ -112,7 +141,6 @@ public class FTPsync extends BaseActivity{
                     lastClickTime = System.currentTimeMillis();
                     syncListItemAdapter.modifyStates(position);
                 }
-           // }
         } catch (Exception ex) {
             ToastUtil.show(ex.getMessage());
             LogUtil.WriteLog(FTPsync.class,"FTPsync-LsvItemClick", ex.toString());
@@ -146,22 +174,11 @@ public class FTPsync extends BaseActivity{
         if(item.getItemId()==R.id.action_submit){
             try{
                 ArrayList<DNModel> Tempdnmodels= new ArrayList<DNModel>();
-               // Boolean isException=false;
-
-                for(int i=0;i<dnModels.size();i++){
-//                    if(dnModels.get(i).getFlag()==1){
-//                        isException=true;
-//                        break;
-//                    }
-
+                for(int i=0;i<syncListItemAdapter.getCount();i++){
                     if (syncListItemAdapter.getStates(i)) {
-                        Tempdnmodels.add(0, dnModels.get(i));
+                        Tempdnmodels.add(0, (DNModel) syncListItemAdapter.getItem(i));
                     }
                 }
-//                if(isException){ //存在多条物料主数据
-//                    MessageBox.Show(context,getString(R.string.Msg_MitMaterialS));
-//                    return false;
-//                }
                 if (DownDN(Tempdnmodels)) return false;
 
             }catch(Exception ex){
@@ -171,12 +188,12 @@ public class FTPsync extends BaseActivity{
         if(item.getItemId()==R.id.action_SelectAll){
             Boolean hasDnno=false;
             String contnt=getString(R.string.Msg_ExitDn) +"\n";
-            for(int i=0;i<dnModels.size();i++){
+            for(int i=0;i<syncListItemAdapter.getCount();i++){
                 //判断单号是否在本地重复
-                DNModel temp = DbDnInfo.getInstance().GetLoaclDN(dnModels.get(i).getAGENT_DN_NO());
+                DNModel temp = DbDnInfo.getInstance().GetLoaclDN(((DNModel) syncListItemAdapter.getItem(i)).getAGENT_DN_NO());
                 if (temp != null) {
                     hasDnno=true;
-                    contnt+= dnModels.get(i).getAGENT_DN_NO() +"\n";
+                    contnt+= ((DNModel) syncListItemAdapter.getItem(i)).getAGENT_DN_NO() +"\n";
                 }else {
                     syncListItemAdapter.modifyStates(i);
                 }
@@ -214,7 +231,6 @@ public class FTPsync extends BaseActivity{
 
     void GetFTPloadList() {
         try {
-            dnModels = SyncDN.DNFromFiles();
             syncListItemAdapter = new SyncListItemAdapter(context, dnModels);
             LsvExceptionList.setAdapter(syncListItemAdapter);
         } catch (Exception ex) {

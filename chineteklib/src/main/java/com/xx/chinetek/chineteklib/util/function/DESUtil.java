@@ -43,7 +43,7 @@ public class DESUtil {
             return byte2String(bytes);
         } catch (Exception e) {
             e.printStackTrace();
-            return  "解码失败，密钥不正确";
+            return  "解码失败，密钥不正确\n请退出APP重新登陆！";
         }
     }
 
@@ -70,7 +70,7 @@ public class DESUtil {
             return new String(cipher.doFinal(byte2hex(data.getBytes())));
         } catch (Exception e) {
             e.printStackTrace();
-            return  "解码失败，密钥不正确";
+            return  "解码失败，密钥不正确\n请退出APP重新登陆！";
         }
     }
 

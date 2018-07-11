@@ -74,7 +74,8 @@
         <activity android:name=".DN.MultiMaterialSelect" />
         <activity android:name=".Setting_BarcodeRules" />
         <activity android:name=".Query.MaterialQuery" />
-        <activity android:name=".Setting_ThirdInterface"></activity>
+        <activity android:name=".Setting_ThirdInterface" />
+        <activity android:name=".OrderFilter"  android:theme="@style/AppThemeFilter"/>
     </application>
 
 </manifest>

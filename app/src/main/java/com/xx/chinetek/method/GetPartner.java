@@ -1,11 +1,14 @@
 package com.xx.chinetek.method;
 
+import com.xx.chinetek.chineteklib.model.Paramater;
 import com.xx.chinetek.greendao.CustomModelDao;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.method.DB.GreenDaoContext;
 import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
+
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
 
@@ -32,20 +35,30 @@ public class GetPartner {
      */
     public static ArrayList<CustomModel> GetPartnersbyposition(int position) throws Exception{
         ArrayList<CustomModel> customModels= new ArrayList<CustomModel>();
-        if(position==1){
-            customModels=(ArrayList<CustomModel>) DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder().distinct()
+        if(position==1)
+            customModels = (ArrayList<CustomModel>) DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder()
+                    .where(new WhereCondition.StringCondition("1=1 GROUP BY CUSTOMER"))
+                    .distinct()
                     .orderAsc(CustomModelDao.Properties.PARTNER_FUNCTION).list();
-        }else{
+        else{
             customModels=(ArrayList<CustomModel>) DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder().distinct().
                     where(CustomModelDao.Properties.PARTNER_FUNCTION.gt(ParamaterModel.PartenerFUNCTION))
                     .orderAsc(CustomModelDao.Properties.PARTNER_FUNCTION).list();
         }
+        return customModels;
+    }
 
+    public static ArrayList<CustomModel> GetFilterCustom() throws Exception{
+        ArrayList<CustomModel> customModels= new ArrayList<CustomModel>();
+        customModels=(ArrayList<CustomModel>)DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder().whereOr(
+                new WhereCondition.StringCondition("CUSTOMER in (SELECT DISTINCT LEVEL_2__AGENT__NO from DNMODEL) "),
+                new WhereCondition.StringCondition("CUSTOMER in (SELECT DISTINCT CUSTOM__NO from DNMODEL) "))
+                .where(CustomModelDao.Properties.CUSTOMER.notEq(ParamaterModel.PartenerID),
+                        new WhereCondition.StringCondition("1=1 GROUP BY CUSTOMER")).distinct()
+                .orderAsc(CustomModelDao.Properties.PARTNER_FUNCTION).list();
         return customModels;
 
     }
-
-
 
 
 }

@@ -67,5 +67,38 @@
             app:layout_constraintBottom_toBottomOf="@+id/edt_DNNoFuilter"
             app:layout_constraintEnd_toEndOf="parent" />
     </android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10.0dip"
+        android:layout_marginBottom="48dp"
+        android:src="@drawable/filter"
+        app:backgroundTint="#30469b"
+        app:borderWidth="0.0dip"
+        app:elevation="5.0dip"
+        app:fabSize="normal"
+        app:layout_anchorGravity="right|bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="10.0dip"
+        app:rippleColor="#a6a6a6" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        android:src="@drawable/delete"
+        app:backgroundTint="#30469b"
+        app:borderWidth="0.0dip"
+        app:elevation="5.0dip"
+        app:fabSize="normal"
+        app:layout_anchorGravity="right|bottom"
+        app:layout_constraintBottom_toTopOf="@+id/fab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="10.0dip"
+        app:rippleColor="#a6a6a6" />
 
 </android.support.constraint.ConstraintLayout>

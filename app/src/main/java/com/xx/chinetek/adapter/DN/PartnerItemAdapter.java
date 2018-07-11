@@ -26,7 +26,6 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
     private ArrayList<CustomModel> mUnfilteredData;
     private ArrayList<CustomModel> customModels; // 信息集合
     private LayoutInflater listContainer; // 视图容器
-    int index=0;
 
     public final class ListItemView { // 自定义控件集合
 
@@ -38,7 +37,6 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
         this.context = context;
         listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
         this.customModels = customModels;
-
     }
 
 
@@ -64,7 +62,6 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
         ListItemView listItemView = null;
         if (convertView == null) {
             listItemView = new ListItemView();
-
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_partner_detail,null);
             listItemView.txtPartnerName = (TextView) convertView.findViewById(R.id.item_PartnerName);
@@ -75,7 +72,7 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
         }
         CustomModel customModel = customModels.get(selectID);
         listItemView.txtPartnerName.setText(customModel.getNAME());
-        listItemView.txtType.setText(customModel.getPARTNER_FUNCTION());
+      listItemView.txtType.setText(customModel.getPARTNER_FUNCTION());
         return convertView;
     }
 
@@ -91,11 +88,9 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence prefix) {
             FilterResults results = new FilterResults();
-
             if (mUnfilteredData == null) {
                 mUnfilteredData = new ArrayList<CustomModel>(customModels);
             }
-
             if (prefix == null || prefix.length() == 0) {
                 ArrayList<CustomModel> list = mUnfilteredData;
                 results.values = list;
@@ -125,9 +120,7 @@ public class PartnerItemAdapter extends BaseAdapter  implements Filterable {
         }
 
         @Override
-        protected void publishResults(CharSequence constraint,
-                                      FilterResults results) {
-            //noinspection unchecked
+        protected void publishResults(CharSequence constraint,FilterResults results) {
             customModels = (ArrayList<CustomModel>) results.values;
             if (results.count > 0) {
                 notifyDataSetChanged();

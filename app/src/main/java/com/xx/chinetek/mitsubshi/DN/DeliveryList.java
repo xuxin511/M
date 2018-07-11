@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,11 +32,13 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
+import com.xx.chinetek.mitsubshi.OrderFilter;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.QueryModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -63,7 +66,12 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     ListView LsvDeliveryList;
     @ViewInject(R.id.mSwipeLayout)
     SwipeRefreshLayout mSwipeLayout;
+    @ViewInject(R.id.fab)
+    FloatingActionButton fab;
+    @ViewInject(R.id.fabCancel)
+    FloatingActionButton fabCancel;
 
+    QueryModel queryModel;
     DeliveryListItemAdapter deliveryListItemAdapter;
     ArrayList<DNModel> DNModels; //所有未完成出库单
     LoadingDialog dialog;
@@ -95,7 +103,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             }
             if(dialog!=null)
                 dialog.dismiss();
-            DNModels= DbDnInfo.getInstance().GetLoaclDN();
+            DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
             BindListView();
         } catch (Exception ex) {
             MessageBox.Show(context,ex.getMessage());
@@ -172,12 +180,37 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     @Override
     protected void initData() {
         super.initData();
+        queryModel=null;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(context, OrderFilter.class),1001);
+            }
+        });
+        fabCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queryModel=null;
+                fabCancel.setVisibility(View.GONE);
+                DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
+                BindListView();
+            }
+        });
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1001 && resultCode==1){
+            queryModel=data.getParcelableExtra("queryModel");
+            if(fabCancel!=null)
+                fabCancel.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onRefresh() {
+        queryModel=null;
         ImportDelivery();
         mSwipeLayout.setRefreshing(false);
     }
@@ -185,7 +218,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     @Override
     protected void onResume() {
         super.onResume();
-        DNModels= DbDnInfo.getInstance().GetLoaclDN();
+        DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
         BindListView();
     }
 
@@ -234,7 +267,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
                         DelDNmodel(context,Model);
-                        DNModels= DbDnInfo.getInstance().GetLoaclDN();
+                        DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
                         BindListView();
 
                     }
@@ -335,7 +368,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                    break;
                case 3:
                case 5:
-                   DNModels = DbDnInfo.getInstance().GetLoaclDN();
+                   DNModels = DbDnInfo.getInstance().GetLoaclDN(queryModel);
                    BindListView();
                    break;
            }

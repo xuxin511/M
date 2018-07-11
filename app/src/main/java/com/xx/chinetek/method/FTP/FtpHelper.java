@@ -240,28 +240,29 @@ public class FtpHelper {
         // 初始化FTP当前目录
         currentPath = remotePath;
         // 更改FTP目录
-        ftpClient.changeWorkingDirectory(remotePath);
-        // 得到FTP当前目录下所有文件
-        FTPFile[] ftpFiles = ftpClient.listFiles();
-        //在本地创建对应文件夹目录
-        localPath = localPath + "/" + remotePath.substring(remotePath.lastIndexOf("/"));
-        File localFolder = new File(localPath);
+        if(ftpClient.changeWorkingDirectory(remotePath)) {
+            // 得到FTP当前目录下所有文件
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            //在本地创建对应文件夹目录
+            localPath = localPath + "/" + remotePath.substring(remotePath.lastIndexOf("/"));
+         //   File localFolder = new File(localPath);
 //        if (!localFolder.exists()) {
 //            localFolder.mkdirs();
 //        }
-        // 循环遍历
-        for (FTPFile ftpFile : ftpFiles) {
-            if (!ftpFile.getName().equals("..")
-                    && !ftpFile.getName().equals(".")) {
-                if (ftpFile.isDirectory()) {
-                    //下载文件夹
-                    int count = downloadFolder(currentPath + "/" + ftpFile.getName(), localPath);
-                    fileCount += count;
-                } else if (ftpFile.isFile()) {
-                    // 下载单个文件
-                    boolean flag = downloadSingle(new File(localPath + "/" + ftpFile.getName()), ftpFile);
-                    if (flag) {
-                        fileCount++;
+            // 循环遍历
+            for (FTPFile ftpFile : ftpFiles) {
+                if (!ftpFile.getName().equals("..")
+                        && !ftpFile.getName().equals(".")) {
+                    if (ftpFile.isDirectory()) {
+                        //下载文件夹
+                        int count = downloadFolder(currentPath + "/" + ftpFile.getName(), localPath);
+                        fileCount += count;
+                    } else if (ftpFile.isFile()) {
+                        // 下载单个文件
+                        boolean flag = downloadSingle(new File(localPath + "/" + ftpFile.getName()), ftpFile);
+                        if (flag) {
+                            fileCount++;
+                        }
                     }
                 }
             }

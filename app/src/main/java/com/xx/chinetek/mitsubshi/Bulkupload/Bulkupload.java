@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,11 +33,13 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Upload.UploadDN;
+import com.xx.chinetek.mitsubshi.OrderFilter;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.MultipleDN;
+import com.xx.chinetek.model.QueryModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -59,8 +62,14 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     ListView LsvExceptionList;
     @ViewInject(R.id.mSwipeLayout)
     SwipeRefreshLayout mSwipeLayout;
+    @ViewInject(R.id.fab)
+    FloatingActionButton fab;
+    @ViewInject(R.id.fabCancel)
+    FloatingActionButton fabCancel;
     @ViewInject(R.id.CBCloseDN)
     CheckBox CBCloseDN;
+
+    QueryModel queryModel;
     ArrayList<DNModel> DNModels;
     BulkuploadListItemAdapter bulkuploadListItemAdapter;
 
@@ -222,7 +231,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
             ToastUtil.show(ex.getMessage());
             LogUtil.WriteLog(Bulkupload.class,"Bulkupload-ExceptionDNList", ex.toString());
         }
-        GetbulkuploadList();
+        GetbulkuploadList(queryModel);
     }
 
     @Override
@@ -235,14 +244,46 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     @Override
     protected void initData() {
         super.initData();
-        GetbulkuploadList();
+        queryModel=null;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(context, OrderFilter.class),1001);
+            }
+        });
+        fabCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queryModel=null;
+                fabCancel.setVisibility(View.GONE);
+                GetbulkuploadList(queryModel);
+            }
+        });
+
         edtDNNoFuilter.addTextChangedListener(bululoadTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        GetbulkuploadList(queryModel);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1001 && resultCode==1){
+            queryModel=data.getParcelableExtra("queryModel");
+            if(fabCancel!=null)
+                fabCancel.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void onRefresh() {
         mSwipeLayout.setRefreshing(false);
+        queryModel=null;
+        GetbulkuploadList(queryModel);
     }
 
         @Event(value = R.id.Lsv_ExceptionList,type = AdapterView.OnItemLongClickListener.class)
@@ -367,9 +408,9 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     }
 
 
-    void GetbulkuploadList(){
+    void GetbulkuploadList(QueryModel queryModel){
         try{
-            DNModels =ImportbulkuploadList();
+            DNModels =ImportbulkuploadList(queryModel);
             bulkuploadListItemAdapter=new BulkuploadListItemAdapter(context, DNModels);
             LsvExceptionList.setAdapter(bulkuploadListItemAdapter);
         }catch(Exception ex){
@@ -377,9 +418,9 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
         }
     }
 
-    ArrayList<DNModel> ImportbulkuploadList(){
+    ArrayList<DNModel> ImportbulkuploadList(QueryModel queryModel){
         ArrayList<DNModel> DNModels =new ArrayList<>();
-        DNModels = DbDnInfo.getInstance().GetLoaclcompleteDN();
+        DNModels = DbDnInfo.getInstance().GetLoaclcompleteDN(queryModel);
         return DNModels;
     }
 }

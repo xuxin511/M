@@ -521,9 +521,10 @@ public class ExceptionScan extends BaseIntentActivity {
         dnDetailModel.setSTATUS(0);
         dnDetailModel.setOPER_DATE(new Date());
         //多条主数据
-        boolean isError=(materialModels!=null && materialModels.size()==1) || barCodeModel.getMAT_TYPE()==0;
+        boolean isError=(materialModels!=null && materialModels.size()<=1) || barCodeModel.getMAT_TYPE()==0;
         dnDetailModel.setFlag(isError?0:1);
-        dnModel.setFlag(isError?0:1);
+        if(dnModel.getFlag()==null || dnModel.getFlag()!=1)
+            dnModel.setFlag(isError?0:1);
 
         if(materialModels!=null && materialModels.size()>0) {
             MaterialModel materialModel = materialModels.get(0);

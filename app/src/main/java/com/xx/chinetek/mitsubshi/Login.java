@@ -39,6 +39,7 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.method.DB.MigrationHelper;
+import com.xx.chinetek.method.PlaySound;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.model.Base.ParamaterModel;
@@ -96,12 +97,10 @@ public class Login extends BaseActivity {
     }
 
     void  AnalysisLoginJson(String result){
-     //   LogUtil.WriteLog(Login.class,TAG_Login,result);
         try {
             ReturnMsgModel<String> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModel<String>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
-               // SharePreferUtil.SetSyncTimeShare("Register","1");
                 DESUtil.pvkey=returnMsgModel.getMaterialDoc();
                 Intent intent = new Intent(context, MainActivity.class);
                 startActivityLeft(intent);
@@ -129,10 +128,10 @@ public class Login extends BaseActivity {
         GetSysINfo();
         SharePreferUtil.ReadShare(context);
         SharePreferUtil.ReadUserShare(context);
-       ///  = SharePreferUtil.ReadDNTypeShare(context);
         edtOperater.setText(ParamaterModel.Operater);
         txtVer.setText(getString(R.string.login_ver)+(updateVersionService.getVersionCode(context)));
         getPersimmions();
+        PlaySound.getInstance();
 
     }
 
@@ -146,8 +145,8 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         DESUtil.pvkey = "SCGWMS00"; //初始密钥
-        ParamaterModel.SerialNo = "1177326";
-        ParamaterModel.Model = "A15_A5";
+//        ParamaterModel.SerialNo = "1177326";
+//        ParamaterModel.Model = "TC75";
         if (ParamaterModel.SerialNo == null || TextUtils.isEmpty(ParamaterModel.SerialNo)) {
             return;
         }
@@ -156,7 +155,6 @@ public class Login extends BaseActivity {
             myReceiver = null;
         }
         if (ParamaterModel.Model == null || !(Arrays.asList(getResources().getStringArray(R.array.Model)).contains(ParamaterModel.Model.toUpperCase()))) {
-            //!(ParamaterModel.Model.toUpperCase().equals("TC75") || ParamaterModel.Model.toUpperCase().equals("A15_A5"))
             MessageBox.Show(context, getString(R.string.Msg_NotSupportModel));
             return;
         }
@@ -189,9 +187,10 @@ public class Login extends BaseActivity {
             DbDnInfo.getInstance().DeleteDnBySaveTime();
         } catch (Exception ex) {
             try {
+                //加密数据库升级
                 MigrationHelper.encrypt(context, ParamaterModel.PartenerID + ".db", DbManager.dbpassword);
                 DbBaseInfo.getInstance().DeleteAllBase();
-            }catch (Exception exx){
+            } catch (Exception exx) {
 
             }
         }
@@ -208,22 +207,15 @@ public class Login extends BaseActivity {
         userInfoModel.setPDA_CODE(ParamaterModel.SerialNo);
         userInfoModel.setUSER_CODE(ParamaterModel.Operater);
         ParamaterModel.userInfoModel = userInfoModel;
-//
-//        Intent intent = new Intent(context, MainActivity.class);
-//        startActivityLeft(intent);
-//        if (ParamaterModel.Register != null && ParamaterModel.Register.equals("1")) {
-//            Intent intent = new Intent(context, MainActivity.class);
-//            startActivityLeft(intent);
-//        } else {
-            final Map<String, String> params = new HashMap<String, String>();
-            String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
-            params.put("UserInfoJS", user);
-            String para = (new JSONObject(params)).toString();
-            LogUtil.WriteLog(SyncBase.class, TAG_Login, para);
-            RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_Login,getResources().getString(R.string.Msg_Login),context,mHandler,RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
-//        }
 
-
+        //验证登陆
+        final Map<String, String> params = new HashMap<String, String>();
+        String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        params.put("UserInfoJS", user);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_Login, para);
+        RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_Login, getResources().getString(R.string.Msg_Login),
+                context, mHandler, RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
     }
 
 

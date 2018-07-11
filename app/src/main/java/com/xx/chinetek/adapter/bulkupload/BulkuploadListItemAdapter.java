@@ -110,7 +110,6 @@ public class BulkuploadListItemAdapter extends BaseAdapter implements Filterable
         listItemView.txtDeliveryNo.setText(DNModel.getDN_SOURCE()==3?DNModel.getCUS_DN_NO():DNModel.getAGENT_DN_NO());
         listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME()==null||DNModel.getCUSTOM_NAME().equals("")?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
-//        listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.submituser)+DNModel.());
         listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.overtime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
         listItemView.txtSource.setText(convertView.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         listItemView.txtSubmitUser.setText("");

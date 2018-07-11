@@ -31,7 +31,6 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
     private List<Boolean> listselected;//用布尔型的list记录每一行的选中状态
 
     public final class ListItemView { // 自定义控件集合
-
         public TextView txtDeliveryNo;
         public TextView txtStatus;
         public TextView txtConsignee;
@@ -91,7 +90,6 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
         ListItemView listItemView = null;
         if (convertView == null) {
             listItemView = new ListItemView();
-
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_delivery_list,null);
             listItemView.txtDeliveryNo = (TextView) convertView.findViewById(R.id.item_DeliveryNo);
@@ -135,15 +133,12 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
     }
 
     private class ArrayFilter extends Filter {
-
         @Override
         protected FilterResults performFiltering(CharSequence prefix) {
             FilterResults results = new FilterResults();
-
             if (mUnfilteredData == null) {
                 mUnfilteredData = new ArrayList<DNModel>(DNModels);
             }
-
             if (prefix == null || prefix.length() == 0) {
                 ArrayList<DNModel> list = mUnfilteredData;
                 results.values = list;
@@ -169,14 +164,11 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
                 results.values = newValues;
                 results.count = newValues.size();
             }
-
             return results;
         }
 
         @Override
-        protected void publishResults(CharSequence constraint,
-                                      FilterResults results) {
-            //noinspection unchecked
+        protected void publishResults(CharSequence constraint,FilterResults results) {
             DNModels = (ArrayList<DNModel>) results.values;
             if (results.count > 0) {
                 notifyDataSetChanged();
@@ -184,8 +176,5 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
                 notifyDataSetInvalidated();
             }
         }
-
     }
-
-
 }

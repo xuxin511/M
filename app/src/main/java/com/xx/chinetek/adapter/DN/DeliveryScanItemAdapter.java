@@ -23,7 +23,6 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
     private Integer dnsource=0;
 
     public final class ListItemView { // 自定义控件集合
-
         public TextView txtItemNo;
         public TextView txtRowNo;
         public TextView txtItemName;
@@ -36,7 +35,6 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         this.context = context;
         listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
         this.dnDetailModels = dnDetailModels;
-
     }
 
     public void modify(){
@@ -65,7 +63,6 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         ListItemView listItemView = null;
         if (convertView == null) {
             listItemView = new ListItemView();
-
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_delivery_scan,null);
            listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.txt_ItemNo);

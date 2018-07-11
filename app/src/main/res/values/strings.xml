@@ -9,6 +9,8 @@
     <string name="login_setting_ToMail">设置-收件人</string>
     <string name="login_operator">操作人</string>
     <string name="main">主界面</string>
+    <string name="filter">筛选条件</string>
+    <string name="filterQuery">筛选</string>
     <string name="outputscan">出库</string>
     <string name="qrscan">QR扫描</string>
     <string name="MaterialSelect">物料数据选择</string>
@@ -93,6 +95,7 @@
     <string name="choiceSendCusttom">请选择收货方：</string>
     <string name="supplier">收货方：</string>
     <string name="custom">收货方：</string>
+    <string name="DNCreatetime">单据时间：</string>
 
     <string name="createtime">创建时间：</string>
     <string name="submittime">提交时间：</string>
@@ -158,8 +161,11 @@
     </string-array>
 
     <string name="hint_inputDeliveryNo">输入/扫描出库单</string>
+    <string name="hint_inputNoOrCustom">输入出库单号或客户名称</string>
     <string name="hint_inputItemName">请输入产品型号</string>
     <string name="hint_inputCode">请输入编号或GolfaCode</string>
+    <string name="hint_starttime">请选择开始时间</string>
+    <string name="hint_endtime">请选择结束时间</string>
 
     <string name="Msg_SaveSuccess">保存成功！</string>
     <string name="Msg_Login">登陆验证中...</string>

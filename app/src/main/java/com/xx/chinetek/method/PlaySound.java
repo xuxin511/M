@@ -1,7 +1,10 @@
 package com.xx.chinetek.method;
 
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 
 import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.mitsubshi.R;
@@ -14,13 +17,29 @@ import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 
 public class PlaySound {
     private SoundPool soundPool;
-    private int playSoundID,playSoundErrID;
+    private int playSoundErrID;
     public static PlaySound mPlaySound;
 
     private PlaySound() {
-        soundPool= new SoundPool(10, AudioManager.STREAM_SYSTEM, 8);
-      //  playSoundID = soundPool.load(context, R.raw.error1, 0);
-        //  playSoundErrID = soundPool.load(context, R.raw.error2, 0);
+        try {
+            if (Build.VERSION.SDK_INT > 21) {
+                SoundPool.Builder builder = new SoundPool.Builder();
+                builder.setMaxStreams(30);
+                AudioAttributes.Builder builder1 = new AudioAttributes.Builder();
+                builder1.setLegacyStreamType(AudioManager.STREAM_MUSIC);
+                builder.setAudioAttributes(builder1.build());
+                soundPool = builder.build();
+
+            } else {
+                //21版本以前使用SoundPool(int maxStreams, int streamType, int srcQuality)
+                soundPool = new SoundPool(30, AudioManager.STREAM_MUSIC, 0);
+            }
+            playSoundErrID= soundPool.load(context, R.raw.error4, 1);
+
+        }catch (Exception ex){
+
+        }
+
     }
 
     public static PlaySound getInstance() {
@@ -39,14 +58,15 @@ public class PlaySound {
 //    }
 
     public void PlayError() {
-        playSoundErrID = soundPool.load(context, R.raw.error2, 0);
-        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                soundPool.play(playSoundErrID, 2, 2, 0, 1, 1);
-            }
-        });
+            public void run() {
+                try {
 
-       // soundPool.play(playSoundErrID, 2, 2, 0, 1, 1);
+                   soundPool.play(playSoundErrID, 1, 1, 0, 0, 1);
+                }catch (Exception ex){
+                }
+            }
+        }).start();
     }
 }

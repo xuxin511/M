@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,6 +35,7 @@ import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.DN.DNsync;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.QueryModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -58,6 +60,12 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     CheckBox CBCloseDN;
     @ViewInject(R.id.mSwipeLayout)
     SwipeRefreshLayout mSwipeLayout;
+    @ViewInject(R.id.fab)
+    FloatingActionButton fab;
+    @ViewInject(R.id.fabCancel)
+    FloatingActionButton fabCancel;
+
+    QueryModel queryModel;
     ArrayList<DNModel> DNModels;
     ExceptionListItemAdapter exceptionListItemAdapter;
 
@@ -73,6 +81,21 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     @Override
     protected void initData() {
         super.initData();
+        queryModel=null;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(context, OrderFilter.class),1001);
+            }
+        });
+        fabCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queryModel=null;
+                fabCancel.setVisibility(View.GONE);
+                GetExceptionList(queryModel);
+            }
+        });
 //        GetExceptionList();
         edtDNNoFuilter.addTextChangedListener(ExceptionTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
@@ -81,6 +104,7 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
 //        ImportDelivery();
+        queryModel=null;
         SyncDN.SyncException(mHandler);
         mSwipeLayout.setRefreshing(false);
     }
@@ -88,9 +112,16 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     @Override
     protected void onResume() {
         super.onResume();
-        GetExceptionList();
+        GetExceptionList(queryModel);
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1001 && resultCode==1){
+            queryModel=data.getParcelableExtra("queryModel");
+            if(fabCancel!=null)
+                fabCancel.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public void onHandleMessage(Message msg) {
@@ -127,7 +158,7 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
                                     //  if(dnModel.getSTATUS()!= DNStatusEnum.Sumbit)
                                     DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
                                 }
-                                GetExceptionList();
+                                GetExceptionList(queryModel);
                             }
                         })
                         .setNegativeButton("取消", null)
@@ -289,7 +320,7 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
                         DelDNmodel(context,Model);
-                        GetExceptionList();
+                        GetExceptionList(queryModel);
 
                     }
                 }).setNegativeButton("取消", null).show();
@@ -297,9 +328,9 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     }
 
 
-    void GetExceptionList(){
+    void GetExceptionList(QueryModel queryModel){
         try{
-            DNModels =ImportExceptionList();
+            DNModels =ImportExceptionList(queryModel);
             exceptionListItemAdapter=new ExceptionListItemAdapter(context, DNModels);
             LsvExceptionList.setAdapter(exceptionListItemAdapter);
         }catch(Exception ex){
@@ -308,9 +339,9 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
 
     }
 
-    ArrayList<DNModel> ImportExceptionList(){
+    ArrayList<DNModel> ImportExceptionList(QueryModel queryModel){
         ArrayList<DNModel> DNModels =new ArrayList<>();
-        DNModels = DbDnInfo.getInstance().GetLoaclExceptDN();
+        DNModels = DbDnInfo.getInstance().GetLoaclExceptDN(queryModel);
         return DNModels;
     }
 }

@@ -1,7 +1,9 @@
 package com.xx.chinetek.method.DB;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 
+import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
@@ -12,6 +14,9 @@ import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
+import com.xx.chinetek.model.QueryModel;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,7 +51,7 @@ public class DbDnInfo {
 
     public static DbDnInfo getInstance() {
         if (null == mSyncDn) {
-            synchronized (DbManager.class) {
+            synchronized (DbDnInfo.class) {
                 if (null == mSyncDn) {
                     mSyncDn = new DbDnInfo();
                 }
@@ -62,7 +67,7 @@ public class DbDnInfo {
         try {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DAY_OF_MONTH, 0- ParamaterModel.baseparaModel.getDNSaveTime());
-            List<DNModel> dnModels = dnModelDao.queryBuilder().where(DNModelDao.Properties.OPER_DATE.le(cal.getTimeInMillis())).distinct().list();
+            List<DNModel> dnModels = dnModelDao.queryBuilder().where(DNModelDao.Properties.DN_DATE.le(cal.getTimeInMillis())).distinct().list();
             if (dnModels != null & dnModels.size() != 0) {
                 for (DNModel dnModel : dnModels) {
                     String sql = "delete from DNMODEL where AGENT__DN__NO='" + dnModel.getAGENT_DN_NO() + "'";
@@ -139,9 +144,20 @@ public class DbDnInfo {
      * 获取本地数据所有未处理完成单据
      * @return
      */
-    public  ArrayList<DNModel> GetLoaclDN(){
+    public  ArrayList<DNModel> GetLoaclDN(QueryModel queryModel){
         ArrayList<DNModel> dnModels=new ArrayList<>();
-        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
+        QueryBuilder queryBuilder=dnModelDao.queryBuilder();
+        if(queryModel!=null) {
+            if (!TextUtils.isEmpty(queryModel.getStartTIme()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.ge(CommonUtil.dateStrConvertDate(queryModel.getStartTIme(),null)));
+            if (!TextUtils.isEmpty(queryModel.getEndTime()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.le(CommonUtil.dateStrConvertDate(queryModel.getEndTime(),null)));
+            if (queryModel.getCustomModel()!=null) {
+                queryBuilder.whereOr(DNModelDao.Properties.CUSTOM_NAME.eq(queryModel.getCustomModel().getNAME()),
+                        DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
+            }
+        }
+        dnModels=(ArrayList<DNModel>) queryBuilder.distinct()
                 .whereOr(DNModelDao.Properties.STATUS.eq(DNStatusEnum.ready),
                         DNModelDao.Properties.STATUS.eq(DNStatusEnum.download))
                 .orderDesc(DNModelDao.Properties.DN_DATE).list();
@@ -152,9 +168,21 @@ public class DbDnInfo {
      * 获取本地数据所有异常单据
      * @return
      */
-    public  ArrayList<DNModel> GetLoaclExceptDN(){
+    public  ArrayList<DNModel> GetLoaclExceptDN(QueryModel queryModel){
         ArrayList<DNModel> dnModels=new ArrayList<>();
-        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
+        QueryBuilder queryBuilder=dnModelDao.queryBuilder();
+        if(queryModel!=null) {
+            if (!TextUtils.isEmpty(queryModel.getStartTIme()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.ge(CommonUtil.dateStrConvertDate(queryModel.getStartTIme(),null)));
+            if (!TextUtils.isEmpty(queryModel.getEndTime()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.le(CommonUtil.dateStrConvertDate(queryModel.getEndTime(),null)));
+            if (queryModel.getCustomModel()!=null) {
+                queryBuilder.whereOr(DNModelDao.Properties.CUSTOM_NAME.eq(queryModel.getCustomModel().getNAME()),
+                        DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
+            }
+        }
+
+        dnModels=(ArrayList<DNModel>) queryBuilder.distinct()
                 .where(DNModelDao.Properties.STATUS.eq(DNStatusEnum.exeption)).list();
         return dnModels;
     }
@@ -163,9 +191,21 @@ public class DbDnInfo {
      * 获取本地数据所有完成单据
      * @return
      */
-    public  ArrayList<DNModel> GetLoaclcompleteDN(){
+    public  ArrayList<DNModel> GetLoaclcompleteDN(QueryModel queryModel){
         ArrayList<DNModel> dnModels=new ArrayList<>();
-        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder().distinct()
+        QueryBuilder queryBuilder=dnModelDao.queryBuilder();
+        if(queryModel!=null) {
+            if (!TextUtils.isEmpty(queryModel.getStartTIme()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.ge(CommonUtil.dateStrConvertDate(queryModel.getStartTIme(),null)));
+            if (!TextUtils.isEmpty(queryModel.getEndTime()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.le(CommonUtil.dateStrConvertDate(queryModel.getEndTime(),null)));
+            if (queryModel.getCustomModel()!=null) {
+                queryBuilder.whereOr(DNModelDao.Properties.CUSTOM_NAME.eq(queryModel.getCustomModel().getNAME()),
+                        DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
+            }
+        }
+
+        dnModels=(ArrayList<DNModel>) queryBuilder.distinct()
                 .whereOr(DNModelDao.Properties.STATUS.eq(DNStatusEnum.complete),DNModelDao.Properties.STATUS.eq(DNStatusEnum.download)).list();
         return dnModels;
     }
@@ -174,11 +214,23 @@ public class DbDnInfo {
      * 查询除未下载之外所有单据
      * @return
      */
-    public  ArrayList<DNModel> GetLoaclDNbyCondition(){
+    public  ArrayList<DNModel> GetLoaclDNbyCondition(QueryModel queryModel){
         ArrayList<DNModel> dnModels=new ArrayList<>();
-        dnModels=(ArrayList<DNModel>) dnModelDao.queryBuilder()
+        QueryBuilder queryBuilder=dnModelDao.queryBuilder();
+        if(queryModel!=null) {
+            if (!TextUtils.isEmpty(queryModel.getStartTIme()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.ge(CommonUtil.dateStrConvertDate(queryModel.getStartTIme(),null)));
+            if (!TextUtils.isEmpty(queryModel.getEndTime()))
+                queryBuilder.where(DNModelDao.Properties.DN_DATE.le(CommonUtil.dateStrConvertDate(queryModel.getEndTime(),null)));
+            if (queryModel.getCustomModel()!=null) {
+                queryBuilder.whereOr(DNModelDao.Properties.CUSTOM_NAME.eq(queryModel.getCustomModel().getNAME()),
+                        DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
+            }
+        }
+        dnModels=(ArrayList<DNModel>) queryBuilder
                 .where(DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready))
-                .orderAsc(DNModelDao.Properties.DN_SOURCE).distinct().list();
+                .orderDesc(DNModelDao.Properties.AGENT_DN_NO)
+                .orderAsc(DNModelDao.Properties.DN_STATUS).distinct().list();
         return dnModels;
     }
 
