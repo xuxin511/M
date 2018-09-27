@@ -45,6 +45,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
@@ -339,7 +340,10 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
      */
    private void ImportDelivery(){
        try {
-
+           File[] DNfiles=new File(ParamaterModel.DownDirectory).listFiles();
+           for(int i=0;i<DNfiles.length;i++) {
+               DNfiles[i].delete();
+           }
            switch (ParamaterModel.DnTypeModel.getDNType()) {
                case 0://MAPS
                    BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);

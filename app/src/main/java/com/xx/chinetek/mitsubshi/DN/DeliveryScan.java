@@ -399,6 +399,9 @@ public class DeliveryScan extends BaseIntentActivity {
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode,spinbarRule.getSelectedItemPosition());
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItemNames(barCodeModels.get(0).getGolfa_Code());
+               if(materialModels!=null && materialModels.size()==0){
+                   throw new Exception(barCodeModels.get(0).getGolfa_Code()+"  无型号信息，不允许扫描！");
+               }
                 if(materialModels!=null && materialModels.size()==1) {
                     txtItemNo.setText(materialModels.get(0).getMATNR());
                     txtItemName.setText(materialModels.get(0).getMAKTX());

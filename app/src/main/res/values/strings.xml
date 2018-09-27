@@ -193,6 +193,8 @@
     <string name="Msg_ExitDn">出库单号已存在，请确认后导入！\n</string>
     <string name="Msg_ScanMaterial">没有可以提交的扫描数据</string>
     <string name="Msg_ImportDNError">DN导入失败!\n非代理商单据\n</string>
+    <string name="Msg_ImportDNDetailError">单据无可扫描行数据\n（物料无GOLFA_CODE导致）\n</string>
+    <string name="Msg_ImportDNDFormatError">\n导入数据行格式错误（可能包含“,”）</string>
     <string name="Msg_QRScanFormatr">QR扫描单据格式不正确！</string>
     <string name="Msg_QRMulitMaterial">所选单据中存在物料无法确定唯一性\n请重新扫描处理！</string>
     <string name="Msg_NotSupportModel">设备型号不支持！</string>

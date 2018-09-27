@@ -28,7 +28,7 @@ public class CustomModel implements Parcelable {
     private String NAME;
 
     /**
-     * 区域
+     * 上一级代理商
      */
     private String SALES_ORGANIZATION;
 

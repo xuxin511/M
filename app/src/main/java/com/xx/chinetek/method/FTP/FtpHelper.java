@@ -83,8 +83,10 @@ public class FtpHelper {
      * @throws IOException
      */
     public void openConnect() throws Exception {
-        // 中文转码
-        ftpClient.setControlEncoding("UTF-8");
+
+
+
+      //  ftpClient.setControlEncoding("UTF-8");
         int reply; // 服务器响应值
         // 连接至服务器
         ftpClient.connect(hostName);
@@ -109,6 +111,13 @@ public class FtpHelper {
             ftpClient.disconnect();
             throw new IOException("connect fail: " + reply);
         } else {
+            String LOCAL_CHARSET="GBK";
+            if (FTPReply.isPositiveCompletion(ftpClient.sendCommand("OPTS UTF8", "ON"))) {
+                LOCAL_CHARSET = "UTF-8";
+            }
+            // 中文转码
+            ftpClient.setControlEncoding(LOCAL_CHARSET);
+
             // 获取登录信息
             FTPClientConfig config = new FTPClientConfig(ftpClient.getSystemType().split(" ")[0]);
             config.setServerLanguageCode("zh");
@@ -242,6 +251,7 @@ public class FtpHelper {
         // 更改FTP目录
         if(ftpClient.changeWorkingDirectory(remotePath)) {
             // 得到FTP当前目录下所有文件
+            ftpClient.enterLocalPassiveMode();
             FTPFile[] ftpFiles = ftpClient.listFiles();
             //在本地创建对应文件夹目录
             localPath = localPath + "/" + remotePath.substring(remotePath.lastIndexOf("/"));

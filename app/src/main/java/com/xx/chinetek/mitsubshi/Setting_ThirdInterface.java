@@ -83,12 +83,13 @@ public class Setting_ThirdInterface  extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_Save) {
-            if(!CommonUtil.isNumeric(edtInertfacePort.getText().toString().trim())){
+            String port=edtInertfacePort.getText().toString().trim();
+            if(!port.equals("") && !CommonUtil.isNumeric(port)){
                 MessageBox.Show(context,getString(R.string.Msg_inputNumic));
                 return true;
             }
             thirdInterfaceModel.setInterfaceIP(edtInertfaceIPAdress.getText().toString().trim());
-            thirdInterfaceModel.setPort(Integer.parseInt(edtInertfacePort.getText().toString().trim()));
+            thirdInterfaceModel.setPort(Integer.parseInt(port.equals("")?"0":port));
             thirdInterfaceModel.setPart(edtInertfacePart.getText().toString().trim());
             CloseActivity();
         }

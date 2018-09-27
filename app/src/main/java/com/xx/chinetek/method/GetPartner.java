@@ -42,7 +42,7 @@ public class GetPartner {
                     .orderAsc(CustomModelDao.Properties.PARTNER_FUNCTION).list();
         else{
             customModels=(ArrayList<CustomModel>) DbManager.getDaoSession(new GreenDaoContext()).getCustomModelDao().queryBuilder().distinct().
-                    where(CustomModelDao.Properties.PARTNER_FUNCTION.gt(ParamaterModel.PartenerFUNCTION))
+                    where(CustomModelDao.Properties.PARTNER_FUNCTION.gt(ParamaterModel.PartenerFUNCTION),CustomModelDao.Properties.CUST_NO_OF_BUSINESS_PARTNER.eq(ParamaterModel.PartenerID))
                     .orderAsc(CustomModelDao.Properties.PARTNER_FUNCTION).list();
         }
         return customModels;

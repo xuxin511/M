@@ -145,6 +145,7 @@ public class SyncDN {
        File[] DNfiles=new File(ParamaterModel.DownDirectory).listFiles();
        ArrayList<DNModel> dnModels=new ArrayList<>();
        String ErrorDN="";
+       String ErrorDNDetail="";
        for(int i=0;i<DNfiles.length;i++) {
            Boolean isSelfDN=true;//判断单据是否为登陆代理商所有
            Boolean isMitMaterials=false; //是否存在多条主数据记录
@@ -159,9 +160,16 @@ public class SyncDN {
                List<DNDetailModel> dnDetailModels = new ArrayList<>();
                int Qty = 0;
                int firstIndex=0;
+               String csvSplitBy = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
                while ((line = reader.readLine()) != null) {
-                   String[] lines = line.split(",");
+                   String[] lines = line.split(csvSplitBy);
+                   if(lines.length!=8) {
+                       throw new Exception(file.getName()+context.getString(R.string.Msg_ImportDNDFormatError));
+                   }
                    String DNNo = lines[0].trim();
+                   String ItemName= lines[5].trim();
+                   if(ItemName.startsWith("\"") && ItemName.endsWith("\"") && ItemName.contains(","))
+                       ItemName=ItemName.substring(1,ItemName.length()-1);
                    if (firstIndex == 0) {
                        dnModel = DbDnInfo.getInstance().GetLoaclDN(DNNo);
                        if (dnModel == null) {
@@ -197,14 +205,14 @@ public class SyncDN {
                    dnDetailModel.setAGENT_DN_NO(DNNo);
                    dnDetailModel.setLINE_NO(lineno);
                    dnDetailModel.setITEM_NO(lines[4].trim());
-                   dnDetailModel.setITEM_NAME(lines[5].trim());
+                   dnDetailModel.setITEM_NAME(ItemName);
                    dnDetailModel.setGOLFA_CODE(lines[6].trim());
                    dnDetailModel.setFlag(0);
-                   List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItems(lines[4].trim(), lines[5].trim(), lines[6].trim());
+                   List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItems(lines[4].trim(), ItemName, lines[6].trim());
                    if (materialModels!=null && materialModels.size() > 0) {//materialModels.size() == 1
                        dnDetailModel.setITEM_NO(materialModels.get(0).getMATNR());
                        dnDetailModel.setITEM_NAME(materialModels.get(0).getMAKTX());
-                       dnDetailModel.setGOLFA_CODE(materialModels.get(0).getBISMT());
+                       dnDetailModel.setGOLFA_CODE(materialModels.get(0).getBISMT()==null?"":materialModels.get(0).getBISMT());
                    }//else
                    if(materialModels.size() > 1) {
                        dnDetailModel.setFlag(1);
@@ -238,16 +246,28 @@ public class SyncDN {
                }
            }
            reader.close();
-           if(dnModel!=null)
-               dnModels.add(dnModel);
+           if(dnModel!=null) {
+               if(dnModel.getDETAILS().size()==0) {
+                   ErrorDNDetail += file.getName() + "\n";
+               }else {
+                   dnModels.add(dnModel);
+               }
+           }
        }
        for(int i=0;i<DNfiles.length;i++) {
            DNfiles[i].delete();
        }
-
+       String ErrorMsg="";
         if(!ErrorDN.equals("")){
-            MessageBox.Show(context,context.getString(R.string.Msg_ImportDNError)+ErrorDN);
+            ErrorMsg+=context.getString(R.string.Msg_ImportDNError)+ErrorDN;
+
         }
+       if(!ErrorDNDetail.equals("")){
+           ErrorMsg+=context.getString(R.string.Msg_ImportDNDetailError)+ErrorDNDetail;
+       }
+       if(!ErrorMsg.equals("")){
+            MessageBox.Show(context,ErrorMsg);
+       }
        return dnModels;
       // DbDnInfo.getInstance().InsertDNDB(dnModels);
    }
