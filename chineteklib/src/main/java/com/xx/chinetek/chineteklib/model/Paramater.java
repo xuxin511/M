@@ -14,7 +14,7 @@ public class Paramater {
     /**
     服务器端口号
      */
-    public static int Port=80;//9000;
+    public static int Port=8081;//9000;
 
     /**
      *超时时间

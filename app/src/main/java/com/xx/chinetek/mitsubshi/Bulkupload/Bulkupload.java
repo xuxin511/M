@@ -244,6 +244,8 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     @Override
     protected void initData() {
         super.initData();
+
+        DbDnInfo.getInstance().ChangeDNStatusByDnNo1();
         queryModel=null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

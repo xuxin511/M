@@ -204,20 +204,21 @@ public class DbBaseInfo {
     public List<MaterialModel> GetItems(String SapNo,String ItemName,String GolafCode){
         List<MaterialModel> materialModels=new ArrayList<>();
         if(!TextUtils.isEmpty(SapNo)){
-            materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MATNR.eq(SapNo)).list();
+            materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MATNR.eq(SapNo),MaterialModelDao.Properties.NORMT.eq("Y")).list();
         }else{
             if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(GolafCode)){
                 materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode),
-                        MaterialModelDao.Properties.MAKTX.eq(ItemName)).list();
+                        MaterialModelDao.Properties.MAKTX.eq(ItemName),MaterialModelDao.Properties.NORMT.eq("Y")).list();
             }else{
                 if(!TextUtils.isEmpty(ItemName) && TextUtils.isEmpty(GolafCode))
-                    materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.eq(ItemName)).list();
+                    materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.eq(ItemName),MaterialModelDao.Properties.NORMT.eq("Y")).list();
                 else
-                    materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode)).list();
+                    materialModels=materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode),MaterialModelDao.Properties.NORMT.eq("Y")).list();
             }
         }
         return materialModels;
     }
+
 
     public List<MaterialModel> Querytems(String SapNo,String ItemName,String GolafCode,String ItemLine,String showCount){
         List<MaterialModel> materialModels=new ArrayList<>();

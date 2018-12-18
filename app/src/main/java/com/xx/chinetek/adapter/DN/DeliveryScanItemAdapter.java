@@ -82,7 +82,7 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());
         listItemView.txtDNQty.setText(dnsource==3?"":(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY()));//:
         listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+dnDetailModel.getSCAN_QTY());
-        if(dnDetailModel.getDN_QTY()==dnDetailModel.getSCAN_QTY()){
+        if(dnDetailModel.getDN_QTY()-dnDetailModel.getSCAN_QTY()==0){
             convertView.setBackgroundResource(R.color.mediumaquamarine);
         }else if(dnDetailModel.getDN_QTY()>dnDetailModel.getSCAN_QTY() && dnDetailModel.getSCAN_QTY()!=0){
             convertView.setBackgroundResource(R.color.antiquewhite);

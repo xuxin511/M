@@ -1,6 +1,7 @@
 package com.xx.chinetek.method.Sync;
 
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
@@ -23,6 +24,7 @@ import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -167,6 +169,11 @@ public class SyncDN {
                        throw new Exception(file.getName()+context.getString(R.string.Msg_ImportDNDFormatError));
                    }
                    String DNNo = lines[0].trim();
+                   //2018-10-15 新增单号为空的判断，不加入扫描数据
+                   if(TextUtils.isEmpty(DNNo.trim())){
+                       throw new Exception(file.getName()+context.getString(R.string.Msg_ImportNoDNno));
+                   }
+
                    String ItemName= lines[5].trim();
                    if(ItemName.startsWith("\"") && ItemName.endsWith("\"") && ItemName.contains(","))
                        ItemName=ItemName.substring(1,ItemName.length()-1);
@@ -209,6 +216,10 @@ public class SyncDN {
                    dnDetailModel.setGOLFA_CODE(lines[6].trim());
                    dnDetailModel.setFlag(0);
                    List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItems(lines[4].trim(), ItemName, lines[6].trim());
+                   //没有启用非三菱条码时，过滤物料属性不正确数据
+                   if(materialModels.size()==0 &&  !ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
+                       continue;
+                   }
                    if (materialModels!=null && materialModels.size() > 0) {//materialModels.size() == 1
                        dnDetailModel.setITEM_NO(materialModels.get(0).getMATNR());
                        dnDetailModel.setITEM_NAME(materialModels.get(0).getMAKTX());
@@ -218,6 +229,7 @@ public class SyncDN {
                        dnDetailModel.setFlag(1);
                        isMitMaterials = true;
                    }
+
                    if (dnDetailModel.getGOLFA_CODE().equals("")) {
                        //dnDetailModel.setFlag(1);
                       // isMitMaterials = true;
@@ -230,7 +242,7 @@ public class SyncDN {
                    dnDetailModel.setOPER_DATE(new Date());
                    int scanQTY = DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNNo, lines[6].trim(), lineno);
                    dnDetailModel.setSCAN_QTY(scanQTY);
-                   dnDetailModels.add(dnDetailModel);
+                    dnDetailModels.add(dnDetailModel);
 
                }
                if(isSelfDN) {
@@ -247,7 +259,8 @@ public class SyncDN {
            }
            reader.close();
            if(dnModel!=null) {
-               if(dnModel.getDETAILS().size()==0) {
+               //不启用非三菱条码判断时，增加对物料判断是否符合规定
+               if(dnModel.getDETAILS().size()==0 ) {
                    ErrorDNDetail += file.getName() + "\n";
                }else {
                    dnModels.add(dnModel);

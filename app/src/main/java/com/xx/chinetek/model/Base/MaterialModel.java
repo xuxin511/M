@@ -50,6 +50,16 @@ public class MaterialModel implements Parcelable {
 
     private String ACTION_CODE;
 
+    private String NORMT;
+
+    public String getNORMT() {
+        return NORMT;
+    }
+
+    public void setNORMT(String NORMT) {
+        this.NORMT = NORMT;
+    }
+
     public String getSPARTNAME() {
         return SPARTNAME;
     }
@@ -109,9 +119,9 @@ public class MaterialModel implements Parcelable {
     public MaterialModel() {
     }
 
-    @Generated(hash = 465745909)
+    @Generated(hash = 5264135)
     public MaterialModel(String MATNR, String BISMT, String SPART, String SPARTNAME,
-            String MAKTX, String ZMAKTX, String ACTION_CODE) {
+            String MAKTX, String ZMAKTX, String ACTION_CODE, String NORMT) {
         this.MATNR = MATNR;
         this.BISMT = BISMT;
         this.SPART = SPART;
@@ -119,6 +129,7 @@ public class MaterialModel implements Parcelable {
         this.MAKTX = MAKTX;
         this.ZMAKTX = ZMAKTX;
         this.ACTION_CODE = ACTION_CODE;
+        this.NORMT = NORMT;
     }
 
     @Override

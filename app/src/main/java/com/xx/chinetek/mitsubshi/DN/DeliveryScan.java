@@ -217,7 +217,8 @@ public class DeliveryScan extends BaseIntentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 //        if(item.getItemId()==R.id.action_scan){
-//                CheckScanBarcode("1FRD740CT0075 C85J2C050 20180502T76");
+//            for(int i=0;i<198;i++)
+//                CheckScanBarcode("31S5001            T86D41"+(100+i)+"        20180617SBDCNMR-JE-10A                      0001");
 //        }
 
         if(item.getItemId()==R.id.action_submit){
@@ -509,7 +510,7 @@ public class DeliveryScan extends BaseIntentActivity {
         final  int position=i;
         if(detailModel.getFlag()!=null && detailModel.getFlag()==1){ //多条物料主数据
                 final List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItemNames(detailModel.getGOLFA_CODE());
-                if (materialModels.size() > 1) {
+             //   if (materialModels.size() > 1) {
                     String[] items = new String[materialModels.size()];
                     for (int j = 0; j < materialModels.size(); j++) {
                         String item = "SAP号:" + materialModels.get(j).getMATNR() + "\n" + materialModels.get(j).getBISMT() + "\n"
@@ -534,6 +535,14 @@ public class DeliveryScan extends BaseIntentActivity {
                                     dnModel.getDETAILS().get(position).setITEM_NAME(materialModels.get(selectIndex).getMAKTX());
                                     dnModel.getDETAILS().get(position).setGOLFA_CODE(materialModels.get(selectIndex).getBISMT());
                                     dnModel.getDETAILS().get(position).setFlag(0);
+                                    //2018-10-17 修改多物料选择非第一条数据，出现上传之后出库数量为0问题
+                                    if(dnModel.getDETAILS().get(position).getSERIALS()!=null) {
+                                        for (int g = 0; g < dnModel.getDETAILS().get(position).getSERIALS().size();g++){
+                                            dnModel.getDETAILS().get(position).getSERIALS().get(g).setITEM_NO(materialModels.get(selectIndex).getMATNR());
+                                            dnModel.getDETAILS().get(position).getSERIALS().get(g).setITEM_NAME(materialModels.get(selectIndex).getMAKTX());
+                                            dnModel.getDETAILS().get(position).getSERIALS().get(g).setGOLFA_CODE(materialModels.get(selectIndex).getBISMT());
+                                        }
+                                    }
                                     try {
                                         Boolean isExcecption=false;
                                         for(int k=0;k<dnModel.getDETAILS().size();k++) {
@@ -545,6 +554,8 @@ public class DeliveryScan extends BaseIntentActivity {
                                         if(!isExcecption) {
                                             dnModel.setFlag(0);
                                         }
+                                        //2018-10-17 修改多物料选择非第一条数据，出现上传之后出库数量为0问题
+                                        DbDnInfo.getInstance().InsertDNScanModel(dnModel.getDETAILS().get(position).getSERIALS());
                                         DbDnInfo.getInstance().InsertDNDetailDB(dnModel.getDETAILS().get(position));
                                         DbDnInfo.getInstance().InsertDNModel(dnModel);
                                         dnModel=DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
@@ -556,28 +567,28 @@ public class DeliveryScan extends BaseIntentActivity {
                                 }
                             })
                             .setNegativeButton("取消", null).show();
-                }else{
-                    new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // TODO 自动生成的方法
-                                    DelDNDetailmodel(context, detailModel, dnModel);
-                                    scanqty-=detailModel.getSCAN_QTY();
-                                    DNModel dnModelt=DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
-                                    if(dnModelt==null) {
-                                        dnDetailModels=null;
-                                    }
-                                    else {
-                                        dnModel=dnModelt;
-                                        dnDetailModels = (ArrayList<DNDetailModel>) dnModelt.getDETAILS();
-                                    }
-
-                                    GetDeliveryOrderScanList();
-
-                                }
-                            }).setNegativeButton("取消", null).show();
-                }
+//                }else{
+//                    new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
+//                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    // TODO 自动生成的方法
+//                                    DelDNDetailmodel(context, detailModel, dnModel);
+//                                    scanqty-=detailModel.getSCAN_QTY();
+//                                    DNModel dnModelt=DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
+//                                    if(dnModelt==null) {
+//                                        dnDetailModels=null;
+//                                    }
+//                                    else {
+//                                        dnModel=dnModelt;
+//                                        dnDetailModels = (ArrayList<DNDetailModel>) dnModelt.getDETAILS();
+//                                    }
+//
+//                                    GetDeliveryOrderScanList();
+//
+//                                }
+//                            }).setNegativeButton("取消", null).show();
+//                }
         }else {
             new AlertDialog.Builder(context).setCancelable(false).setTitle("提示").setIcon(android.R.drawable.ic_dialog_info).setMessage("确认删除扫描记录？\n")
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {

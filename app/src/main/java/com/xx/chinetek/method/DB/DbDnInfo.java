@@ -121,6 +121,15 @@ public class DbDnInfo {
             dnScanModelDao.detachAll();
         }
     }
+    //2018-10-17 修改多物料选择非第一条数据，出现上传之后出库数量为0问题
+    public void InsertDNScanModel(List<DNScanModel> dnScanModels) throws Exception{
+        if(dnScanModels!=null ) {
+            for(DNScanModel  dnScanModel:dnScanModels){
+                dnScanModelDao.insertOrReplace(dnScanModel);
+            }
+            dnScanModelDao.detachAll();
+        }
+    }
 
     public void InsertDNDetailDB(ArrayList<DNDetailModel> dnDetailModels) throws Exception{
         if(dnDetailModels!=null && dnDetailModels.size()!=0) {
@@ -397,6 +406,11 @@ public class DbDnInfo {
         }
         cursor.close();
         return qty;
+    }
+
+    public void ChangeDNStatusByDnNo1(){
+        String sql="update DNMODEL set status=1 where status=4";
+        dnModelDao.getDatabase().execSQL(sql);
     }
 
 

@@ -53,6 +53,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -129,10 +130,14 @@ public class Login extends BaseActivity {
         SharePreferUtil.ReadShare(context);
         SharePreferUtil.ReadUserShare(context);
         edtOperater.setText(ParamaterModel.Operater);
-        txtVer.setText(getString(R.string.login_ver)+(updateVersionService.getVersionCode(context)));
+        Double version=updateVersionService.getVersionCode(context);
+        txtVer.setText(getString(R.string.login_ver)+version);
         getPersimmions();
         PlaySound.getInstance();
-
+        if(Paramater.Port==13555){
+            Paramater.Port=8081;
+            SharePreferUtil.SetShare(context);
+        }
     }
 
     @Override
@@ -145,9 +150,8 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         DESUtil.pvkey = "SCGWMS00"; //初始密钥
-       //ParamaterModel.SerialNo = "1177326";
-       // ParamaterModel.SerialNo = "18235522511433";
-        //ParamaterModel.Model = "A15_A5";
+        ParamaterModel.SerialNo = "1318120";//"1177326";
+        ParamaterModel.Model = "A15_A5";
         if (ParamaterModel.SerialNo == null || TextUtils.isEmpty(ParamaterModel.SerialNo)) {
             return;
         }

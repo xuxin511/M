@@ -141,6 +141,14 @@ public class MultiMaterialSelect extends BaseActivity {
                              dnModel.getDETAILS().get(position).setITEM_NAME(materialModels.get(selectIndex).getMAKTX());
                              dnModel.getDETAILS().get(position).setGOLFA_CODE(materialModels.get(selectIndex).getBISMT());
                              dnModel.getDETAILS().get(position).setFlag(0);
+                             //2018-10-17 修改多物料选择非第一条数据，出现上传之后出库数量为0问题
+                             if(dnModel.getDETAILS().get(position).getSERIALS()!=null) {
+                                 for (int g = 0; g < dnModel.getDETAILS().get(position).getSERIALS().size();g++){
+                                     dnModel.getDETAILS().get(position).getSERIALS().get(g).setITEM_NO(materialModels.get(selectIndex).getMATNR());
+                                     dnModel.getDETAILS().get(position).getSERIALS().get(g).setITEM_NAME(materialModels.get(selectIndex).getMAKTX());
+                                     dnModel.getDETAILS().get(position).getSERIALS().get(g).setGOLFA_CODE(materialModels.get(selectIndex).getBISMT());
+                                 }
+                             }
                              BindListview();
                          }
                      })
