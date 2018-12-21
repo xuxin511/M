@@ -23,6 +23,7 @@ import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
@@ -34,6 +35,7 @@ import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
+import com.xx.chinetek.model.DN.LogModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -113,6 +115,9 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         dnModel=DbDnInfo.getInstance().GetLoaclDN(dnno);
         dnModel.__setDaoSession(dnInfo.getDaoSession());
         dndetailmodel=dnModel.getDETAILS().get(position);
+
+        DbLogInfo.getInstance().InsertLog(new LogModel("出单扫描选择行",dndetailmodel.getGOLFA_CODE()+"|"+dndetailmodel.getITEM_NAME(),dnModel.getAGENT_DN_NO()));
+
 //        dnModel = getIntent().getParcelableExtra("DNModel");
 //        dnModel.__setDaoSession(dnInfo.getDaoSession());
 //        dndetailmodel = getIntent().getParcelableExtra("DNdetailModel");
@@ -145,14 +150,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO 自动生成的方法
-                            //删除异常扫描数据
-//                            if(DbDnInfo.getInstance().DeleteRepertItems(dnModel.getAGENT_DN_NO(),dndetailmodel.getLINE_NO(),2)){ //删除数量超出的序列号
-//                               MessageBox.Show(context,getString(R.string.Msg_del_success));
-//                            }
-
-
-
-                            List<DNScanModel> deldnScanModels=new ArrayList<>();
+                           List<DNScanModel> deldnScanModels=new ArrayList<>();
                             boolean isdel=true;
                             for(int i=0;i<DNScanModels.size();i++){
                                 if(exceptionScanbarcodeAdapter.getStates(i)){
@@ -163,23 +161,16 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
                                 }
                             }
                             if(isdel){
-                                    MessageBox.Show(context,getString(R.string.Msg_del_success));
+                                MessageBox.Show(context,getString(R.string.Msg_del_success));
                             }
-
-
-                           // DelAllScanmodel(dndetailmodel,dnModel);
-//                            ArrayList<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetLoaclExceptionDetailsDN(dnModel.getAGENT_DN_NO().toString());
-//                            int index = dnDetailModels.indexOf(dndetailmodel);
-//                            if(index>0){
-//                                dndetailmodel=dnDetailModels.get(index);
-//                                txtScanQty.setText("扫描数量："+dndetailmodel.getSCAN_QTY());
-//                            }
+                            DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描异常删除",dndetailmodel.getGOLFA_CODE()+"|"+dndetailmodel.getITEM_NAME(),dnModel.getAGENT_DN_NO()));
                             GetDeliveryOrderScanList();
                         }
                     }).setNegativeButton("取消", null).show();
         } catch(Exception ex)
         {
             ToastUtil.show(ex.getMessage());
+            DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描删除异常",dndetailmodel.getGOLFA_CODE()+"|"+ex.toString(),dnModel.getAGENT_DN_NO()));
             LogUtil.WriteLog(ExceptionBarcodelist.class,"ExceptionBarcodelist-DelExceptionClick", ex.toString());
         }
 
@@ -220,6 +211,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
             CommonUtil.setEditFocus(edtBarcode);
             return;
         }
+        DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描",dndetailmodel.getGOLFA_CODE()+"|"+code,dnModel.getAGENT_DN_NO()));
 
         BarCodeModel model = new BarCodeModel();
         model.setSerial_Number(code);
@@ -271,6 +263,8 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
      */
     private boolean ShowErrMag(int isErrorStatus) {
         CommonUtil.setEditFocus(edtBarcode);
+        DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描错误信息",dndetailmodel.getGOLFA_CODE()+"|"+isErrorStatus,dnModel.getAGENT_DN_NO()));
+
         if(isErrorStatus==0) {
             MessageBox.Show(context, getString(R.string.Msg_Serial_Scaned));
             return true;

@@ -27,10 +27,12 @@ import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.PlaySound;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.method.Upload.UploadDN;
@@ -46,6 +48,7 @@ import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
+import com.xx.chinetek.model.DN.LogModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -183,6 +186,8 @@ public class DeliveryScan extends BaseIntentActivity {
                 dnModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(dnModel.getCUSTOM_NAME())?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
 //        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
 //        txtCustom.setText(dnModel.getCUSTOM_NAME()==null?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
+        DbLogInfo.getInstance().InsertLog(new LogModel("开始出库扫描",ParamaterModel.DnTypeModel.getDNType()+"|"+txtCustom.getText().toString(),txtDnNo.getText().toString()));
+
         ShowRemark();
         if(ParamaterModel.baseparaModel.getCusBarcodeRule()!=null && ParamaterModel.baseparaModel.getCusBarcodeRule().getUsed()){
             txtBarRule.setVisibility(View.VISIBLE);
@@ -245,10 +250,12 @@ public class DeliveryScan extends BaseIntentActivity {
                 }
             }
             if(!isFlag){
+                DbLogInfo.getInstance().InsertLog(new LogModel("提交出库单报错",getString(R.string.Msg_miltuMaterial),dnModel.getAGENT_DN_NO()));
                 MessageBox.Show(context, getString(R.string.Msg_miltuMaterial));
                 return false;
             }
             if(!canUpload) {
+                DbLogInfo.getInstance().InsertLog(new LogModel("提交出库单报错",getString(R.string.Msg_ScnaQtyError),dnModel.getAGENT_DN_NO()));
                 MessageBox.Show(context,getString(R.string.Msg_ScnaQtyError));
                 return false;
             }
@@ -258,6 +265,7 @@ public class DeliveryScan extends BaseIntentActivity {
                 String dnno=txtDnNo.getText().toString();
                 DNModel model = DbDnInfo.getInstance().GetLoaclDN(dnno);
                 if (model != null) {
+                    DbLogInfo.getInstance().InsertLog(new LogModel("提交出库单报错",getString(R.string.Msg_HaveSameDN),dnModel.getAGENT_DN_NO()));
                     MessageBox.Show(context, getString(R.string.Msg_HaveSameDN));
                     CommonUtil.setEditFocus(txtDnNo);
                     return true;
@@ -352,6 +360,7 @@ public class DeliveryScan extends BaseIntentActivity {
                         String input = et.getText().toString();
                         if (!TextUtils.isEmpty(input)) {
                             dnModel.setREMARK(input);
+                            DbLogInfo.getInstance().InsertLog(new LogModel("出单扫描添加备注",input,dnModel.getAGENT_DN_NO()));
                             try {
                                 ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
                                 dnModels.add(dnModel);
@@ -397,6 +406,7 @@ public class DeliveryScan extends BaseIntentActivity {
             dnModel.setCUS_DN_NO(txtDnNo.getText().toString().trim());
 //            ParamaterModel.DnTypeModel.setSelectRule(spinbarRule.getSelectedItemPosition());
 //            SharePreferUtil.SetDNTypeShare(context,ParamaterModel.DnTypeModel);
+            DbLogInfo.getInstance().InsertLog(new LogModel("出单扫描条码",barcode,dnModel.getAGENT_DN_NO()));
             ArrayList<BarCodeModel> barCodeModels =AnalyticsBarCode.CheckBarcode(barcode,spinbarRule.getSelectedItemPosition());
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItemNames(barCodeModels.get(0).getGolfa_Code());
@@ -430,6 +440,7 @@ public class DeliveryScan extends BaseIntentActivity {
             BarCodeModel Errorbarcode=new BarCodeModel();
             Errorbarcode.setSerial_Number("异常");
             Errorbarcode.setPlace_Code(ex.getMessage());
+            DbLogInfo.getInstance().InsertLog(new LogModel("出单扫描条码异常",barcode+"|"+ex.getMessage(),dnModel.getAGENT_DN_NO()));
             ErrorBarcodes.add(Errorbarcode);
             imgexception.setVisibility(View.VISIBLE);
         }
@@ -531,6 +542,8 @@ public class DeliveryScan extends BaseIntentActivity {
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    DbLogInfo.getInstance().InsertLog(new LogModel("出库扫码-多物料处理",materialModels.get(selectIndex).getBISMT()+"|"+materialModels.get(selectIndex).getMATNR(),dnModel.getAGENT_DN_NO()));
+
                                     dnModel.getDETAILS().get(position).setITEM_NO(materialModels.get(selectIndex).getMATNR());
                                     dnModel.getDETAILS().get(position).setITEM_NAME(materialModels.get(selectIndex).getMAKTX());
                                     dnModel.getDETAILS().get(position).setGOLFA_CODE(materialModels.get(selectIndex).getBISMT());
@@ -624,6 +637,8 @@ public class DeliveryScan extends BaseIntentActivity {
         BarCodeModel Errorbarcode=new BarCodeModel();
         Errorbarcode.setSerial_Number(GolfCode);
         boolean isError=false;
+        DbLogInfo.getInstance().InsertLog(new LogModel("出库扫码-条码错误信息",GolfCode,dnModel.getAGENT_DN_NO()));
+
         if(isErrorStatus==0) {
             isError=true;
             Errorbarcode.setPlace_Code(getString(R.string.Msg_Serial_Scaned));
@@ -690,6 +705,8 @@ public class DeliveryScan extends BaseIntentActivity {
         dnModel.setDN_DATE(new Date());
         dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
         DbDnInfo.getInstance().InsertDNModel(dnModel);
+        DbLogInfo.getInstance().InsertLog(new LogModel("出库扫码-创建自建单据",GsonUtil.parseModelToJson(dnModel),dnModel.getAGENT_DN_NO()));
+
         return SaveScanInfo();
     }
 
@@ -802,6 +819,7 @@ public class DeliveryScan extends BaseIntentActivity {
         int qty = dnDetailModels.get(index).getSCAN_QTY() + 1;
        // dnDetailModels.get(index).setDN_QTY(qty);
         dnDetailModels.get(index).setSCAN_QTY(qty);
+        DbLogInfo.getInstance().InsertLog(new LogModel("出库扫码-添加序列号",GsonUtil.parseModelToJson(dnScanModel),dnModel.getAGENT_DN_NO()));
         DbDnInfo.getInstance().InsertDNDetailDB(dnDetailModels.get(index));
         return -1;
     }

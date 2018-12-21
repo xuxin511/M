@@ -14,6 +14,7 @@ import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
+import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -451,6 +452,7 @@ public class DbDnInfo {
 
     public boolean DeleteSelectItems(DNScanModel dnscan){
         try{
+            DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描删除",dnscan.getGOLFA_CODE()+"|"+dnscan.getSERIAL_NO(),dnscan.getAGENT_DN_NO()));
             return   DELscanbyserial(dnscan.getAGENT_DN_NO(),dnscan.getGOLFA_CODE(),dnscan.getLINE_NO(),dnscan.getSERIAL_NO(),"",dnscan.getSTATUS());
         }catch(Exception ex){
             return false;
@@ -635,6 +637,8 @@ public class DbDnInfo {
     public boolean DelDetailAllNum(String DNNo){
         try{
             String sql="";
+            DbLogInfo.getInstance().InsertLog(new LogModel("删除物料",DNNo,DNNo));
+
             sql="delete from DNDETAIL_MODEL where AGENT__DN__NO='"+DNNo+"'";
             daoSession.getDatabase().execSQL(sql);
             return true;
@@ -651,6 +655,8 @@ public class DbDnInfo {
      */
     public boolean DELscanbyagent(String DNNo){
         try{
+            DbLogInfo.getInstance().InsertLog(new LogModel("删除扫描记录",DNNo,DNNo));
+
             String deletesql="delete from DNSCAN_MODEL " +
                     "where AGENT__DN__NO='"+DNNo+"'";
             daoSession.getDatabase().execSQL(deletesql);
@@ -668,6 +674,8 @@ public class DbDnInfo {
      */
     public boolean DELscanbyagentdetail(DNDetailModel model,String condition){
         try{
+            DbLogInfo.getInstance().InsertLog(new LogModel("删除物料扫描记录",model.getGOLFA_CODE()+"|"+model.getLINE_NO(),model.getAGENT_DN_NO()));
+
             String deletesql="delete from DNSCAN_MODEL " +
                     "where AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and GOLFA__CODE='"+ model.getGOLFA_CODE()+"' and LINE__NO='"+ model.getLINE_NO() +"'";
             daoSession.getDatabase().execSQL(deletesql);
@@ -685,6 +693,7 @@ public class DbDnInfo {
      */
     public boolean DELscanbyserial(String DNNo,String Material,Integer lineno,String serialno,String condition,String status){
         try{
+            DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描删除条码",Material+"|"+serialno,DNNo));
             String deletesql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ DNNo
                     +"' and LINE__NO='"+ lineno +"' and GOLFA__CODE='"+ Material
                     +"'and SERIAL__NO='"+ serialno+"' and status='"+status+"'";
@@ -725,6 +734,8 @@ public class DbDnInfo {
      */
     public boolean DelDNmodels(String DNNo){
         try{
+            DbLogInfo.getInstance().InsertLog(new LogModel("删除单据",DNNo,DNNo));
+
             String sql="";
             sql="delete from DNMODEL where AGENT__DN__NO='"+ DNNo+"'";
             daoSession.getDatabase().execSQL(sql);

@@ -6,10 +6,12 @@ import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
+import com.xx.chinetek.model.DN.LogModel;
 
 import org.json.JSONObject;
 
@@ -38,6 +40,7 @@ public class UploadNewCus {
         params.put("CustFunc", CustFunc);
         params.put("UserInfoJS", user);
         String para = (new JSONObject(params)).toString();
+        DbLogInfo.getInstance().InsertLog(new LogModel("新增客户",para,""));
         LogUtil.WriteLog(SyncBase.class, TAG_UploadCus, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadCus,
                 context.getString(R.string.Dia_UploadCus), context, mHandler, RESULT_UploadCus, null,  URLModel.GetURL().UploadCus, params, null);

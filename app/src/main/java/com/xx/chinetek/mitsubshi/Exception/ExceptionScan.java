@@ -29,6 +29,7 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.AnalyticsBarCode;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.PlaySound;
 import com.xx.chinetek.method.Scan;
 import com.xx.chinetek.method.SharePreferUtil;
@@ -45,6 +46,7 @@ import com.xx.chinetek.model.DBReturnModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
+import com.xx.chinetek.model.DN.LogModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -381,6 +383,8 @@ public class ExceptionScan extends BaseIntentActivity {
                 MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
                 return true;
             }
+            DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-扫描条码",barcode,dnModel.getAGENT_DN_NO()));
+
             ParamaterModel.DnTypeModel.setSelectRule(spinbarRule.getSelectedItemPosition());
             SharePreferUtil.SetDNTypeShare(context,ParamaterModel.DnTypeModel);
             ArrayList<BarCodeModel> barCodeModels = AnalyticsBarCode.CheckBarcode(barcode,ParamaterModel.DnTypeModel.getSelectRule());
@@ -396,6 +400,7 @@ public class ExceptionScan extends BaseIntentActivity {
                 }
             }
         } catch (Exception ex) {
+            DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-扫描条码异常",barcode+"|"+ex.getMessage(),dnModel.getAGENT_DN_NO()));
             PlaySound.getInstance().PlayError();
             BarCodeModel Errorbarcode=new BarCodeModel();
             Errorbarcode.setSerial_Number("异常");
@@ -483,6 +488,8 @@ public class ExceptionScan extends BaseIntentActivity {
         BarCodeModel Errorbarcode=new BarCodeModel();
         Errorbarcode.setSerial_Number(GolfCode);
         boolean isError=false;
+        DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-扫描条码错误",GolfCode+"|"+isErrorStatus,dnModel.getAGENT_DN_NO()));
+
         if(isErrorStatus==0) {
             isError=true;
             Errorbarcode.setPlace_Code(getString(R.string.Msg_Serial_Scaned));

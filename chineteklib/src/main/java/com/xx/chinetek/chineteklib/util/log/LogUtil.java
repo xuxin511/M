@@ -16,4 +16,5 @@ public class LogUtil {
             Log.v("WMSLOG_"+title, info);
         }
     }
+
 }

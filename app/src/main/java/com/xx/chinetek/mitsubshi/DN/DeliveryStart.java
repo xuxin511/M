@@ -34,6 +34,7 @@ import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.GetPartner;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Upload.UploadNewCus;
@@ -42,6 +43,7 @@ import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
+import com.xx.chinetek.model.DN.LogModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -208,7 +210,7 @@ public class DeliveryStart extends BaseActivity {
                 dnModel.setCUSTOM_NO(customModel.getCUSTOMER());
                 dnModel.setCUSTOM_NAME(customModel.getNAME());
                 jumpClass=DeliveryScan.class;
-                break;
+               break;
             case 4:
                 jumpClass=QRScan.class;
                 break;
@@ -216,6 +218,7 @@ public class DeliveryStart extends BaseActivity {
                 jumpClass=DeliveryList.class;
                 break;
         }
+        DbLogInfo.getInstance().InsertLog(new LogModel("出库方式",dnTypeModel.getDNType()+"|"+GsonUtil.parseModelToJson(dnModel),""));
         intent.setClass(context,jumpClass);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);

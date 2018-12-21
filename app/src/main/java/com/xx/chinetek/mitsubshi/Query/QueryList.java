@@ -25,8 +25,10 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
+import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.FileUtils;
 import com.xx.chinetek.method.Upload.UploadFiles;
@@ -38,6 +40,7 @@ import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
+import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -124,6 +127,7 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
     protected void initData() {
         super.initData();
         queryModel=null;
+        DbLogInfo.getInstance().InsertLog(new LogModel("出库查询","",""));
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
         fab.setOnClickListener(new View.OnClickListener() {
@@ -172,6 +176,8 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                     if(DNModels.get(i).getFlag()!=null && DNModels.get(i).getFlag()==1){
                         isFlag=true;
                     }
+                    DbLogInfo.getInstance().InsertLog(new LogModel("出库查询-选择单据", GsonUtil.parseModelToJson(DNModels.get(i)),DNModels.get(i).getAGENT_DN_NO()));
+
                     SelectDnModels.add(0, DNModels.get(i));
                 }
             }
@@ -193,6 +199,8 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
+                                    DbLogInfo.getInstance().InsertLog(new LogModel("出库查询-导出单据", "导出方式："+which,""));
+
                                     ExportDN(SelectDnModels, which);
                                 } catch (Exception ex) {
                                     dialog.dismiss();
@@ -208,6 +216,8 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                             public void onClick(DialogInterface dialog, int which) {
                                 for (DNModel dnModel : deleteDN) {
                                     //  if(dnModel.getSTATUS()!= DNStatusEnum.Sumbit)
+                                    DbLogInfo.getInstance().InsertLog(new LogModel("出库查询-删除单据","删除："+dnModel.getAGENT_DN_NO(),dnModel.getAGENT_DN_NO()));
+
                                     DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
                                 }
                                 BindListView(queryModel);

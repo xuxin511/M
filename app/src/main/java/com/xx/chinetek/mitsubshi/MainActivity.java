@@ -24,6 +24,7 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
@@ -38,6 +39,7 @@ import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.SyncParaModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 import com.xx.chinetek.model.DN.DeletedDN;
+import com.xx.chinetek.model.DN.LogModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -126,6 +128,7 @@ public class MainActivity extends BaseActivity {
             }
         }
 
+        DbLogInfo.getInstance().InsertLog(new LogModel("功能",textView.getText().toString(),""));
         Intent intent = new Intent();
         if (textView.getText().toString().equals(getString(R.string.outputscan))){
             intent.setClass(context, DeliveryStart.class);

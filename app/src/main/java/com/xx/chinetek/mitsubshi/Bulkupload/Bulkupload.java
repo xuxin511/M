@@ -31,6 +31,7 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.OrderFilter;
@@ -38,6 +39,7 @@ import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.DN.MultipleDN;
 import com.xx.chinetek.model.QueryModel;
 
@@ -93,7 +95,8 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
 
     void  AnalysisExceptionDNListJson(String result){
         try {
-            LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, result);
+          //  LogUtil.WriteLog(Bulkupload.class, TAG_ExceptionDNList, result);
+            DbLogInfo.getInstance().InsertLog(new LogModel("批量提交结果",result,""));
             ReturnMsgModelList<MultipleDN> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<MultipleDN>>() {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
@@ -245,7 +248,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
     protected void initData() {
         super.initData();
 
-        DbDnInfo.getInstance().ChangeDNStatusByDnNo1();
+      //  DbDnInfo.getInstance().ChangeDNStatusByDnNo1();
         queryModel=null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,6 +264,7 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                 GetbulkuploadList(queryModel);
             }
         });
+        DbLogInfo.getInstance().InsertLog(new LogModel("批量提交","",""));
 
         edtDNNoFuilter.addTextChangedListener(bululoadTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
@@ -374,6 +378,8 @@ public class Bulkupload extends BaseActivity implements SwipeRefreshLayout.OnRef
                         isUpload=false;
                         break;
                     }
+                    DbLogInfo.getInstance().InsertLog(new LogModel("批量提交-选择单据",GsonUtil.parseModelToJson(postmodel),postmodel.getAGENT_DN_NO()));
+
                     postmodels.add(postmodel);
                 }
             }

@@ -37,6 +37,7 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.DB.DbManager;
 import com.xx.chinetek.method.DB.MigrationHelper;
 import com.xx.chinetek.method.PlaySound;
@@ -45,6 +46,7 @@ import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
 import com.xx.chinetek.model.Base.UserInfoModel;
+import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.service.LocationService;
 
 import org.json.JSONObject;
@@ -134,10 +136,12 @@ public class Login extends BaseActivity {
         txtVer.setText(getString(R.string.login_ver)+version);
         getPersimmions();
         PlaySound.getInstance();
-        if(Paramater.Port==13555){
-            Paramater.Port=8081;
-            SharePreferUtil.SetShare(context);
-        }
+//        if(Paramater.Port==13555){
+//            Paramater.Port=8081;
+//            SharePreferUtil.SetShare(context);
+//        }
+
+
     }
 
     @Override
@@ -150,8 +154,8 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         DESUtil.pvkey = "SCGWMS00"; //初始密钥
-        ParamaterModel.SerialNo = "1318120";//"1177326";
-        ParamaterModel.Model = "A15_A5";
+//        ParamaterModel.SerialNo = "1177325";//"1177326";
+//        ParamaterModel.Model = "A15_A5";
         if (ParamaterModel.SerialNo == null || TextUtils.isEmpty(ParamaterModel.SerialNo)) {
             return;
         }
@@ -216,6 +220,7 @@ public class Login extends BaseActivity {
         //验证登陆
         final Map<String, String> params = new HashMap<String, String>();
         String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
+        DbLogInfo.getInstance().InsertLog(new LogModel("登陆",user,""));
         params.put("UserInfoJS", user);
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_Login, para);

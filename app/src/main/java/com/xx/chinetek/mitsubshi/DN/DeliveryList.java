@@ -30,6 +30,7 @@ import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.OrderFilter;
@@ -38,6 +39,7 @@ import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
 
 import org.xutils.view.annotation.ContentView;
@@ -267,6 +269,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
+                        DbLogInfo.getInstance().InsertLog(new LogModel("出库单据选择","删除单据",Model.getAGENT_DN_NO()));
                         DelDNmodel(context,Model);
                         DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
                         BindListView();
@@ -278,6 +281,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
 
     private void StartScan(DNModel dnModel) {
+        DbLogInfo.getInstance().InsertLog(new LogModel("出库单据选择",ParamaterModel.DnTypeModel.getDNType()+"|"+GsonUtil.parseModelToJson(dnModel),dnModel.getAGENT_DN_NO()));
         Intent intent=new Intent(context,DeliveryScan.class);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
@@ -344,6 +348,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
            for(int i=0;i<DNfiles.length;i++) {
                DNfiles[i].delete();
            }
+           DbLogInfo.getInstance().InsertLog(new LogModel("导入出库单",ParamaterModel.DnTypeModel.getDNType()+"",""));
            switch (ParamaterModel.DnTypeModel.getDNType()) {
                case 0://MAPS
                    BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);
