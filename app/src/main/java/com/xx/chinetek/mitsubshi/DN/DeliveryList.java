@@ -29,6 +29,8 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.CreateDnNo;
+import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.Sync.SyncDN;
@@ -36,11 +38,14 @@ import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.OrderFilter;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
+import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
+import com.xx.chinetek.model.Third.ThirdDNDetailModel;
+import com.xx.chinetek.model.Third.ThirdDNModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -49,13 +54,19 @@ import org.xutils.x;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_GetVoucherDetail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_GetVoucherHead;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncFTP;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncUSB;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_GetVoucherDetail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SGetVoucherHead;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDnDetail;
 
@@ -78,6 +89,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     DeliveryListItemAdapter deliveryListItemAdapter;
     ArrayList<DNModel> DNModels; //所有未完成出库单
     LoadingDialog dialog;
+    String dnDate;
 
     @Override
     public void onHandleMessage(Message msg) {
@@ -86,8 +98,14 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                 case RESULT_SyncDn:
                     AnalysisSyncMAPSDNJson((String) msg.obj);
                     break;
+                case RESULT_GetVoucherHead:
+                    AnalysisSyncInterFaceJson((String) msg.obj);
+                    break;
                 case RESULT_SyncDnDetail:
                     AnalysisSyncMAPSDNDetailJson((String) msg.obj);
+                    break;
+                case RESULT_GetVoucherDetail:
+                    AnalysisetVoucherDetailJson((String) msg.obj);
                     break;
                 case RESULT_SyncUSB:
                 case RESULT_SyncMail:
@@ -144,6 +162,87 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     }
 
 
+    public void AnalysisSyncInterFaceJson(String result) throws Exception {
+        LogUtil.WriteLog(DeliveryList.class, TAG_SGetVoucherHead, result);
+        if(result.equals("[]")){
+            MessageBox.Show(context,getString(R.string.Msg_No_DNno));
+            return;
+        }
+        List<ThirdDNModel> dnModels = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<List<ThirdDNModel>>() {
+        }.getType());
+
+            ArrayList<DNModel> SelectdnModels=new ArrayList<>();
+            int size=dnModels.size();
+            for(int i=0;i<size;i++) {
+                if (DbDnInfo.getInstance().CheckAgentDNInDB(dnModels.get(i).getVoucherNo())) {
+                    DNModel dnModel = new DNModel();
+                    CreateDnNo.GetDnNo(context, dnModel);
+                    dnModel.setCUS_DN_NO(dnModels.get(i).getVoucherNo());
+                    dnModel.setCUSTOM_NO(dnModels.get(i).getCustomNo());
+                    dnModel.setCUSTOM_NAME(dnModels.get(i).getCustomName());
+                    dnModel.setDN_QTY(dnModels.get(i).getOrderNum() - dnModels.get(i).getScanNum());
+                    dnModel.setDN_DATE(CommonUtil.dateStrConvertDate(dnModels.get(i).getCreateTime(), null));
+                    dnModel.setDN_SOURCE(ParamaterModel.DnTypeModel.getDNType());
+                    dnModel.setSTATUS(DNStatusEnum.ready);
+                    dnModel.setDN_STATUS("AC");
+                    dnModel.setLEVEL_2_AGENT_NO(ParamaterModel.PartenerID);
+                    dnModel.setLEVEL_2_AGENT_NAME(ParamaterModel.PartenerName);
+                    dnModel.setOPER_DATE(CommonUtil.dateStrConvertDate(dnModels.get(i).getModifyTime(), null));
+                    SelectdnModels.add(dnModel);
+                }
+            }
+
+
+            if(SelectdnModels.size()!=0) {
+                Intent intent = new Intent(context, DNsync.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("DNModels", SelectdnModels);
+                intent.putExtras(bundle);
+                startActivityLeft(intent);
+            }
+
+    }
+
+
+    private void AnalysisetVoucherDetailJson(String result) throws Exception {
+        LogUtil.WriteLog(DeliveryList.class, TAG_GetVoucherDetail, result);
+        if(result.equals("[]")){
+            MessageBox.Show(context,getString(R.string.Msg_No_DNDetail));
+            return;
+        }
+        List<ThirdDNDetailModel> dnDetailModels = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<List<ThirdDNDetailModel>>() {
+        }.getType());
+        int size=dnDetailModels.size();
+        //插入数据
+        ArrayList<DNDetailModel> insertDetailModels=new ArrayList<>();
+        for(int i=0;i<size;i++) {
+            DNDetailModel dnDetailModel=new DNDetailModel();
+            dnDetailModel.setAGENT_DN_NO(dnModel.getAGENT_DN_NO());
+            dnDetailModel.setLINE_NO(dnDetailModels.get(i).getRowNum());
+            List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItems("", dnDetailModels.get(i).getType(), "");
+            if (materialModels!=null && materialModels.size() ==0)
+                dnDetailModel.setITEM_NO(dnDetailModels.get(i).getTypeNo());
+            else {
+                dnDetailModel.setITEM_NO(materialModels.get(0).getMATNR());
+                dnDetailModel.setGOLFA_CODE(materialModels.get(0).getBISMT());
+            }
+            dnDetailModel.setITEM_NAME(dnDetailModels.get(i).getType());
+            dnDetailModel.setDN_QTY(dnDetailModels.get(i).getOrderNum()-dnDetailModels.get(i).getScanNum());
+            dnDetailModel.setSCAN_QTY(dnDetailModels.get(i).getScanNum());
+            dnDetailModel.setDETAIL_STATUS("AC");
+            dnDetailModel.setSTATUS(0);
+            dnDetailModel.setOPER_DATE(new Date());
+            dnDetailModel.setFlag(materialModels!=null && materialModels.size() > 1?1:0);
+            insertDetailModels.add(dnDetailModel);
+        }
+
+        DbDnInfo.getInstance().InsertDNDetailDB(insertDetailModels);
+        DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.download);
+        dnModel.setSTATUS(DNStatusEnum.download);
+        StartScan(dnModel);
+
+    }
+
     private void AnalysisSyncMAPSDNDetailJson(String result) throws Exception {
         LogUtil.WriteLog(DeliveryList.class, TAG_SyncDnDetail, result);
         ReturnMsgModelList<DNDetailModel> returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ReturnMsgModelList<DNDetailModel>>() {
@@ -184,6 +283,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     protected void initData() {
         super.initData();
         queryModel=null;
+        dnDate=getIntent().getStringExtra("DNDate");
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,6 +351,11 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
        // ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
         if(dnModel.getDN_SOURCE()==0){
             SyncDN.SyncMAPSDetail(dnModel.getAGENT_DN_NO(),mHandler);
+        }else if(dnModel.getDN_SOURCE()==5){
+            if(dnModel.getDETAILS()!=null && dnModel.getDETAILS().size()!=0)
+                StartScan(dnModel);
+            else
+                SyncDN.SyncInterFaceDetail(dnModel.getCUS_DN_NO(),mHandler);
         }else {
             StartScan(dnModel);
         }
@@ -368,17 +473,22 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                    dialog.show();
                    SyncDN.SyncFtp(mHandler);
                    break;
-               case 4://USB
-                   BaseApplication.DialogShowText = getString(R.string.Dia_SyncUSB);
-                   dialog = new LoadingDialog(context);
-                   dialog.show();
-                   android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, 1);
-                   mHandler.sendMessage(msg);
-                   break;
+//               case 4://USB
+//                   BaseApplication.DialogShowText = getString(R.string.Dia_SyncUSB);
+//                   dialog = new LoadingDialog(context);
+//                   dialog.show();
+//                   android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, 1);
+//                   mHandler.sendMessage(msg);
+//                   break;
                case 3:
-               case 5:
                    DNModels = DbDnInfo.getInstance().GetLoaclDN(queryModel);
                    BindListView();
+                   break;
+               case 5:
+                   BaseApplication.DialogShowText = getString(R.string.Dia_SyncInterface);
+                   dialog = new LoadingDialog(context);
+                   dialog.show();
+                   SyncDN.SyncInterface(dnDate,mHandler);
                    break;
            }
        }catch (Exception ex){

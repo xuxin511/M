@@ -341,7 +341,7 @@ public class ExceptionScan extends BaseIntentActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // TODO 自动生成的方法
-                                DelDNDetailmodel(context, detailModel, dnModel);
+                                DelDNDetailmodel(mHandler,context, detailModel, dnModel);
                                 GetDeliveryOrderScanList();
 
                             }
@@ -353,7 +353,7 @@ public class ExceptionScan extends BaseIntentActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO 自动生成的方法
-                            DelDNDetailmodel(context, detailModel, dnModel);
+                            DelDNDetailmodel(mHandler,context, detailModel, dnModel);
                             GetDeliveryOrderScanList();
 
                         }
@@ -393,7 +393,7 @@ public class ExceptionScan extends BaseIntentActivity {
                 if (dnModel.getDN_SOURCE() == 3) { //自建
                     return CreateNewDN(barCodeModels,materialModels);
                 } else {
-                    int isErrorStatus= Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
+                    int isErrorStatus= Scan.ScanBarccode(mHandler,dnInfo,dnModel,barCodeModels);
                     if (ShowErrMag(isErrorStatus,barCodeModels.get(0))) return true;
                     return SaveScanInfo();
 

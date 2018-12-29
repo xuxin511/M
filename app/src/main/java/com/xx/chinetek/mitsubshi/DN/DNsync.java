@@ -157,7 +157,7 @@ public class DNsync extends BaseActivity{
         DbDnInfo dnInfo=DbDnInfo.getInstance();
         for(int i=0;i<size;i++) {
             tempdnmodels.get(i).__setDaoSession(dnInfo.getDaoSession());
-            String dnNo= tempdnmodels.get(i).getDN_SOURCE()==3? tempdnmodels.get(i).getCUS_DN_NO(): tempdnmodels.get(i).getAGENT_DN_NO();
+            String dnNo= tempdnmodels.get(i).getDN_SOURCE()==3 || tempdnmodels.get(i).getDN_SOURCE()==5? tempdnmodels.get(i).getCUS_DN_NO(): tempdnmodels.get(i).getAGENT_DN_NO();
             DNModel dnModel = DbDnInfo.getInstance().GetLoaclDN(dnNo);
             if(dnModel!=null) {
                 tempdnmodels.get(i).setSTATUS( tempdnmodels.get(i).getSTATUS()==-1? tempdnmodels.get(i).getSTATUS():dnModel.getSTATUS());
@@ -173,7 +173,7 @@ public class DNsync extends BaseActivity{
 
                     }
                 }
-                if(tempdnmodels.get(i).getDN_SOURCE()==3 || tempdnmodels.get(i).getSTATUS()== DNStatusEnum.exeption) {
+                if(tempdnmodels.get(i).getDN_SOURCE()==3||tempdnmodels.get(i).getDN_SOURCE()==5 || tempdnmodels.get(i).getSTATUS()== DNStatusEnum.exeption) {
                     DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
                 }
             }

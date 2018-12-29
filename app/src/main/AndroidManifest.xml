@@ -75,7 +75,10 @@
         <activity android:name=".Setting_BarcodeRules" />
         <activity android:name=".Query.MaterialQuery" />
         <activity android:name=".Setting_ThirdInterface" />
-        <activity android:name=".OrderFilter"  android:theme="@style/AppThemeFilter"/>
+        <activity
+            android:name=".OrderFilter"
+            android:theme="@style/AppThemeFilter" />
+        <activity android:name=".DN.AgentDNList"></activity>
     </application>
 
 </manifest>

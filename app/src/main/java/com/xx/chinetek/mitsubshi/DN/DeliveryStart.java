@@ -1,6 +1,7 @@
 package com.xx.chinetek.mitsubshi.DN;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -50,7 +52,9 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_DeleteCus;
@@ -69,6 +73,10 @@ public class DeliveryStart extends BaseActivity {
     Spinner spinCustom;
     @ViewInject(R.id.txt_contentName)
     TextView txtContentName;
+    @ViewInject(R.id.txtOrderTime)
+    TextView txtOrderTime;
+    @ViewInject(R.id.edt_OrderTime)
+    TextView edtOrderTime;
     @ViewInject(R.id.edt_ContentText)
     EditText edtContentText;
     @ViewInject(R.id.lsv_Partner)
@@ -114,6 +122,9 @@ public class DeliveryStart extends BaseActivity {
         super.initData();
         dnTypeModel= SharePreferUtil.ReadDNTypeShare(context);
         BindSpinner();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+        Calendar c = Calendar.getInstance();
+        edtOrderTime.setText(sf.format(c.getTime()));
         if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null){
             spinsendType.setSelection(dnTypeModel.getDNType());
             spinCustom.setSelection(dnTypeModel.getSelectCusType());
@@ -139,9 +150,22 @@ public class DeliveryStart extends BaseActivity {
 
     }
 
+    @Event(R.id.edt_OrderTime)
+    private  void edtOrderTimeClick(View view){
+        Calendar calendar = Calendar.getInstance();
+        AlertDialog dialog=new DatePickerDialog(context, 0, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                String time=year+String.format("%02d", month+1)+String.format("%02d", day);
+                edtOrderTime.setText(time);
+            }
+        },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+        dialog.show();
+    }
+
     private void start() {
         try {
-            if (dnTypeModel.getDNType() == 3) { //自建方式需要确认发货客户
+            if (dnTypeModel.getDNType() == 3) { //自建，方式需要确认发货客户
                 final String code = edtContentText.getText().toString().trim();
                 if (TextUtils.isEmpty(code)) {
                     MessageBox.Show(context, getString(R.string.Msg_No_CusCode));
@@ -222,6 +246,7 @@ public class DeliveryStart extends BaseActivity {
         intent.setClass(context,jumpClass);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
+        bundle.putString("DNDate",edtOrderTime.getText().toString());
         intent.putExtras(bundle);
         startActivityLeft(intent);
     }

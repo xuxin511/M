@@ -25,20 +25,22 @@ import static com.xx.chinetek.chineteklib.base.BaseApplication.getRequestQueue;
  * Created by GHOST on 2017/3/13.
  */
 
-public class RequestHandler {
+public class RequestThirdHandler {
 
 
-    private static void addRequest(
+    private static void addThirdRequest(
             int method, String tag,
             final Handler handler, final int what,
             final Bundle bundle, String url, final Map<String, String> params, final Map<String, String> header,
             final NetWorkRequestListener listener) {
+        String para=null;
         if (method == Request.Method.GET) {
             url = NetworkHelper.getUrlWithParams(url, params);
+        }else {
+            para = (new org.json.JSONObject(params)).toString();
         }
         listener.onPreRequest();
-        String para = (new org.json.JSONObject(params)).toString();
-        JsonStringRequest JsonRequest = new JsonStringRequest(method, url, para, new Response.Listener<String>() {
+        JsonThirdStringRequest JsonRequest = new JsonThirdStringRequest(method, url, para, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 onVolleyResponse(response, handler, what, bundle);
@@ -106,10 +108,10 @@ public class RequestHandler {
     }
 
     private static void onVolleyResponse(String response, Handler handler, int what, Bundle bundle) {
-       if(!response.contains("HeaderStatus")) {
-           response=response.replace("\"","");
-           response = "{\"HeaderStatus\":\"E\",\"Message\":\"" + response + "\",\"MaterialDoc\":null,\"TaskNo\":null}";
-       }
+//       if(!response.contains("HeaderStatus")) {
+//           response=response.replace("\"","");
+//           response = "{\"HeaderStatus\":\"E\",\"Message\":\"" + response + "\",\"MaterialDoc\":null,\"TaskNo\":null}";
+//       }
         Message msg = handler.obtainMessage(what, response);
         msg.setData(bundle);
         handler.sendMessage(msg);
@@ -125,16 +127,10 @@ public class RequestHandler {
      * @param params  请求参数
      * @param header  请求头
      */
-    public static void addRequest(
+    public static void addThirdRequest(
             final int method, final String tag, final Handler handler, final int what, final Bundle bundle,
             final String url, final Map<String, String> params, final Map<String, String> header) {
-        addRequest(method, tag, handler, what, bundle, url, params, header, new DefaultRequestListener() {
-//            @Override
-//            public boolean retry() {
-//                addRequest(method, tag, handler, what, bundle, url, params, header,
-//                        retryTimer++ >= MAX_RETRY_TIME ? new DefaultRequestListener() : this);
-//                return true;
-//            }
+        addThirdRequest(method, tag, handler, what, bundle, url, params, header, new DefaultRequestListener() {
         });
     }
 
@@ -142,26 +138,20 @@ public class RequestHandler {
             final int method, final String tag, final Handler handler, final int what, final Bundle bundle,
             final String url, final String params, final Map<String, String> header) {
         addThirdRequest(method, tag, handler, what, bundle, url, params, header, new DefaultRequestListener() {
-//            @Override
-//            public boolean retry() {
-//                addRequest(method, tag, handler, what, bundle, url, params, header,
-//                        retryTimer++ >= MAX_RETRY_TIME ? new DefaultRequestListener() : this);
-//                return true;
-//            }
         });
     }
 
-    public static void addRequestWithDialog(
+    public static void addRequestThirdWithDialog(
+            final int method, final String tag, final String LoadText, Context context, final Handler handler, final int what, final Bundle bundle,
+            final String url, final String params, final Map<String, String> header) {
+        addThirdRequest(method, tag, handler, what, bundle, url, params, header, new DefaultDialogRequestListener(context, LoadText) {
+        });
+    }
+
+    public static void addRequestThirdWithDialog(
             final int method, final String tag, final String LoadText, Context context, final Handler handler, final int what, final Bundle bundle,
             final String url, final Map<String, String> params, final Map<String, String> header) {
-        addRequest(method, tag, handler, what, bundle, url, params, header, new DefaultDialogRequestListener(context, LoadText) {
-//            @Override
-//            public boolean retry() {
-////                addRequest(method, tag, handler, what, bundle, url, params, header,
-////                        retryTimer++ >= MAX_RETRY_TIME ? new DefaultDialogRequestListener(context, LoadText) : this);
-////                return true;
-//                return false;
-//            }
+        addThirdRequest(method, tag, handler, what, bundle, url, params, header, new DefaultDialogRequestListener(context, LoadText) {
         });
     }
 

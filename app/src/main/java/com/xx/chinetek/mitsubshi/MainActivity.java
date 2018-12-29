@@ -40,6 +40,7 @@ import com.xx.chinetek.model.Base.SyncParaModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
 import com.xx.chinetek.model.DN.DeletedDN;
 import com.xx.chinetek.model.DN.LogModel;
+import com.xx.chinetek.model.Third.ThirdReturnModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -57,10 +58,12 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncPara;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadCusToAgent;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncPara;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadCusToAgent;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
@@ -80,6 +83,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case RESULT_SyncCus:
                 AnalysisSyncCustomJson((String) msg.obj);
+                break;
+            case RESULT_UploadCusToAgent:
+                AnalysisUploadCusToAgentJson((String) msg.obj);
                 break;
             case RESULT_SyncPara:
                 AnalysisSyncParamaterJson((String) msg.obj);
@@ -222,8 +228,8 @@ public class MainActivity extends BaseActivity {
                 ParamaterModel.CustomSyncTime=returnMsgModel.getMessage();;
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare("CustomSyncTime",ParamaterModel.CustomSyncTime);
-                //同步参数
-                SyncBase.getInstance().SyncPara(mHandler);
+
+                SyncBase.getInstance().UploadCusToAgent(mHandler,customModels);
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
@@ -233,6 +239,24 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
+    void AnalysisUploadCusToAgentJson(String result) {
+        LogUtil.WriteLog(MainActivity.class, TAG_UploadCusToAgent, result);
+        try {
+            ThirdReturnModel returnMsgModel = GsonUtil.getGsonUtil().fromJson(result, new TypeToken<ThirdReturnModel>() {
+            }.getType());
+            if (returnMsgModel.getSuccess() == 1) {
+                //同步参数
+                SyncBase.getInstance().SyncPara(mHandler);
+            } else {
+                MessageBox.Show(context, returnMsgModel.getMessage());
+            }
+        } catch (Exception ex) {
+            ToastUtil.show(ex.getMessage());
+            LogUtil.WriteLog(MainActivity.class, "MainActivity-UploadThirdCus", ex.toString());
+        }
+
+    }
     /**
      * 同步参数
      * @param result

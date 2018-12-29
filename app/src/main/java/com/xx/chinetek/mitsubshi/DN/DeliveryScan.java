@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.xx.chinetek.adapter.DN.DeliveryScanItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
@@ -35,9 +36,12 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.PlaySound;
 import com.xx.chinetek.method.Scan;
+import com.xx.chinetek.method.Sync.SyncBase;
+import com.xx.chinetek.method.Upload.UploadAgentDN;
 import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionBarcodelist;
+import com.xx.chinetek.mitsubshi.MainActivity;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.BarcodeRule;
@@ -49,6 +53,7 @@ import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
 import com.xx.chinetek.model.DN.LogModel;
+import com.xx.chinetek.model.Third.ThirdReturnModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -60,6 +65,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNDetailmodel;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_DeleteQRScan;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SubmitQRScan;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadDN;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_ScanBarcode;
 
@@ -143,17 +150,28 @@ public class DeliveryScan extends BaseIntentActivity {
                 LogUtil.WriteLog(DeliveryScan.class, TAG_ScanBarcode, (String) msg.obj);
                 try {
                     CheckScanBarcode((String) msg.obj);
-//                    count++;
-//                    Log.d("scancount",count+"");
                 }catch (Exception ex){
                     ToastUtil.show(ex.getMessage());
                     LogUtil.WriteLog(DeliveryScan.class,"DeliveryScan-CheckScanBarcode", ex.toString());
                 }
                 break;
+            case RESULT_SubmitQRScan:
+            case RESULT_DeleteQRScan:
+               try {
+                    ThirdReturnModel returnMsgModel = GsonUtil.getGsonUtil().fromJson((String) msg.obj, new TypeToken<ThirdReturnModel>() {
+                    }.getType());
+                    if (returnMsgModel.getSuccess() != 1) {
+                        MessageBox.Show(context, returnMsgModel.getMessage());
+                    }
+                } catch (Exception ex) {
+                    ToastUtil.show(ex.getMessage());
+                    LogUtil.WriteLog(MainActivity.class, "MainActivity-UploadThirdCus", ex.toString());
+                }
+                break;
             case NetworkError.NET_ERROR_CUSTOM:
                 String result=(String)msg.obj;
                 if(result.contains("NETERROR")) {
-                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
+                    DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.download);
                 }
                 ToastUtil.show("获取请求失败_____" + result);
                 break;
@@ -179,8 +197,8 @@ public class DeliveryScan extends BaseIntentActivity {
         ErrorBarcodes=new ArrayList<>();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
-        txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
-        if(ParamaterModel.DnTypeModel.getDNType()==3)
+        txtDnNo.setText(ParamaterModel.DnTypeModel.getDNType()==3 ||   (dnModel.getDN_SOURCE()!=null&& dnModel.getDN_SOURCE()==5)?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
+        if(ParamaterModel.DnTypeModel.getDNType()==3 ||   (dnModel.getDN_SOURCE()!=null&& dnModel.getDN_SOURCE()==5))
             CBCloseDN.setVisibility(View.GONE);
         txtCustom.setText(ParamaterModel.DnTypeModel.getDNType()==3 && ParamaterModel.DnTypeModel.getCustomModel()!=null?ParamaterModel.DnTypeModel.getCustomModel().getNAME():
                 dnModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(dnModel.getCUSTOM_NAME())?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
@@ -272,7 +290,7 @@ public class DeliveryScan extends BaseIntentActivity {
                 }
                 dnModel.setSTATUS(DNStatusEnum.download);
                 DbDnInfo.getInstance().ChangeDNNoByRepertDnNo(dnno,dnModel);
-                if(dnModel.getDN_SOURCE()==3)
+                if(dnModel.getDN_SOURCE()==3 ||dnModel.getDN_SOURCE()==5)
                     dnModel.setCUS_DN_NO(dnno);
                 else {
                     dnModel.setCUS_DN_NO(dnno);
@@ -295,16 +313,21 @@ public class DeliveryScan extends BaseIntentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        dnDetailModels= DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
-        qty=0;
-        scanqty=0;
-        if(dnDetailModels!=null&&dnDetailModels.size()>=1){
-            for(int i=0;i<dnDetailModels.size();i++){
-                qty +=dnDetailModels.get(i).getDN_QTY()==null?0:dnDetailModels.get(i).getDN_QTY();
-                scanqty+=dnDetailModels.get(i).getSCAN_QTY()==null?0:dnDetailModels.get(i).getSCAN_QTY();
+        try {
+            dnDetailModels = DbDnInfo.getInstance().GetDNDetailByDNNo(dnModel.getAGENT_DN_NO());
+            DbDnInfo.getInstance().InsertDNDetailDB(dnDetailModels);
+            qty = 0;
+            scanqty = 0;
+            if (dnDetailModels != null && dnDetailModels.size() >= 1) {
+                for (int i = 0; i < dnDetailModels.size(); i++) {
+                    qty += dnDetailModels.get(i).getDN_QTY() == null ? 0 : dnDetailModels.get(i).getDN_QTY();
+                    scanqty += dnDetailModels.get(i).getSCAN_QTY() == null ? 0 : dnDetailModels.get(i).getSCAN_QTY();
+                }
             }
+            GetDeliveryOrderScanList();
+        }catch (Exception ex){
+
         }
-        GetDeliveryOrderScanList();
     }
 
 
@@ -418,19 +441,25 @@ public class DeliveryScan extends BaseIntentActivity {
                     txtItemName.setText(materialModels.get(0).getMAKTX());
                     txtScanQty.setText(getString(R.string.scanQty) + barCodeModels.size());
                 }
-//                MaterialModel materialModels = DbBaseInfo.getInstance().GetItemName(barCodeModels.get(0).getGolfa_Code());
-//                if(materialModels!=null ) {
-//                    txtItemNo.setText(materialModels.getMATNR());
-//                    txtItemName.setText(materialModels.getMAKTX());
-//                    txtScanQty.setText(getString(R.string.scanQty) + barCodeModels.size());
-//                }
                 if (ParamaterModel.DnTypeModel.getDNType() == 3) { //自建
+                    //非三菱物料自建不允许扫描
+                    if(barCodeModels.get(0).getItemName()==null || barCodeModels.get(0).getItemNo()==null)
+                        throw new Exception("自建单据无法识别非三菱物料！");
                     return CreateNewDN(barCodeModels,materialModels);
                 } else {
-                    int isErrorStatus= Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
-                    dnDetailModels=(ArrayList<DNDetailModel>) dnModel.getDETAILS();
-                    if (ShowErrMag(isErrorStatus,barCodeModels.get(0))) return true;
+                    dnModel.setREMARK(txtRemark.getText().toString());
+                   if(dnModel.getDN_SOURCE() == 5 && materialModels==null) {//代理商
+                       int isErrorStatus = Scan.ScanAgentBarccode(mHandler,dnInfo, dnModel, barCodeModels);
+                       dnDetailModels = (ArrayList<DNDetailModel>) dnModel.getDETAILS();
+                       if (ShowErrMag(isErrorStatus, barCodeModels.get(0))) return true;
+                   }
+                   else {
+                       int isErrorStatus = Scan.ScanBarccode(mHandler,dnInfo, dnModel, barCodeModels);
+                       dnDetailModels = (ArrayList<DNDetailModel>) dnModel.getDETAILS();
+                       if (ShowErrMag(isErrorStatus, barCodeModels.get(0))) return true;
+                   }
                     scanqty+=barCodeModels.size();
+
                     return SaveScanInfo();
 
                 }
@@ -456,6 +485,8 @@ public class DeliveryScan extends BaseIntentActivity {
             return;
         }
 
+        if(dnModel.getDN_SOURCE()==5 && dnModel.getDETAILS().get(position).getGOLFA_CODE()==null)
+            return;
         Intent intent=new Intent(context,ExceptionBarcodelist.class);
         intent.putExtra("position",position);
         intent.putExtra("DNno",dnModel.getAGENT_DN_NO());
@@ -608,7 +639,7 @@ public class DeliveryScan extends BaseIntentActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO 自动生成的方法
-                            DelDNDetailmodel(context, detailModel, dnModel);
+                            DelDNDetailmodel(mHandler,context, detailModel, dnModel);
                             scanqty-=detailModel.getSCAN_QTY();
                             DNModel dnModelt=DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
                             if(dnModelt==null) {
@@ -679,6 +710,8 @@ public class DeliveryScan extends BaseIntentActivity {
        // dnModel.resetDETAILS();
        // List<DNDetailModel> dnDetailModels =dnModel.getDETAILS();
         for (BarCodeModel barCodeModel : barCodeModels) {
+
+
             DNDetailModel dnDetailModel = new DNDetailModel();
             //判断是否存在物料
             int index = Scan.getIndex(dnModel,dnDetailModels, barCodeModel, dnDetailModel);

@@ -263,6 +263,12 @@ public class DbDnInfo {
           return  count==0;
     }
 
+    public Boolean CheckAgentDNInDB(String Dnno){
+        long count=dnModelDao.queryBuilder().where(DNModelDao.Properties.CUS_DN_NO.eq(Dnno),
+                DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().count();
+        return  count==0;
+    }
+
     /**
      * 根据单号、行号获取DN明细
      * @return
@@ -517,7 +523,8 @@ public class DbDnInfo {
     public  ArrayList<DNScanModel> GetLoaclDNScanModelDN(String DNNo, String Material,Integer lineno){
         ArrayList<DNScanModel> DNScanModels=new ArrayList<>();
         DNScanModels=(ArrayList<DNScanModel>) dnScanModelDao.queryBuilder().distinct()
-                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.LINE_NO.eq(lineno)).list();
+                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.LINE_NO.eq(lineno))
+                .whereOr(DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.ITEM_NAME.eq(Material)).list();
         return DNScanModels;
     }
 
@@ -527,8 +534,13 @@ public class DbDnInfo {
      */
     public  Integer GetLoaclDNScanModelDNNum(String DNNo,String Material,Integer lineno){
         ArrayList<DNScanModel> DNScanModels=new ArrayList<>();
-        DNScanModels=(ArrayList<DNScanModel>) dnScanModelDao.queryBuilder().distinct()
-                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.LINE_NO.eq(lineno)).list();
+        QueryBuilder query=dnScanModelDao.queryBuilder().distinct()
+                   .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.LINE_NO.eq(lineno));
+        if(Material!=null && !TextUtils.isEmpty(Material))
+            query.where(DNScanModelDao.Properties.GOLFA_CODE.eq(Material));
+        DNScanModels=(ArrayList<DNScanModel>)query.list();
+//                DNScanModels=(ArrayList<DNScanModel>) dnScanModelDao.queryBuilder().distinct()
+//                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.LINE_NO.eq(lineno)).list();
         return DNScanModels.size();
     }
 
@@ -594,10 +606,12 @@ public class DbDnInfo {
         try{
             String sql="";
             if(DNSOURCE==3&&Number==0){
-                sql="delete from DNDETAIL_MODEL where AGENT__DN__NO='"+DNNo+"' and GOLFA__CODE='"+Material+"' and LINE__NO='"+lineno+"'";
+                sql="delete from DNDETAIL_MODEL where AGENT__DN__NO='"+DNNo+"' and LINE__NO='"+lineno+"'";
             }else{
-                sql="update DNDETAIL_MODEL set SCAN__QTY= '"+Number+"' where AGENT__DN__NO='"+DNNo+"' and GOLFA__CODE='"+Material+"' and LINE__NO='"+lineno+"'";
+                sql="update DNDETAIL_MODEL set SCAN__QTY= '"+Number+"' where AGENT__DN__NO='"+DNNo+"' and LINE__NO='"+lineno+"'";
             }
+            if(Material!=null && !TextUtils.isEmpty(Material))
+                sql+= " and GOLFA__CODE='"+Material+"'";
 
             daoSession.getDatabase().execSQL(sql);
             return true;
@@ -675,9 +689,11 @@ public class DbDnInfo {
     public boolean DELscanbyagentdetail(DNDetailModel model,String condition){
         try{
             DbLogInfo.getInstance().InsertLog(new LogModel("删除物料扫描记录",model.getGOLFA_CODE()+"|"+model.getLINE_NO(),model.getAGENT_DN_NO()));
-
             String deletesql="delete from DNSCAN_MODEL " +
-                    "where AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and GOLFA__CODE='"+ model.getGOLFA_CODE()+"' and LINE__NO='"+ model.getLINE_NO() +"'";
+                    "where AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and LINE__NO='"+ model.getLINE_NO() +"'";
+            if(model.getGOLFA_CODE()!=null && !TextUtils.isEmpty(model.getGOLFA_CODE()))
+                deletesql+=" and GOLFA__CODE='"+ model.getGOLFA_CODE()+"'";
+
             daoSession.getDatabase().execSQL(deletesql);
             return true;
         }catch(Exception ex){

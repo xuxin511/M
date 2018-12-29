@@ -72,7 +72,7 @@ public class DNModel implements Parcelable {
      */
     private Date OPER_DATE;
     /*
- 单据来源0：MAPS 1:邮件 2：FTP 3：自建 4：USB 5：二维码
+ 单据来源0：MAPS 1:邮件 2：FTP 3：自建  4：二维码 5.代理商
   */
     private Integer DN_SOURCE;
 

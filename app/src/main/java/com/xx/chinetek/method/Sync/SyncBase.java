@@ -7,13 +7,18 @@ import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbManager;
+import com.xx.chinetek.method.Upload.UploadDN;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
+import com.xx.chinetek.model.Third.ThridCustomModel;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
@@ -21,10 +26,12 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncPara;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_UploadCusToAgent;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncCus;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDeleteDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncMaterial;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncPara;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadCusToAgent;
 
 /**
  * Created by GHOST on 2017/11/6.
@@ -83,6 +90,25 @@ public class SyncBase {
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncCus,
                 context.getString(R.string.Dia_SyncCus), context, mHandler, RESULT_SyncCus, null,  URLModel.GetURL().SyncCus, params, null);
     }
+
+    /*
+    上传客户数据给代理商接口
+     */
+    public void  UploadCusToAgent(MyHandler<BaseActivity> mHandler, ArrayList<CustomModel> customModels) {
+        List<ThridCustomModel> thridCustomModels=new ArrayList<>();
+        for (CustomModel cus:customModels) {
+            ThridCustomModel thridCustomModel=new ThridCustomModel(cus.getCUSTOMER(),cus.getNAME());
+            if(!thridCustomModels.contains(thridCustomModel))
+            thridCustomModels.add(thridCustomModel);
+        }
+
+        final Map<String, String> params = new HashMap<String, String>();
+        String customs = GsonUtil.parseModelToJson(thridCustomModels);
+        params.put("CustomsData", customs);
+        UploadDN.UploadThirdInterface(mHandler,TAG_UploadCusToAgent,RESULT_UploadCusToAgent,URLModel.GetURL().UploadCusToAgent,customs);
+    }
+
+
 
     public void  SyncPara(MyHandler<BaseActivity> mHandler){
         final Map<String, String> params = new HashMap<String, String>();

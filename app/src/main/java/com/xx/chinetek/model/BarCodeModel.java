@@ -3,6 +3,7 @@ package com.xx.chinetek.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.security.PrivilegedAction;
 import java.util.List;
 
 /**
@@ -41,15 +42,42 @@ public class BarCodeModel implements Parcelable {
      */
     private String  Country_Code;
     /**
-     * 1三菱 0非三菱
+     * 1三菱 0非三菱 2:代理商
      */
     private Integer MAT_TYPE;
+
+    /**
+     * 代理商字段
+     */
+    private String ItemNo;
+
+    /**
+     * 代理商字段
+     */
+    private String ItemName;
     /**
      * 非三菱自定义条码解析内容
      */
     private List<String> OtherCode;
 
     private Integer  LINE_NO;
+
+
+    public String getItemNo() {
+        return ItemNo;
+    }
+
+    public void setItemNo(String itemNo) {
+        ItemNo = itemNo;
+    }
+
+    public String getItemName() {
+        return ItemName;
+    }
+
+    public void setItemName(String itemName) {
+        ItemName = itemName;
+    }
 
     public Integer getLINE_NO() {
         return LINE_NO;
@@ -123,6 +151,9 @@ public class BarCodeModel implements Parcelable {
         Country_Code = country_Code;
     }
 
+    public BarCodeModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -137,11 +168,10 @@ public class BarCodeModel implements Parcelable {
         dest.writeString(this.Place_Code);
         dest.writeString(this.Country_Code);
         dest.writeValue(this.MAT_TYPE);
+        dest.writeString(this.ItemNo);
+        dest.writeString(this.ItemName);
         dest.writeStringList(this.OtherCode);
         dest.writeValue(this.LINE_NO);
-    }
-
-    public BarCodeModel() {
     }
 
     protected BarCodeModel(Parcel in) {
@@ -152,11 +182,13 @@ public class BarCodeModel implements Parcelable {
         this.Place_Code = in.readString();
         this.Country_Code = in.readString();
         this.MAT_TYPE = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.ItemNo = in.readString();
+        this.ItemName = in.readString();
         this.OtherCode = in.createStringArrayList();
         this.LINE_NO = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<BarCodeModel> CREATOR = new Parcelable.Creator<BarCodeModel>() {
+    public static final Creator<BarCodeModel> CREATOR = new Creator<BarCodeModel>() {
         @Override
         public BarCodeModel createFromParcel(Parcel source) {
             return new BarCodeModel(source);

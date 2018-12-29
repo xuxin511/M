@@ -39,4 +39,17 @@ public class URLModel {
     public String UploadGPS = GetWCFAdress()+"UploadGPS";
     public String LogUpload =  "http://"+IPAdress+":"+Port+"/Service2.svc/GpsUpFile";
 
+
+
+    String  GetThirdWCFAdress(){
+        return  "http://"+ParamaterModel.baseparaModel.getThirdInterfaceModel().getInterfaceIP()+":"+
+        ParamaterModel.baseparaModel.getThirdInterfaceModel().getPort()+"/"+
+                ParamaterModel.baseparaModel.getThirdInterfaceModel().getPart()+"/";
+    }
+    public  String UploadCusToAgent = GetThirdWCFAdress()+ "SyncCustoms";
+    public  String GetVoucherHead = GetThirdWCFAdress()+  "GetVoucherHead";
+    public  String GetVoucherDetail = GetThirdWCFAdress()+  "GetVoucherDetail";
+    public  String SubmitQRScan = GetThirdWCFAdress()+  "SubmitQRScan";
+    public  String DeleteQRScan = GetThirdWCFAdress()+  "DeleteQRScan";
+
 }

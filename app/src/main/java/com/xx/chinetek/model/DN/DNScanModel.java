@@ -34,7 +34,7 @@ public class DNScanModel implements Parcelable{
 
     private String ITEM_NAME;
     /**
-     * 1三菱 0非三菱
+     * 1三菱 0非三菱 2代理商
      */
     private Integer MAT_TYPE;
 
@@ -52,8 +52,10 @@ public class DNScanModel implements Parcelable{
         if (o == null || getClass() != o.getClass()) return false;
 
         DNScanModel that = (DNScanModel) o;
-
-        return SERIAL_NO.trim().equals(that.SERIAL_NO.trim()) && GOLFA_CODE.trim().equals(that.GOLFA_CODE.trim());
+        if(that.GOLFA_CODE==null)
+            return SERIAL_NO.trim().equals(that.SERIAL_NO.trim());
+        else
+            return SERIAL_NO.trim().equals(that.SERIAL_NO.trim()) && GOLFA_CODE.trim().equals(that.GOLFA_CODE.trim());
 
     }
 

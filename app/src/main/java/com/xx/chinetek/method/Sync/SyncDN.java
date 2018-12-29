@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
+import com.xx.chinetek.chineteklib.util.Network.RequestThirdHandler;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.FileUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
@@ -38,9 +39,13 @@ import java.util.List;
 import java.util.Map;
 
 import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_GetVoucherDetail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_GetVoucherHead;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDnDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncException;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_GetVoucherDetail;
+import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SGetVoucherHead;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDn;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDnDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncException;
@@ -97,6 +102,31 @@ public class SyncDN {
         String para = (new JSONObject(params)).toString();
         LogUtil.WriteLog(SyncBase.class, TAG_SyncDnDetail, para);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_SyncDnDetail,context.getString(R.string.Dia_SyncDnDetail) ,context,mHandler, RESULT_SyncDnDetail, null,  URLModel.GetURL().SyncDnDetail, params, null);
+    }
+
+    /**
+     * 接口获取出库单
+     * @param dnDate
+     * @param mHandler
+     */
+    public static void SyncInterface(String dnDate,MyHandler<BaseActivity> mHandler){
+        //MAPS获取单据明细
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put("InputDate", dnDate);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_SyncDn, para);
+        RequestThirdHandler.addThirdRequest(Request.Method.GET, TAG_SGetVoucherHead, mHandler, RESULT_GetVoucherHead,
+                null,  URLModel.GetURL().GetVoucherHead, params, null);
+    }
+
+    public static void SyncInterFaceDetail(String dnNo,MyHandler<BaseActivity> mHandler){
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put("InputNo", dnNo);
+        String para = (new JSONObject(params)).toString();
+        LogUtil.WriteLog(SyncBase.class, TAG_SyncDn, para);
+        RequestThirdHandler.addRequestThirdWithDialog(Request.Method.GET, TAG_GetVoucherDetail,context.getString(R.string.Dia_DownDNdetail),
+                context, mHandler, RESULT_GetVoucherDetail,
+                null,  URLModel.GetURL().GetVoucherDetail, params, null);
     }
 
     /**

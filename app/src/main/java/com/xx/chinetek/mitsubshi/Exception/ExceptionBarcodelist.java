@@ -124,10 +124,10 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
 //        int winModel = getIntent().getIntExtra("WinModel", 0);
 
         //初始化数据
-        txtDnNo.setText(dnModel.getDN_SOURCE() == 3 ? dnModel.getCUS_DN_NO().toString() : dnModel.getAGENT_DN_NO().toString());
+        txtDnNo.setText(dnModel.getDN_SOURCE() == 3 || dnModel.getDN_SOURCE() == 5? dnModel.getCUS_DN_NO().toString() : dnModel.getAGENT_DN_NO().toString());
         txtCustom.setText(dnModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(dnModel.getCUSTOM_NAME())?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME());
         txtItemName.setText("物料名称：" + dndetailmodel.getITEM_NAME());
-        txtItemNo.setText("物料编码：" + dndetailmodel.getGOLFA_CODE());
+        txtItemNo.setText("物料编码：" + (dndetailmodel.getGOLFA_CODE()==null?dndetailmodel.getITEM_NO():dndetailmodel.getGOLFA_CODE()));
         txtKUQty.setText("出库数量：" + (dnModel.getDN_SOURCE() == 3 ?"9999":dndetailmodel.getDN_QTY()));
         GetDeliveryOrderScanList();
         if(DNScanModels!=null && winModel==1) {
@@ -225,7 +225,7 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
         ArrayList<BarCodeModel> barCodeModels = new ArrayList<>();
         barCodeModels.add(model);
         if (barCodeModels != null && barCodeModels.size() != 0) {
-            int isErrorStatus=Scan.ScanBarccode(dnInfo,dnModel,barCodeModels);
+            int isErrorStatus=Scan.ScanBarccode(mHandler,dnInfo,dnModel,barCodeModels);
             txtScanQty.setText(getString(R.string.scanQty)+(DNScanModels.size()));
             if (ShowErrMag(isErrorStatus)){
 //                BarCodeModel bmodel= new BarCodeModel();
@@ -324,7 +324,8 @@ public class ExceptionBarcodelist extends BaseIntentActivity {
     }
 
     void GetDeliveryOrderScanList(){
-        DNScanModels= DbDnInfo.getInstance().GetLoaclDNScanModelDN(dndetailmodel.getAGENT_DN_NO(),dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
+        DNScanModels= DbDnInfo.getInstance().GetLoaclDNScanModelDN(dndetailmodel.getAGENT_DN_NO(),
+                dndetailmodel.getGOLFA_CODE()==null?dndetailmodel.getITEM_NAME():dndetailmodel.getGOLFA_CODE(),dndetailmodel.getLINE_NO());
         exceptionScanbarcodeAdapter=new ExceptionScanbarcodeAdapter(context, DNScanModels);
         lsvDeliveryScan.setAdapter(exceptionScanbarcodeAdapter);
         txtScanQty.setText("扫描数量："+DNScanModels.size());

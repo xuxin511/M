@@ -39,13 +39,38 @@ public class AnalyticsBarCode {
             }
         }
         if(isMitsubshiCode) {
-            if(Barcode.length()<32) throw  new Exception(BaseApplication.context.getString(R.string.Msg_BarcodeNotmatch));
+            if(Barcode.length()<32) {
+                if(Barcode.startsWith("1") || Barcode.startsWith("0")){
+                    //代理商编码规则
+                    BarCodeModel barCodeModel=SetAgentbarcode(Barcode);
+                    barCodeModels.add(barCodeModel);
+                }else {
+                    throw new Exception(BaseApplication.context.getString(R.string.Msg_BarcodeNotmatch));
+                }
+            }else {
+
                 barCodeModels = Barcode.length() < 400 ?
                         AnalyticsBarCode.AnalyticsSmall(Barcode)
                         : AnalyticsBarCode.AnalyticsLarge(Barcode);
+            }
 
         }
         return  barCodeModels;
+    }
+
+
+    private static BarCodeModel SetAgentbarcode(String Barcode){
+        BarCodeModel barCodeModel=new BarCodeModel();
+        barCodeModel.setMAT_TYPE(2);
+        if(Barcode.startsWith("0")){
+            Barcode=Barcode.replace("（","(").replace("）",")");
+            barCodeModel.setPacking_Date(Barcode.substring(2,10));
+            barCodeModel.setItemName(Barcode.substring(10,Barcode.length()));
+        }else{
+            barCodeModel.setPacking_Date(Barcode.substring(2,10));
+            barCodeModel.setItemNo(Barcode.substring(10,Barcode.length()));
+        }
+        return barCodeModel;
     }
 
     private static void SetNotMitSubshiCode(String Barcode, BarCodeModel barCodeModel,int selectRule) {

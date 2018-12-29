@@ -8,6 +8,7 @@ public class TAG_RESULT {
 
     public static  String  TAG_SyncMaterial="SyncMaterial";
     public static  String  TAG_SyncCus="SyncCus";
+
     public static  String  TAG_SyncPara="SyncPara";
     public static  String  TAG_SyncDn="SyncDn";
     public static  String  TAG_SyncDnDetail="SyncDnDetail";
@@ -40,5 +41,16 @@ public class TAG_RESULT {
     public static final int RESULT_ExceptionDNList=114;
     public static final int RESULT_SyncDeleteDn=115;
     public static final int RESULT_UploadGPS=116;
+
+    public static  String  TAG_UploadCusToAgent="UploadCusToAgent";
+    public static final int RESULT_UploadCusToAgent=117;
+    public static  String  TAG_SGetVoucherHead="GetVoucherHead";
+    public static final int RESULT_GetVoucherHead=118;
+    public static  String  TAG_GetVoucherDetail="GetVoucherDetail";
+    public static final int RESULT_GetVoucherDetail=119;
+    public static  String  TAG_SubmitQRScan="SubmitQRScan";
+    public static final int RESULT_SubmitQRScan=120;
+    public static  String  TAG_DeleteQRScan="DeleteQRScan";
+    public static final int RESULT_DeleteQRScan=121;
 
 }

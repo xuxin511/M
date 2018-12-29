@@ -2,12 +2,17 @@ package com.xx.chinetek.method.Delscan;
 
 import android.content.Context;
 
+import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
+import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.method.DB.DbDnInfo;
+import com.xx.chinetek.method.Log.DBLogUtil;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
+
+import java.util.List;
 
 /**
  * Created by GHOST on 2017/11/26.
@@ -48,15 +53,18 @@ public class Delscan {
     }
 
 
-    public static void DelDNDetailmodel(Context context,DNDetailModel Model, DNModel dnModel){
+    public static void DelDNDetailmodel(MyHandler<BaseActivity> mHandler,Context context, DNDetailModel Model, DNModel dnModel){
         try{
             // TODO 自动生成的方法
             //删除扫描记录，改变明细数量
+            List<DNScanModel> dnScanModels=Model.getSERIALS();
             if(DbDnInfo.getInstance().DELscanbyagentdetail(Model,"")){
-//                                DbDnInfo.getInstance().UpdateDNmodelDetailNumberbyGOLFACODE(Model,"");
                 //判断剩余的扫描数量
                 Integer lastNum=DbDnInfo.getInstance().GetLoaclDNScanModelDNNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO());
                 if(DbDnInfo.getInstance().UpdateDetailNum(Model.getAGENT_DN_NO(),Model.getGOLFA_CODE(),Model.getLINE_NO(),lastNum,dnModel.getDN_SOURCE())){
+                    DBLogUtil.DeleteScanRecordLog(Model,dnScanModels);
+                    if(dnModel.getDN_SOURCE()==5)
+                        DelAgentScan.DelScan(mHandler,Model,dnModel.getCUS_DN_NO(),dnScanModels);
                     if(DbDnInfo.getInstance().GetLoaclDNScanModelDNNumbyDNNO(Model.getAGENT_DN_NO())==0){
                         //需要改变主表状态
                         if(DbDnInfo.getInstance().UpdateDNmodelState(Model.getAGENT_DN_NO(),"1","",dnModel.getDN_SOURCE())){

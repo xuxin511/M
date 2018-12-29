@@ -113,6 +113,7 @@
         <item>自建</item>
         <!--<item>USB</item>-->
         <item>二维码</item>
+        <item>欧菱</item>
     </string-array>
     <string-array name="ExportTypeList">
         <item>邮件</item>
@@ -143,6 +144,7 @@
         <item>40</item>
         <item>50</item>
         <item>60</item>
+        <item>150</item>
     </string-array>
 
 
@@ -248,6 +250,7 @@
     <string name="Dia_UploadUSB">通过USB形式导出出库单...</string>
     <string name="Dia_UploadUSBM">通过USB形式导出物料...</string>
     <string name="Dia_SyncFTP">通过FTP形式导入出库单...</string>
+    <string name="Dia_SyncInterface">通过接口形式导入出库单...</string>
     <string name="Dia_UploadFtp">通过FTP形式导出出库单...</string>
     <string name="Dia_UploadFtpM">通过FTP形式导出物料...</string>
     <string name="Dia_SyncDnDetail">通过MAPS形式获取出库单明细...</string>
@@ -265,6 +268,10 @@
     <string name="Msg_del_success">删除成功！</string>
     <string name="Msg_insert_failed">扫描添加失败！</string>
     <string name="Msg_insert_success">扫描添加成功！</string>
+
+
+    <string name="Dia_ThirdUplodCus">正在上传客户和代理商...</string>
+    <string name="Dia_DownDNdetail">通过接口形式获取出库单明细</string>
 </resources>
 
 

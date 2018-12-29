@@ -98,15 +98,21 @@ public class DNDetailModel implements Parcelable {
         DNDetailModel that = (DNDetailModel) o;
         boolean eq=false;
         boolean lin=true;
+        boolean gf=false;
+        if(that.GOLFA_CODE!=null && GOLFA_CODE!=null)
+            gf=GOLFA_CODE.trim().equals(that.GOLFA_CODE.trim());
         if(ITEM_NO!=null && that.ITEM_NO!=null){
             eq=ITEM_NO.trim().equals(that.ITEM_NO.trim());
+        }
+        if(ITEM_NAME!=null && that.ITEM_NAME!=null){
+            eq=ITEM_NAME.trim().equals(that.ITEM_NAME.trim());
         }
 
         if(LINE_NO!=null){
             lin=LINE_NO==that.LINE_NO;
         }
 
-        return (eq || GOLFA_CODE.trim().equals(that.GOLFA_CODE.trim())) && lin;
+        return (eq || gf) && lin;
 
     }
 

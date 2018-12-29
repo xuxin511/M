@@ -11,6 +11,7 @@ import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.model.ReturnMsgModel;
 import com.xx.chinetek.chineteklib.util.CompressUtil;
 import com.xx.chinetek.chineteklib.util.Network.RequestHandler;
+import com.xx.chinetek.chineteklib.util.Network.RequestThirdHandler;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.function.DESUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
@@ -188,31 +189,30 @@ public class UploadDN {
                     dbReturnModel.setReturnMsg(returnMsgModel.getMessage());
                 }
                 if (returnMsgModel.getHeaderStatus().equals("F")) {
-                    DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
-                    ArrayList<DNModel> dnModels = new ArrayList<>();
-                    dnModels.add(dnModel);
-                    DbDnInfo.getInstance().InsertDNDB(dnModels);
-                    DNModel upDnmodel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
-                    dnModels = new ArrayList<>();
-                    dnModels.add(upDnmodel);
+                    if(subdnModel.getDN_SOURCE()!=5) {
+                        DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
+                        ArrayList<DNModel> dnModels = new ArrayList<>();
+                        dnModels.add(dnModel);
+                        DbDnInfo.getInstance().InsertDNDB(dnModels);
+                        DNModel upDnmodel = DbDnInfo.getInstance().GetLoaclDN(dnModel.getAGENT_DN_NO());
+                        dnModels = new ArrayList<>();
+                        dnModels.add(upDnmodel);
+                        final ArrayList<DNModel> ExportdnModels = dnModels;
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(5000);
+                                    ExportDN(ExportdnModels, 0);
+                                    ExportDN(ExportdnModels, 1);
+                                } catch (Exception ex) {
+                                    LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, "ExportDN:" + ex.getMessage());
+                                }
+                            }
+                        }.start();
+                    }
                     //更新出库单状态
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
-
-                    final ArrayList<DNModel> ExportdnModels = dnModels;
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(5000);
-                                ExportDN(ExportdnModels, 0);
-                                ExportDN(ExportdnModels, 1);
-                            } catch (Exception ex) {
-                                LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, "ExportDN:" + ex.getMessage());
-                            }
-                        }
-                    }.start();
-
-
 
                 }
             } else {
@@ -264,8 +264,6 @@ public class UploadDN {
         params.put("UserInfoJS", user);
         params.put("DNJS", CompressUtil.compressForZip(DESUtil.encode(dnModelJson)));
         params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
-        String para = (new JSONObject(params)).toString();
-        //LogUtil.WriteLog(UploadDN.class, TAG_UploadDN, para);
         DbLogInfo.getInstance().InsertLog(new LogModel(TAG_UploadDN,isCloseDN+"|"+dnModelJson,dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO()));
         String method = dnModel.getSTATUS() == -1 ? URLModel.GetURL().ExceptionDN : URLModel.GetURL().UploadNDN;
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadDN,
@@ -274,7 +272,7 @@ public class UploadDN {
         ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
         dnModels.add(dnModel);
         UploadGPS.UpGPS(mHandler, dnModels);
-        UploadThirdInterface(mHandler,params);//第三方接口
+
     }
 
     public static void UploadDNListToMaps(ArrayList<DNModel> dnModels, String isCloseDN, MyHandler<BaseActivity> mHandler) {
@@ -295,7 +293,7 @@ public class UploadDN {
     }
 
 
-    private static void UploadThirdInterface(MyHandler<BaseActivity> mHandler,Map<String, String> params){
+    public static void UploadThirdInterface(MyHandler<BaseActivity> mHandler,String Tag,int ResultHandel,String URL,String params){
         if(ParamaterModel.baseparaModel.getThirdInterfaceModel()==null) {
             return;
         }
@@ -304,11 +302,8 @@ public class UploadDN {
         {
             return;
         }
-        String URL="http://"+ParamaterModel.baseparaModel.getThirdInterfaceModel().getInterfaceIP()+":"+
-                ParamaterModel.baseparaModel.getThirdInterfaceModel().getPort()+"/"+
-                ParamaterModel.baseparaModel.getThirdInterfaceModel().getPart();
-        RequestHandler.addRequest(Request.Method.POST, TAG_ExceptionDNList,
-              mHandler, RESULT_ExceptionDNList, null,URL
+        RequestThirdHandler.addRequestThirdWithDialog(Request.Method.POST, Tag,
+              context.getString(R.string.Dia_ThirdUplodCus),context, mHandler, ResultHandel, null,URL
                , params, null);
     }
 

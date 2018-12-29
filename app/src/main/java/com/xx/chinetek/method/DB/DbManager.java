@@ -12,7 +12,7 @@ import com.xx.chinetek.greendao.DaoSession;
 
 public class DbManager {
     // 是否加密
-    public static boolean ENCRYPTED = true;
+    public static boolean ENCRYPTED = false;
 
     public static String DB_NAME = "mitsubshi.db";
     private static DbManager mDbManager;
