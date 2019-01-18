@@ -144,6 +144,7 @@ public class SyncListItemAdapter extends BaseAdapter implements Filterable {
                     DNModel pc = unfilteredValues.get(i);
                     if (pc != null) {
                         if((pc.getAGENT_DN_NO()!=null && pc.getAGENT_DN_NO().toUpperCase().startsWith(prefixString.toUpperCase()))
+                                ||(pc.getCUS_DN_NO()!=null && pc.getCUS_DN_NO().toUpperCase().startsWith(prefixString.toUpperCase()))
                                 || (pc.getCUSTOM_NAME()!=null && pc.getCUSTOM_NAME().toUpperCase().startsWith(prefixString.toUpperCase()))
                                 || (pc.getLEVEL_2_AGENT_NAME()!=null && pc.getLEVEL_2_AGENT_NAME().toUpperCase().startsWith(prefixString.toUpperCase()))){
 
