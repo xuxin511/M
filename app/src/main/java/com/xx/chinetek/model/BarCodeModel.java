@@ -22,6 +22,8 @@ public class BarCodeModel implements Parcelable {
      */
     private String Golfa_Code;
 
+    private String Cus_Golfa_Code;
+
     /**
      * 序列号
      */
@@ -62,6 +64,13 @@ public class BarCodeModel implements Parcelable {
 
     private Integer  LINE_NO;
 
+    public String getCus_Golfa_Code() {
+        return Cus_Golfa_Code;
+    }
+
+    public void setCus_Golfa_Code(String cus_Golfa_Code) {
+        Cus_Golfa_Code = cus_Golfa_Code;
+    }
 
     public String getItemNo() {
         return ItemNo;
@@ -163,6 +172,7 @@ public class BarCodeModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.Heading_Code);
         dest.writeString(this.Golfa_Code);
+        dest.writeString(this.Cus_Golfa_Code);
         dest.writeString(this.Serial_Number);
         dest.writeString(this.Packing_Date);
         dest.writeString(this.Place_Code);
@@ -177,6 +187,7 @@ public class BarCodeModel implements Parcelable {
     protected BarCodeModel(Parcel in) {
         this.Heading_Code = in.readString();
         this.Golfa_Code = in.readString();
+        this.Cus_Golfa_Code = in.readString();
         this.Serial_Number = in.readString();
         this.Packing_Date = in.readString();
         this.Place_Code = in.readString();

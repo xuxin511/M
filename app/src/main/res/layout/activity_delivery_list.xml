@@ -10,6 +10,7 @@
         android:id="@+id/edt_DeleveryNoFuilter"
         style="@style/EditTextStyle"
         android:layout_width="0dp"
+        android:selectAllOnFocus="false"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"

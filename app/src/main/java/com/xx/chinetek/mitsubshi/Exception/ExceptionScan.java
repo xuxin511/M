@@ -118,6 +118,7 @@ public class ExceptionScan extends BaseIntentActivity {
             case TAG_SCAN:
                 try {
                     LogUtil.WriteLog(ExceptionBarcodelist.class, TAG_ScanBarcode, (String) msg.obj);
+                    DbLogInfo.getInstance().InsertLog(new LogModel("异常扫描-扫描条码",(String) msg.obj,txtDnNo.getText().toString()));
                     CheckScanBarcode((String) msg.obj);
                 } catch (Exception ex) {
                     ToastUtil.show(ex.getMessage());
@@ -144,7 +145,7 @@ public class ExceptionScan extends BaseIntentActivity {
         ErrorBarcodes=new ArrayList<>();
         dnInfo=DbDnInfo.getInstance();
         dnModel=getIntent().getParcelableExtra("DNModel");
-        txtDnNo.setText(dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
+        txtDnNo.setText(dnModel.getDN_SOURCE()==3 || dnModel.getDN_SOURCE()==5?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO());
         if(dnModel.getDN_SOURCE()==3)
             CBCloseDn.setVisibility(View.GONE);
         String cus=dnModel.getCUSTOM_NAME()==null || TextUtils.isEmpty(dnModel.getCUSTOM_NAME())?dnModel.getLEVEL_2_AGENT_NAME():dnModel.getCUSTOM_NAME();
@@ -305,6 +306,9 @@ public class ExceptionScan extends BaseIntentActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                DbLogInfo.getInstance().InsertLog(new LogModel("异常扫描-多物料主数据",materialModels.get(selectIndex).getMATNR()
+                                        +"|"+materialModels.get(selectIndex).getMAKTX()+"|"+materialModels.get(selectIndex).getBISMT(),txtDnNo.getText().toString()));
+
                                 dnModel.getDETAILS().get(position).setITEM_NO(materialModels.get(selectIndex).getMATNR());
                                 dnModel.getDETAILS().get(position).setITEM_NAME(materialModels.get(selectIndex).getMAKTX());
                                 dnModel.getDETAILS().get(position).setGOLFA_CODE(materialModels.get(selectIndex).getBISMT());
@@ -383,13 +387,13 @@ public class ExceptionScan extends BaseIntentActivity {
                 MessageBox.Show(context, getString(R.string.Msg_DnScan_Finished));
                 return true;
             }
-            DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-扫描条码",barcode,dnModel.getAGENT_DN_NO()));
 
             ParamaterModel.DnTypeModel.setSelectRule(spinbarRule.getSelectedItemPosition());
             SharePreferUtil.SetDNTypeShare(context,ParamaterModel.DnTypeModel);
             ArrayList<BarCodeModel> barCodeModels = AnalyticsBarCode.CheckBarcode(barcode,ParamaterModel.DnTypeModel.getSelectRule());
             if (barCodeModels != null && barCodeModels.size() != 0) {
                 List<MaterialModel> materialModels = DbBaseInfo.getInstance().GetItemNames(barCodeModels.get(0).getGolfa_Code());
+
                 if (dnModel.getDN_SOURCE() == 3) { //自建
                     return CreateNewDN(barCodeModels,materialModels);
                 } else {
@@ -400,7 +404,7 @@ public class ExceptionScan extends BaseIntentActivity {
                 }
             }
         } catch (Exception ex) {
-            DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-扫描条码异常",barcode+"|"+ex.getMessage(),dnModel.getAGENT_DN_NO()));
+            DbLogInfo.getInstance().InsertLog(new LogModel("异常扫描-扫描异常",ex.getMessage(),txtDnNo.getText().toString()));
             PlaySound.getInstance().PlayError();
             BarCodeModel Errorbarcode=new BarCodeModel();
             Errorbarcode.setSerial_Number("异常");
@@ -488,7 +492,6 @@ public class ExceptionScan extends BaseIntentActivity {
         BarCodeModel Errorbarcode=new BarCodeModel();
         Errorbarcode.setSerial_Number(GolfCode);
         boolean isError=false;
-        DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-扫描条码错误",GolfCode+"|"+isErrorStatus,dnModel.getAGENT_DN_NO()));
 
         if(isErrorStatus==0) {
             isError=true;

@@ -489,54 +489,42 @@ public class Setting extends BaseActivity {
     }
 
     void UploadLog(){
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    LogUpload.toUploadFile();
-                }catch (Exception ex){
-
+        final LoadingDialog dialog = new LoadingDialog(context);
+        dialog.show();
+        String url="http://"+ Paramater.IPAdress+":"+Paramater.Port+"/UpLoad.ashx";
+        File[] files = new File(Environment.getExternalStorageDirectory()+"/log/").listFiles();
+        final List<File> list= Arrays.asList(files);
+        Collections.sort(list, new FileComparator());
+       final int UploadIndex=list.size()>LogUploadIndex?LogUploadIndex:list.size();
+        for(int i=0;i<UploadIndex;i++) {
+            final  int index=i;
+            RequestParams params = new RequestParams(url);
+            params.setMultipart(true);
+            params.addBodyParameter("file", new File(list.get(list.size()-i-1).getAbsolutePath()));
+            x.http().post(params, new Callback.CommonCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    //加载成功回调，返回获取到的数据
+                    if(index==UploadIndex-1) {
+                        ToastUtil.show(result);
+                    }
                 }
-            }
-        }).start();
+                @Override
+                public void onFinished() {
+                    if(index==UploadIndex-1) {
+                        dialog.dismiss();
+                    }
+                }
+                @Override
+                public void onCancelled(CancelledException cex) {
+                }
 
-//        final LoadingDialog dialog = new LoadingDialog(context);
-//        dialog.show();
-//        String url="http://"+ Paramater.IPAdress+":"+Paramater.Port+"/UpLoad.ashx";
-//        File[] files = new File(Environment.getExternalStorageDirectory()+"/log/").listFiles();
-//        final List<File> list= Arrays.asList(files);
-//        Collections.sort(list, new FileComparator());
-//       final int UploadIndex=list.size()>LogUploadIndex?LogUploadIndex:list.size();
-//        for(int i=0;i<UploadIndex;i++) {
-//            final  int index=i;
-//            RequestParams params = new RequestParams(url);
-//            params.setMultipart(true);
-//            params.addBodyParameter("file", new File(list.get(list.size()-i-1).getAbsolutePath()));
-//            x.http().post(params, new Callback.CommonCallback<String>() {
-//                @Override
-//                public void onSuccess(String result) {
-//                    //加载成功回调，返回获取到的数据
-//                    if(index==UploadIndex-1) {
-//                        ToastUtil.show(result);
-//                    }
-//                }
-//                @Override
-//                public void onFinished() {
-//                    if(index==UploadIndex-1) {
-//                        dialog.dismiss();
-//                    }
-//                }
-//                @Override
-//                public void onCancelled(CancelledException cex) {
-//                }
-//
-//                @Override
-//                public void onError(Throwable ex, boolean isOnCallback) {
-//                    ToastUtil.show(ex.toString());
-//                }
-//            });
-//        }
+                @Override
+                public void onError(Throwable ex, boolean isOnCallback) {
+                    ToastUtil.show(ex.toString());
+                }
+            });
+        }
     }
 
     public class FileComparator implements Comparator<File> {

@@ -1,6 +1,7 @@
 package com.xx.chinetek.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ public class MaterialQueryItemAdapter extends BaseAdapter {
         public TextView txtItemName;
         public TextView txtItemSap;
         public TextView txtItemLine;
+        public TextView txtQR;
+        public TextView txtCusGF;
     }
 
     public MaterialQueryItemAdapter(Context context, List<MaterialModel> materialModels) {
@@ -65,11 +68,13 @@ public class MaterialQueryItemAdapter extends BaseAdapter {
             listItemView = new ListItemView();
             // 获取list_item布局文件的视图
             convertView = listContainer.inflate(R.layout.item_meatrial_query,null);
-           listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.txt_ItemNo);
+            listItemView.txtItemNo = (TextView) convertView.findViewById(R.id.txt_ItemNo);
             listItemView.txtRowNo = (TextView) convertView.findViewById(R.id.item_RowNo);
             listItemView.txtItemName = (TextView) convertView.findViewById(R.id.item_ItemName);
             listItemView.txtItemSap = (TextView) convertView.findViewById(R.id.txt_ItemSap);
             listItemView.txtItemLine = (TextView) convertView.findViewById(R.id.txt_ItemLine);
+            listItemView.txtQR = (TextView) convertView.findViewById(R.id.item_QR);
+            listItemView.txtCusGF = (TextView) convertView.findViewById(R.id.txt_cusgf);
             convertView.setTag(listItemView);
         } else {
             listItemView = (ListItemView) convertView.getTag();
@@ -81,6 +86,13 @@ public class MaterialQueryItemAdapter extends BaseAdapter {
         listItemView.txtRowNo.setText("正常");
         listItemView.txtItemLine.setText(materialModel.getSPARTNAME());
         listItemView.txtRowNo.setTextColor(convertView.getResources().getColor(R.color.green));
+        listItemView.txtQR .setText(materialModel.getNORMT()==null || TextUtils.isEmpty(materialModel.getNORMT())?"N":materialModel.getNORMT());
+        if(materialModel.getCUSBISMT()!=null && !TextUtils.isEmpty(materialModel.getCUSBISMT())){
+            listItemView.txtCusGF.setText("自定义GolfaCode："+materialModel.getCUSBISMT());
+            listItemView.txtCusGF.setVisibility(View.VISIBLE);
+        }else{
+            listItemView.txtCusGF.setVisibility(View.GONE);
+        }
         if(materialModel.getACTION_CODE()!=null && materialModel.getACTION_CODE().equals("D")){
             listItemView.txtRowNo.setText("已删除");
             listItemView.txtRowNo.setTextColor(convertView.getResources().getColor(R.color.white));

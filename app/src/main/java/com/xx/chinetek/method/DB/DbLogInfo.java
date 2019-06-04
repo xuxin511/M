@@ -9,6 +9,7 @@ import com.xx.chinetek.greendao.DNModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
 import com.xx.chinetek.greendao.DaoSession;
 import com.xx.chinetek.greendao.LogModelDao;
+import com.xx.chinetek.model.Base.CustomModel;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DBReturnModel;
@@ -61,7 +62,7 @@ public class DbLogInfo {
         return mSyncLog;
     }
 
-   public void InsertLog(final ArrayList<LogModel> logModels) throws Exception{
+   public void InsertLog(final ArrayList<LogModel> logModels) {
            if(logModels!=null && logModels.size()!=0) {
                asyncSession.runInTx(new Runnable() {
                    @Override
@@ -73,6 +74,18 @@ public class DbLogInfo {
 
            }
    }
+
+
+    public void ModifyFlag(){
+            String sql="UPDATE LOG_MODEL SET FLAG=1;";
+            logModelDao.getDatabase().execSQL(sql);
+    }
+
+
+    public void DeleteFlag(){
+        String sql="DELETE FROM LOG_MODEL WHERE FLAG=1;";
+        logModelDao.getDatabase().execSQL(sql);
+    }
 
     public void InsertLog(final LogModel logModel){
         try {

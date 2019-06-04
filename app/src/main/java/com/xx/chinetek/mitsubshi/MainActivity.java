@@ -15,6 +15,7 @@ import com.xx.chinetek.adapter.GridViewItemAdapter;
 import com.xx.chinetek.chineteklib.base.BaseActivity;
 import com.xx.chinetek.chineteklib.base.BaseApplication;
 import com.xx.chinetek.chineteklib.base.ToolBarTitle;
+import com.xx.chinetek.chineteklib.model.Paramater;
 import com.xx.chinetek.chineteklib.model.ReturnMsgModelList;
 import com.xx.chinetek.chineteklib.util.Network.NetworkError;
 import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
@@ -26,6 +27,7 @@ import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
+import com.xx.chinetek.method.Log.LogUpload;
 import com.xx.chinetek.method.SharePreferUtil;
 import com.xx.chinetek.method.Sync.SyncBase;
 import com.xx.chinetek.mitsubshi.Bulkupload.Bulkupload;
@@ -108,6 +110,7 @@ public class MainActivity extends BaseActivity {
         super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.main),false);
         x.view().inject(this);
+
     }
 
     @Override
@@ -134,8 +137,20 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        DbLogInfo.getInstance().InsertLog(new LogModel("功能",textView.getText().toString(),""));
         Intent intent = new Intent();
+        DbLogInfo.getInstance().InsertLog(new LogModel("功能选择",textView.getText().toString(),""));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    LogUpload.toUploadFile();
+                }catch (Exception ex){
+
+                }
+            }
+        }).start();
+
         if (textView.getText().toString().equals(getString(R.string.outputscan))){
             intent.setClass(context, DeliveryStart.class);
             startActivityLeft(intent);
@@ -228,8 +243,11 @@ public class MainActivity extends BaseActivity {
                 ParamaterModel.CustomSyncTime=returnMsgModel.getMessage();;
                 //保存同步时间
                 SharePreferUtil.SetSyncTimeShare("CustomSyncTime",ParamaterModel.CustomSyncTime);
-
+            if(ParamaterModel.IsAgentSoft)
                 SyncBase.getInstance().UploadCusToAgent(mHandler,customModels);
+            else
+                //同步参数
+                SyncBase.getInstance().SyncPara(mHandler);
             } else {
                 MessageBox.Show(context,returnMsgModel.getMessage());
             }
@@ -305,7 +323,7 @@ public class MainActivity extends BaseActivity {
                 for (DeletedDN deletedDN: deletedDNS) {
 //                    String dnNo=deletedDN.getCUS_DN_NO()==null || !deletedDN.getCUS_DN_NO().trim().equals("")?
 //                            deletedDN.getAGENT_DN_NO():deletedDN.getCUS_DN_NO();
-                    DbDnInfo.getInstance().DeleteDN(deletedDN.getAGENT_DN_NO());
+                    DbDnInfo.getInstance().DeleteDN(deletedDN.getAGENT_DN_NO(),false);
                 }
 
                 MessageBox.Show(context,getString(R.string.Dia_SyncSuccess));

@@ -1,6 +1,7 @@
 package com.xx.chinetek.method.Log;
 
 import com.xx.chinetek.chineteklib.model.Paramater;
+import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.DB.DbLogManager;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.Base.URLModel;
@@ -31,6 +32,7 @@ import java.net.URL;
 public class LogUpload {
 
     public static void toUploadFile() throws FileNotFoundException {
+        DbLogInfo.getInstance().ModifyFlag();
         //封装参数信息
         JSONObject jsonObject = new JSONObject();
         try {
@@ -40,32 +42,30 @@ public class LogUpload {
             e.printStackTrace();
         }
         String path = ParamaterModel.DBDirectory+File.separator+ DbLogManager.DB_NAME;
-        byte[] bytes = null;
-        InputStream is;
+       // String newpath = ParamaterModel.DBDirectory+File.separator+ DbLogManager.DB_NAME+"bak";
         File myfile = new File(path);
-        try {
-            is = new FileInputStream(path);
+             try {
+            if(!myfile.exists()) return;
+         //   File newfile=new File(newpath);
+         //   myfile.renameTo(newfile);
+          //  if(!newfile.exists()) return;
+            byte[] bytes = null;
+            InputStream is;
+            is = new FileInputStream(myfile);
             bytes = new byte[(int) myfile.length()];
             int len = 0;
             while ((len = is.read(bytes)) != -1) {
                 is.read(bytes);
             }
             is.close();
-        } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
         byte[] updata = GpsImagePackage.getPacket(jsonObject.toString(), bytes);
-        try {
 
             URL httpUrl = new URL(URLModel.GetURL().LogUpload);
             HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            connection.setReadTimeout(5000);
+            connection.setReadTimeout(50000);
 
             OutputStream outputStream = connection.getOutputStream();
             outputStream.write(updata);
@@ -75,7 +75,7 @@ public class LogUpload {
             while ((str = reader.readLine()) != null) {
                 sb.append(str);
             }
-
+            DbLogInfo.getInstance().DeleteFlag();
             connection.disconnect();
         } catch (MalformedURLException e) {
             e.printStackTrace();

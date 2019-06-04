@@ -55,6 +55,10 @@ public class DbOpenHelper extends DaoMaster.OpenHelper {
                       for(int i=0;i<files.length;i++){
                           files[i].delete();
                       }
+                      break;
+                    case 5:
+                        db.execSQL("ALTER TABLE MATERIAL_MODEL ADD COLUMN CUSBISMT Text; ");
+                        db.execSQL("ALTER TABLE DNSCAN_MODEL ADD COLUMN FLAG INTEGER; ");
                         break;
                 }
             }

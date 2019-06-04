@@ -4,7 +4,7 @@ package com.xx.chinetek.model.Third;
  * Created by GHOST on 2018/12/28.
  */
 
-public class ThirdUplodDN {
+public class ThirdUplodDN implements Cloneable{
     private String GoodCode;
     private String VoucherNo;
     private Integer RowNum;
@@ -20,6 +20,13 @@ public class ThirdUplodDN {
     private String Scaner;
     private String PDACode;
     private String Cptzm;
+
+    @Override
+    public ThirdUplodDN clone() throws CloneNotSupportedException {
+        ThirdUplodDN thirdUplodDN=null;
+        thirdUplodDN=(ThirdUplodDN)super.clone();
+        return thirdUplodDN;
+    }
 
     public String getGoodCode() {
         return GoodCode;

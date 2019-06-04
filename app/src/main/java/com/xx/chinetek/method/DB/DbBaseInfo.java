@@ -197,7 +197,9 @@ public class DbBaseInfo {
 
     public List<MaterialModel> GetItemNames(String GolafCode){
         if(TextUtils.isEmpty(GolafCode)) return null;
-        List<MaterialModel>  materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode)).list();
+       // List<MaterialModel>  materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.BISMT.eq(GolafCode)).list();
+        List<MaterialModel>  materialModels = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.BISMT.eq(GolafCode),
+                MaterialModelDao.Properties.CUSBISMT.eq(GolafCode)).list();
         return materialModels;
     }
 
@@ -239,17 +241,14 @@ public class DbBaseInfo {
             materialModels=queryBuilder.list();
 
 
-//        if(!TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)) {
-//            materialModels= materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%"))//,MaterialModelDao.Properties.BISMT.isNotNull()
-//                    .whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
-//                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();
-//        }else if(TextUtils.isEmpty(ItemName) && !TextUtils.isEmpty(SapNo)){
-//            materialModels = materialModelDao.queryBuilder().whereOr(MaterialModelDao.Properties.MATNR.like("%" + SapNo + "%"),
-//                    MaterialModelDao.Properties.BISMT.like("%" + GolafCode + "%")).list();//.where(MaterialModelDao.Properties.BISMT.isNotNull())
-//        }else if(!TextUtils.isEmpty(ItemName) && TextUtils.isEmpty(SapNo)){
-//            materialModels = materialModelDao.queryBuilder().where(MaterialModelDao.Properties.MAKTX.like("%" + ItemName + "%")).list();//,MaterialModelDao.Properties.BISMT.isNotNull()
-//        }
        return materialModels;
+    }
+
+
+    public void ModifyMaterialAddCusGF(MaterialModel materialModel,String cusgf){
+        String sql="UPDATE MATERIAL_MODEL SET CUSBISMT='"+cusgf+"' WHERE MAKTX='"+materialModel.getMAKTX()+"' and MATNR='"+materialModel.getMATNR()
+                +"' and BISMT='"+materialModel.getBISMT()+"';";
+        materialModelDao.getDatabase().execSQL(sql);
     }
 
     public ArrayList<String> QueryItemLines(){

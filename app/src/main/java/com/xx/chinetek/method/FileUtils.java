@@ -84,7 +84,7 @@ public class FileUtils {
                 "Pack_Date\tRegion\tCountry\tDeal_Sale_Date";
         Boolean isCusBarcode=false;
         for (DNModel dnModel:selectDnModels ) {
-            String DnNo=dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO();
+            String DnNo=dnModel.getDN_SOURCE()==3 || dnModel.getDN_SOURCE()==5?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO();
                 Long size = DbDnInfo.getInstance().HasCusBarcode(dnModel.getAGENT_DN_NO());
                 if (Integer.parseInt(size.toString()) != 0) {
                     Notmaps += ",TYPE1,TYPE2,TYPE3,TYPE4,TYPE5,TYPE6";

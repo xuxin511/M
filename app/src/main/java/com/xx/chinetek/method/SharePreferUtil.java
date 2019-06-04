@@ -38,10 +38,12 @@ public class SharePreferUtil {
             Paramater.IPAdress=sharedPreferences.getString("IPAdress", "qrscan.meach.cn");
             Paramater.Port=sharedPreferences.getInt("Port", 80);
             Paramater.SOCKET_TIMEOUT=sharedPreferences.getInt("TimeOut", 300000);
+            Paramater.SOCKET_THIRDTIMEOUT=sharedPreferences.getInt("ThirdTimeOut", 15000);
             ParamaterModel.PartenerID=sharedPreferences.getString("PartenerNo","");
             ParamaterModel.PartenerName=sharedPreferences.getString("PartenerName","");
             ParamaterModel.PartenerFUNCTION=sharedPreferences.getString("PartenerFUNCTION","");
             ParamaterModel.SysPassword=sharedPreferences.getString("SysPassword","123456");
+            ParamaterModel.IsAgentSoft=sharedPreferences.getBoolean("IsAgentSoft",false);
             Gson gson = new Gson();
             Type type = new TypeToken<BaseparaModel>(){}.getType();
             ParamaterModel.baseparaModel= gson.fromJson(sharedPreferences.getString("BaseparaModel", ""), type);
@@ -67,10 +69,12 @@ public class SharePreferUtil {
         edit.putString("IPAdress",Paramater.IPAdress);
         edit.putInt("Port",Paramater.Port);
         edit.putInt("TimeOut",Paramater.SOCKET_TIMEOUT);
+        edit.putInt("ThirdTimeOut",Paramater.SOCKET_THIRDTIMEOUT);
         edit.putString("PartenerNo", ParamaterModel.PartenerID);
         edit.putString("PartenerName", ParamaterModel.PartenerName);
         edit.putString("PartenerFUNCTION", ParamaterModel.PartenerFUNCTION);
         edit.putString("SysPassword", ParamaterModel.SysPassword);
+        edit.putBoolean("IsAgentSoft", ParamaterModel.IsAgentSoft);
         Gson gson=new Gson();
         Type type = new TypeToken<BaseparaModel>() {}.getType();
         String para=gson.toJson(ParamaterModel.baseparaModel,type);

@@ -25,7 +25,6 @@ public class BaseIntentActivity extends BaseActivity {
     @Override
     public void onStart()
     {
-
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(RES_ACTION);
         super.onStart();

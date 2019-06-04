@@ -32,6 +32,7 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
         public final static Property ZMAKTX = new Property(5, String.class, "ZMAKTX", false, "ZMAKTX");
         public final static Property ACTION_CODE = new Property(6, String.class, "ACTION_CODE", false, "ACTION__CODE");
         public final static Property NORMT = new Property(7, String.class, "NORMT", false, "NORMT");
+        public final static Property CUSBISMT = new Property(8, String.class, "CUSBISMT", false, "CUSBISMT");
     }
 
 
@@ -54,7 +55,8 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
                 "\"MAKTX\" TEXT," + // 4: MAKTX
                 "\"ZMAKTX\" TEXT," + // 5: ZMAKTX
                 "\"ACTION__CODE\" TEXT," + // 6: ACTION_CODE
-                "\"NORMT\" TEXT);"); // 7: NORMT
+                "\"NORMT\" TEXT," + // 7: NORMT
+                "\"CUSBISMT\" TEXT);"); // 8: CUSBISMT
         // Add Indexes
         db.execSQL("CREATE INDEX " + constraint + "IDX_MATERIAL_MODEL_BISMT ON \"MATERIAL_MODEL\"" +
                 " (\"BISMT\" ASC);");
@@ -109,6 +111,11 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
         if (NORMT != null) {
             stmt.bindString(8, NORMT);
         }
+ 
+        String CUSBISMT = entity.getCUSBISMT();
+        if (CUSBISMT != null) {
+            stmt.bindString(9, CUSBISMT);
+        }
     }
 
     @Override
@@ -154,6 +161,11 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
         if (NORMT != null) {
             stmt.bindString(8, NORMT);
         }
+ 
+        String CUSBISMT = entity.getCUSBISMT();
+        if (CUSBISMT != null) {
+            stmt.bindString(9, CUSBISMT);
+        }
     }
 
     @Override
@@ -171,7 +183,8 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // MAKTX
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // ZMAKTX
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // ACTION_CODE
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // NORMT
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // NORMT
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // CUSBISMT
         );
         return entity;
     }
@@ -186,6 +199,7 @@ public class MaterialModelDao extends AbstractDao<MaterialModel, Void> {
         entity.setZMAKTX(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setACTION_CODE(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setNORMT(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setCUSBISMT(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

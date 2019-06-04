@@ -3,6 +3,7 @@ package com.xx.chinetek.model.DN;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.xx.chinetek.chineteklib.util.function.ArithUtil;
 import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
 import com.xx.chinetek.greendao.DaoSession;
@@ -46,7 +47,7 @@ public class DNDetailModel implements Parcelable {
      */
     private Integer STATUS;
     /**
-     * 多物料主数据记录 0：正常 1：存在多条主数据记录
+     * 多物料主数据记录 0：正常 1：存在多条主数据记录 代理商使用 2：未上传
      */
     //@Transient
     private Integer Flag=0;
@@ -112,7 +113,8 @@ public class DNDetailModel implements Parcelable {
             lin=LINE_NO==that.LINE_NO;
         }
 
-        return (eq || gf) && lin;
+
+        return (eq || gf) && lin ;
 
     }
 

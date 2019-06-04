@@ -3,14 +3,18 @@ package com.xx.chinetek.model.Third;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Created by GHOST on 2018/12/25.
  */
 
-public class ThirdReturnModel implements Parcelable {
-    private  String Message;
+public class ThirdReturnModel<T> {
+    private String Message;
 
-    private  int Success;
+    private int Success;
+
+    public ArrayList<T> ReAdjust;
 
     public String getMessage() {
         return Message;
@@ -28,34 +32,14 @@ public class ThirdReturnModel implements Parcelable {
         Success = success;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public ArrayList<T> getReAdjust() {
+        return ReAdjust;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.Message);
-        dest.writeInt(this.Success);
+    public void setReAdjust(ArrayList<T> reAdjust) {
+        ReAdjust = reAdjust;
     }
 
     public ThirdReturnModel() {
     }
-
-    protected ThirdReturnModel(Parcel in) {
-        this.Message = in.readString();
-        this.Success = in.readInt();
-    }
-
-    public static final Parcelable.Creator<ThirdReturnModel> CREATOR = new Parcelable.Creator<ThirdReturnModel>() {
-        @Override
-        public ThirdReturnModel createFromParcel(Parcel source) {
-            return new ThirdReturnModel(source);
-        }
-
-        @Override
-        public ThirdReturnModel[] newArray(int size) {
-            return new ThirdReturnModel[size];
-        }
-    };
 }

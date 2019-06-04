@@ -25,12 +25,11 @@ import com.xx.chinetek.chineteklib.util.dialog.LoadingDialog;
 import com.xx.chinetek.chineteklib.util.dialog.MessageBox;
 import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
-import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
-import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.FileUtils;
+import com.xx.chinetek.method.Log.DBLogUtil;
 import com.xx.chinetek.method.Upload.UploadFiles;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.DN.DeliveryScan;
@@ -40,14 +39,11 @@ import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNTypeModel;
-import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
-
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -73,14 +69,19 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
 
     DeliveryListItemAdapter deliveryListItemAdapter;
     ArrayList<DNModel> SelectDnModels;//选择导出DN
-    LoadingDialog dialog;
+    LoadingDialog Loaddialog;
     QueryModel queryModel;
+
+    DNModel dnModel;
 
     int position;
     @Override
     public void onHandleMessage(Message msg) {
             switch (msg.what) {
                 case RESULT_SyncMail:
+                    Loaddialog.dismiss();
+                    MessageBox.Show(context,(String)msg.obj+("\r\n文件格式：txt/csv"));
+                    break;
                 case RESULT_SyncFTP:
                     new Thread(){
                         @Override
@@ -97,19 +98,33 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                             }
                         }
                     }.start();
-                    dialog.dismiss();
+                    Loaddialog.dismiss();
                     MessageBox.Show(context,(String)msg.obj+("\r\n文件格式：txt/csv"));
                     break;
                 case RESULT_SyncUSB:
-                    dialog.dismiss();
+                    Loaddialog.dismiss();
                     MessageBox.Show(context,getString(R.string.Msg_UploadSuccess)+msg.obj+("\r\n文件格式：txt/csv")+"\n路径："+ParamaterModel.UpDirectory);
                     break;
                 case TAG_SCAN:
                     CheckDNByDnNo((String) msg.obj);
                     break;
+//                case RESULT_DeleteQRScan:
+//                    if(Loaddialog!=null)
+//                        Loaddialog.dismiss();
+//                    ThirdReturnModel returnMsgModel = GsonUtil.getGsonUtil().fromJson((String) msg.obj, new TypeToken<ThirdReturnModel>() {
+//                    }.getType());
+//                    if (returnMsgModel.getSuccess() != 1) {
+//                        DbLogInfo.getInstance().InsertLog(new LogModel("出库查询-代理商条码删除异常",returnMsgModel.getMessage(),""));
+//                        MessageBox.Show(context, returnMsgModel.getMessage());
+//                    }else {
+//                        DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO(), true);
+//                        BindListView(queryModel);
+//                    }
+//                    break;
                 case NetworkError.NET_ERROR_CUSTOM:
-                    dialog.dismiss();
-                    ToastUtil.show("获取请求失败_____" + msg.obj);
+                    if(Loaddialog!=null)
+                        Loaddialog.dismiss();
+                    MessageBox.Show(context,"获取请求失败_____" + (String)msg.obj);
                     break;
             }
         BindListView(queryModel);
@@ -127,7 +142,6 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
     protected void initData() {
         super.initData();
         queryModel=null;
-        DbLogInfo.getInstance().InsertLog(new LogModel("出库查询","",""));
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
         fab.setOnClickListener(new View.OnClickListener() {
@@ -165,20 +179,19 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if(item.getItemId()==R.id.action_select) {
-            for(int i=0;i<DNModels.size();i++){
+            for(int i=0;i<deliveryListItemAdapter.getCount();i++){
                 deliveryListItemAdapter.modifyStates(i);
             }
         }else {
             SelectDnModels = new ArrayList<>();
             boolean isFlag=false;
-            for (int i = 0; i < DNModels.size(); i++) {
+            for (int i = 0; i < deliveryListItemAdapter.getCount(); i++) {
                 if (deliveryListItemAdapter.getStates(i)) {
-                    if(DNModels.get(i).getFlag()!=null && DNModels.get(i).getFlag()==1){
+                    if(((DNModel)deliveryListItemAdapter.getItem(i)).getFlag()!=null && ((DNModel)deliveryListItemAdapter.getItem(i)).getFlag()==1){
                         isFlag=true;
                     }
-                    DbLogInfo.getInstance().InsertLog(new LogModel("出库查询-选择单据", GsonUtil.parseModelToJson(DNModels.get(i)),DNModels.get(i).getAGENT_DN_NO()));
 
-                    SelectDnModels.add(0, DNModels.get(i));
+                    SelectDnModels.add(0, ((DNModel)deliveryListItemAdapter.getItem(i)));
                 }
             }
 
@@ -199,7 +212,6 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
-                                    DbLogInfo.getInstance().InsertLog(new LogModel("出库查询-导出单据", "导出方式："+which,""));
 
                                     ExportDN(SelectDnModels, which);
                                 } catch (Exception ex) {
@@ -214,12 +226,24 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                         .setMessage(R.string.Dia_DeleteDn)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                for (DNModel dnModel : deleteDN) {
-                                    //  if(dnModel.getSTATUS()!= DNStatusEnum.Sumbit)
-                                    DbLogInfo.getInstance().InsertLog(new LogModel("出库查询-删除单据","删除："+dnModel.getAGENT_DN_NO(),dnModel.getAGENT_DN_NO()));
-
-                                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
-                                }
+//                                    if(deleteDN.size()==1 &&  (deleteDN.get(0).getDN_SOURCE()==5 ||
+//                                            (ParamaterModel.IsAgentSoft && deleteDN.get(0).getDN_SOURCE()==3))&& deleteDN.get(0).getSTATUS()<2){
+//                                        BaseApplication.DialogShowText = "删除条码";
+//                                        Loaddialog = new LoadingDialog(context);
+//                                        Loaddialog.show();
+//                                        dnModel=deleteDN.get(0);
+//                                        List<DNDetailModel> dnDetailModellist = dnModel.getDETAILS();
+//                                        List<DNScanModel> dnScanModels = new ArrayList<>();
+//                                        for (DNDetailModel dndetail : dnDetailModellist) {
+//                                            dnScanModels.addAll(dndetail.getSERIALS());
+//                                        }
+//                                        DelAgentScan.DelScan(mHandler, dnModel.getCUS_DN_NO(), dnScanModels);
+//                                    }else{
+                                        for (DNModel dnModel : deleteDN) {
+                                         //   if(dnModel.getDN_SOURCE()==5 && dnModel.getSTATUS()<2) continue;
+                                            DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO(), true);
+                                        }
+                                   // }
                                 BindListView(queryModel);
                             }
                         })
@@ -288,6 +312,7 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
         try {
             FileUtils.DeleteFiles(Index);
             FileUtils.ExportDNFile(selectDnModels, Index); //导出文件至本地目录
+            DBLogUtil.UploadDNLog(selectDnModels,Index+"");
             File dirFile = new File(FileUtils.GetDirectory(Index));
             if (dirFile.isDirectory()) {
                 File[] Files = dirFile.listFiles();
@@ -301,20 +326,20 @@ public class QueryList extends BaseIntentActivity implements SwipeRefreshLayout.
                                 break;
                             }
                             BaseApplication.DialogShowText = getString(R.string.Dia_UploadMail);
-                            dialog = new LoadingDialog(context);
-                            dialog.show();
+                            Loaddialog = new LoadingDialog(context);
+                            Loaddialog.show();
                             UploadFiles.UploadMail(Files, mHandler);
                             break;
                         case 1: //FTP
                             BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtp);
-                            dialog = new LoadingDialog(context);
-                            dialog.show();
+                            Loaddialog = new LoadingDialog(context);
+                            Loaddialog.show();
                             UploadFiles.UploadFtp(Files, mHandler);
                             break;
                         case 2://USB
                             BaseApplication.DialogShowText = getString(R.string.Dia_UploadUSB);
-                            dialog = new LoadingDialog(context);
-                            dialog.show();
+                            Loaddialog = new LoadingDialog(context);
+                            Loaddialog.show();
                             android.os.Message msg = mHandler.obtainMessage(RESULT_SyncUSB, Files.length / 2);
                             mHandler.sendMessage(msg);
                             break;

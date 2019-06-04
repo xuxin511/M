@@ -42,9 +42,12 @@ public class URLModel {
 
 
     String  GetThirdWCFAdress(){
-        return  "http://"+ParamaterModel.baseparaModel.getThirdInterfaceModel().getInterfaceIP()+":"+
-        ParamaterModel.baseparaModel.getThirdInterfaceModel().getPort()+"/"+
-                ParamaterModel.baseparaModel.getThirdInterfaceModel().getPart()+"/";
+        if(ParamaterModel.baseparaModel.getThirdInterfaceModel()!=null) {
+            return "http://" + ParamaterModel.baseparaModel.getThirdInterfaceModel().getInterfaceIP() + ":" +
+                    ParamaterModel.baseparaModel.getThirdInterfaceModel().getPort() + "/" +
+                    ParamaterModel.baseparaModel.getThirdInterfaceModel().getPart() + "/";
+        }
+        return "";
     }
     public  String UploadCusToAgent = GetThirdWCFAdress()+ "SyncCustoms";
     public  String GetVoucherHead = GetThirdWCFAdress()+  "GetVoucherHead";

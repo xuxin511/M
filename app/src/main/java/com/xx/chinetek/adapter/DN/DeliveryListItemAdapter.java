@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNModel;
 
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
         listItemView.txtDNQty.setText(DNModel.getDN_SOURCE()!=null && DNModel.getDN_SOURCE()==3?"":convertView.getResources().getString(R.string.dnQty)+ DbDnInfo.getInstance().GetDNQtyInDNDetail(DNModel.getAGENT_DN_NO()));
         listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+ DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNModel.getAGENT_DN_NO()));
         if(DNModel.getDN_SOURCE()!=null)
-            listItemView.txtSource.setText(context.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
+            listItemView.txtSource.setText(context.getResources().getStringArray(ParamaterModel.IsAgentSoft?R.array.sendTypeListAgent:R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         if (getListselected().get(position)) {
             convertView.setBackgroundResource(R.color.lightgreen);
         }else if(DNModel.getFlag()!=null && DNModel.getFlag()==1){
@@ -154,8 +155,8 @@ public class DeliveryListItemAdapter extends BaseAdapter implements Filterable {
                 for (int i = 0; i < count; i++) {
                     DNModel pc = unfilteredValues.get(i);
                     if (pc != null) {
-                        if((pc.getAGENT_DN_NO()!=null && pc.getAGENT_DN_NO().toUpperCase().startsWith(prefixString.toUpperCase()))
-                                || (pc.getCUS_DN_NO()!=null && pc.getCUS_DN_NO().toUpperCase().startsWith(prefixString.toUpperCase()))){
+                        if((pc.getAGENT_DN_NO()!=null && pc.getAGENT_DN_NO().toUpperCase().contains(prefixString.toUpperCase()))
+                                || (pc.getCUS_DN_NO()!=null && pc.getCUS_DN_NO().toUpperCase().contains(prefixString.toUpperCase()))){
 
                             newValues.add(pc);
                         }

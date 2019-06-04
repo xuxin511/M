@@ -15,6 +15,7 @@ public class ThirdInterfaceModel implements Parcelable {
 
     private String Part;
 
+
     public String getInterfaceIP() {
         return InterfaceIP;
     }
@@ -40,6 +41,9 @@ public class ThirdInterfaceModel implements Parcelable {
     }
 
 
+    public ThirdInterfaceModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -48,17 +52,14 @@ public class ThirdInterfaceModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.InterfaceIP);
-        dest.writeString(this.Part);
         dest.writeInt(this.Port);
-    }
-
-    public ThirdInterfaceModel() {
+        dest.writeString(this.Part);
     }
 
     protected ThirdInterfaceModel(Parcel in) {
         this.InterfaceIP = in.readString();
-        this.Part = in.readString();
         this.Port = in.readInt();
+        this.Part = in.readString();
     }
 
     public static final Creator<ThirdInterfaceModel> CREATOR = new Creator<ThirdInterfaceModel>() {

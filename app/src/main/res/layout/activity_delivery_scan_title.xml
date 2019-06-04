@@ -8,6 +8,36 @@
     tools:context="com.xx.chinetek.mitsubshi.DN.DeliveryScan">
 
 
+    <EditText
+        android:id="@+id/edt_GolfaCode"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:ems="600"
+        android:inputType="textPersonName"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_GolfaCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline6" />
+
+    <TextView
+        android:id="@+id/txt_GolfaCode"
+        style="@style/TextViewComminStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/GolfaCode"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_Remark" />
+
     <Spinner
         android:id="@+id/spin_barRule"
         style="@style/Platform.Widget.AppCompat.Spinner"
@@ -61,12 +91,13 @@
         android:layout_marginBottom="3dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/spin_barRule"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_Remark">
+        app:layout_constraintTop_toBottomOf="@+id/edt_GolfaCode">
 
         <TextView
             android:id="@+id/txt_ItemName"
@@ -177,8 +208,8 @@
         android:id="@+id/CBCloseDN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="关闭"
         android:checked="true"
+        android:text="关闭"
         android:textColor="@color/aliceblue"
         app:layout_constraintBottom_toBottomOf="@+id/txt_DnNo"
         app:layout_constraintEnd_toStartOf="@+id/img_Remark" />

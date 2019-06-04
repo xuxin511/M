@@ -40,13 +40,27 @@
         style="@style/TextViewComminStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:text="产品线:12"
         android:textAlignment="textStart"
         android:textColor="@color/indianred"
         android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/item_QR"
+        app:layout_constraintStart_toStartOf="@+id/guideline7" />
+
+    <TextView
+        android:id="@+id/item_QR"
+        style="@style/TextViewComminStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Y"
+        android:textAlignment="textStart"
+        android:textColor="@color/themegreen"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_ItemNo"
-        app:layout_constraintLeft_toRightOf="@+id/txt_ItemNo"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/txt_ItemNo"
@@ -80,6 +94,22 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_ItemNo" />
+
+    <TextView
+        android:id="@+id/txt_cusgf"
+        style="@style/TextViewComminStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="自定义GF："
+        android:textAlignment="textStart"
+        android:textColor="@color/darkmagenta"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_ItemName" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline7"

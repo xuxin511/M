@@ -31,10 +31,11 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
 import com.xx.chinetek.method.DB.DbDnInfo;
-import com.xx.chinetek.method.DB.DbLogInfo;
+import com.xx.chinetek.method.Log.DBLogUtil;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.DN.DNsync;
 import com.xx.chinetek.mitsubshi.Exception.ExceptionScan;
+import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
@@ -45,6 +46,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncException;
@@ -99,7 +101,6 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
             }
         });
 //        GetExceptionList();
-        DbLogInfo.getInstance().InsertLog(new LogModel("异常处理","异常列表",""));
 
         edtDNNoFuilter.addTextChangedListener(ExceptionTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
@@ -153,16 +154,13 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
             if (item.getItemId() == R.id.action_Delete) {
-                new AlertDialog.Builder(this).setTitle("提示")
+                AlertDialog show = new AlertDialog.Builder(this).setTitle("提示")
                         .setIcon(android.R.drawable.ic_dialog_info)
                         .setMessage(R.string.Dia_DeleteExDn)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 for (DNModel dnModel : DNModels) {
-                                    DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-删除单据",GsonUtil.parseModelToJson(dnModel),dnModel.getAGENT_DN_NO()));
-
-                                    //  if(dnModel.getSTATUS()!= DNStatusEnum.Sumbit)
-                                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
+                                    DbDnInfo.getInstance().DeleteDN(dnModel,true);
                                 }
                                 GetExceptionList(queryModel);
                             }
@@ -275,7 +273,6 @@ public class ExceptionList extends BaseActivity implements SwipeRefreshLayout.On
 //            }).show();
         }catch(Exception ex){
             ToastUtil.show(ex.getMessage());
-            DbLogInfo.getInstance().InsertLog(new LogModel("异常处理-扫描异常",ex.toString(),((DNModel)exceptionListItemAdapter.getItem(position)).getAGENT_DN_NO()));
 
             LogUtil.WriteLog(ExceptionList.class,"QueryList-LsvExceptionListonItemClick", ex.toString());
         }

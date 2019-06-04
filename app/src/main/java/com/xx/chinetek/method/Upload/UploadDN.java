@@ -21,6 +21,7 @@ import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbLogInfo;
 import com.xx.chinetek.method.FTP.FtpUtil;
 import com.xx.chinetek.method.FileUtils;
+import com.xx.chinetek.method.Log.DBLogUtil;
 import com.xx.chinetek.method.UploadGPS;
 import com.xx.chinetek.mitsubshi.R;
 import com.xx.chinetek.model.Base.DNStatusEnum;
@@ -86,7 +87,6 @@ public class UploadDN {
                         .setNegativeButton("提交", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                DbLogInfo.getInstance().InsertLog(new LogModel("提交出库单",DNStstus+"|"+GsonUtil.parseModelToJson(dnModel),dnModel.getAGENT_DN_NO()));
                                 UploadDN.UploadDNToMaps(dnModel, DNStstus, mHandler);
                             }
                         })
@@ -94,12 +94,10 @@ public class UploadDN {
             } else {
                 //提交成功修改单据状态
                 DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
-                DbLogInfo.getInstance().InsertLog(new LogModel("提交出库单","F|"+GsonUtil.parseModelToJson(dnModel),dnModel.getAGENT_DN_NO()));
                 UploadDN.UploadDNToMaps(dnModel, "F", mHandler);
             }
             DbDnInfo.getInstance().UpdateOperaterData(dnModel);
         } else {
-            DbLogInfo.getInstance().InsertLog(new LogModel("提交出库单报错",context.getString(R.string.Msg_Dn_Finished),dnModel.getAGENT_DN_NO()));
             MessageBox.Show(context, context.getString(R.string.Msg_Dn_Finished));
         }
     }
@@ -135,6 +133,7 @@ public class UploadDN {
                 }
 
                 DNModel dnModel = returnMsgModel.getModelJson();
+                DbLogInfo.getInstance().InsertLog(new LogModel("出库单提交结果",returnMsgModel.getHeaderStatus(),subdnModel.getAGENT_DN_NO()));
                 DbDnInfo.getInstance().ChangeDNStatusByDnNo(subdnModel.getAGENT_DN_NO(), DNStatusEnum.complete);
                 //保留原有数据
                 DNModel tempdnModel = DbDnInfo.getInstance().GetLoaclDN(subdnModel.getAGENT_DN_NO());
@@ -143,7 +142,7 @@ public class UploadDN {
                     dnModel.setCUS_DN_NO(tempdnModel.getCUS_DN_NO());
                     dnModel.setREMARK(tempdnModel.getREMARK());
                     if (subdnModel.getDN_SOURCE() == 3) {
-                        DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
+                        DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO(),false);
                     }
                 }
                 if (returnMsgModel.getHeaderStatus().equals("R")) { //单据重复
@@ -162,7 +161,7 @@ public class UploadDN {
                     ArrayList<DNModel> dnModels = new ArrayList<>();
                     dnModels.add(dnModel);
                     //删除异常数据，以下载为准
-                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
+                   DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO(),false);
                     //插入数据
                     DbDnInfo.getInstance().InsertDNDB(dnModels);
                     //更新出库单状态(异常)
@@ -172,7 +171,7 @@ public class UploadDN {
                     dbReturnModel.setReturnMsg(context.getString(R.string.Msg_ExceptionDN));
                 }
                 if (returnMsgModel.getHeaderStatus().equals("K") && dnModel != null) { //后台单据已关闭
-                    DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
+                    DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO(),false);
                     int status = dnModel.getSTATUS() == DNStatusEnum.download ? DNStatusEnum.complete : DNStatusEnum.Sumbit;
                     dnModel.setSTATUS(status);
                     // DbDnInfo.getInstance().DELscanbyagent(subdnModel.getAGENT_DN_NO());
@@ -189,8 +188,8 @@ public class UploadDN {
                     dbReturnModel.setReturnMsg(returnMsgModel.getMessage());
                 }
                 if (returnMsgModel.getHeaderStatus().equals("F")) {
-                    if(subdnModel.getDN_SOURCE()!=5) {
-                        DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO());
+                  //  if(subdnModel.getDN_SOURCE()!=5) {
+                        DbDnInfo.getInstance().DeleteDN(subdnModel.getAGENT_DN_NO(),false);
                         ArrayList<DNModel> dnModels = new ArrayList<>();
                         dnModels.add(dnModel);
                         DbDnInfo.getInstance().InsertDNDB(dnModels);
@@ -210,7 +209,7 @@ public class UploadDN {
                                 }
                             }
                         }.start();
-                    }
+                  //  }
                     //更新出库单状态
                     DbDnInfo.getInstance().ChangeDNStatusByDnNo(dnModel.getAGENT_DN_NO(), DNStatusEnum.Sumbit);
 
@@ -264,15 +263,14 @@ public class UploadDN {
         params.put("UserInfoJS", user);
         params.put("DNJS", CompressUtil.compressForZip(DESUtil.encode(dnModelJson)));
         params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
-        DbLogInfo.getInstance().InsertLog(new LogModel(TAG_UploadDN,isCloseDN+"|"+dnModelJson,dnModel.getDN_SOURCE()==3?dnModel.getCUS_DN_NO():dnModel.getAGENT_DN_NO()));
         String method = dnModel.getSTATUS() == -1 ? URLModel.GetURL().ExceptionDN : URLModel.GetURL().UploadNDN;
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_UploadDN,
                 context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_UploadDN, null,
                 method, params, null);
+        DBLogUtil.UploadDNLog(dnModel,method,isCloseDN);
         ArrayList<DNModel> dnModels = new ArrayList<DNModel>();
         dnModels.add(dnModel);
         UploadGPS.UpGPS(mHandler, dnModels);
-
     }
 
     public static void UploadDNListToMaps(ArrayList<DNModel> dnModels, String isCloseDN, MyHandler<BaseActivity> mHandler) {
@@ -283,9 +281,7 @@ public class UploadDN {
         params.put("UserInfoJS", user);
         params.put("DNListJS", CompressUtil.compressForZip(DESUtil.encode(dnModelJson)));
         params.put("IsFinish", isCloseDN); //F.关闭 N:不关闭
-        String para = (new JSONObject(params)).toString();
-       // LogUtil.WriteLog(UploadDN.class, TAG_ExceptionDNList, para);
-        DbLogInfo.getInstance().InsertLog(new LogModel(TAG_ExceptionDNList,isCloseDN+"|"+dnModelJson,""));
+        DBLogUtil.UploadDNLog(dnModels, URLModel.GetURL().ExceptionDNList);
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_ExceptionDNList,
                 context.getString(R.string.Dia_UploadDN), context, mHandler, RESULT_ExceptionDNList, null,
                 URLModel.GetURL().ExceptionDNList, params, null);

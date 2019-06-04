@@ -50,7 +50,15 @@ public class MaterialModel implements Parcelable {
 
     private String ACTION_CODE;
 
+    /**
+     * 是否可以扫描
+     */
     private String NORMT;
+
+    /**
+     * 自定义GOLFA CODE
+     */
+    private String CUSBISMT;
 
     public String getNORMT() {
         return NORMT;
@@ -116,12 +124,20 @@ public class MaterialModel implements Parcelable {
         this.ACTION_CODE = ACTION_CODE;
     }
 
+    public String getCUSBISMT() {
+        return CUSBISMT;
+    }
+
+    public void setCUSBISMT(String CUSBISMT) {
+        this.CUSBISMT = CUSBISMT;
+    }
+
     public MaterialModel() {
     }
 
-    @Generated(hash = 5264135)
+    @Generated(hash = 1723219152)
     public MaterialModel(String MATNR, String BISMT, String SPART, String SPARTNAME,
-            String MAKTX, String ZMAKTX, String ACTION_CODE, String NORMT) {
+            String MAKTX, String ZMAKTX, String ACTION_CODE, String NORMT, String CUSBISMT) {
         this.MATNR = MATNR;
         this.BISMT = BISMT;
         this.SPART = SPART;
@@ -130,6 +146,7 @@ public class MaterialModel implements Parcelable {
         this.ZMAKTX = ZMAKTX;
         this.ACTION_CODE = ACTION_CODE;
         this.NORMT = NORMT;
+        this.CUSBISMT = CUSBISMT;
     }
 
     @Override
@@ -146,6 +163,8 @@ public class MaterialModel implements Parcelable {
         dest.writeString(this.MAKTX);
         dest.writeString(this.ZMAKTX);
         dest.writeString(this.ACTION_CODE);
+        dest.writeString(this.NORMT);
+        dest.writeString(this.CUSBISMT);
     }
 
     protected MaterialModel(Parcel in) {
@@ -156,6 +175,8 @@ public class MaterialModel implements Parcelable {
         this.MAKTX = in.readString();
         this.ZMAKTX = in.readString();
         this.ACTION_CODE = in.readString();
+        this.NORMT = in.readString();
+        this.CUSBISMT = in.readString();
     }
 
     public static final Creator<MaterialModel> CREATOR = new Creator<MaterialModel>() {

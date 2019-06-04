@@ -39,6 +39,8 @@ public class LogModel implements Parcelable {
 
    private String dnNo;
 
+   private int flag;
+
     public String getEquipmentID() {
         return equipmentID;
     }
@@ -87,6 +89,39 @@ public class LogModel implements Parcelable {
         this.dnNo = dnNo;
     }
 
+    public LogModel() {
+    }
+
+    public LogModel(String  actionName,String actionContent,String dnNo) {
+        this.equipmentID= ParamaterModel.SerialNo;
+        this.agentNo=ParamaterModel.PartenerID;
+        this.actionName=actionName;
+        this.actionContent=actionContent;
+        this.dnNo=dnNo;
+        this.flag=0;
+        this.actionTime= CommonUtil.DateToString(new Date(),"yyyy-MM-dd HH:mm:ss");
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
+
+    @Generated(hash = 1813755286)
+    public LogModel(String equipmentID, String agentNo, String actionTime,
+            String actionName, String actionContent, String dnNo, int flag) {
+        this.equipmentID = equipmentID;
+        this.agentNo = agentNo;
+        this.actionTime = actionTime;
+        this.actionName = actionName;
+        this.actionContent = actionContent;
+        this.dnNo = dnNo;
+        this.flag = flag;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -100,18 +135,7 @@ public class LogModel implements Parcelable {
         dest.writeString(this.actionName);
         dest.writeString(this.actionContent);
         dest.writeString(this.dnNo);
-    }
-
-    public LogModel() {
-    }
-
-    public LogModel(String  actionName,String actionContent,String dnNo) {
-        this.equipmentID= ParamaterModel.SerialNo;
-        this.agentNo=ParamaterModel.PartenerID;
-        this.actionName=actionName;
-        this.actionContent=actionContent;
-        this.dnNo=dnNo;
-        this.actionTime= CommonUtil.DateToString(new Date(),"yyyy-MM-dd HH:mm:ss");
+        dest.writeInt(this.flag);
     }
 
     protected LogModel(Parcel in) {
@@ -121,17 +145,7 @@ public class LogModel implements Parcelable {
         this.actionName = in.readString();
         this.actionContent = in.readString();
         this.dnNo = in.readString();
-    }
-
-    @Generated(hash = 425876189)
-    public LogModel(String equipmentID, String agentNo, String actionTime,
-            String actionName, String actionContent, String dnNo) {
-        this.equipmentID = equipmentID;
-        this.agentNo = agentNo;
-        this.actionTime = actionTime;
-        this.actionName = actionName;
-        this.actionContent = actionContent;
-        this.dnNo = dnNo;
+        this.flag = in.readInt();
     }
 
     public static final Creator<LogModel> CREATOR = new Creator<LogModel>() {

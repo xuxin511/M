@@ -8,6 +8,7 @@ import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.greendao.DNModelDao;
 import com.xx.chinetek.greendao.DNScanModelDao;
 import com.xx.chinetek.greendao.DaoSession;
+import com.xx.chinetek.method.Log.DBLogUtil;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DBReturnModel;
@@ -16,6 +17,7 @@ import com.xx.chinetek.model.DN.DNModel;
 import com.xx.chinetek.model.DN.DNScanModel;
 import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
+import com.xx.chinetek.model.Third.ReAdjust;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -125,9 +127,10 @@ public class DbDnInfo {
     //2018-10-17 修改多物料选择非第一条数据，出现上传之后出库数量为0问题
     public void InsertDNScanModel(List<DNScanModel> dnScanModels) throws Exception{
         if(dnScanModels!=null ) {
-            for(DNScanModel  dnScanModel:dnScanModels){
-                dnScanModelDao.insertOrReplace(dnScanModel);
-            }
+            dnScanModelDao.insertOrReplaceInTx(dnScanModels);
+//            for(DNScanModel  dnScanModel:dnScanModels){
+//                dnScanModelDao.insertOrReplace(dnScanModel);
+//            }
             dnScanModelDao.detachAll();
         }
     }
@@ -167,6 +170,9 @@ public class DbDnInfo {
                         DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
             }
         }
+        if(!ParamaterModel.IsAgentSoft){
+            queryBuilder.where(DNModelDao.Properties.DN_SOURCE.notEq(5));
+        }
         dnModels=(ArrayList<DNModel>) queryBuilder.distinct()
                 .whereOr(DNModelDao.Properties.STATUS.eq(DNStatusEnum.ready),
                         DNModelDao.Properties.STATUS.eq(DNStatusEnum.download))
@@ -191,7 +197,9 @@ public class DbDnInfo {
                         DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
             }
         }
-
+        if(!ParamaterModel.IsAgentSoft){
+            queryBuilder.where(DNModelDao.Properties.DN_SOURCE.notEq(5));
+        }
         dnModels=(ArrayList<DNModel>) queryBuilder.distinct()
                 .where(DNModelDao.Properties.STATUS.eq(DNStatusEnum.exeption)).list();
         return dnModels;
@@ -214,7 +222,9 @@ public class DbDnInfo {
                         DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
             }
         }
-
+        if(!ParamaterModel.IsAgentSoft){
+            queryBuilder.where(DNModelDao.Properties.DN_SOURCE.notEq(5));
+        }
         dnModels=(ArrayList<DNModel>) queryBuilder.distinct()
                 .whereOr(DNModelDao.Properties.STATUS.eq(DNStatusEnum.complete),DNModelDao.Properties.STATUS.eq(DNStatusEnum.download)).list();
         return dnModels;
@@ -236,6 +246,10 @@ public class DbDnInfo {
                 queryBuilder.whereOr(DNModelDao.Properties.CUSTOM_NAME.eq(queryModel.getCustomModel().getNAME()),
                         DNModelDao.Properties.LEVEL_2_AGENT_NAME.eq(queryModel.getCustomModel().getNAME()));
             }
+
+        }
+        if(!ParamaterModel.IsAgentSoft){
+            queryBuilder.where(DNModelDao.Properties.DN_SOURCE.notEq(5));
         }
         dnModels=(ArrayList<DNModel>) queryBuilder
                 .where(DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready))
@@ -259,13 +273,12 @@ public class DbDnInfo {
      */
     public Boolean CheckDNInDB(String Dnno){
           long count=dnModelDao.queryBuilder().where(DNModelDao.Properties.AGENT_DN_NO.eq(Dnno),
-                  DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().count();
-          return  count==0;
+                DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().count();
+        return  count==0;
     }
 
     public Boolean CheckAgentDNInDB(String Dnno){
-        long count=dnModelDao.queryBuilder().where(DNModelDao.Properties.CUS_DN_NO.eq(Dnno),
-                DNModelDao.Properties.STATUS.notEq(DNStatusEnum.ready)).distinct().count();
+        long count=dnModelDao.queryBuilder().where(DNModelDao.Properties.CUS_DN_NO.eq(Dnno)).distinct().count();
         return  count==0;
     }
 
@@ -295,10 +308,23 @@ public class DbDnInfo {
     }
 
 
-    public void DeleteDN(String AGENT_DN_NO){
+    public void DeleteDN(DNModel dnModel,Boolean log){
+        String AGENT_DN_NO=dnModel.getAGENT_DN_NO();
+        if(log) DbLogInfo.getInstance().InsertLog(new LogModel("开始删除单据","",AGENT_DN_NO));
+        DelDetailAllNum(dnModel,log);
         DELscanbyagent(AGENT_DN_NO);
-        DelDetailAllNum(AGENT_DN_NO);
         DelDNmodels(AGENT_DN_NO);
+        if(log) DbLogInfo.getInstance().InsertLog(new LogModel("结束删除单据","",AGENT_DN_NO));
+
+    }
+
+    public void DeleteDN(String AGENT_DN_NO ,Boolean log){
+        if(log) DbLogInfo.getInstance().InsertLog(new LogModel("开始删除单据","",AGENT_DN_NO));
+        DelDetailAllNum(AGENT_DN_NO,log);
+        DELscanbyagent(AGENT_DN_NO);
+        DelDNmodels(AGENT_DN_NO);
+        if(log) DbLogInfo.getInstance().InsertLog(new LogModel("结束删除单据","",AGENT_DN_NO));
+
     }
 
     public void DeleteDNQuery(DNModel dnModel){
@@ -458,7 +484,7 @@ public class DbDnInfo {
 
     public boolean DeleteSelectItems(DNScanModel dnscan){
         try{
-            DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描删除",dnscan.getGOLFA_CODE()+"|"+dnscan.getSERIAL_NO(),dnscan.getAGENT_DN_NO()));
+            DbLogInfo.getInstance().InsertLog(new LogModel("删除选中序列号",dnscan.getGOLFA_CODE()+"|"+dnscan.getLINE_NO()+"|"+dnscan.getSERIAL_NO(),dnscan.getAGENT_DN_NO()));
             return   DELscanbyserial(dnscan.getAGENT_DN_NO(),dnscan.getGOLFA_CODE(),dnscan.getLINE_NO(),dnscan.getSERIAL_NO(),"",dnscan.getSTATUS());
         }catch(Exception ex){
             return false;
@@ -522,9 +548,15 @@ public class DbDnInfo {
      */
     public  ArrayList<DNScanModel> GetLoaclDNScanModelDN(String DNNo, String Material,Integer lineno){
         ArrayList<DNScanModel> DNScanModels=new ArrayList<>();
-        DNScanModels=(ArrayList<DNScanModel>) dnScanModelDao.queryBuilder().distinct()
-                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.LINE_NO.eq(lineno))
-                .whereOr(DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.ITEM_NAME.eq(Material)).list();
+        QueryBuilder queryBuilder= dnScanModelDao.queryBuilder()
+                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.LINE_NO.eq(lineno));
+        if(Material!=null)
+            queryBuilder=queryBuilder
+                    .whereOr(DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.ITEM_NAME.eq(Material));
+        DNScanModels=(ArrayList<DNScanModel>) queryBuilder.distinct().list();
+//                dnScanModelDao.queryBuilder().distinct()
+//                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.LINE_NO.eq(lineno))
+//                .whereOr(DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.ITEM_NAME.eq(Material)).list();
         return DNScanModels;
     }
 
@@ -539,8 +571,6 @@ public class DbDnInfo {
         if(Material!=null && !TextUtils.isEmpty(Material))
             query.where(DNScanModelDao.Properties.GOLFA_CODE.eq(Material));
         DNScanModels=(ArrayList<DNScanModel>)query.list();
-//                DNScanModels=(ArrayList<DNScanModel>) dnScanModelDao.queryBuilder().distinct()
-//                .where(DNScanModelDao.Properties.AGENT_DN_NO.eq(DNNo),DNScanModelDao.Properties.GOLFA_CODE.eq(Material),DNScanModelDao.Properties.LINE_NO.eq(lineno)).list();
         return DNScanModels.size();
     }
 
@@ -646,14 +676,37 @@ public class DbDnInfo {
 
     /**
      * 修改主表明细行的扫描数据
-     * @param DNNo
      */
-    public boolean DelDetailAllNum(String DNNo){
+    public boolean DelDetailAllNum(DNModel dnModel, Boolean log){
         try{
             String sql="";
-            DbLogInfo.getInstance().InsertLog(new LogModel("删除物料",DNNo,DNNo));
+            sql="delete from DNDETAIL_MODEL where AGENT__DN__NO='"+dnModel.getAGENT_DN_NO()+"'";
+            if(log) {
+                List<DNDetailModel> dnDetailModellist = dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(dnModel.getAGENT_DN_NO())).list();
+                for (DNDetailModel dndetail : dnDetailModellist) {
+                    List<DNScanModel> dnScanModels = dndetail.getSERIALS();
+                    DBLogUtil.DeleteScanRecordLog(dndetail, dnScanModels);
+                }
+            }
+            daoSession.getDatabase().execSQL(sql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
 
+    }
+
+    public boolean DelDetailAllNum(String DNNo, Boolean log){
+        try{
+            String sql="";
             sql="delete from DNDETAIL_MODEL where AGENT__DN__NO='"+DNNo+"'";
+            if(log ) {
+                List<DNDetailModel> dnDetailModellist = dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.AGENT_DN_NO.eq(DNNo)).list();
+                for (DNDetailModel dndetail : dnDetailModellist) {
+                    List<DNScanModel> dnScanModels = dndetail.getSERIALS();
+                        DBLogUtil.DeleteScanRecordLog(dndetail, dnScanModels);
+                }
+            }
             daoSession.getDatabase().execSQL(sql);
             return true;
         }catch(Exception ex){
@@ -669,11 +722,21 @@ public class DbDnInfo {
      */
     public boolean DELscanbyagent(String DNNo){
         try{
-            DbLogInfo.getInstance().InsertLog(new LogModel("删除扫描记录",DNNo,DNNo));
-
             String deletesql="delete from DNSCAN_MODEL " +
                     "where AGENT__DN__NO='"+DNNo+"'";
+
             daoSession.getDatabase().execSQL(deletesql);
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
+
+    }
+
+    public boolean ModifyDNdetailScanQty(DNDetailModel model,int qty){
+        try{
+            String sql="UPDATE DNDETAIL_MODEL SET SCAN__QTY=0 WHERE AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and LINE__NO='"+model.getLINE_NO()+"'";
+            daoSession.getDatabase().execSQL(sql);
             return true;
         }catch(Exception ex){
             return false;
@@ -688,7 +751,6 @@ public class DbDnInfo {
      */
     public boolean DELscanbyagentdetail(DNDetailModel model,String condition){
         try{
-            DbLogInfo.getInstance().InsertLog(new LogModel("删除物料扫描记录",model.getGOLFA_CODE()+"|"+model.getLINE_NO(),model.getAGENT_DN_NO()));
             String deletesql="delete from DNSCAN_MODEL " +
                     "where AGENT__DN__NO='"+model.getAGENT_DN_NO()+"' and LINE__NO='"+ model.getLINE_NO() +"'";
             if(model.getGOLFA_CODE()!=null && !TextUtils.isEmpty(model.getGOLFA_CODE()))
@@ -709,7 +771,6 @@ public class DbDnInfo {
      */
     public boolean DELscanbyserial(String DNNo,String Material,Integer lineno,String serialno,String condition,String status){
         try{
-            DbLogInfo.getInstance().InsertLog(new LogModel("序列号扫描删除条码",Material+"|"+serialno,DNNo));
             String deletesql="delete from DNSCAN_MODEL where AGENT__DN__NO='"+ DNNo
                     +"' and LINE__NO='"+ lineno +"' and GOLFA__CODE='"+ Material
                     +"'and SERIAL__NO='"+ serialno+"' and status='"+status+"'";
@@ -750,8 +811,6 @@ public class DbDnInfo {
      */
     public boolean DelDNmodels(String DNNo){
         try{
-            DbLogInfo.getInstance().InsertLog(new LogModel("删除单据",DNNo,DNNo));
-
             String sql="";
             sql="delete from DNMODEL where AGENT__DN__NO='"+ DNNo+"'";
             daoSession.getDatabase().execSQL(sql);
@@ -865,6 +924,31 @@ public class DbDnInfo {
         }
     }
 
+    public List<DNDetailModel> GetDndetailsByFlag2(String AGENT_DN_NO ){
+       return  dnDetailModelDao.queryBuilder().where(DNDetailModelDao.Properties.Flag.eq(2), DNDetailModelDao.Properties.AGENT_DN_NO.eq(AGENT_DN_NO)).list();
+    }
+
+    public void SetDndetailsFlag(String AGENT__DN__NO, ArrayList<ReAdjust> thirdScanReturns){
+
+        daoSession.getDatabase().beginTransaction();
+        try {
+            String sql = "UPDATE DNDETAIL_MODEL SET FLag=0 WHERE AGENT__DN__NO='" + AGENT__DN__NO + "'";
+            daoSession.getDatabase().execSQL(sql);
+         //   sql = "UPDATE  DNSCAN_MODEL  SET FLAG=0 WHERE AGENT__DN__NO='" + AGENT__DN__NO + "'";
+            for(int i=0;i<thirdScanReturns.size();i++) {
+                sql = "UPDATE  DNSCAN_MODEL  SET FLAG=0 WHERE AGENT__DN__NO='" + AGENT__DN__NO
+                        + "' AND LINE__NO="+thirdScanReturns.get(i).getPd()+
+                " AND SERIAL__NO='"+thirdScanReturns.get(i).getSerial_No()+"' AND ITEM__NAME='"+thirdScanReturns.get(i).getCpxh()
+                        +"' AND GOLFA__CODE='"+thirdScanReturns.get(i).getGolfa_Code()+"'";
+                daoSession.getDatabase().execSQL(sql);
+            }
+            daoSession.getDatabase().setTransactionSuccessful();
+        }finally {
+            daoSession.getDatabase().endTransaction();
+        }
+
+
+    }
 
 //    /**
 //     * 插入DN

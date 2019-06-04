@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Message;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -184,6 +185,25 @@ public class MaterialQuery extends BaseIntentActivity {
         }
     }
 
+    @Event(value = R.id.lsv_MaterialQuery,type = AdapterView.OnItemClickListener.class)
+    private void lsv_MaterialQueryonItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final MaterialModel materialModel=(MaterialModel)materialQueryItemAdapter.getItem(position);
+        final EditText et = new EditText(this);
+        et.setTextColor(getResources().getColor(R.color.black));
+        new AlertDialog.Builder(this).setTitle(getString(R.string.Msg_InpuCUSGF))
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(et)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String input=et.getText().toString().trim();
+                        DbBaseInfo.getInstance().ModifyMaterialAddCusGF(materialModel,input);
+                        BindListView();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
     @Event(value = {R.id.edt_ItemName,R.id.edt_Code}, type = View.OnKeyListener.class)
     private boolean edtOnKey(View v, int keyCode, KeyEvent event) {
         try{
@@ -271,21 +291,9 @@ public class MaterialQuery extends BaseIntentActivity {
                             if (Files.length > 0) {
                                 switch (Index) {
                                     case 0: //邮件
-//                            if (ParamaterModel.baseparaModel.getMailModel() != null && (
-//                                    ParamaterModel.baseparaModel.getMailModel().getToAddress() == null
-//                                            || ParamaterModel.baseparaModel.getMailModel().getToAddress().size() == 0)) {
-//                                MessageBox.Show(context, getString(R.string.Msg_ToMailNotSet));
-//                                break;
-//                            }
-//                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadMailM);
-//                            dialog = new LoadingDialog(context);
-//                            dialog.show();
                                         UploadFiles.UploadMail(Files, mHandler);
                                         break;
                                     case 1: //FTP
-//                            BaseApplication.DialogShowText = getString(R.string.Dia_UploadFtpM);
-//                            dialog = new LoadingDialog(context);
-//                            dialog.show();
                                         UploadFiles.UploadFtp(Files, mHandler);
                                         break;
                                 }

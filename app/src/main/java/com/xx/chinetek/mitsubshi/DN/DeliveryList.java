@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,23 +30,31 @@ import com.xx.chinetek.chineteklib.util.dialog.ToastUtil;
 import com.xx.chinetek.chineteklib.util.function.CommonUtil;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.greendao.DNDetailModelDao;
 import com.xx.chinetek.method.CreateDnNo;
 import com.xx.chinetek.method.DB.DbBaseInfo;
 import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.DB.DbLogInfo;
+import com.xx.chinetek.method.Delscan.DelAgentScan;
+import com.xx.chinetek.method.Log.DBLogUtil;
+import com.xx.chinetek.method.PlaySound;
 import com.xx.chinetek.method.Sync.SyncDN;
 import com.xx.chinetek.mitsubshi.BaseIntentActivity;
 import com.xx.chinetek.mitsubshi.OrderFilter;
 import com.xx.chinetek.mitsubshi.R;
+import com.xx.chinetek.model.BarCodeModel;
 import com.xx.chinetek.model.Base.DNStatusEnum;
 import com.xx.chinetek.model.Base.MaterialModel;
 import com.xx.chinetek.model.Base.ParamaterModel;
 import com.xx.chinetek.model.DN.DNDetailModel;
 import com.xx.chinetek.model.DN.DNModel;
+import com.xx.chinetek.model.DN.DNScanModel;
 import com.xx.chinetek.model.DN.LogModel;
 import com.xx.chinetek.model.QueryModel;
+import com.xx.chinetek.model.Third.ReAdjust;
 import com.xx.chinetek.model.Third.ThirdDNDetailModel;
 import com.xx.chinetek.model.Third.ThirdDNModel;
+import com.xx.chinetek.model.Third.ThirdReturnModel;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -53,11 +62,15 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.File;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import static com.xx.chinetek.method.Delscan.Delscan.DelDNmodel;
+import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_DeleteQRScan;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_GetVoucherDetail;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_GetVoucherHead;
 import static com.xx.chinetek.model.Base.TAG_RESULT.RESULT_SyncDn;
@@ -74,6 +87,9 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SyncDnDetail;
 public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     Context context = DeliveryList.this;
+    LoadingDialog loadingDialog;
+
+
     @ViewInject(R.id.edt_DeleveryNoFuilter)
     EditText edtDeleveryNoFuilter;
     @ViewInject(R.id.Lsv_DeliveryList)
@@ -118,8 +134,30 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                 case TAG_SCAN:
                     CheckDNByDnNo((String) msg.obj);
                     break;
+                case RESULT_DeleteQRScan:
+                    if(loadingDialog!=null)
+                        loadingDialog.dismiss();
+                    ThirdReturnModel<ReAdjust> returnMsgModel = GsonUtil.getGsonUtil().fromJson((String) msg.obj, new TypeToken<ThirdReturnModel<ReAdjust>>() {
+                    }.getType());
+                    if (returnMsgModel.getSuccess() != 1) {
+                        DbLogInfo.getInstance().InsertLog(new LogModel("单据列表-代理商条码删除异常",returnMsgModel.getMessage(),dnModel.getCUS_DN_NO()));
+                        MessageBox.Show(context, returnMsgModel.getMessage());
+                    }else {
+//                        int delqty=0;
+//                        for (DNDetailModel dndetail : dnModel.getDETAILS()) {
+//                            delqty+=dndetail.getSERIALS().size();
+//                        }
+//                        if(delqty==returnMsgModel.getReAdjust().size()) {
+                            DelDNmodel(context, dnModel);
+                        //}
+                        DNModels = DbDnInfo.getInstance().GetLoaclDN(queryModel);
+                        BindListView();
+                    }
+                    break;
                 case NetworkError.NET_ERROR_CUSTOM:
-                    ToastUtil.show("获取请求失败_____" + msg.obj);
+                    if(loadingDialog!=null)
+                        loadingDialog.dismiss();
+                    MessageBox.Show(context,"获取请求失败_____" + msg.obj);
                     break;
             }
             if(dialog!=null)
@@ -129,7 +167,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
         } catch (Exception ex) {
             MessageBox.Show(context,ex.getMessage());
             if(dialog!=null)
-                dialog.dismiss();
+            dialog.dismiss();
         }
     }
 
@@ -154,7 +192,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("DNModels", SelectdnModels);
                 intent.putExtras(bundle);
-                startActivityLeft(intent);
+                startActivityForResult(intent,999);
             }
         } else {
             MessageBox.Show(context, returnMsgModel.getMessage());
@@ -194,11 +232,18 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
 
             if(SelectdnModels.size()!=0) {
-                Intent intent = new Intent(context, DNsync.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("DNModels", SelectdnModels);
-                intent.putExtras(bundle);
-                startActivityLeft(intent);
+                if(SelectdnModels.size()==1){
+                    DbDnInfo.getInstance().InsertDNDB(SelectdnModels);
+                    dnModel=SelectdnModels.get(0);
+                    SyncDN.SyncInterFaceDetail(SelectdnModels.get(0).getCUS_DN_NO(),mHandler);
+                }else {
+                    Intent intent = new Intent(context, DNsync.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("DNModels", SelectdnModels);
+                    bundle.putString("DNDate", dnDate);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent,999);
+                }
             }
 
     }
@@ -299,8 +344,20 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                 BindListView();
             }
         });
+
+        if(ParamaterModel.DnTypeModel.getDNType()==5){
+            String datestr=dnDate.substring(0,4)+"-"+dnDate.substring(4,6)+"-"+dnDate.substring(6,8);
+//            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+//            Calendar c = Calendar.getInstance();
+//            String datetime = sf.format(c.getTime());
+            edtDeleveryNoFuilter.setText("SS-" + datestr + "-");
+        }
+
         edtDeleveryNoFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         mSwipeLayout.setOnRefreshListener(this); //下拉刷新
+
+
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -308,6 +365,22 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
             queryModel=data.getParcelableExtra("queryModel");
             if(fabCancel!=null)
                 fabCancel.setVisibility(View.VISIBLE);
+        }
+        if(requestCode==999 && resultCode==2){
+            DNModel tempdnmodel=data.getParcelableExtra("DNModel");
+                if(tempdnmodel.getDN_SOURCE()==0){
+                    SyncDN.SyncMAPSDetail(tempdnmodel.getAGENT_DN_NO(),mHandler);
+                }else if(tempdnmodel.getDN_SOURCE()==5){
+                    if(tempdnmodel.getDETAILS()!=null && tempdnmodel.getDETAILS().size()!=0)
+                        StartScan(tempdnmodel);
+                    else {
+                        dnModel=tempdnmodel;
+                        SyncDN.SyncInterFaceDetail(tempdnmodel.getCUS_DN_NO(), mHandler);
+                    }
+                }else {
+                    StartScan(tempdnmodel);
+                }
+
         }
     }
 
@@ -348,7 +421,7 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
     @Event(value = R.id.Lsv_DeliveryList,type = AdapterView.OnItemClickListener.class)
     private void LsvDeliveryListonItemClick(AdapterView<?> parent, View view, int position, long id) {
          dnModel=(DNModel)deliveryListItemAdapter.getItem(position);
-       // ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
+        ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
         if(dnModel.getDN_SOURCE()==0){
             SyncDN.SyncMAPSDetail(dnModel.getAGENT_DN_NO(),mHandler);
         }else if(dnModel.getDN_SOURCE()==5){
@@ -374,10 +447,30 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO 自动生成的方法
-                        DbLogInfo.getInstance().InsertLog(new LogModel("出库单据选择","删除单据",Model.getAGENT_DN_NO()));
-                        DelDNmodel(context,Model);
-                        DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
-                        BindListView();
+                        if(( Model.getDN_SOURCE()==5 || (ParamaterModel.IsAgentSoft && Model.getDN_SOURCE()==3) )&& Model.getSTATUS()<2) {
+
+                            List<DNDetailModel> dnDetailModellist = Model.getDETAILS();
+                            List<DNScanModel> dnScanModels = new ArrayList<>();
+                            for (DNDetailModel dndetail : dnDetailModellist) {
+                                dnScanModels.addAll(dndetail.getSERIALS());
+                            }
+                            if(dnScanModels.size()==0){
+                                DelDNmodel(context,Model);
+                                DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
+                                BindListView();
+                            }else {
+                                BaseApplication.DialogShowText = "删除条码";
+                                loadingDialog = new LoadingDialog(context);
+                                loadingDialog.show();
+                                dnModel=Model;
+                                DelAgentScan.DelScan(mHandler, Model.getCUS_DN_NO(), dnScanModels);
+                            }
+                        }else{
+                            DelDNmodel(context,Model);
+                            DNModels= DbDnInfo.getInstance().GetLoaclDN(queryModel);
+                            BindListView();
+                        }
+
 
                     }
                 }).setNegativeButton("取消", null).show();
@@ -386,7 +479,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
 
     private void StartScan(DNModel dnModel) {
-        DbLogInfo.getInstance().InsertLog(new LogModel("出库单据选择",ParamaterModel.DnTypeModel.getDNType()+"|"+GsonUtil.parseModelToJson(dnModel),dnModel.getAGENT_DN_NO()));
         Intent intent=new Intent(context,DeliveryScan.class);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
@@ -396,22 +488,54 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
 
     void CheckDNByDnNo(String DNNo){
         if(DNModels!=null) {
-            DNModel dnModel=new DNModel();
-            dnModel.setAGENT_DN_NO(DNNo);
-            dnModel.setCUS_DN_NO(DNNo);
-            int index=DNModels.indexOf(dnModel);
+            DNModel tdnModel=new DNModel();
+            tdnModel.setAGENT_DN_NO(DNNo);
+            tdnModel.setCUS_DN_NO(DNNo);
+            int index=DNModels.indexOf(tdnModel);
             if(index!=-1) {
-                dnModel=DNModels.get(index);
-                ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
-                StartScan(dnModel);
+                tdnModel = DNModels.get(index);
+                if(tdnModel.getDN_SOURCE()==5) {
+                    if (tdnModel.getDETAILS() != null && tdnModel.getDETAILS().size() != 0) {
+                        ParamaterModel.DnTypeModel.setDNType(tdnModel.getDN_SOURCE());
+                        StartScan(tdnModel);
+                    }
+                    else {
+                        dnModel= DNModels.get(index);
+                        SyncDN.SyncInterFaceDetail(dnModel.getCUS_DN_NO(), mHandler);
+                    }
+                }else {
+                    ParamaterModel.DnTypeModel.setDNType(dnModel.getDN_SOURCE());
+                    StartScan(dnModel);
+                }
             }else{
-                MessageBox.Show(context,getString(R.string.Msg_No_DNno));
-                edtDeleveryNoFuilter.setText(DNNo);
-                CommonUtil.setEditFocus(edtDeleveryNoFuilter);
+                if(ParamaterModel.DnTypeModel.getDNType()==5){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            BaseApplication.DialogShowText = getString(R.string.Dia_SyncInterface);
+                            dialog = new LoadingDialog(DeliveryList.this);
+                            dialog.show();
+                        }
+                    });
+                    SyncDN.SyncInterface(DNNo,mHandler);
+                }else{
+                    MessageBox.Show(context,getString(R.string.Msg_No_DNno));
+                    edtDeleveryNoFuilter.setText(DNNo);
+                    CommonUtil.setEditFocus(edtDeleveryNoFuilter);
+                }
             }
         }
     }
-
+    @Event(value = R.id.edt_DeleveryNoFuilter, type = View.OnKeyListener.class)
+    private boolean edtDeleveryNoFuilterOnKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP)// 如果为Enter键
+        {
+            String dnno=edtDeleveryNoFuilter.getText().toString();
+            CheckDNByDnNo(dnno);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 文本变化事件
@@ -453,7 +577,6 @@ public class DeliveryList extends BaseIntentActivity implements SwipeRefreshLayo
            for(int i=0;i<DNfiles.length;i++) {
                DNfiles[i].delete();
            }
-           DbLogInfo.getInstance().InsertLog(new LogModel("导入出库单",ParamaterModel.DnTypeModel.getDNType()+"",""));
            switch (ParamaterModel.DnTypeModel.getDNType()) {
                case 0://MAPS
                    BaseApplication.DialogShowText = getString(R.string.Dia_SyncDn);

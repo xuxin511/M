@@ -3,6 +3,7 @@ package com.xx.chinetek.mitsubshi.DN;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,7 +33,9 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 @ContentView(R.layout.activity_dnsync_list)
 public class DNsync extends BaseActivity{
@@ -52,15 +55,26 @@ public class DNsync extends BaseActivity{
         super.initViews();
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.FTPDNChoice),true);
         x.view().inject(this);
-        edtFuilter.addTextChangedListener(DeleveryNoTextWatcher);
+
     }
 
     @Override
     protected void initData() {
         super.initData();
-
         DNModels=getIntent().getParcelableArrayListExtra("DNModels");
+        String dnDate=getIntent().getStringExtra("DNDate");
+        if(DNModels!=null && DNModels.size()>0){
+            if(DNModels.get(0).getDN_SOURCE()==5) {
+//                SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+//                Calendar c = Calendar.getInstance();
+//                String datetime = sf.format(c.getTime());
+                String datestr=dnDate.substring(0,4)+"-"+dnDate.substring(4,6)+"-"+dnDate.substring(6,8);
+                edtFuilter.setText("SS-" + datestr + "-");
+            }
+        }
+        edtFuilter.addTextChangedListener(DeleveryNoTextWatcher);
         GetbulkuploadList();
+
     }
 
     /**
@@ -173,13 +187,18 @@ public class DNsync extends BaseActivity{
 
                     }
                 }
-                if(tempdnmodels.get(i).getDN_SOURCE()==3||tempdnmodels.get(i).getDN_SOURCE()==5 || tempdnmodels.get(i).getSTATUS()== DNStatusEnum.exeption) {
-                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO());
+                if(tempdnmodels.get(i).getDN_SOURCE()==3|| tempdnmodels.get(i).getSTATUS()== DNStatusEnum.exeption) {
+                    DbDnInfo.getInstance().DeleteDN(dnModel.getAGENT_DN_NO(),false);
                 }
             }
         }
         //插入数据
         DbDnInfo.getInstance().InsertDNDB(tempdnmodels);
+        if(tempdnmodels.size()==1){
+            Intent intent = new Intent();
+            intent.putExtra("DNModel", tempdnmodels.get(0));
+            setResult(2, intent);
+        }
         closeActiviry();
         return false;
     }

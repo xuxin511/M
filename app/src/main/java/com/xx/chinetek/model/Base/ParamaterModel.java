@@ -10,6 +10,11 @@ import java.io.File;
 
 public class ParamaterModel {
 
+    /**
+     * 是否启用代理商版本
+     */
+    public static  Boolean IsAgentSoft=false;
+
     public static BaseparaModel baseparaModel;
 
     /**

@@ -107,11 +107,11 @@ public class BulkuploadListItemAdapter extends BaseAdapter implements Filterable
             listItemView = (ListItemView) convertView.getTag();
         }
         DNModel DNModel = DNModels.get(selectID);
-        listItemView.txtDeliveryNo.setText(DNModel.getDN_SOURCE()==3?DNModel.getCUS_DN_NO():DNModel.getAGENT_DN_NO());
+        listItemView.txtDeliveryNo.setText(DNModel.getDN_SOURCE()==3 || DNModel.getDN_SOURCE()==5?DNModel.getCUS_DN_NO():DNModel.getAGENT_DN_NO());
         listItemView.txtStatus.setText(convertView.getResources().getStringArray(R.array.DNStatus)[DNModel.getSTATUS()+1]);
         listItemView.txtConsignee.setText(DNModel.getCUSTOM_NAME()==null||DNModel.getCUSTOM_NAME().equals("")?DNModel.getLEVEL_2_AGENT_NAME():DNModel.getCUSTOM_NAME());
         listItemView.txtSumbitTime.setText(convertView.getResources().getString(R.string.overtime)+ CommonUtil.DateToString(DNModel.getOPER_DATE(),null));
-        listItemView.txtSource.setText(convertView.getResources().getStringArray(R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
+        listItemView.txtSource.setText(convertView.getResources().getStringArray(DNModel.getDN_SOURCE()==5?R.array.sendTypeListAgent:R.array.sendTypeList)[DNModel.getDN_SOURCE()]);
         listItemView.txtSubmitUser.setText("");
         listItemView.txtDNQty.setText(DNModel.getDN_SOURCE()==3?"":convertView.getResources().getString(R.string.dnQty)+ DbDnInfo.getInstance().GetDNQtyInDNDetail(DNModel.getAGENT_DN_NO()));
         listItemView.txtScanQty.setText(convertView.getResources().getString(R.string.scanQty)+ DbDnInfo.getInstance().GetScanQtyInDNScanModel(DNModel.getAGENT_DN_NO()));

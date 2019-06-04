@@ -24,26 +24,33 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_SubmitQRScan;
 
 public class DelAgentScan {
 
-    public static void DelScan(final MyHandler<BaseActivity> mHandler, final DNDetailModel dnDetailModel, final String dnno,final   List<DNScanModel> dnScanModels){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+    public static void DelScan(final MyHandler<BaseActivity> mHandler,  final String dnno,final   List<DNScanModel> dnScanModels){
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
                     List<ThirdDeleteQR> thirdDeleteQRS=new ArrayList<>();
                     for (DNScanModel dnscanModel: dnScanModels) {
-                        ThirdDeleteQR thirdDeleteQR=new ThirdDeleteQR();
-                        thirdDeleteQR.setRowNo(dnscanModel.getLINE_NO());
-                        thirdDeleteQR.setVoucherNo(dnno);
-                        thirdDeleteQR.setType(dnscanModel.getITEM_NAME());
-                        thirdDeleteQR.setGolfaCode(dnscanModel.getGOLFA_CODE()==null?"":dnscanModel.getGOLFA_CODE());
-                        thirdDeleteQR.setSerialNo(dnscanModel.getMAT_TYPE()==2?"":dnscanModel.getSERIAL_NO());
-                        thirdDeleteQRS.add(thirdDeleteQR);
-                        if(dnscanModel.getMAT_TYPE()==2)
-                            break;
+                       // if(dnscanModel.getFLAG()!=1) {
+                            ThirdDeleteQR thirdDeleteQR = new ThirdDeleteQR();
+                            thirdDeleteQR.setRowNo(dnscanModel.getLINE_NO());
+                            thirdDeleteQR.setVoucherNo(dnno);
+                            thirdDeleteQR.setType(dnscanModel.getITEM_NAME());
+                            thirdDeleteQR.setGolfaCode(dnscanModel.getGOLFA_CODE() == null ? "" : dnscanModel.getGOLFA_CODE());
+                            thirdDeleteQR.setSerialNo(dnscanModel.getMAT_TYPE() == 2 ? "" : dnscanModel.getSERIAL_NO());
+
+                            if (dnscanModel.getMAT_TYPE() == 2) { //如果是代理商条码，删除时只需要上传一条记录
+                                if(thirdDeleteQRS.contains(thirdDeleteQR))
+                                    continue;
+                            }
+                            thirdDeleteQRS.add(thirdDeleteQR);
+                      //  }
                     }
-                    String UplodDelList = GsonUtil.parseModelToJson(thirdDeleteQRS);
-                    RequestThirdHandler.addThirdRequest(Request.Method.POST, TAG_DeleteQRScan, mHandler, RESULT_DeleteQRScan,
-                            null,  URLModel.GetURL().DeleteQRScan, UplodDelList, null);
-                }
-            }).start();
+                   // if(thirdDeleteQRS.size()!=0) {
+                        String UplodDelList = GsonUtil.parseModelToJson(thirdDeleteQRS);
+                        RequestThirdHandler.addThirdRequest(Request.Method.POST, TAG_DeleteQRScan, mHandler, RESULT_DeleteQRScan,
+                                null, URLModel.GetURL().DeleteQRScan, UplodDelList, null);
+                //    }
+//                }
+//            }).start();
     }
 }

@@ -18,6 +18,7 @@ import static com.xx.chinetek.chineteklib.base.BaseApplication.context;
 public class PlaySound {
     private SoundPool soundPool;
     private int playSoundErrID;
+    private int playSoundNorID;
     public static PlaySound mPlaySound;
 
     private PlaySound() {
@@ -35,6 +36,7 @@ public class PlaySound {
                 soundPool = new SoundPool(30, AudioManager.STREAM_MUSIC, 0);
             }
             playSoundErrID= soundPool.load(context, R.raw.error4, 1);
+            playSoundNorID= soundPool.load(context, R.raw.nornal, 1);
 
         }catch (Exception ex){
 
@@ -53,9 +55,18 @@ public class PlaySound {
         return mPlaySound;
     }
 
-//    public void PlayNormal(){
-//        soundPool.play(playSoundID, 2, 2, 0, 0, 1);
-//    }
+    public void PlayNormal(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    soundPool.play(playSoundNorID, 1, 1, 0, 0, 1);
+                }catch (Exception ex){
+                }
+            }
+        }).start();
+    }
 
     public void PlayError() {
         new Thread(new Runnable() {

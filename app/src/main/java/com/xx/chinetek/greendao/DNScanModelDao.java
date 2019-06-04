@@ -37,15 +37,16 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         public final static Property GOLFA_CODE = new Property(7, String.class, "GOLFA_CODE", false, "GOLFA__CODE");
         public final static Property STATUS = new Property(8, String.class, "STATUS", false, "STATUS");
         public final static Property ITEM_STATUS = new Property(9, String.class, "ITEM_STATUS", false, "ITEM__STATUS");
-        public final static Property DEAL_SALE_DATE = new Property(10, String.class, "DEAL_SALE_DATE", false, "DEAL__SALE__DATE");
-        public final static Property ITEM_NAME = new Property(11, String.class, "ITEM_NAME", false, "ITEM__NAME");
-        public final static Property MAT_TYPE = new Property(12, Integer.class, "MAT_TYPE", false, "MAT__TYPE");
-        public final static Property EXTEND_FIELD1 = new Property(13, String.class, "EXTEND_FIELD1", false, "EXTEND__FIELD1");
-        public final static Property EXTEND_FIELD2 = new Property(14, String.class, "EXTEND_FIELD2", false, "EXTEND__FIELD2");
-        public final static Property EXTEND_FIELD3 = new Property(15, String.class, "EXTEND_FIELD3", false, "EXTEND__FIELD3");
-        public final static Property EXTEND_FIELD4 = new Property(16, String.class, "EXTEND_FIELD4", false, "EXTEND__FIELD4");
-        public final static Property EXTEND_FIELD5 = new Property(17, String.class, "EXTEND_FIELD5", false, "EXTEND__FIELD5");
-        public final static Property EXTEND_FIELD6 = new Property(18, String.class, "EXTEND_FIELD6", false, "EXTEND__FIELD6");
+        public final static Property FLAG = new Property(10, Integer.class, "FLAG", false, "FLAG");
+        public final static Property DEAL_SALE_DATE = new Property(11, String.class, "DEAL_SALE_DATE", false, "DEAL__SALE__DATE");
+        public final static Property ITEM_NAME = new Property(12, String.class, "ITEM_NAME", false, "ITEM__NAME");
+        public final static Property MAT_TYPE = new Property(13, Integer.class, "MAT_TYPE", false, "MAT__TYPE");
+        public final static Property EXTEND_FIELD1 = new Property(14, String.class, "EXTEND_FIELD1", false, "EXTEND__FIELD1");
+        public final static Property EXTEND_FIELD2 = new Property(15, String.class, "EXTEND_FIELD2", false, "EXTEND__FIELD2");
+        public final static Property EXTEND_FIELD3 = new Property(16, String.class, "EXTEND_FIELD3", false, "EXTEND__FIELD3");
+        public final static Property EXTEND_FIELD4 = new Property(17, String.class, "EXTEND_FIELD4", false, "EXTEND__FIELD4");
+        public final static Property EXTEND_FIELD5 = new Property(18, String.class, "EXTEND_FIELD5", false, "EXTEND__FIELD5");
+        public final static Property EXTEND_FIELD6 = new Property(19, String.class, "EXTEND_FIELD6", false, "EXTEND__FIELD6");
     }
 
     private Query<DNScanModel> dNDetailModel_SERIALSQuery;
@@ -72,15 +73,16 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
                 "\"GOLFA__CODE\" TEXT," + // 7: GOLFA_CODE
                 "\"STATUS\" TEXT," + // 8: STATUS
                 "\"ITEM__STATUS\" TEXT," + // 9: ITEM_STATUS
-                "\"DEAL__SALE__DATE\" TEXT," + // 10: DEAL_SALE_DATE
-                "\"ITEM__NAME\" TEXT," + // 11: ITEM_NAME
-                "\"MAT__TYPE\" INTEGER," + // 12: MAT_TYPE
-                "\"EXTEND__FIELD1\" TEXT," + // 13: EXTEND_FIELD1
-                "\"EXTEND__FIELD2\" TEXT," + // 14: EXTEND_FIELD2
-                "\"EXTEND__FIELD3\" TEXT," + // 15: EXTEND_FIELD3
-                "\"EXTEND__FIELD4\" TEXT," + // 16: EXTEND_FIELD4
-                "\"EXTEND__FIELD5\" TEXT," + // 17: EXTEND_FIELD5
-                "\"EXTEND__FIELD6\" TEXT);"); // 18: EXTEND_FIELD6
+                "\"FLAG\" INTEGER," + // 10: FLAG
+                "\"DEAL__SALE__DATE\" TEXT," + // 11: DEAL_SALE_DATE
+                "\"ITEM__NAME\" TEXT," + // 12: ITEM_NAME
+                "\"MAT__TYPE\" INTEGER," + // 13: MAT_TYPE
+                "\"EXTEND__FIELD1\" TEXT," + // 14: EXTEND_FIELD1
+                "\"EXTEND__FIELD2\" TEXT," + // 15: EXTEND_FIELD2
+                "\"EXTEND__FIELD3\" TEXT," + // 16: EXTEND_FIELD3
+                "\"EXTEND__FIELD4\" TEXT," + // 17: EXTEND_FIELD4
+                "\"EXTEND__FIELD5\" TEXT," + // 18: EXTEND_FIELD5
+                "\"EXTEND__FIELD6\" TEXT);"); // 19: EXTEND_FIELD6
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_DNSCAN_MODEL_AGENT__DN__NO_LINE__NO_SERIAL__NO ON \"DNSCAN_MODEL\"" +
                 " (\"AGENT__DN__NO\" ASC,\"LINE__NO\" ASC,\"SERIAL__NO\" ASC);");
@@ -146,49 +148,54 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
             stmt.bindString(10, ITEM_STATUS);
         }
  
+        Integer FLAG = entity.getFLAG();
+        if (FLAG != null) {
+            stmt.bindLong(11, FLAG);
+        }
+ 
         String DEAL_SALE_DATE = entity.getDEAL_SALE_DATE();
         if (DEAL_SALE_DATE != null) {
-            stmt.bindString(11, DEAL_SALE_DATE);
+            stmt.bindString(12, DEAL_SALE_DATE);
         }
  
         String ITEM_NAME = entity.getITEM_NAME();
         if (ITEM_NAME != null) {
-            stmt.bindString(12, ITEM_NAME);
+            stmt.bindString(13, ITEM_NAME);
         }
  
         Integer MAT_TYPE = entity.getMAT_TYPE();
         if (MAT_TYPE != null) {
-            stmt.bindLong(13, MAT_TYPE);
+            stmt.bindLong(14, MAT_TYPE);
         }
  
         String EXTEND_FIELD1 = entity.getEXTEND_FIELD1();
         if (EXTEND_FIELD1 != null) {
-            stmt.bindString(14, EXTEND_FIELD1);
+            stmt.bindString(15, EXTEND_FIELD1);
         }
  
         String EXTEND_FIELD2 = entity.getEXTEND_FIELD2();
         if (EXTEND_FIELD2 != null) {
-            stmt.bindString(15, EXTEND_FIELD2);
+            stmt.bindString(16, EXTEND_FIELD2);
         }
  
         String EXTEND_FIELD3 = entity.getEXTEND_FIELD3();
         if (EXTEND_FIELD3 != null) {
-            stmt.bindString(16, EXTEND_FIELD3);
+            stmt.bindString(17, EXTEND_FIELD3);
         }
  
         String EXTEND_FIELD4 = entity.getEXTEND_FIELD4();
         if (EXTEND_FIELD4 != null) {
-            stmt.bindString(17, EXTEND_FIELD4);
+            stmt.bindString(18, EXTEND_FIELD4);
         }
  
         String EXTEND_FIELD5 = entity.getEXTEND_FIELD5();
         if (EXTEND_FIELD5 != null) {
-            stmt.bindString(18, EXTEND_FIELD5);
+            stmt.bindString(19, EXTEND_FIELD5);
         }
  
         String EXTEND_FIELD6 = entity.getEXTEND_FIELD6();
         if (EXTEND_FIELD6 != null) {
-            stmt.bindString(19, EXTEND_FIELD6);
+            stmt.bindString(20, EXTEND_FIELD6);
         }
     }
 
@@ -246,49 +253,54 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
             stmt.bindString(10, ITEM_STATUS);
         }
  
+        Integer FLAG = entity.getFLAG();
+        if (FLAG != null) {
+            stmt.bindLong(11, FLAG);
+        }
+ 
         String DEAL_SALE_DATE = entity.getDEAL_SALE_DATE();
         if (DEAL_SALE_DATE != null) {
-            stmt.bindString(11, DEAL_SALE_DATE);
+            stmt.bindString(12, DEAL_SALE_DATE);
         }
  
         String ITEM_NAME = entity.getITEM_NAME();
         if (ITEM_NAME != null) {
-            stmt.bindString(12, ITEM_NAME);
+            stmt.bindString(13, ITEM_NAME);
         }
  
         Integer MAT_TYPE = entity.getMAT_TYPE();
         if (MAT_TYPE != null) {
-            stmt.bindLong(13, MAT_TYPE);
+            stmt.bindLong(14, MAT_TYPE);
         }
  
         String EXTEND_FIELD1 = entity.getEXTEND_FIELD1();
         if (EXTEND_FIELD1 != null) {
-            stmt.bindString(14, EXTEND_FIELD1);
+            stmt.bindString(15, EXTEND_FIELD1);
         }
  
         String EXTEND_FIELD2 = entity.getEXTEND_FIELD2();
         if (EXTEND_FIELD2 != null) {
-            stmt.bindString(15, EXTEND_FIELD2);
+            stmt.bindString(16, EXTEND_FIELD2);
         }
  
         String EXTEND_FIELD3 = entity.getEXTEND_FIELD3();
         if (EXTEND_FIELD3 != null) {
-            stmt.bindString(16, EXTEND_FIELD3);
+            stmt.bindString(17, EXTEND_FIELD3);
         }
  
         String EXTEND_FIELD4 = entity.getEXTEND_FIELD4();
         if (EXTEND_FIELD4 != null) {
-            stmt.bindString(17, EXTEND_FIELD4);
+            stmt.bindString(18, EXTEND_FIELD4);
         }
  
         String EXTEND_FIELD5 = entity.getEXTEND_FIELD5();
         if (EXTEND_FIELD5 != null) {
-            stmt.bindString(18, EXTEND_FIELD5);
+            stmt.bindString(19, EXTEND_FIELD5);
         }
  
         String EXTEND_FIELD6 = entity.getEXTEND_FIELD6();
         if (EXTEND_FIELD6 != null) {
-            stmt.bindString(19, EXTEND_FIELD6);
+            stmt.bindString(20, EXTEND_FIELD6);
         }
     }
 
@@ -310,15 +322,16 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // GOLFA_CODE
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // STATUS
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // ITEM_STATUS
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // DEAL_SALE_DATE
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // ITEM_NAME
-            cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12), // MAT_TYPE
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // EXTEND_FIELD1
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // EXTEND_FIELD2
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // EXTEND_FIELD3
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // EXTEND_FIELD4
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // EXTEND_FIELD5
-            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18) // EXTEND_FIELD6
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // FLAG
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // DEAL_SALE_DATE
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // ITEM_NAME
+            cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13), // MAT_TYPE
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // EXTEND_FIELD1
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // EXTEND_FIELD2
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // EXTEND_FIELD3
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // EXTEND_FIELD4
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // EXTEND_FIELD5
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19) // EXTEND_FIELD6
         );
         return entity;
     }
@@ -335,15 +348,16 @@ public class DNScanModelDao extends AbstractDao<DNScanModel, Void> {
         entity.setGOLFA_CODE(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setSTATUS(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setITEM_STATUS(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setDEAL_SALE_DATE(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setITEM_NAME(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setMAT_TYPE(cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12));
-        entity.setEXTEND_FIELD1(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setEXTEND_FIELD2(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setEXTEND_FIELD3(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setEXTEND_FIELD4(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
-        entity.setEXTEND_FIELD5(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
-        entity.setEXTEND_FIELD6(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setFLAG(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setDEAL_SALE_DATE(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setITEM_NAME(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setMAT_TYPE(cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13));
+        entity.setEXTEND_FIELD1(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setEXTEND_FIELD2(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setEXTEND_FIELD3(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setEXTEND_FIELD4(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setEXTEND_FIELD5(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setEXTEND_FIELD6(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
      }
     
     @Override

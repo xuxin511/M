@@ -154,8 +154,9 @@ public class Login extends BaseActivity {
     @Event(R.id.btn_Login)
     private void btnLoginClick(View view) {
         DESUtil.pvkey = "SCGWMS00"; //初始密钥
-        ParamaterModel.SerialNo = "18235522511436";//"1177326";
-//        ParamaterModel.Model = "A15_A5";
+     //   ParamaterModel.SerialNo = "18235522511436";//"1177326";
+//        ParamaterModel.SerialNo = "1177326";
+//       ParamaterModel.Model = "A15_A5";
         if (ParamaterModel.SerialNo == null || TextUtils.isEmpty(ParamaterModel.SerialNo)) {
             return;
         }
@@ -217,13 +218,16 @@ public class Login extends BaseActivity {
         userInfoModel.setUSER_CODE(ParamaterModel.Operater);
         ParamaterModel.userInfoModel = userInfoModel;
 
+
         //验证登陆
         final Map<String, String> params = new HashMap<String, String>();
         String user = GsonUtil.parseModelToJson(ParamaterModel.userInfoModel);
-        DbLogInfo.getInstance().InsertLog(new LogModel("登陆",user,""));
         params.put("UserInfoJS", user);
         String para = (new JSONObject(params)).toString();
+
         LogUtil.WriteLog(SyncBase.class, TAG_Login, para);
+        DbLogInfo.getInstance().InsertLog(new LogModel("登陆",para,""));
+
         RequestHandler.addRequestWithDialog(Request.Method.POST, TAG_Login, getResources().getString(R.string.Msg_Login),
                 context, mHandler, RESULT_Login, null, URLModel.GetURL().ValidateEquip, params, null);
     }
@@ -279,6 +283,9 @@ public class Login extends BaseActivity {
             BaseApplication.context.registerReceiver(myReceiver, intentFilter);
             SendBroadcast(new Date().getTime(), 0x0003, "Option", 1);
             SendBroadcast(new Date().getTime(), 0x0002, null, 1);
+            Intent intent = new Intent("android.intent.action.BARCODEOUTPUT");
+            intent.putExtra("android.intent.action.BARCODEOUTPUT", 1);
+            sendBroadcast(intent);
 
         }else {
             ParamaterModel.SerialNo = serialNo;

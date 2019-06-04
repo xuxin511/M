@@ -9,6 +9,7 @@ import com.xx.chinetek.chineteklib.util.Network.RequestThirdHandler;
 import com.xx.chinetek.chineteklib.util.function.GsonUtil;
 import com.xx.chinetek.chineteklib.util.hander.MyHandler;
 import com.xx.chinetek.chineteklib.util.log.LogUtil;
+import com.xx.chinetek.method.DB.DbDnInfo;
 import com.xx.chinetek.method.UploadGPS;
 import com.xx.chinetek.mitsubshi.MitApplication;
 import com.xx.chinetek.mitsubshi.R;
@@ -43,53 +44,54 @@ import static com.xx.chinetek.model.Base.TAG_RESULT.TAG_UploadDN;
  */
 
 public class UploadAgentDN {
-    public static void UpAgentDN(final MyHandler<BaseActivity> mHandler,final String CUS_DN_NO ,final  String Remark,final DNDetailModel dndetail){
-        new Thread(){
-            @Override
-            public void run() {
+    public static void UpAgentDN(final MyHandler<BaseActivity> mHandler,final DNModel dnModel,String DetailRemark){
+//        new Thread(){
+//            @Override
+//            public void run() {
                 try {
-                   List<ThirdUplodDN> thirdUplodDNList=new ArrayList<>();
-                  //  for (DNModel dn:dnModels) {
-                      //  for (DNDetailModel dndetail : dn.getDETAILS()) {
-                            ThirdUplodDN thirdUplodDN = new ThirdUplodDN();
-                            thirdUplodDN.setGoodCode(dndetail.getITEM_NO());
-                            thirdUplodDN.setVoucherNo(CUS_DN_NO);
-                            thirdUplodDN.setRowNum(dndetail.getLINE_NO());
-                            thirdUplodDN.setGolfaCode(dndetail.getGOLFA_CODE()==null?"":dndetail.getGOLFA_CODE());
-                            thirdUplodDN.setType(dndetail.getITEM_NAME());
-                            thirdUplodDN.setSAPCode(dndetail.getITEM_NO());
-                            thirdUplodDN.setScanNum(dndetail.getSCAN_QTY());
-                            thirdUplodDN.setScanTime(dndetail.getSERIALS().get(0).getDEAL_SALE_DATE());
-                            thirdUplodDN.setProductData(dndetail.getSERIALS().get(0).getPACKING_DATE());
-                            thirdUplodDN.setPDACode(ParamaterModel.userInfoModel.getPDA_CODE());
-                            thirdUplodDN.setScaner(ParamaterModel.userInfoModel.getUSER_CODE());
-                            thirdUplodDN.setCptzm(Remark==null?"":Remark);
-                            thirdUplodDN.setSerialNo("");
-                            thirdUplodDN.setCountry("");
-                            thirdUplodDN.setPlaceCode("");
-                            if (dndetail.getGOLFA_CODE() != null && !TextUtils.isEmpty(dndetail.getGOLFA_CODE())) {
-                                for (DNScanModel dnscan : dndetail.getSERIALS()) {
-                                    thirdUplodDN.setProductData(dnscan.getPACKING_DATE());
-                                    thirdUplodDN.setSerialNo(dnscan.getSERIAL_NO());
-                                    thirdUplodDN.setScanNum(1);
-                                    thirdUplodDN.setCountry(dnscan.getCOUNTRY());
-                                    thirdUplodDN.setPlaceCode(dnscan.getREGION());
-                                    thirdUplodDNList.add(thirdUplodDN);
-                                }
-                            }else{
-                                thirdUplodDNList.add(thirdUplodDN);
+                    List<DNDetailModel> dnDetailModels= DbDnInfo.getInstance().GetDndetailsByFlag2(dnModel.getAGENT_DN_NO());
+                    List<ThirdUplodDN> thirdUplodDNList = new ArrayList<>();
+                    for (DNDetailModel dndetail:dnDetailModels) {
+                        ThirdUplodDN thirdUplodDN = new ThirdUplodDN();
+                        thirdUplodDN.setGoodCode(dndetail.getITEM_NO());
+                        thirdUplodDN.setVoucherNo(dnModel.getCUS_DN_NO());
+                        thirdUplodDN.setRowNum(dndetail.getLINE_NO());
+                        thirdUplodDN.setGolfaCode(dndetail.getGOLFA_CODE() == null ? "" : dndetail.getGOLFA_CODE());
+                        thirdUplodDN.setType(dndetail.getITEM_NAME());
+                        thirdUplodDN.setSAPCode(dndetail.getITEM_NO());
+                        thirdUplodDN.setScanNum(dndetail.getSCAN_QTY());
+                        thirdUplodDN.setScanTime(dndetail.getSERIALS().get(0).getDEAL_SALE_DATE());
+                        thirdUplodDN.setProductData(dndetail.getSERIALS().get(0).getPACKING_DATE()==null?"":dndetail.getSERIALS().get(0).getPACKING_DATE());
+                        thirdUplodDN.setPDACode(ParamaterModel.userInfoModel.getPDA_CODE());
+                        thirdUplodDN.setScaner(ParamaterModel.userInfoModel.getUSER_CODE());
+                        thirdUplodDN.setCptzm(DetailRemark);//dnModel.getREMARK() == null ? "" : dnModel.getREMARK());
+                        thirdUplodDN.setSerialNo("");
+                        thirdUplodDN.setCountry("");
+                        thirdUplodDN.setPlaceCode("");
+                        if (dndetail.getGOLFA_CODE() != null && !TextUtils.isEmpty(dndetail.getGOLFA_CODE())) {
+                            for (DNScanModel dnscan : dndetail.getSERIALS()) {
+                                if(dnscan.getFLAG()==0) continue;
+                                thirdUplodDNList.add(0,thirdUplodDN.clone());
+                                thirdUplodDNList.get(0).setProductData(dnscan.getPACKING_DATE()==null?"":dnscan.getPACKING_DATE());
+                                thirdUplodDNList.get(0).setSerialNo(dnscan.getSERIAL_NO());
+                                thirdUplodDNList.get(0).setScanNum(1);
+                                thirdUplodDNList.get(0).setCountry(dnscan.getCOUNTRY());
+                                thirdUplodDNList.get(0).setPlaceCode(dnscan.getREGION()==null?"":dnscan.getREGION());
                             }
-
-                        //}
-
-                  //  }
-                    String UplodDNList = GsonUtil.parseModelToJson(thirdUplodDNList);
-                    RequestThirdHandler.addThirdRequest(Request.Method.POST, TAG_SubmitQRScan, mHandler, RESULT_SubmitQRScan,
-                            null,  URLModel.GetURL().SubmitQRScan, UplodDNList, null);
+                        } else {
+                            thirdUplodDNList.add(thirdUplodDN);
+                        }
+                    }
+                    if(thirdUplodDNList.size()!=0) {
+                        String UplodDNList = GsonUtil.parseModelToJson(thirdUplodDNList);
+                        RequestThirdHandler.addThirdRequest(Request.Method.POST, TAG_SubmitQRScan,
+                                mHandler, RESULT_SubmitQRScan,
+                                null, URLModel.GetURL().SubmitQRScan, UplodDNList, null);
+                    }
                 }catch (Exception ex){
                     LogUtil.WriteLog(UploadGPS.class, TAG_SubmitQRScan, ex.getMessage());
                 }
-            }
-        }.start();
+//            }
+//        }.start();
     }
 }

@@ -115,6 +115,10 @@ public class DeliveryStart extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         BaseApplication.toolBarTitle=new ToolBarTitle(getString(R.string.outputscan),true);
         x.view().inject(this);
+        if(ParamaterModel.IsAgentSoft){
+            txtOrderTime.setVisibility(View.VISIBLE);
+            edtOrderTime.setVisibility(View.VISIBLE);
+        }
       }
 
     @Override
@@ -125,11 +129,8 @@ public class DeliveryStart extends BaseActivity {
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
         Calendar c = Calendar.getInstance();
         edtOrderTime.setText(sf.format(c.getTime()));
-        if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null){
-            spinsendType.setSelection(dnTypeModel.getDNType());
-            spinCustom.setSelection(dnTypeModel.getSelectCusType());
-            chooseposition=dnTypeModel.getSelectCusType();
-        }
+        if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null)
+             chooseposition=dnTypeModel.getSelectCusType();
         BindData();
         InitForm();
     }
@@ -137,7 +138,9 @@ public class DeliveryStart extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(dnTypeModel!=null && dnTypeModel.getDNType()!=null ){//&& dnTypeModel.getDNCusType()!=null&&dnTypeModel.getDNType()==5
+        if(dnTypeModel!=null && dnTypeModel.getDNType()!=null && dnTypeModel.getDNCusType()!=null){
+            int selectIndex=ParamaterModel.IsAgentSoft?dnTypeModel.getDNType():(dnTypeModel.getDNType()>=5?0:dnTypeModel.getDNType());
+            dnTypeModel.setDNType(selectIndex);
             spinsendType.setSelection(dnTypeModel.getDNType());
             spinCustom.setSelection(dnTypeModel.getSelectCusType());
             chooseposition=dnTypeModel.getSelectCusType();
@@ -190,7 +193,6 @@ public class DeliveryStart extends BaseActivity {
                                     .setMessage("输入客户名称已找到匹配项，是否确认新增?")
                                     .setPositiveButton("新增", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
-
                                             UploadNewCus.AddNewCusToMaps(code, "Z3", mHandler);
                                             CommonUtil.setEditFocus(edtContentText);
                                         }
@@ -233,16 +235,17 @@ public class DeliveryStart extends BaseActivity {
                // dnModel.setDN_SOURCE(3);
                 dnModel.setCUSTOM_NO(customModel.getCUSTOMER());
                 dnModel.setCUSTOM_NAME(customModel.getNAME());
+                DbLogInfo.getInstance().InsertLog(new LogModel("出库单发货方式选择","自建|"+customModel.getCUSTOMER()+"|"+customModel.getNAME(),dnModel.getCUS_DN_NO()));
                 jumpClass=DeliveryScan.class;
                break;
             case 4:
                 jumpClass=QRScan.class;
                 break;
             default:
+                DbLogInfo.getInstance().InsertLog(new LogModel("出库单发货方式选择",dnTypeModel.getDNType().toString(),""));
                 jumpClass=DeliveryList.class;
                 break;
         }
-        DbLogInfo.getInstance().InsertLog(new LogModel("出库方式",dnTypeModel.getDNType()+"|"+GsonUtil.parseModelToJson(dnModel),""));
         intent.setClass(context,jumpClass);
         Bundle bundle=new Bundle();
         bundle.putParcelable("DNModel",dnModel);
@@ -261,7 +264,7 @@ public class DeliveryStart extends BaseActivity {
     @Event(value = R.id.spin_Custom,type = AdapterView.OnItemSelectedListener.class)
     private void spinCustomonItemSelected(AdapterView<?> adapterView, View view, int position,long id) {
         chooseposition=position;
-        txtContentName.setText(R.string.custom);
+        //txtContentName.setText(R.string.custom);
          dnTypeModel.setSelectCusType(position);
         if(!isFirstRun) {
             edtContentText.setText("");
@@ -357,7 +360,7 @@ public class DeliveryStart extends BaseActivity {
 
     void BindSpinner(){
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.sendTypeList,
+                this, ParamaterModel.IsAgentSoft?R.array.sendTypeListAgent:R.array.sendTypeList,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinsendType.setAdapter(adapter);
@@ -406,11 +409,13 @@ public class DeliveryStart extends BaseActivity {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
                 if (isDeleteOrChange == 1) {
+                    DbLogInfo.getInstance().InsertLog(new LogModel("修改客户",customModel.getCUSTOMER()+"|"+customModel.getNAME(),""));
                     DbBaseInfo.getInstance().ModifyPartnersByID(customModel);
                     BindData();
                     edtContentText.setText(customModel.getCUSTOMER());
                 }
                 if (isDeleteOrChange == 0) {
+                    DbLogInfo.getInstance().InsertLog(new LogModel("删除客户",customModel.getCUSTOMER()+"|"+customModel.getNAME(),""));
                     DbBaseInfo.getInstance().DeletePartnersByID(customModel);
                     BindData();
                     customModel = null;
@@ -441,6 +446,7 @@ public class DeliveryStart extends BaseActivity {
             }.getType());
             if (returnMsgModel.getHeaderStatus().equals("S")) {
                 customModel = returnMsgModel.getModelJson();
+                DbLogInfo.getInstance().InsertLog(new LogModel("新增客户",customModel.getCUSTOMER()+"|"+customModel.getNAME(),""));
                 //插入数据
                 ArrayList<CustomModel> customModels=new ArrayList<>();
                 customModels.add(customModel);

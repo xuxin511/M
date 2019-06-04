@@ -51,4 +51,22 @@ public class ThirdDeleteQR {
     public void setType(String type) {
         Type = type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ThirdDeleteQR)) return false;
+
+        ThirdDeleteQR that = (ThirdDeleteQR) o;
+
+        if (RowNo != null ? !RowNo.equals(that.RowNo) : that.RowNo != null) return false;
+        return Type != null ? Type.equals(that.Type) : that.Type == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = RowNo != null ? RowNo.hashCode() : 0;
+        result = 31 * result + (Type != null ? Type.hashCode() : 0);
+        return result;
+    }
 }

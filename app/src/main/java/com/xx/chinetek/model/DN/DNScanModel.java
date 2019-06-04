@@ -28,6 +28,10 @@ public class DNScanModel implements Parcelable{
     private String STATUS;
     private String ITEM_STATUS;
     /**
+     * 代理商上传标志 0：已上传：1：未上传（启用代理商版本时有用）
+     */
+    private Integer FLAG;
+    /**
      * 扫描时间
      */
     private String DEAL_SALE_DATE;
@@ -60,34 +64,13 @@ public class DNScanModel implements Parcelable{
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public Integer getFLAG() {
+        return FLAG;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.AGENT_DN_NO);
-        dest.writeValue(this.LINE_NO);
-        dest.writeString(this.SERIAL_NO);
-        dest.writeString(this.PACKING_DATE);
-        dest.writeString(this.REGION);
-        dest.writeString(this.COUNTRY);
-        dest.writeString(this.ITEM_NO);
-        dest.writeString(this.GOLFA_CODE);
-        dest.writeString(this.STATUS);
-        dest.writeString(this.ITEM_STATUS);
-        dest.writeString(this.DEAL_SALE_DATE);
-        dest.writeString(this.ITEM_NAME);
-        dest.writeValue(this.MAT_TYPE);
-        dest.writeString(this.EXTEND_FIELD1);
-        dest.writeString(this.EXTEND_FIELD2);
-        dest.writeString(this.EXTEND_FIELD3);
-        dest.writeString(this.EXTEND_FIELD4);
-        dest.writeString(this.EXTEND_FIELD5);
-        dest.writeString(this.EXTEND_FIELD6);
+    public void setFLAG(Integer FLAG) {
+        this.FLAG = FLAG;
     }
-
 
     public String getAGENT_DN_NO() {
         return this.AGENT_DN_NO;
@@ -281,6 +264,64 @@ public class DNScanModel implements Parcelable{
     public DNScanModel() {
     }
 
+
+    @Generated(hash = 1847301657)
+    public DNScanModel(String AGENT_DN_NO, Integer LINE_NO, String SERIAL_NO, String PACKING_DATE, String REGION,
+            String COUNTRY, String ITEM_NO, String GOLFA_CODE, String STATUS, String ITEM_STATUS, Integer FLAG,
+            String DEAL_SALE_DATE, String ITEM_NAME, Integer MAT_TYPE, String EXTEND_FIELD1, String EXTEND_FIELD2,
+            String EXTEND_FIELD3, String EXTEND_FIELD4, String EXTEND_FIELD5, String EXTEND_FIELD6) {
+        this.AGENT_DN_NO = AGENT_DN_NO;
+        this.LINE_NO = LINE_NO;
+        this.SERIAL_NO = SERIAL_NO;
+        this.PACKING_DATE = PACKING_DATE;
+        this.REGION = REGION;
+        this.COUNTRY = COUNTRY;
+        this.ITEM_NO = ITEM_NO;
+        this.GOLFA_CODE = GOLFA_CODE;
+        this.STATUS = STATUS;
+        this.ITEM_STATUS = ITEM_STATUS;
+        this.FLAG = FLAG;
+        this.DEAL_SALE_DATE = DEAL_SALE_DATE;
+        this.ITEM_NAME = ITEM_NAME;
+        this.MAT_TYPE = MAT_TYPE;
+        this.EXTEND_FIELD1 = EXTEND_FIELD1;
+        this.EXTEND_FIELD2 = EXTEND_FIELD2;
+        this.EXTEND_FIELD3 = EXTEND_FIELD3;
+        this.EXTEND_FIELD4 = EXTEND_FIELD4;
+        this.EXTEND_FIELD5 = EXTEND_FIELD5;
+        this.EXTEND_FIELD6 = EXTEND_FIELD6;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.AGENT_DN_NO);
+        dest.writeValue(this.LINE_NO);
+        dest.writeString(this.SERIAL_NO);
+        dest.writeString(this.PACKING_DATE);
+        dest.writeString(this.REGION);
+        dest.writeString(this.COUNTRY);
+        dest.writeString(this.ITEM_NO);
+        dest.writeString(this.GOLFA_CODE);
+        dest.writeString(this.STATUS);
+        dest.writeString(this.ITEM_STATUS);
+        dest.writeValue(this.FLAG);
+        dest.writeString(this.DEAL_SALE_DATE);
+        dest.writeString(this.ITEM_NAME);
+        dest.writeValue(this.MAT_TYPE);
+        dest.writeString(this.EXTEND_FIELD1);
+        dest.writeString(this.EXTEND_FIELD2);
+        dest.writeString(this.EXTEND_FIELD3);
+        dest.writeString(this.EXTEND_FIELD4);
+        dest.writeString(this.EXTEND_FIELD5);
+        dest.writeString(this.EXTEND_FIELD6);
+    }
+
     protected DNScanModel(Parcel in) {
         this.AGENT_DN_NO = in.readString();
         this.LINE_NO = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -292,6 +333,7 @@ public class DNScanModel implements Parcelable{
         this.GOLFA_CODE = in.readString();
         this.STATUS = in.readString();
         this.ITEM_STATUS = in.readString();
+        this.FLAG = (Integer) in.readValue(Integer.class.getClassLoader());
         this.DEAL_SALE_DATE = in.readString();
         this.ITEM_NAME = in.readString();
         this.MAT_TYPE = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -301,35 +343,6 @@ public class DNScanModel implements Parcelable{
         this.EXTEND_FIELD4 = in.readString();
         this.EXTEND_FIELD5 = in.readString();
         this.EXTEND_FIELD6 = in.readString();
-    }
-
-
-    @Generated(hash = 192327553)
-    public DNScanModel(String AGENT_DN_NO, Integer LINE_NO, String SERIAL_NO,
-            String PACKING_DATE, String REGION, String COUNTRY, String ITEM_NO,
-            String GOLFA_CODE, String STATUS, String ITEM_STATUS,
-            String DEAL_SALE_DATE, String ITEM_NAME, Integer MAT_TYPE,
-            String EXTEND_FIELD1, String EXTEND_FIELD2, String EXTEND_FIELD3,
-            String EXTEND_FIELD4, String EXTEND_FIELD5, String EXTEND_FIELD6) {
-        this.AGENT_DN_NO = AGENT_DN_NO;
-        this.LINE_NO = LINE_NO;
-        this.SERIAL_NO = SERIAL_NO;
-        this.PACKING_DATE = PACKING_DATE;
-        this.REGION = REGION;
-        this.COUNTRY = COUNTRY;
-        this.ITEM_NO = ITEM_NO;
-        this.GOLFA_CODE = GOLFA_CODE;
-        this.STATUS = STATUS;
-        this.ITEM_STATUS = ITEM_STATUS;
-        this.DEAL_SALE_DATE = DEAL_SALE_DATE;
-        this.ITEM_NAME = ITEM_NAME;
-        this.MAT_TYPE = MAT_TYPE;
-        this.EXTEND_FIELD1 = EXTEND_FIELD1;
-        this.EXTEND_FIELD2 = EXTEND_FIELD2;
-        this.EXTEND_FIELD3 = EXTEND_FIELD3;
-        this.EXTEND_FIELD4 = EXTEND_FIELD4;
-        this.EXTEND_FIELD5 = EXTEND_FIELD5;
-        this.EXTEND_FIELD6 = EXTEND_FIELD6;
     }
 
     public static final Creator<DNScanModel> CREATOR = new Creator<DNScanModel>() {

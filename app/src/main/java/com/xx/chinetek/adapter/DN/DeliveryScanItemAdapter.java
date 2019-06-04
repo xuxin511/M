@@ -1,6 +1,7 @@
 package com.xx.chinetek.adapter.DN;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,7 @@ public class DeliveryScanItemAdapter extends BaseAdapter {
         DNDetailModel dnDetailModel = dnDetailModels.get(selectID);
         if(dnDetailModel.getSCAN_QTY()==null)
             dnDetailModel.setSCAN_QTY(0);
-        listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
+        listItemView.txtItemNo.setText(dnDetailModel.getGOLFA_CODE()==null || TextUtils.isEmpty(dnDetailModel.getGOLFA_CODE())?dnDetailModel.getITEM_NO():dnDetailModel.getGOLFA_CODE());
         listItemView.txtRowNo.setText(dnDetailModel.getLINE_NO()==null?"":convertView.getResources().getString(R.string.lineNo)+dnDetailModel.getLINE_NO());
         listItemView.txtItemName.setText(dnDetailModel.getITEM_NAME());
         listItemView.txtDNQty.setText(dnsource==3?"":(convertView.getResources().getString(R.string.dnQty)+ dnDetailModel.getDN_QTY()));//:

@@ -53,6 +53,7 @@
     <string name="Setting_Partnerr">代理商编号</string>
     <string name="Setting_Remark">启用备注栏</string>
     <string name="Setting_NotSLCodde">启用非三菱条码</string>
+    <string name="Setting_IsAgentSoft">启用代理商版本(欧菱)</string>
     <string name="Setting_SaveTime">出库单保存时间</string>
     <string name="Setting_SysPassword">修改管理员密码</string>
     <string name="Setting_DNRule">自定义出库单规则</string>
@@ -60,6 +61,8 @@
     <string name="Setting_thirdInterface">设置第三方接口</string>
     <string name="Setting_Port">端口：</string>
     <string name="Setting_Serverpart">服务后缀：</string>
+    <string name="Setting_thirdUser">用户名：</string>
+    <string name="Setting_thirdPass">密码：</string>
     <string name="Setting_TimeOut">超时时间：</string>
     <string name="Setting_Second">秒</string>
     <string name="Setting_LogUpload">日志上报</string>
@@ -68,6 +71,8 @@
     <string name="Setting_Clear">重置</string>
     <string name="Setting_add">新增</string>
     <string name="Setting_StartWords">起始字符：</string>
+    <string name="Setting_outnum">出库数量：</string>
+    <string name="Setting_outremark">备注：</string>
     <string name="Setting_serialnomax">最大序列号长度：</string>
     <string name="Setting_BarcodeLength">条码长度：</string>
     <string name="Setting_IndexLength">序号长度：</string>
@@ -102,11 +107,21 @@
     <string name="submituser">最后提交人：</string>
     <string name="overtime">完成时间：</string>
     <string name="barcode">条码:</string>
+    <string name="GolfaCode">GolfaCode:</string>
+    <string name="Pickdata">出厂日期:</string>
     <string name="scanQty">扫描数量：</string>
     <string name="dnQty">出库数量：</string>
     <string name="lineNo">行号：</string>
     <string name="RowNo">序号：</string>
     <string-array name="sendTypeList">
+        <item>MAPS</item>
+        <item>邮件</item>
+        <item>FTP</item>
+        <item>自建</item>
+        <!--<item>USB</item>-->
+        <item>二维码</item>
+    </string-array>
+    <string-array name="sendTypeListAgent">
         <item>MAPS</item>
         <item>邮件</item>
         <item>FTP</item>
@@ -184,6 +199,8 @@
     <string name="Msg_ModifyCus">修改客户名称</string>
     <string name="Msg_maxlength">请设置序列号最大长度</string>
     <string name="Msg_InputCustom">请输入代理商编号</string>
+    <string name="Msg_InputScanQty">请输入出库数量</string>
+    <string name="Msg_InpuCUSGF">请输入自定义GolfaCode</string>
     <string name="Msg_ChoiceSaveTime">请选择保存时间（天）</string>
     <string name="Msg_PasswordError">管理员密码错误!</string>
     <string name="Msg_UploadSuccess">导出成功!\n导出出库单数：</string>
@@ -213,6 +230,7 @@
     <string name="Msg_NoSelect_CusCode">请选择客户或代理商</string>
     <string name="Msg_No_CusCode">请输入代理商或客户编号！</string>
     <string name="Msg_No_Barcode">请扫描条码！</string>
+    <string name="Msg_No_PickDate">请输入出厂日期！</string>
     <string name="Msg_out_Barcode">扫描内容超出序列号范围！</string>
     <string name="Msg_Dn_Finished">出库单已关闭,不能提交数据！</string>
     <string name="Msg_DnScan_Finished">出库单已完成,不能修改！</string>

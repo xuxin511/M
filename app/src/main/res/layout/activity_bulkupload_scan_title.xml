@@ -87,11 +87,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="关闭"
         android:checked="true"
+        android:text="关闭"
         android:textColor="@color/aliceblue"
         app:layout_constraintBottom_toBottomOf="@+id/txt_DnNo"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/img_exception" />
 
 
 </android.support.constraint.ConstraintLayout>
